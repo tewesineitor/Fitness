@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Fit Architect - Pain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* --- LIGHT MODE (MATTE) --- */
+            --color-bg-base: #F2F2F2;
+            --color-surface-bg-rgb: 255, 255, 255;
+            --color-surface-hover-rgb: 242, 242, 242;
+            --color-surface-border-rgb: 0, 0, 0;
+            --color-surface-border-opacity: 0.12;
+
+            --color-text-primary-rgb: 10, 10, 10;
+            --color-text-secondary-rgb: 64, 64, 64;
+
+            --color-brand-accent-rgb: 0, 0, 0;
+            
+            /* Macros (Metals) */
+            --color-brand-protein-rgb: 163, 163, 163; /* Silver */
+            --color-brand-carbs-rgb: 115, 115, 115;   /* Slate */
+            --color-brand-fat-rgb: 64, 64, 64;       /* Charcoal */
+
+            --color-input-bg: #FFFFFF;
+            --color-input-border: rgba(0, 0, 0, 0.1);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            
+            --bg-gradient: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.03) 0%, transparent 60%);
+        }
+
+        .dark {
+            /* --- DARK MODE (STEALTH) --- */
+            --color-bg-base: #0A0A0A;
+            --color-surface-bg-rgb: 20, 20, 20;
+            --color-surface-hover-rgb: 28, 28, 28;
+            --color-surface-border-rgb: 255, 255, 255;
+            --color-surface-border-opacity: 0.06;
+
+            --color-text-primary-rgb: 255, 255, 255;
+            --color-text-secondary-rgb: 115, 115, 115;
+
+            --color-brand-accent-rgb: 255, 255, 255;
+            
+            /* Macros (Metals) */
+            --color-brand-protein-rgb: 163, 163, 163;
+            --color-brand-carbs-rgb: 115, 115, 115;
+            --color-brand-fat-rgb: 64, 64, 64;
+
+            --color-input-bg: rgba(20, 20, 20, 0.8);
+            --color-input-border: rgba(255, 255, 255, 0.08);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+
+            --bg-gradient: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+        }
+
+        /* --- ATMOSPHERE: CLEAN & FOCUSED --- */
+        body {
+            background-color: var(--color-bg-base);
+            background-image: var(--bg-gradient);
+            color: rgb(var(--color-text-primary-rgb));
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Utilities */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg-base); }
+        ::-webkit-scrollbar-thumb { background: #525252; border-radius: 2px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Component Classes (Flattened) */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23737373' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['"Space Grotesk"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+                'brand-accent': 'rgb(var(--color-brand-accent-rgb) / <alpha-value>)',
+                'brand-protein': 'rgb(var(--color-brand-protein-rgb) / <alpha-value>)',
+                'brand-carbs': 'rgb(var(--color-brand-carbs-rgb) / <alpha-value>)',
+                'brand-fat': 'rgb(var(--color-brand-fat-rgb) / <alpha-value>)',
+
+                'text-primary': 'rgb(var(--color-text-primary-rgb) / <alpha-value>)',
+                'text-secondary': 'rgb(var(--color-text-secondary-rgb) / <alpha-value>)',
+
+                'surface-bg': 'rgb(var(--color-surface-bg-rgb) / <alpha-value>)',
+                'surface-border': 'rgba(var(--color-surface-border-rgb), var(--color-surface-border-opacity))',
+                'surface-hover': 'rgb(var(--color-surface-hover-rgb) / <alpha-value>)',
+                'bg-base': 'var(--color-bg-base)',
+                
+                'input-bg': 'var(--color-input-bg)',
+                'input-border': 'var(--color-input-border)',
+            },
+            boxShadow: {
+                'sm': 'var(--shadow-sm)',
+                'md': 'var(--shadow-md)',
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+              'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+              'scan': 'scan 2s linear infinite',
+              'scan-vertical': 'scanVertical 2s linear infinite',
+            },
+            keyframes: {
+               fadeInUp: {
+                 '0%': { opacity: '0', transform: 'translateY(10px)' },
+                 '100%': { opacity: '1', transform: 'translateY(0)' },
+               },
+               popIn: {
+                 '0%': { opacity: '0', transform: 'scale(0.9)' },
+                 '100%': { opacity: '1', transform: 'scale(1)' },
+               },
+               scan: {
+                 '0%': { transform: 'translateY(-100px)' },
+                 '50%': { transform: 'translateY(100px)' },
+                 '100%': { transform: 'translateY(-100px)' },
+               },
+               scanVertical: {
+                 '0%': { top: '0%' },
+                 '50%': { top: '100%' },
+                 '100%': { top: '0%' },
+               }
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom": "https://esm.sh/react-dom@^18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^18.2.0/",
+    "react/": "https://esm.sh/react@^18.2.0/",
+    "react": "https://esm.sh/react@^18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "recharts": "https://esm.sh/recharts@2.12.7",
+    "@zxing/browser": "https://esm.sh/@zxing/browser@0.1.5",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <div id="modal-root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
