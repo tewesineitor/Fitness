@@ -20,7 +20,7 @@ import PostRoutineScreen from './PostRoutineScreen';
 import AddExerciseModal from './AddExerciseModal';
 import ExerciseDetailSheet from './ExerciseDetailSheet';
 import SetSelectorModal from '../../components/dialogs/SetSelectorModal';
-import { StrengthIcon, ClockIcon, YogaIcon, CardioIcon, ChevronRightIcon, XIcon, SaveIcon } from '../../components/icons';
+import { StrengthIcon, ClockIcon, YogaIcon, CardioIcon, ChevronRightIcon, XIcon, SaveIcon, FireIcon } from '../../components/icons';
 import { vibrate } from '../../utils/helpers';
 import Modal from '../../components/Modal';
 
@@ -321,57 +321,100 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
 
     const bgExercise = currentExerciseId ? allExercises[currentExerciseId] : undefined;
 
-    // Pre-start view
+    // Pre-start view (Premium Timeline Redesign)
     const renderPreStart = () => (
-        <div className="flex-grow w-full overflow-y-auto hide-scrollbar">
-            <div className="flex flex-col items-center justify-center min-h-full px-6 py-12 text-center animate-fade-in-up max-w-3xl mx-auto">
-                <div className="bg-brand-accent/10 p-8 rounded-full mb-8 border border-brand-accent/20 shadow-[0_0_40px_rgba(var(--color-brand-accent-rgb),0.2)]">
-                    <StrengthIcon className="w-20 h-20 text-brand-accent" />
-                </div>
-                <h1 className="text-4xl font-black text-white uppercase tracking-tight mb-4">{activeRoutine.name}</h1>
-                <p className="text-text-secondary text-sm mb-8 max-w-xs mx-auto">
-                    {activeRoutine.flow.length} bloques programados. <br/>Asegúrate de tener tu equipo listo.
-                </p>
-
-                {/* Staggered Exercise List */}
-                <div className="w-full max-w-sm space-y-2 mb-8 text-left max-h-[40vh] overflow-y-auto hide-scrollbar pr-2">
-                    {activeRoutine.flow.map((step, index) => {
-                        if (step.type !== 'exercise') return null;
-                        const exercise = allExercises[step.exerciseId];
-                        if (!exercise) return null;
-                        return (
-                            <div 
-                                key={index} 
-                                className="flex items-center gap-3 p-3 bg-surface-bg/50 rounded-xl border border-surface-border animate-fade-in-up backdrop-blur-sm shadow-sm"
-                                style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
-                            >
-                                <div className="w-10 h-10 rounded-lg bg-surface-hover flex items-center justify-center text-brand-accent flex-shrink-0 border border-surface-border">
-                                    <StrengthIcon className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-white leading-tight line-clamp-1">{exercise.name}</p>
-                                    <p className="text-[10px] text-text-secondary uppercase tracking-wider">{step.sets} Series x {step.reps}</p>
-                                </div>
-                            </div>
-                        )
-                    })}
+        <div className="flex-grow w-full flex flex-col relative">
+            {/* Top Gradient Fade for a more immersive feel */}
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10"></div>
+            
+            <div className="flex-grow overflow-y-auto hide-scrollbar pt-20 pb-40 px-6 max-w-3xl mx-auto w-full relative z-20">
+                <div className="flex flex-col items-center text-center animate-fade-in-up mb-10">
+                    <div className="bg-surface-bg/50 backdrop-blur-md p-6 rounded-[2rem] mb-6 border border-surface-border shadow-lg shadow-black/50 ring-1 ring-brand-accent/20">
+                        <StrengthIcon className="w-16 h-16 text-brand-accent drop-shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.5)]" />
+                    </div>
+                    <h1 className="text-4xl font-display font-black text-white uppercase tracking-tight mb-3 drop-shadow-md">{activeRoutine.name}</h1>
+                    <p className="text-text-secondary font-medium text-sm max-w-xs mx-auto bg-surface-bg/80 backdrop-blur-sm px-4 py-2 rounded-full border border-surface-border">
+                        {activeRoutine.flow.length} bloques programados • PREPÁRATE
+                    </p>
                 </div>
 
-                {/* UPDATED BUTTON to use high-contrast variant */}
+                {/* Workout Journey Timeline */}
+                <div className="w-full max-w-md mx-auto relative px-2">
+                    {/* The vertical timeline connector line */}
+                    <div className="absolute left-[27px] sm:left-[31px] top-6 bottom-6 w-0.5 bg-surface-border z-0"></div>
+
+                    <div className="space-y-4 relative z-10">
+                        {activeRoutine.flow.map((step, index) => {
+                            if (step.type !== 'exercise' && step.type !== 'warmup' && step.type !== 'cooldown' && step.type !== 'pose') return null;
+                            
+                            let stepName = step.title || 'Bloque';
+                            let stepDesc = '';
+                            let Icon = StrengthIcon;
+                            let isWarmupOrCoolDown = step.type === 'warmup' || step.type === 'cooldown';
+
+                            if (step.type === 'exercise') {
+                                const exercise = allExercises[step.exerciseId];
+                                stepName = exercise ? exercise.name : step.title;
+                                stepDesc = `${step.sets} Series × ${step.reps}`;
+                            } else if (step.type === 'warmup') {
+                                Icon = FireIcon;
+                                stepDesc = `${step.items.length} movimientos`;
+                            } else if (step.type === 'cooldown') {
+                                Icon = YogaIcon;
+                                stepDesc = 'Recuperación activa';
+                            } else if (step.type === 'pose') {
+                                Icon = YogaIcon;
+                                const exercise = allExercises[step.exerciseId];
+                                stepName = exercise ? exercise.name : step.title;
+                                stepDesc = step.duration ? `${step.duration}s` : '';
+                            }
+
+                            return (
+                                <div 
+                                    key={index} 
+                                    className="flex items-start gap-4 animate-fade-in-up group"
+                                    style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'both' }}
+                                >
+                                    {/* Timeline Node */}
+                                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 mt-1 transition-transform group-hover:scale-110 
+                                        ${isWarmupOrCoolDown 
+                                            ? 'bg-surface-bg border-surface-border text-text-secondary' 
+                                            : 'bg-surface-hover border-brand-accent/30 text-brand-accent shadow-[0_0_10px_rgba(var(--color-brand-accent-rgb),0.1)]'
+                                    }`}>
+                                        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                                    </div>
+                                    
+                                    {/* Content Card */}
+                                    <div className="flex-grow bg-surface-bg/60 backdrop-blur-md p-4 rounded-2xl border border-surface-border shadow-sm group-hover:bg-surface-hover transition-colors">
+                                        <h3 className={`text-sm sm:text-base font-bold leading-tight mb-1 ${isWarmupOrCoolDown ? 'text-text-secondary' : 'text-text-primary'}`}>
+                                            {stepName}
+                                        </h3>
+                                        <p className="text-[11px] font-bold text-brand-accent uppercase tracking-widest bg-brand-accent/10 inline-block px-2 py-0.5 rounded-md border border-brand-accent/20">
+                                            {stepDesc}
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+            {/* Sticky Bottom Action Area */}
+            <div className="sticky bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-40 flex flex-col items-center gap-3">
                 <Button 
-                    variant="high-contrast"
-                    onClick={() => { vibrate(10); setIsStarted(true); }} 
-                    className="w-full max-w-xs py-5 rounded-full"
+                    variant="primary"
+                    onClick={() => { vibrate(15); setIsStarted(true); }} 
+                    size="large"
+                    className="w-full max-w-sm py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--color-brand-accent-rgb),0.3)] animate-pop-in hover:scale-[1.02] active:scale-95 transition-all text-sm font-extrabold tracking-widest uppercase relative z-50"
                 >
-                    Comenzar Rutina
+                    COMENZAR RUTINA
                 </Button>
-                <Button 
-                    variant="tertiary" 
+                <button 
                     onClick={() => { vibrate(5); dispatch(actions.exitRoutine()); }} 
-                    className="mt-4 !text-xs !p-2 !bg-transparent hover:!bg-white/5 text-text-secondary hover:text-white"
+                    className="text-[11px] font-bold text-text-secondary hover:text-white uppercase tracking-[0.2em] px-4 pt-2 pb-1 transition-colors relative z-50"
                 >
-                    Cancelar
-                </Button>
+                    Volver
+                </button>
             </div>
         </div>
     );

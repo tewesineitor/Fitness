@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import SectionHeader from '../components/SectionHeader';
 
-import { ThemeSelector } from '../components/perfil/ThemeSelector';
 import { MacroSettings } from '../components/perfil/MacroSettings';
 import { AccountSection } from '../components/perfil/AccountSection';
 
@@ -94,8 +93,6 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         </div>
                     </div>
                 </section>
-
-                <ThemeSelector theme={theme} updateTheme={updateTheme} />
 
                 <MacroSettings goals={goals} setGoals={setGoals} showToast={showToast} />
 

@@ -122,7 +122,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                 />
             )}
 
-            <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
+            <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-6 pb-32">
                 <header className="animate-fade-in-up flex gap-3 pt-6">
                     <div className="flex-1 flex justify-between items-center bg-surface-bg p-1 rounded-xl border border-surface-border shadow-sm">
                         <Button variant="tertiary" onClick={() => { vibrate(5); handlePreviousDay(); }} icon={ChevronRightIcon} className="!p-2.5 hover:bg-surface-hover rounded-lg [&_svg]:rotate-180 text-text-secondary hover:text-text-primary transition-colors" />

@@ -59,7 +59,7 @@ export const AdvancedMacroRow: React.FC<{
             <div className="mb-8 last:mb-0 relative group">
                 <div className="flex justify-between items-end mb-2.5">
                     <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-bold uppercase tracking-widest text-text-secondary`}>{label}</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-widest text-text-primary/70`}>{label}</span>
                         <span className="bg-brand-protein/10 text-brand-protein px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider border border-brand-protein/20">PRIORIDAD</span>
                     </div>
                     <div className="text-right">
@@ -122,7 +122,7 @@ export const AdvancedMacroRow: React.FC<{
         <div className="mb-8 last:mb-0 relative group">
             <div className="flex justify-between items-end mb-2.5">
                 <div className="flex flex-col">
-                    <span className={`text-[10px] font-bold uppercase tracking-widest text-text-secondary`}>{label}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest text-text-primary/70`}>{label}</span>
                     <div className="flex items-baseline gap-1 mt-1">
                         <span className={`text-2xl font-heading font-bold leading-none ${textColorClass}`}>
                             {current.toFixed(0)}

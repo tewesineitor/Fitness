@@ -103,13 +103,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const root = window.document.documentElement;
     const applyTheme = (t: string) => {
-      root.classList.remove('light', 'dark');
-      if (t === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        root.classList.add(systemTheme);
-      } else {
-        root.classList.add(t);
-      }
+      root.classList.remove('light');
+      root.classList.add('dark');
     };
 
     applyTheme(theme);
@@ -152,21 +147,10 @@ const App: React.FC = () => {
     return (
         <div className="text-text-primary min-h-screen font-sans flex flex-col h-screen relative bg-transparent overflow-hidden">
             <SyncIndicator status={syncStatus} />
-            <main className="flex-grow relative w-full max-w-3xl mx-auto h-full">
-                {screens.map(screen => (
-                    <div 
-                        key={screen.id}
-                        className={`absolute inset-0 overflow-y-auto overflow-x-hidden transition-all duration-500 cubic-bezier(0.32, 0.72, 0, 1) hide-scrollbar ${
-                            activeScreen === screen.id 
-                                ? 'opacity-100 translate-y-0 scale-100 z-10 blur-0 pointer-events-auto' 
-                                : 'opacity-0 translate-y-4 scale-95 pointer-events-none z-0 blur-sm'
-                        }`}
-                    >
-                        <div className={`min-h-full ${isBottomNavVisible ? 'pb-28' : 'pb-8'}`}>
-                            {screen.component}
-                        </div>
-                    </div>
-                ))}
+            <main className="flex-grow relative w-full max-w-3xl mx-auto h-full overflow-y-auto hide-scrollbar">
+                <div className={isBottomNavVisible ? 'pb-28' : 'pb-8'}>
+                    {screens.find(s => s.id === activeScreen)?.component}
+                </div>
             </main>
             
             {isBottomNavVisible && (

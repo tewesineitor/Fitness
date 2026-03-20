@@ -276,7 +276,7 @@ const MetricInput: React.FC<{
                 type={type} 
                 value={value} 
                 onChange={e => onChange(e.target.value)} 
-                className="w-full bg-transparent p-0 text-xs font-bold text-white focus:text-white outline-none font-mono placeholder:text-white/20" 
+                className="w-full bg-transparent p-0 text-xs font-bold text-text-primary focus:text-brand-accent outline-none font-mono placeholder:text-text-secondary/20" 
             />
             {unit && <span className="text-[10px] text-text-secondary font-medium">{unit}</span>}
         </div>
@@ -503,7 +503,7 @@ const RoutineEditor: React.FC<{ onBack: () => void, existingRoutine?: RoutineTas
                         
                         <button 
                             onClick={() => setShowAddExercise(true)} 
-                            className="w-full py-6 mt-6 rounded-2xl border-2 border-dashed border-surface-border hover:border-brand-accent/50 bg-surface-bg/30 hover:bg-surface-bg transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer active:scale-[0.98]"
+                            className="w-full py-6 mt-6 mb-48 rounded-2xl border-2 border-dashed border-surface-border hover:border-brand-accent/50 bg-surface-bg/30 hover:bg-surface-bg transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer active:scale-[0.98]"
                         >
                             <div className="p-3 bg-surface-hover rounded-full border border-surface-border group-hover:border-brand-accent group-hover:scale-110 transition-all shadow-lg">
                                 <PlusIcon className="w-6 h-6 text-text-secondary group-hover:text-brand-accent" />

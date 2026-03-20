@@ -5,7 +5,7 @@ import Button from '../../components/Button';
 import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { selectHistorialDeSesiones, selectAllExercises } from '../../selectors/workoutSelectors';
-import ExerciseImage from '../../components/ExerciseImage';
+import { vibrate } from '../../utils/helpers';
 import PlateCalculatorModal from '../../components/dialogs/PlateCalculatorModal';
 import NextUpIndicator from '../../components/NextUpIndicator';
 
@@ -27,7 +27,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
     const exercise = allExercises[step.exerciseId];
     const [showCalculator, setShowCalculator] = useState(false);
 
-    // Logic to find the most recent previous session containing this specific exercise
+    // Filter historical sessions to find the last time this exercise was performed
     const previousSessionData = useMemo(() => {
         const prevSession = [...historialDeSesiones]
             .sort((a, b) => new Date(b.fecha_completado).getTime() - new Date(a.fecha_completado).getTime())
@@ -47,12 +47,9 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
     const currentSetIndex = loggedSets.length;
     const isFinished = currentSetIndex >= step.sets;
     
-    // Auto-fill logic
+    // Auto-fill logic based on previous set or previous session
     const initialSet = useMemo(() => {
-        // 1. If we have done a set in *this* session (e.g. Set 1 done, doing Set 2), copy Set 1's weight
         if (currentSetIndex > 0) return loggedSets[currentSetIndex - 1];
-        
-        // 2. If it's Set 1, try to copy Set 1 from the *previous* session
         if (previousSessionData && previousSessionData.sets[currentSetIndex]) {
             const prevSet = previousSessionData.sets[currentSetIndex];
             return { weight: prevSet.weight, reps: prevSet.reps };
@@ -71,8 +68,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
     }, [initialSet, currentSetIndex]);
     
     const handleCompleteSet = () => {
-        // Haptic Feedback: Short distinct pulse
-        if (navigator.vibrate) navigator.vibrate(50);
+        vibrate(20);
         onSetComplete({ 
             weight: parseFloat(weight) || 0, 
             reps: parseInt(reps) || 0,
@@ -80,17 +76,18 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
         });
     };
 
-    // Helper for relative time (e.g. "Hace 3 días")
     const getRelativeTime = (date: Date) => {
         const diff = new Date().getTime() - date.getTime();
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         if (days === 0) return 'Hoy';
         if (days === 1) return 'Ayer';
-        return `Hace ${days} días`;
+        return `Hace ${days} d`;
     };
+
+    const prevSetData = previousSessionData?.sets[currentSetIndex];
     
     return (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-full relative bg-bg-base/50 overflow-hidden">
             {showCalculator && (
                 <PlateCalculatorModal 
                     targetWeight={parseFloat(weight) || 20} 
@@ -98,211 +95,185 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                 />
             )}
             
-            <div className="flex-grow overflow-y-auto px-5 pt-2 pb-32 hide-scrollbar">
-                {/* --- Header Area --- */}
-                <div className="flex justify-between items-start gap-4 mb-4 flex-shrink-0">
-                    <div className="flex-grow min-w-0">
-                        {/* Activity Badge */}
-                        <div className="inline-flex items-center gap-2 mb-2 px-2 py-1 rounded bg-brand-protein/10 border border-brand-protein/20 self-start">
-                            <StrengthIcon className="w-3 h-3 text-brand-protein" />
-                            <span className="text-[9px] font-bold text-brand-protein uppercase tracking-[0.2em]">Fuerza</span>
+            <div className="flex-grow overflow-y-auto px-6 pt-6 pb-40 hide-scrollbar flex flex-col">
+                
+                {/* HUD Header */}
+                <div className="flex flex-col gap-2 flex-shrink-0 animate-fade-in-down">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <span className="inline-block px-3 py-1 bg-surface-bg/80 border border-surface-border rounded-full text-[10px] font-black tracking-[0.2em] uppercase text-brand-protein mb-3 backdrop-blur-md">
+                                LOGGING SET {currentSetIndex + 1}/{step.sets}
+                            </span>
+                            <h1 className="text-3xl sm:text-4xl font-display font-black text-white uppercase tracking-tight leading-none drop-shadow-md pr-4">
+                                {step.title}
+                            </h1>
                         </div>
-
-                        <h1 className="text-2xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight leading-none mb-3 drop-shadow-sm break-words">
-                            {step.title}
-                        </h1>
-                        
-                        {/* Tactical Data Bar */}
-                        <div className="flex flex-wrap gap-1.5">
-                            <div className="inline-flex items-center gap-1 bg-surface-hover px-2 py-1 rounded border border-surface-border">
-                                <ChartBarIcon className="w-2.5 h-2.5 text-brand-accent" />
-                                <span className="text-[9px] font-bold text-text-secondary uppercase tracking-wider">Meta: <span className="text-white">{step.reps}</span></span>
-                            </div>
-                            <div className="inline-flex items-center gap-1 bg-surface-hover px-2 py-1 rounded border border-surface-border">
-                                <ClockIcon className="w-2.5 h-2.5 text-brand-accent" />
-                                <span className="text-[9px] font-bold text-text-secondary uppercase tracking-wider">Descanso: <span className="text-white">{step.rest}s</span></span>
-                            </div>
-                            <Button 
-                                variant="tertiary" 
-                                size="small" 
-                                onClick={onShowExerciseDetails} 
-                                className="!inline-flex !items-center !gap-1 !bg-surface-hover !px-2 !py-1 !rounded !border !border-surface-border hover:!bg-surface-hover/80 !text-[9px] !font-bold !text-text-secondary !uppercase !tracking-wider"
-                                icon={InformationCircleIcon}
-                            >
-                                Ver Técnica
-                            </Button>
-                        </div>
+                        <button 
+                            onClick={() => { vibrate(5); onShowExerciseDetails(); }}
+                            className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-bg/80 border border-surface-border flex items-center justify-center text-text-secondary hover:text-white hover:border-brand-accent/50 transition-colors backdrop-blur-md"
+                            aria-label="Ver Técnica"
+                        >
+                            <InformationCircleIcon className="w-6 h-6" />
+                        </button>
                     </div>
 
-                    {/* Compact Thumbnail */}
-                    <div className="w-16 h-16 bg-surface-bg border border-surface-border rounded-xl overflow-hidden flex-shrink-0 shadow-sm relative">
-                         <ExerciseImage exercise={exercise} className="w-full h-full object-cover opacity-80" />
+                    {/* HUD Stats Row */}
+                    <div className="flex items-center gap-3 mt-2 opacity-80">
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-white uppercase tracking-widest">
+                            <ChartBarIcon className="w-4 h-4 text-brand-accent" />
+                            Target: <span className="text-brand-accent">{step.reps}</span>
+                        </div>
+                        <div className="w-1 h-1 rounded-full bg-surface-border"></div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-white uppercase tracking-widest">
+                            <ClockIcon className="w-4 h-4 text-brand-accent" />
+                            Descanso: <span className="text-brand-accent">{step.rest}s</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* --- TECHNICAL FOCUS BANNER --- */}
                 {technicalFocus && (
-                    <div className="w-full bg-brand-accent/10 border border-brand-accent/20 rounded-lg p-3 mb-6 flex items-start gap-3 animate-fade-in-up shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.1)]">
-                        <div className="bg-brand-accent/20 p-1.5 rounded-full text-brand-accent mt-0.5 flex-shrink-0">
-                            <InformationCircleIcon className="w-4 h-4" />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold text-brand-accent uppercase tracking-widest mb-0.5">Foco Técnico</p>
-                            <p className="text-xs font-medium text-white leading-snug">{technicalFocus}</p>
-                        </div>
+                    <div className="mt-6 p-4 rounded-2xl bg-brand-accent/5 border border-brand-accent/20 flex items-start gap-3 backdrop-blur-sm animate-fade-in-up">
+                        <InformationCircleIcon className="w-5 h-5 text-brand-accent flex-shrink-0 mt-0.5" />
+                        <p className="text-xs font-medium text-white/90 leading-relaxed shadow-sm">{technicalFocus}</p>
                     </div>
                 )}
 
-                {/* --- HISTORICAL REFERENCE BLOCK --- */}
-                {previousSessionData && (
-                    <div className="flex-shrink-0 mb-6 animate-fade-in-up">
-                        <div className="bg-surface-hover/80 border border-brand-accent/20 rounded-xl p-3 backdrop-blur-md shadow-sm">
-                            <div className="flex items-center gap-2 mb-2 opacity-70">
-                                <CalendarIcon className="w-3 h-3 text-brand-accent" />
-                                <span className="text-[9px] font-bold text-brand-accent uppercase tracking-widest">
-                                    Última vez ({getRelativeTime(previousSessionData.date)})
-                                </span>
+                {!isFinished && (
+                    <div className="flex-grow flex flex-col justify-center mt-8 space-y-8 min-h-[300px]">
+                        
+                        {/* THE MASSIVE INPUTS */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* Weight Input */}
+                            <div className="bg-surface-bg/60 backdrop-blur-md border border-surface-border rounded-[2rem] p-5 relative shadow-sm flex flex-col group focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all">
+                                <div className="flex justify-between items-center mb-4">
+                                    <label className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em]">Carga (kg)</label>
+                                    <button 
+                                        onClick={() => { vibrate(5); setShowCalculator(true); }}
+                                        className="p-1.5 rounded-lg bg-surface-hover text-brand-accent hover:bg-surface-hover/80 transition-colors"
+                                    >
+                                        <CalculatorIcon className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                <input 
+                                    type="number" 
+                                    value={weight} 
+                                    onChange={(e) => setWeight(e.target.value)} 
+                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tighter"
+                                    placeholder="0"
+                                    inputMode="decimal"
+                                />
+                                {prevSetData && (
+                                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
+                                        <CalendarIcon className="w-3 h-3 text-text-muted" />
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-white">{prevSetData.weight}kg</span></span>
+                                    </div>
+                                )}
                             </div>
-                            
-                            <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                                {previousSessionData.sets.map((s, idx) => {
-                                    const isCorrespondingSet = idx === currentSetIndex;
+
+                            {/* Reps Input */}
+                            <div className="bg-surface-bg/60 backdrop-blur-md border border-surface-border rounded-[2rem] p-5 relative shadow-sm flex flex-col focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all">
+                                <label className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em] mb-4">Reps</label>
+                                <input 
+                                    type="number" 
+                                    value={reps} 
+                                    onChange={(e) => setReps(e.target.value)} 
+                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tighter mt-auto"
+                                    placeholder="0"
+                                    inputMode="numeric"
+                                />
+                                {prevSetData && (
+                                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-white">{prevSetData.reps}</span></span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* PREMIUM RIR SELECTOR */}
+                        <div className="w-full animate-fade-in-up" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
+                            <div className="flex items-center justify-between mb-3 px-1">
+                                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Reps en Reserva (RIR)</p>
+                                <InformationCircleIcon className="w-4 h-4 text-text-muted opacity-50" />
+                            </div>
+                            <div className="bg-surface-bg/80 backdrop-blur-md p-1.5 rounded-[1.5rem] border border-surface-border flex">
+                                {[0, 1, 2, 3].map((val) => {
+                                    const isSelected = rir === val;
                                     return (
-                                        <div 
-                                            key={idx} 
+                                        <button
+                                            key={val}
+                                            onClick={() => { vibrate(5); setRir(val); }}
                                             className={`
-                                                flex-shrink-0 px-3 py-1.5 rounded-lg border flex flex-col items-center min-w-[70px] transition-all duration-300
-                                                ${isCorrespondingSet 
-                                                    ? 'bg-brand-accent text-black border-brand-accent shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] transform scale-105' 
-                                                    : 'bg-surface-hover text-text-secondary border-surface-border'
-                                                }
+                                                flex-1 py-3 sm:py-4 rounded-[1.25rem] text-sm font-bold transition-all duration-300 relative
+                                                ${isSelected ? 'text-black shadow-sm' : 'text-text-secondary hover:text-white hover:bg-white/5'}
                                             `}
                                         >
-                                            <span className={`text-[8px] uppercase tracking-wider font-bold mb-0.5 ${isCorrespondingSet ? 'text-black/60' : 'text-text-secondary/50'}`}>
-                                                Set {idx + 1}
-                                            </span>
-                                            <span className="font-heading text-lg font-bold whitespace-nowrap">
-                                                {s.weight} <span className="text-[10px] font-medium opacity-80 font-sans">kg</span> × {s.reps}
-                                            </span>
-                                        </div>
-                                    )
+                                            {isSelected && (
+                                                <div className="absolute inset-0 bg-brand-accent rounded-[1.25rem] shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] pointer-events-none layout-transition"></div>
+                                            )}
+                                            <span className="relative z-10">{val === 3 ? '3+' : val}</span>
+                                        </button>
+                                    );
                                 })}
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* --- CURRENT SET INDICATOR --- */}
-                <div className="flex-shrink-0 flex justify-center mb-6">
-                    <div className="flex items-center gap-1.5 bg-surface-hover p-1.5 rounded-full border border-surface-border shadow-sm">
-                        {Array.from({ length: step.sets }).map((_, i) => (
-                            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i < currentSetIndex ? 'w-4 bg-brand-accent' : i === currentSetIndex ? 'w-8 bg-white shadow-[0_0_10px_white]' : 'w-4 bg-white/10'}`}></div>
-                        ))}
+                {/* CURRENT SESSION LOGGER TAPE */}
+                <div className="mt-8 mb-4 flex-shrink-0 relative">
+                    {/* The Tape line */}
+                    <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-surface-border -translate-y-1/2 z-0"></div>
+                    
+                    <div className="flex gap-3 overflow-x-auto hide-scrollbar relative z-10 px-2 py-4">
+                        {Array.from({ length: step.sets }).map((_, i) => {
+                            const isLogged = i < currentSetIndex;
+                            const isCurrent = i === currentSetIndex;
+                            const loggedData = isLogged ? loggedSets[i] : null;
+
+                            return (
+                                <div key={i} className={`
+                                    flex flex-col items-center justify-center w-16 h-16 rounded-2xl flex-shrink-0 transition-all border-2
+                                    ${isLogged 
+                                        ? 'bg-brand-accent border-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.2)]' 
+                                        : isCurrent 
+                                            ? 'bg-surface-bg border-white text-white scale-110 shadow-lg' 
+                                            : 'bg-surface-bg border-surface-border text-text-muted opacity-50'
+                                    }
+                                `}>
+                                    <span className={`text-[9px] font-bold uppercase tracking-widest ${isLogged ? 'text-black/60' : isCurrent ? 'text-text-secondary' : 'text-text-muted'}`}>S{i+1}</span>
+                                    {isLogged ? (
+                                        <span className="font-display font-black text-lg leading-none mt-1">{loggedData?.weight}</span>
+                                    ) : isCurrent ? (
+                                        <div className="w-2 h-2 rounded-full bg-white mt-2 animate-pulse"></div>
+                                    ) : null}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 
-                {/* --- INPUTS --- */}
-                {!isFinished && (
-                    <div className="flex-grow flex justify-center gap-3 mb-4">
-                        
-                        {/* Weight Section */}
-                        <div className="flex-1 bg-surface-bg border border-surface-border rounded-2xl p-4 relative shadow-sm flex flex-col">
-                            <div className="flex justify-between items-center mb-2">
-                                <label className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Carga (kg)</label>
-                                {/* Plate Calculator Button */}
-                                <Button 
-                                    variant="tertiary"
-                                    size="small"
-                                    onClick={() => setShowCalculator(true)} 
-                                    className="!flex !items-center !gap-1 !px-1.5 !py-0.5 !rounded !bg-surface-hover hover:!bg-surface-hover/80 !text-[8px] !font-bold !text-brand-accent !uppercase !tracking-wider !border !border-surface-border"
-                                    icon={CalculatorIcon}
-                                >
-                                    Calc
-                                </Button>
-                            </div>
-                            <input 
-                                type="number" 
-                                value={weight} 
-                                onChange={(e) => setWeight(e.target.value)} 
-                                className="w-full bg-transparent text-center text-4xl font-heading font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tight mt-auto"
-                                placeholder="0"
-                            />
-                        </div>
-
-                        {/* Reps Section */}
-                        <div className="flex-1 bg-surface-bg border border-surface-border rounded-2xl p-4 relative shadow-sm flex flex-col">
-                            <div className="flex justify-between items-center mb-2">
-                                <label className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Reps</label>
-                            </div>
-                            <input 
-                                type="number" 
-                                value={reps} 
-                                onChange={(e) => setReps(e.target.value)} 
-                                className="w-full bg-transparent text-center text-4xl font-heading font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tight mt-auto"
-                                placeholder="0"
-                            />
-                        </div>
-                    </div>
-                )}
-
-                {/* --- RIR SELECTOR --- */}
-                {!isFinished && (
-                    <div className="mb-6 animate-fade-in-up">
-                        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2 pl-1">Reps en Reserva (RIR)</p>
-                        <div className="grid grid-cols-4 gap-2">
-                            {[0, 1, 2, 3].map((val) => (
-                                <button
-                                    key={val}
-                                    onClick={() => setRir(val)}
-                                    className={`
-                                        py-3 rounded-xl border transition-all duration-200 font-bold text-sm
-                                        ${rir === val 
-                                            ? 'bg-brand-accent text-black border-brand-accent shadow-[0_0_10px_rgba(var(--color-brand-accent-rgb),0.4)] scale-105' 
-                                            : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover'
-                                        }
-                                    `}
-                                >
-                                    {val === 3 ? '3+' : val}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* --- CURRENT SESSION HISTORY (Compact Strip) --- */}
-                {loggedSets.length > 0 && (
-                    <div className="mt-2 border-t border-surface-border pt-3">
-                        <p className="text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-2 pl-1">Sesión Actual</p>
-                        <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar justify-center">
-                            {loggedSets.map((set, i) => (
-                                <div key={i} className="flex flex-col items-center bg-black/40 px-3 py-1.5 rounded-lg border border-surface-border min-w-[60px]">
-                                    <span className="text-[8px] text-text-secondary uppercase mb-0.5">Set {i+1}</span>
-                                    <span className="text-sm font-heading font-bold text-white">{set.weight}x{set.reps}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
                 {nextStep && (
-                    <div className="mt-4 mb-2">
+                    <div className="mt-auto pt-4">
                         <NextUpIndicator step={nextStep} />
                     </div>
                 )}
             </div>
 
-            {/* --- FIXED ACTION BUTTON --- */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-20">
-                <Button 
-                    variant="high-contrast"
-                    onClick={handleCompleteSet} 
-                    size="large" 
-                    className="w-full py-3 sm:py-4 rounded-full shadow-lg text-sm"
-                >
-                    REGISTRAR SERIE {currentSetIndex + 1}
-                </Button>
-            </div>
+            {/* FIXED ACTION FOOTER */}
+            {!isFinished && (
+                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-40">
+                    <Button 
+                        variant="primary"
+                        onClick={handleCompleteSet} 
+                        size="large" 
+                        className="w-full max-w-sm mx-auto py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--color-brand-accent-rgb),0.3)] hover:scale-[1.02] active:scale-95 transition-all text-sm font-extrabold tracking-widest uppercase flex flex-col gap-1 items-center justify-center leading-none"
+                    >
+                        <span>REGISTRAR SERIE</span>
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };
+
 export default FuerzaScreen;

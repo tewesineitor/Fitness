@@ -1,11 +1,12 @@
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { InfoStep } from '../../types';
 import { AppContext } from '../../contexts';
 import { selectAllExercises } from '../../selectors/workoutSelectors';
 import Button from '../../components/Button';
-import { CardioIcon, YogaIcon, FireIcon, InformationCircleIcon, StrengthIcon, ChevronRightIcon } from '../../components/icons';
-import ExerciseImage from '../../components/ExerciseImage';
+import { FireIcon, YogaIcon, InformationCircleIcon, StrengthIcon, ChevronRightIcon } from '../../components/icons';
+import CircularTimer from '../../components/CircularTimer';
+import { vibrate } from '../../utils/helpers';
 
 interface InfoStepScreenProps {
   step: InfoStep;
@@ -17,31 +18,42 @@ interface InfoStepScreenProps {
 
 const DURATION = 60;
 
-// Potentiation Screen (The "Get Ready" screen)
+// Potentiation Screen (The "Get Ready" screen - Premium Redesign)
 const PotentiationScreen: React.FC<{ exerciseName: string; onStartWorkout: () => void }> = ({ exerciseName, onStartWorkout }) => (
-    <div className="flex flex-col h-full px-6 py-8 justify-center items-center text-center animate-fade-in-up overflow-y-auto hide-scrollbar">
-        <div className="flex-grow flex flex-col justify-center items-center w-full">
-            <div className="p-6 sm:p-8 bg-brand-accent/5 rounded-full mb-6 border border-brand-accent/20 shadow-[0_0_60px_rgba(var(--color-brand-accent-rgb),0.15)] flex-shrink-0">
-                <StrengthIcon className="w-12 h-12 sm:w-16 sm:h-16 text-brand-accent" />
+    <div className="flex flex-col h-full px-6 py-12 justify-center items-center text-center animate-fade-in-up overflow-y-auto hide-scrollbar relative">
+        {/* Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-brand-accent/20 rounded-full blur-[80px] pointer-events-none"></div>
+
+        <div className="flex-grow flex flex-col justify-center items-center w-full z-10">
+            <div className="p-6 bg-surface-bg/50 backdrop-blur-md rounded-3xl mb-8 border border-surface-border shadow-lg shadow-black/50 ring-1 ring-brand-accent/20 flex-shrink-0">
+                <StrengthIcon className="w-16 h-16 text-brand-accent drop-shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.5)]" />
             </div>
             
-            <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter leading-none mb-6 flex-shrink-0">
-                ¡Preparar!
+            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-accent mb-4">
+                Series de Aproximación
             </h2>
             
-            <div className="w-full max-w-sm bg-surface-bg/80 border border-surface-border p-6 rounded-3xl backdrop-blur-md shadow-sm flex-shrink-0">
-                <p className="text-[10px] text-text-secondary font-bold mb-2 uppercase tracking-[0.2em]">Aproximación</p>
-                <p className="font-black text-white text-lg sm:text-xl uppercase tracking-tight mb-4 break-words">{exerciseName}</p>
-                <div className="h-px w-full bg-surface-border mb-4"></div>
-                <p className="text-xs sm:text-sm text-text-secondary font-medium">
-                    Realiza 2-3 series con poco peso para activar el sistema nervioso.
+            <h1 className="text-4xl sm:text-5xl font-display font-black text-white uppercase tracking-tighter leading-none flex-shrink-0 drop-shadow-md mb-8">
+                ¡PREPARAR!
+            </h1>
+            
+            <div className="w-full max-w-sm">
+                <p className="font-bold text-white text-xl uppercase tracking-tight mb-4 break-words">{exerciseName}</p>
+                <div className="h-px w-16 mx-auto bg-brand-accent/30 mb-4"></div>
+                <p className="text-sm text-text-secondary font-medium px-4">
+                    Realiza 2-3 series con peso ligero para activar el sistema nervioso antes de tu primera serie de trabajo.
                 </p>
             </div>
         </div>
         
-        <div className="w-full max-w-sm mt-6 pb-safe flex-shrink-0">
-            <Button variant="high-contrast" size="large" onClick={onStartWorkout} className="w-full py-4 sm:py-5 rounded-full text-sm">
-                COMENZAR
+        <div className="w-full max-w-sm mt-8 pb-safe flex-shrink-0 z-10">
+            <Button 
+                variant="primary" 
+                size="large" 
+                onClick={() => { vibrate(15); onStartWorkout(); }} 
+                className="w-full py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--color-brand-accent-rgb),0.3)] text-sm font-extrabold tracking-widest uppercase hover:scale-[1.02] active:scale-95 transition-all"
+            >
+                COMENZAR SET
             </Button>
         </div>
     </div>
@@ -55,6 +67,9 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
     const [timeLeft, setTimeLeft] = useState(DURATION);
     const [showPotentiationInfo, setShowPotentiationInfo] = useState(false);
     
+    // For haptic feedback precisely on ticks
+    const hasVibratedRef = useRef<{ [key: number]: boolean }>({});
+
     const currentItem = React.useMemo(() => {
         return step.items[currentItemIndex];
     }, [step.items, currentItemIndex]);
@@ -64,17 +79,8 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
         return exerciseId ? allExercises[exerciseId] : null;
     }, [currentItem, allExercises]);
 
-    useEffect(() => {
-        if (!currentExercise || timeLeft <= 0 || showPotentiationInfo) {
-            return;
-        }
-        const timerId = window.setInterval(() => {
-            setTimeLeft(prev => prev - 1);
-        }, 1000);
-        return () => window.clearInterval(timerId);
-    }, [timeLeft, currentExercise, showPotentiationInfo]);
-    
     const advanceToNextItem = () => {
+        hasVibratedRef.current = {}; // Reset vibrations
         if (currentItemIndex < step.items.length - 1) {
             setCurrentItemIndex(i => i + 1);
             setTimeLeft(DURATION);
@@ -87,11 +93,21 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
         }
     };
 
-    useEffect(() => {
-        if (timeLeft > 0) return;
-        if (showPotentiationInfo) return;
-        advanceToNextItem();
-    }, [timeLeft, currentItemIndex, step.items.length, onComplete, showPotentiationInfo]);
+    // Auto-advance logic integrated into the CircularTimer callback for precision
+    const handleTimerTick = (remaining: number) => {
+        setTimeLeft(remaining);
+        
+        // Vibrate at 3, 2, 1
+        if (remaining <= 3 && remaining > 0 && !hasVibratedRef.current[remaining]) {
+            vibrate(50);
+            hasVibratedRef.current[remaining] = true;
+        }
+
+        if (remaining <= 0) {
+            vibrate([100, 50, 100]); // End sequence
+            setTimeout(advanceToNextItem, 0); // Defer state update slightly
+        }
+    };
 
     if (showPotentiationInfo && potentiateExerciseName) {
         return <PotentiationScreen exerciseName={potentiateExerciseName} onStartWorkout={onComplete} />;
@@ -99,76 +115,100 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
 
     if (!currentExercise) {
         useEffect(() => { onComplete(); }, [onComplete]);
-        return <div>Cargando...</div>;
+        return <div className="flex h-full items-center justify-center text-text-muted">Cargando...</div>;
     }
 
-    const Icon = step.type === 'warmup' ? FireIcon : YogaIcon;
+    const isWarmup = step.type === 'warmup';
+    const Icon = isWarmup ? FireIcon : YogaIcon;
+    const colorClass = isWarmup ? 'text-brand-fat' : 'text-brand-accent';
     const reps = currentItem.reps;
-    const accentBg = step.type === 'warmup' ? 'bg-brand-fat' : 'bg-brand-accent';
 
     return (
-        <div className="flex flex-col h-full px-6 pt-4 pb-8 overflow-hidden">
-            {/* Header */}
-            <div className="flex-shrink-0 text-center mb-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-hover border border-surface-border mb-3">
-                    <Icon className={`w-3 h-3 ${step.type === 'warmup' ? 'text-brand-fat' : 'text-brand-accent'}`} />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">{step.type === 'warmup' ? 'CALENTAMIENTO' : 'ENFRIAMIENTO'}</span>
+        <div className="flex flex-col h-full relative overflow-hidden bg-bg-base/50">
+            {/* Header Area */}
+            <div className="pt-8 px-6 text-center z-10 flex-shrink-0 animate-fade-in-down">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-bg/80 border border-surface-border backdrop-blur-md shadow-sm">
+                    <Icon className={`w-3.5 h-3.5 ${colorClass}`} />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                        {isWarmup ? 'CALENTAMIENTO' : 'ENFRIAMIENTO'}
+                    </span>
+                    <span className="text-[10px] font-bold text-text-secondary">
+                        {currentItemIndex + 1}/{step.items.length}
+                    </span>
                 </div>
             </div>
 
-            {/* TIMER - NEW POSITION: Large and Centered */}
-            <div className="flex justify-center mb-6 flex-shrink-0 animate-fade-in-up">
-                 <div className="flex items-center justify-center gap-3 sm:gap-4 bg-surface-bg/50 border border-surface-border px-6 sm:px-8 py-3 sm:py-4 rounded-3xl backdrop-blur-md shadow-sm">
-                    <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${accentBg} animate-pulse shadow-[0_0_15px_currentColor]`}></div>
-                    <span className="text-4xl sm:text-5xl font-heading font-black text-white tracking-tighter leading-none tabular-nums">
-                        {timeLeft}<span className="text-base sm:text-lg ml-1 opacity-50 font-sans font-bold text-text-secondary">s</span>
-                    </span>
-                 </div>
-            </div>
+            {/* ZEN MODE: Massive Centered Timer & Info */}
+            <div className="flex-grow flex flex-col items-center justify-center z-10 w-full relative">
+                
+                {/* Visual Timer */}
+                <div className="relative flex items-center justify-center mb-8 transform scale-110 sm:scale-125">
+                    {/* Ambient glow matching timer color */}
+                    <div className={`absolute inset-0 rounded-full blur-[60px] opacity-20 pointer-events-none transition-colors duration-1000 ${isWarmup ? 'bg-brand-fat' : 'bg-brand-accent'}`}></div>
+                    
+                    <CircularTimer 
+                        initialDuration={DURATION} 
+                        timeLeft={timeLeft} 
+                        strokeColor={colorClass}
+                        size={220}
+                        strokeWidth={8}
+                        onTick={handleTimerTick}
+                    />
+                </div>
 
-            {/* Content Card (Centered) */}
-            <div className="flex-grow flex flex-col items-center justify-center mb-4 min-h-0 overflow-y-auto hide-scrollbar">
-                {/* Text Info */}
-                <div className="text-center w-full px-2 sm:px-4">
-                    <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight leading-tight mb-4 break-words">
+                {/* Exercise Info strictly contained below the timer */}
+                <div className="text-center w-full px-6 max-w-sm animate-fade-in-up">
+                    <h2 className="text-3xl font-display font-black text-white uppercase tracking-tight leading-tight mb-2 drop-shadow-md">
                         {currentExercise.name}
                     </h2>
-                    {reps && (
-                        <p className="text-sm sm:text-base font-bold text-brand-accent uppercase tracking-widest bg-brand-accent/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl inline-block border border-brand-accent/20 mb-6">
-                            Objetivo: {reps}
-                        </p>
-                    )}
-                    <Button 
-                        variant="tertiary" 
-                        size="small" 
-                        onClick={() => onShowExerciseDetails(currentExercise.id)} 
-                        className="!flex !items-center !justify-center !gap-2 !text-xs !font-bold !text-text-secondary hover:!text-white !uppercase !tracking-widest !mx-auto !bg-surface-bg/50 !px-4 !py-2 !rounded-full !border !border-surface-border"
-                        icon={InformationCircleIcon}
-                    >
-                        Ver Técnica
-                    </Button>
+                    
+                    <div className="flex items-center justify-center gap-3">
+                        {reps && (
+                            <span className="text-sm font-bold text-white uppercase tracking-widest bg-white/10 px-3 py-1 rounded-lg border border-white/5">
+                                {reps}
+                            </span>
+                        )}
+                        <button 
+                            onClick={() => { vibrate(5); onShowExerciseDetails(currentExercise.id); }}
+                            className="text-xs font-bold text-text-secondary hover:text-white uppercase tracking-widest flex items-center gap-1 transition-colors px-2 py-1"
+                        >
+                            <InformationCircleIcon className="w-4 h-4" />
+                            Técnica
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Footer Controls */}
-            <div className="flex-shrink-0 w-full mt-auto space-y-6 pb-safe">
-                {/* Progress Bar */}
-                <div className="flex items-center gap-1 h-1 w-full px-2">
+            {/* Fixed Bottom Controls */}
+            <div className="flex-shrink-0 pb-safe px-6 pt-4 bg-gradient-to-t from-black via-black/90 to-transparent z-20 space-y-4">
+                {/* Progress Strip */}
+                <div className="flex items-center gap-1 h-1.5 w-full bg-surface-bg rounded-full p-0.5 border border-surface-border">
                     {step.items.map((_, index) => (
-                        <div key={index} className={`h-full flex-1 rounded-full bg-white/10 overflow-hidden`}>
+                        <div key={index} className={`h-full flex-1 rounded-full bg-white/5 overflow-hidden relative`}>
                             {index <= currentItemIndex && (
-                                <div className={`h-full w-full ${accentBg} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`} style={index === currentItemIndex ? { width: `${((DURATION - timeLeft) / DURATION) * 100}%` } : {}}></div>
+                                <div 
+                                    className={`absolute inset-0 ${isWarmup ? 'bg-brand-fat' : 'bg-brand-accent'} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`} 
+                                    style={index === currentItemIndex ? { width: `${((DURATION - timeLeft) / DURATION) * 100}%` } : {}}
+                                />
                             )}
                         </div>
                     ))}
                 </div>
 
                 <div className="flex gap-3">
-                    <Button variant="secondary" onClick={onSkipAll} className="flex-1 !text-[10px] !uppercase !tracking-widest !font-bold">
-                        SALTAR TODO
+                    <Button 
+                        variant="tertiary" 
+                        onClick={() => { vibrate(5); onSkipAll(); }} 
+                        className="flex-1 !bg-surface-bg !border-surface-border hover:!bg-surface-hover hover:text-white text-text-muted font-bold text-[10px] uppercase tracking-widest"
+                    >
+                        SALTAR
                     </Button>
-                    <Button variant="high-contrast" onClick={advanceToNextItem} className="flex-1 font-bold text-xs uppercase tracking-widest shadow-lg">
-                        <span className="flex items-center justify-center gap-2">
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => { vibrate(10); advanceToNextItem(); }} 
+                        className="flex-[2] bg-white text-black font-extrabold text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 transition-all"
+                    >
+                        <span className="flex items-center justify-center gap-1">
                             SIGUIENTE <ChevronRightIcon className="w-4 h-4" />
                         </span>
                     </Button>

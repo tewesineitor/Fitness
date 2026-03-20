@@ -166,7 +166,7 @@ export const MealLog: React.FC<MealLogProps> = ({
                             <BowlIcon className="w-6 h-6" />
                         </div>
                         <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Sin registros para este día</p>
-                        <p className="text-[9px] text-text-secondary/50 font-bold mt-1 uppercase tracking-widest max-w-[200px] mx-auto">TOCA EL BOTÓN "+" PARA COMENZAR</p>
+                        <p className="text-[9px] text-text-secondary/50 font-bold mt-1 uppercase tracking-widest max-w-[200px] mx-auto">AÑADE UNA COMIDA PARA COMENZAR</p>
                     </div>
                 )}
             </div>

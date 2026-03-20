@@ -25,7 +25,7 @@ const MeasurementInput: React.FC<{
                 value={value} 
                 onChange={e => onChange(e.target.value)} 
                 placeholder="0" 
-                className="w-full bg-transparent outline-none text-lg font-bold text-white placeholder:text-text-secondary/30"
+                className="w-full bg-transparent outline-none text-lg font-bold text-white placeholder:text-text-secondary/60"
             />
             <span className="text-xs font-bold text-text-secondary">{unit}</span>
         </div>

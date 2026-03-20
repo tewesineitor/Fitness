@@ -81,7 +81,7 @@ const Progreso: React.FC = () => {
 
     // ── Main dashboard ─────────────────────────────────────────────────────
     return (
-        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pb-8">
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pb-32">
             {/* ── HEADER ─────────────────────────────────────────────── */}
             <header className="pt-6 pb-4 animate-fade-in-up">
                 <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight leading-none">
