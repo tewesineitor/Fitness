@@ -163,9 +163,9 @@ const WeeklyPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                             {/* Slot Content */}
                                             <div className="flex-grow min-w-0">
                                                 {routine ? (
-                                                    <div className="flex items-center justify-between bg-surface-hover p-2 pr-3 rounded-xl border border-white/10 group hover:border-brand-accent/30 transition-colors">
+                                                    <div className="flex items-center justify-between bg-surface-hover p-2 pr-3 rounded-xl border border-white/10 group hover:border-brand-accent/30 transition-all hover:shadow-sm">
                                                         <div className="flex items-center gap-3 overflow-hidden min-w-0">
-                                                            <div className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center bg-surface-bg border border-white/5 ${routine.type === 'strength' ? 'text-brand-protein' : 'text-brand-accent'}`}>
+                                                            <div className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center bg-surface-bg border border-white/5 transition-colors group-hover:border-brand-accent/30 ${routine.type === 'strength' ? 'text-brand-protein' : 'text-brand-accent'}`}>
                                                                 <RoutineTypeIcon type={routine.type} className="w-4 h-4" />
                                                             </div>
                                                             <div className="min-w-0 flex-grow">
@@ -177,7 +177,7 @@ const WeeklyPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                                             variant="destructive"
                                                             size="small"
                                                             onClick={() => handleUnassignRoutine(day, time)} 
-                                                            className="!p-1.5 rounded-lg flex-shrink-0 ml-2"
+                                                            className="!p-1.5 rounded-lg flex-shrink-0 ml-2 hover:bg-red-500/20 active:scale-90 transition-all"
                                                             icon={XIcon}
                                                             title="Desasignar"
                                                         />
@@ -185,9 +185,9 @@ const WeeklyPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                                 ) : (
                                                     <button 
                                                         onClick={() => setTargetSlot({ day, time })}
-                                                        className="w-full py-2.5 rounded-xl border border-dashed border-white/10 hover:border-brand-accent/40 hover:bg-white/5 text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center justify-center gap-2 transition-all"
+                                                        className="w-full py-2.5 rounded-xl border border-dashed border-surface-border hover:border-brand-accent/50 bg-surface-hover/20 hover:bg-surface-hover text-[10px] font-bold text-text-secondary hover:text-white uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 group shadow-sm hover:shadow-brand-accent/10"
                                                     >
-                                                        <PlusIcon className="w-3 h-3" /> Asignar
+                                                        <PlusIcon className="w-3 h-3 group-hover:text-brand-accent transition-colors" /> Asignar
                                                     </button>
                                                 )}
                                             </div>
@@ -544,7 +544,7 @@ const RoutinesListView: React.FC<{ onSelectRoutine: (routine: RoutineTask | null
                 {userRoutines.length > 0 ? (
                     <div className="space-y-4">
                         {userRoutines.map((r, i) => (
-                             <div key={r.id} className="relative group bg-surface-bg p-5 rounded-3xl border border-surface-border hover:border-brand-accent/30 hover:bg-surface-hover transition-all animate-fade-in-up cursor-pointer overflow-hidden shadow-sm active:scale-[0.98]" onClick={() => onSelectRoutine(r)} style={{animationDelay: `${i * 50}ms`}}>
+                             <div key={r.id} className="relative group bg-surface-bg p-5 rounded-3xl border border-surface-border hover:border-brand-accent/30 hover:bg-surface-hover transition-all animate-fade-in-up cursor-pointer overflow-hidden shadow-sm active:scale-95 hover:shadow-lg" onClick={() => onSelectRoutine(r)} style={{animationDelay: `${i * 50}ms`}}>
                                  {/* Background Glow */}
                                  <div className="absolute -right-10 -top-10 w-32 h-32 bg-brand-accent/5 rounded-full blur-2xl group-hover:bg-brand-accent/10 transition-colors pointer-events-none"></div>
 
@@ -582,7 +582,7 @@ const RoutinesListView: React.FC<{ onSelectRoutine: (routine: RoutineTask | null
                         </div>
                         <h2 className="text-xl font-black text-text-primary uppercase tracking-tight">Sin Rutinas</h2>
                         <p className="text-sm text-text-secondary mt-2 max-w-xs mx-auto">Comienza creando tu primera rutina de entrenamiento personalizada.</p>
-                        <Button onClick={() => onSelectRoutine(null)} variant="high-contrast" icon={PlusIcon} className="mt-8 shadow-lg shadow-brand-accent/20">Crear Rutina</Button>
+                        <Button onClick={() => onSelectRoutine(null)} variant="high-contrast" icon={PlusIcon} className="mt-8 shadow-lg shadow-brand-accent/20 active:scale-95 transition-all">Crear Rutina</Button>
                     </div>
                 )}
             </div>

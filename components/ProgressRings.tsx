@@ -23,7 +23,7 @@ const CompactArchitectBar: React.FC<{
     const isUnder = current < min;
 
     let barColor = "";
-    if (isOver) barColor = "bg-destructive"; 
+    if (isOver) barColor = "bg-danger"; 
     else if (isUnder) barColor = "bg-surface-border";
     else barColor = bgClass; // Solid color when in range
 
@@ -31,7 +31,7 @@ const CompactArchitectBar: React.FC<{
         <div className="flex flex-col w-full mb-3 last:mb-0 relative group">
             <div className="flex justify-between items-end mb-1">
                 <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest pl-1">{label}</span>
-                <span className={`text-[9px] font-bold font-mono ${isOver ? 'text-destructive' : 'text-text-primary'}`}>
+                <span className={`text-[9px] font-bold font-mono ${isOver ? 'text-danger' : 'text-text-primary'}`}>
                     {current.toFixed(0)} <span className="text-text-secondary opacity-60">/ {ideal}g</span>
                 </span>
             </div>

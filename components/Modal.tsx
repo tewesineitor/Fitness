@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
       aria-modal="true"
     >
       <div 
-        className={`bg-surface-bg bg-opacity-100 rounded-xl w-full max-w-sm border border-surface-border shadow-sm animate-fade-in-up ${className}`} 
+        className={`bg-surface-bg bg-opacity-100 rounded-xl w-full max-w-sm border border-surface-border shadow-sm animate-scale-in ${className}`} 
         onClick={(e) => e.stopPropagation()}
       >
         {children}

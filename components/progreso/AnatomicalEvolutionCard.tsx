@@ -5,7 +5,7 @@ import { TapeMeasureIcon, PlusIcon } from '../icons';
 import MeasurementModal from '../dialogs/MeasurementModal';
 
 const MeasurementItem: React.FC<{ label: string; value?: number; unit?: string }> = ({ label, value, unit = "cm" }) => (
-    <div className="flex flex-col items-start p-3 sm:p-4 bg-surface-hover/20 rounded-2xl border border-surface-border/30 hover:bg-surface-hover/40 transition-all group/item">
+    <div className="flex flex-col items-start p-3 sm:p-4 bg-surface-hover/20 rounded-2xl border border-surface-border/30 hover:bg-surface-hover/50 hover:-translate-y-0.5 transition-all duration-300 group/item cursor-default">
         <span className="text-[10px] sm:text-xs font-bold text-text-secondary uppercase tracking-widest mb-1 group-hover/item:text-brand-accent transition-colors w-full">{label}</span>
         <div className="flex items-baseline gap-1 w-full mt-auto">
             <span className="text-lg sm:text-xl font-heading font-black text-text-primary tracking-tighter">
@@ -60,7 +60,7 @@ const AnatomicalEvolutionCard: React.FC = () => {
 
                 <div className="flex-grow flex flex-col justify-center relative z-10 mb-6">
                     <div className="mb-4">
-                        <div className="flex items-center justify-between p-4 bg-brand-accent/5 rounded-2xl border border-brand-accent/20">
+                        <div className="flex items-center justify-between p-4 bg-brand-accent/5 rounded-2xl border border-brand-accent/20 hover:bg-brand-accent/10 hover:-translate-y-0.5 transition-all duration-300">
                             <div>
                                 <span className="text-[10px] font-bold text-brand-accent uppercase tracking-widest block mb-1">Peso Actual</span>
                                 <div className="flex items-baseline gap-1">

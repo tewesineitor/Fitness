@@ -15,7 +15,7 @@ const defaultRecipeImage = 'https://images.unsplash.com/photo-1546069901-ba9599a
 const DetailMacroItem: React.FC<{ label: string; value: number; unit?: string; colorClass: string }> = ({ label, value, unit = 'g', colorClass }) => (
     <div className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-surface-bg border border-white/5 relative overflow-hidden group">
         <div className={`absolute top-0 w-full h-0.5 ${colorClass} opacity-50`}></div>
-        <span className="text-xl font-black text-white group-hover:scale-110 transition-transform">{value.toFixed(0)}<span className="text-[9px] font-bold text-text-secondary ml-0.5">{unit}</span></span>
+        <span className="text-xl font-black text-white group-hover:scale-110 group-active:scale-95 transition-transform">{value.toFixed(0)}<span className="text-[9px] font-bold text-text-secondary ml-0.5">{unit}</span></span>
         <span className="text-[8px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">{label}</span>
     </div>
 );
@@ -136,8 +136,8 @@ const RecipeDetailView: React.FC<{ recipe: Recipe, onBack: () => void, onGoToEdi
                         </h3>
                         <div className="space-y-2">
                             {recipe.foods.map((food, i) => (
-                                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-surface-bg/50 border border-surface-border">
-                                    <span className="font-bold text-sm text-text-primary">{food.foodItem.name}</span>
+                                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-surface-bg/50 border border-surface-border hover:bg-surface-hover hover:border-surface-border/80 transition-colors group">
+                                    <span className="font-bold text-sm text-text-primary group-hover:text-white transition-colors">{food.foodItem.name}</span>
                                     <span className="text-[10px] font-mono text-text-secondary bg-surface-bg/40 px-2 py-1 rounded border border-white/5">{food.portions} x {food.foodItem.standardPortion}</span>
                                 </div>
                             ))}
@@ -157,10 +157,10 @@ const RecipeDetailView: React.FC<{ recipe: Recipe, onBack: () => void, onGoToEdi
 
                     {/* Action Buttons (Static at end of scroll) */}
                     <div className="mt-4 flex flex-col gap-3">
-                        <Button onClick={handleRegister} variant="high-contrast" size="large" className="w-full py-4 shadow-sm shadow-brand-accent/20 text-xs" icon={CheckIcon}>
+                        <Button onClick={handleRegister} variant="high-contrast" size="large" className="w-full py-4 shadow-sm shadow-brand-accent/20 text-xs hover:shadow-brand-accent/40 animate-pulse-subtle active:scale-[0.98] transition-all" icon={CheckIcon}>
                             REGISTRAR CONSUMO
                         </Button>
-                        <Button onClick={handleCustomize} variant="secondary" size="large" className="w-full py-4 font-bold tracking-widest text-xs" icon={PlateIcon}>
+                        <Button onClick={handleCustomize} variant="secondary" size="large" className="w-full py-4 font-bold tracking-widest text-xs active:scale-[0.98] transition-all" icon={PlateIcon}>
                             PERSONALIZAR EN MI PLATO
                         </Button>
                     </div>

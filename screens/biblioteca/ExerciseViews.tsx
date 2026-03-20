@@ -152,12 +152,12 @@ const CollapsibleSection: React.FC<{
 }> = ({ title, icon: Icon, isOpen, onClick, children }) => {
     return (
         <div className="border-b border-surface-border">
-            <button onClick={onClick} className="w-full flex justify-between items-center py-4 text-left group hover:bg-surface-hover/50 px-2 transition-colors">
+            <button onClick={onClick} className="w-full flex justify-between items-center py-4 text-left group hover:bg-surface-hover/50 active:scale-[0.99] px-2 transition-all">
                 <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-3">
-                    <Icon className="w-4 h-4 text-text-secondary group-hover:text-brand-accent" />
+                    <Icon className="w-4 h-4 text-text-secondary group-hover:text-brand-accent transition-colors" />
                     {title}
                 </h3>
-                <ChevronRightIcon className={`w-4 h-4 text-text-secondary transition-transform duration-300 ${isOpen ? 'rotate-90' : 'rotate-0'}`} />
+                <ChevronRightIcon className={`w-4 h-4 text-text-secondary transition-transform duration-300 ${isOpen ? 'rotate-90 text-brand-accent' : 'rotate-0'}`} />
             </button>
             <div className={`grid transition-all duration-500 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
                 <div className="overflow-hidden bg-surface-bg">
@@ -220,13 +220,17 @@ const ExerciseDetailView: React.FC<{ exercise: Exercise, onBack: () => void, onS
 
             <div className="p-4 sm:p-6 space-y-8 pb-6">
                 {progressionData && (
-                    <div className="grid grid-cols-2 border border-surface-border bg-surface-bg">
-                        <div className="p-4 text-center border-r border-surface-border">
-                            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1">Récord (e1RM)</p>
+                    <div className="grid grid-cols-2 border border-surface-border bg-surface-bg rounded-2xl overflow-hidden shadow-sm animate-fade-in-up">
+                        <div className="p-4 text-center border-r border-surface-border hover:bg-surface-hover/50 transition-colors cursor-default">
+                            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+                                <SparklesIcon className="w-3 h-3 text-brand-accent"/> Récord (e1RM)
+                            </p>
                             <p className="font-black text-2xl text-white">{progressionData.pr ? `${progressionData.pr.weight.toFixed(1)}` : '-'}<span className="text-xs text-brand-accent ml-1">KG</span></p>
                         </div>
-                        <div className="p-4 text-center">
-                            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1">Último Reg.</p>
+                        <div className="p-4 text-center hover:bg-surface-hover/50 transition-colors cursor-default">
+                            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+                                <ChartBarIcon className="w-3 h-3 text-text-secondary"/> Último Reg.
+                            </p>
                             <p className="font-bold text-sm text-text-primary">{progressionData.lastSession ? progressionData.lastSession.bestSet : '-'}</p>
                             <p className="text-[10px] font-mono text-text-secondary mt-1">{progressionData.lastSession ? progressionData.lastSession.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'N/A'}</p>
                         </div>

@@ -19,6 +19,8 @@ import {
     ChartBarIcon 
 } from '../components/icons';
 import Button from '../components/Button';
+import SectionHeader from '../components/SectionHeader';
+import PillTabs from '../components/PillTabs';
 import ConfirmationDialog from '../components/dialogs/ConfirmationDialog';
 import RecipePreviewCard from '../components/cards/RecipePreviewCard';
 import RoutineCard from '../components/cards/RoutineCard';
@@ -26,40 +28,6 @@ import RecipeFlow from './biblioteca/RecipeViews';
 import RoutineFlow from './biblioteca/RoutineViews';
 import ExerciseFlow from './biblioteca/ExerciseViews';
 
-// Updated Header to support Actions
-const SectionHeader: React.FC<{ title: string; colorClass?: string; action?: { label: string, onClick: () => void } }> = ({ title, colorClass = "bg-brand-accent", action }) => (
-    <div className="flex items-center justify-between mb-2 pl-1 pr-1">
-        <h2 className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em] flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${colorClass} shadow-[0_0_8px_currentColor]`}></div>
-            {title}
-        </h2>
-        {action && (
-            <Button 
-                variant="tertiary"
-                size="small"
-                onClick={action.onClick}
-                className="!text-[9px] !px-2.5 !py-1 !rounded-lg !bg-brand-accent/5 hover:!bg-brand-accent/10 border border-brand-accent/10 hover:border-brand-accent/20 flex items-center gap-1.5"
-                icon={CalendarIcon}
-            >
-                {action.label}
-            </Button>
-        )}
-    </div>
-);
-
-const ModernTab: React.FC<{ label: string; icon: React.FC<any>; isActive: boolean; onClick: () => void }> = ({ label, icon: Icon, isActive, onClick }) => (
-    <button
-        onClick={onClick}
-        className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 border ${
-            isActive 
-                ? 'bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20 scale-105' 
-                : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover hover:text-text-primary'
-        }`}
-    >
-        <Icon className={`w-5 h-5 mb-1 ${isActive ? 'text-white' : ''}`} />
-        <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
-    </button>
-);
 
 const getMusclesWorked = (description: string): string | null => {
     const match = description.match(/\*\*Músculos trabajados:\*\*\s*(.*?)(?=\n\n|$)/);
@@ -192,23 +160,21 @@ const BibliotecaScreen: React.FC = () => {
                                 onCancel={() => setRoutineToDelete(null)}
                             />
                         )}
-                        
-                        {/* Weekly Plan Status Panel */}
-                        <div className="bg-surface-bg border border-surface-border p-5 rounded-2xl relative overflow-hidden shadow-sm">
-                            <div className="flex justify-between items-start mb-5 relative z-10">
-                                <div>
-                                    <h3 className="text-sm font-black text-text-primary tracking-tight uppercase">PLAN SEMANAL</h3>
-                                    <p className="text-[10px] text-text-secondary mt-0.5 font-medium">Ciclo actual</p>
-                                </div>
-                                <Button 
-                                    variant="tertiary" 
-                                    size="small" 
-                                    onClick={() => launchFlow({ type: 'routine', mode: 'planner' })} 
-                                    className="!text-[9px] !px-2.5 !py-1.5 !rounded-lg !bg-brand-accent/10 hover:!bg-brand-accent/20 border border-brand-accent/20"
-                                >
-                                    Gestionar
-                                </Button>
-                            </div>
+                                              {/* Compact Weekly Plan Status */}
+                         <div className="bg-surface-bg border border-surface-border px-4 py-3 rounded-2xl relative overflow-hidden shadow-sm">
+                             <div className="flex justify-between items-center mb-3">
+                                 <h3 className="text-[10px] font-black text-text-secondary tracking-[0.2em] uppercase flex items-center gap-1.5">
+                                     <span className="w-1.5 h-1.5 rounded-full bg-brand-accent" />
+                                     Plan Semanal
+                                 </h3>
+                                 <Button 
+                                     variant="ghost"
+                                     size="small"
+                                     onClick={() => launchFlow({ type: 'routine', mode: 'planner' })} 
+                                 >
+                                     Gestionar
+                                 </Button>
+                             </div>
                             
                             {/* Days Row */}
                             <div className="flex justify-between items-center relative z-10">
@@ -232,8 +198,11 @@ const BibliotecaScreen: React.FC = () => {
                         </div>
 
                         {/* Routine Lists */}
-                        <div>
-                            <SectionHeader title="Mis Rutinas" action={{ label: 'Crear', onClick: () => launchFlow({ type: 'routine', mode: 'routines', initialRoutine: 'new' }) }} />
+                         <div>
+                             <SectionHeader 
+                                 title="Mis Rutinas" 
+                                 action={{ label: 'Crear', onClick: () => launchFlow({ type: 'routine', mode: 'routines', initialRoutine: 'new' }) }} 
+                             />
                             
                             {userRoutines.length > 0 ? (
                                 <div className="space-y-5">
@@ -257,10 +226,10 @@ const BibliotecaScreen: React.FC = () => {
                                     })}
                                 </div>
                             ) : (
-                                <div className="text-center text-text-secondary py-12 bg-surface-bg rounded-2xl border border-dashed border-surface-border">
-                                    <p className="text-xs font-medium uppercase tracking-wide">Sin rutinas asignadas</p>
-                                    <Button variant="tertiary" size="small" onClick={() => launchFlow({ type: 'routine', mode: 'routines', initialRoutine: 'new' })} className="mt-3">Crear ahora</Button>
-                                </div>
+                                 <div className="text-center text-text-secondary py-12 bg-surface-bg rounded-2xl border border-dashed border-surface-border">
+                                     <p className="text-xs font-medium uppercase tracking-wide">Sin rutinas asignadas</p>
+                                     <Button variant="ghost" size="small" onClick={() => launchFlow({ type: 'routine', mode: 'routines', initialRoutine: 'new' })} className="mt-3">Crear ahora</Button>
+                                 </div>
                             )}
                         </div>
                     </div>
@@ -346,22 +315,21 @@ const BibliotecaScreen: React.FC = () => {
             default:
                 return (
                     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-5">
-                        <header className="animate-fade-in-up pt-6">
-                            <h1 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tight uppercase leading-none mb-1">BIBLIOTECA</h1>
-                            <p className="text-[10px] uppercase tracking-widest text-text-secondary flex items-center gap-2 mt-1">
-                                <span className="w-1.5 h-1.5 bg-brand-accent rounded-full"></span>
-                                Recursos y herramientas
-                            </p>
-                        </header>
+                        <SectionHeader title="Biblioteca" />
 
-                        {/* Updated Grid Layout for Tabs */}
-                        <div className="grid grid-cols-3 gap-2 animate-fade-in-up pb-1" style={{ animationDelay: '100ms' }}>
-                            <ModernTab label="Rutinas" icon={CalendarIcon} isActive={activeTab === 'routines'} onClick={() => setActiveTab('routines')} />
-                            <ModernTab label="Recetas" icon={PlateIcon} isActive={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} />
-                            <ModernTab label="Ejercicios" icon={StrengthIcon} isActive={activeTab === 'exercises'} onClick={() => setActiveTab('exercises')} />
+                        <div className="animate-fade-in-up" style={{ animationDelay:'60ms' }}>
+                            <PillTabs
+                                tabs={[
+                                    { id: 'routines',  label: 'Rutinas',    icon: CalendarIcon },
+                                    { id: 'recipes',   label: 'Recetas',    icon: PlateIcon    },
+                                    { id: 'exercises', label: 'Ejercicios', icon: StrengthIcon },
+                                ]}
+                                activeTab={activeTab}
+                                onChange={(id) => setActiveTab(id as LibraryTab)}
+                            />
                         </div>
 
-                        <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+                        <div className="animate-fade-in-up" style={{ animationDelay: '120ms' }}>
                            {renderDashboardContent()}
                         </div>
                     </div>

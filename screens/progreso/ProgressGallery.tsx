@@ -156,9 +156,9 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
             <div className="flex-grow overflow-y-auto hide-scrollbar p-4 sm:p-8">
                 {viewMode === 'grid' ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                        <label className="relative aspect-[3/4] rounded-2xl overflow-hidden group border-2 border-dashed border-surface-border hover:border-brand-accent/50 transition-all active:scale-[0.98] flex flex-col items-center justify-center cursor-pointer bg-surface-hover/20">
-                            <div className="w-12 h-12 rounded-2xl bg-surface-bg border border-surface-border flex items-center justify-center mb-3 group-hover:bg-brand-accent/10 group-hover:border-brand-accent/30 transition-all shadow-sm">
-                                <CameraIcon className="w-6 h-6 text-brand-accent" />
+                        <label className="relative aspect-[3/4] rounded-2xl overflow-hidden group border-2 border-dashed border-surface-border hover:border-brand-accent/50 transition-all active:scale-95 flex flex-col items-center justify-center cursor-pointer bg-surface-hover/20 shadow-sm hover:shadow-brand-accent/20">
+                            <div className="w-12 h-12 rounded-2xl bg-surface-bg border border-surface-border flex items-center justify-center mb-3 group-hover:bg-brand-accent/10 group-hover:border-brand-accent/30 transition-all shadow-sm group-active:scale-90">
+                                <CameraIcon className="w-6 h-6 text-brand-accent animate-pulse" />
                             </div>
                             <span className="text-[10px] font-bold text-text-secondary group-hover:text-white uppercase tracking-widest transition-colors">Añadir Foto</span>
                             <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
@@ -168,7 +168,7 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                             <button 
                                 key={photo.id_registro} 
                                 onClick={() => handlePhotoClick(index)}
-                                className="relative aspect-[3/4] rounded-2xl overflow-hidden group border border-surface-border hover:border-brand-accent/50 transition-all active:scale-[0.98] shadow-sm"
+                                className="relative aspect-[3/4] rounded-2xl overflow-hidden group border border-surface-border hover:border-brand-accent/50 transition-all active:scale-95 shadow-sm hover:shadow-brand-accent/20"
                             >
                                 <img src={photo.url_foto} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
@@ -249,9 +249,9 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                                 </div>
 
                                 {/* Slider Handle */}
-                                <div className="absolute top-0 bottom-0 w-0.5 bg-white/30 backdrop-blur-sm cursor-ew-resize z-30" style={{ left: `${sliderPosition}%` }}>
-                                    <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-[0_0_40px_rgba(0,0,0,0.6)] ring-[12px] ring-black/30 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-active:scale-95">
-                                        <SwitchHorizontalIcon className="w-7 h-7 text-black" />
+                                <div className="absolute top-0 bottom-0 w-0.5 bg-white/30 backdrop-blur-sm cursor-ew-resize z-30 transition-transform" style={{ left: `${sliderPosition}%` }}>
+                                    <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-[0_0_40px_rgba(0,0,0,0.6)] ring-[12px] ring-black/30 backdrop-blur-md transition-all duration-300 group-hover:scale-110 active:scale-90 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+                                        <SwitchHorizontalIcon className="w-7 h-7 text-black transition-transform group-active:rotate-90" />
                                     </div>
                                 </div>
                             </div>
@@ -280,7 +280,7 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                                     <button 
                                         key={photo.id_registro} 
                                         onClick={() => handleSelectThumbnail(index)} 
-                                        className={`flex-shrink-0 relative transition-all duration-500 active:scale-90 ${index === beforeIndex || index === afterIndex ? 'scale-110 z-10' : 'opacity-40 hover:opacity-100'}`}
+                                        className={`flex-shrink-0 relative transition-all duration-500 active:scale-90 opacity-40 hover:opacity-100 ${index === beforeIndex || index === afterIndex ? 'scale-110 z-10 !opacity-100' : ''}`}
                                     >
                                         <img src={photo.url_foto} alt="" className="w-16 h-20 sm:w-20 sm:h-24 object-cover rounded-xl shadow-lg border border-white/5" />
                                         <div className={`absolute inset-0 rounded-xl ring-2 transition-all duration-500 ${

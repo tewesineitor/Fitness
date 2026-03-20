@@ -242,15 +242,16 @@ const ProcessingModal: React.FC<{ state: ProcessingState }> = ({ state }) => {
         : "Analizando información con IA...";
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col justify-center items-center z-50 animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col justify-center items-center z-[200] animate-scale-in">
             <div className="relative mb-6">
-                <div className="w-16 h-16 border-4 border-t-brand-accent border-surface-border rounded-full animate-spin"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-surface-border rounded-full flex items-center justify-center bg-surface-bg shadow-lg shadow-brand-accent/20">
                     <SparklesIcon className="w-6 h-6 text-brand-accent animate-pulse" />
                 </div>
+                {/* Omit the raw spin, keep it tactile/pulsing */}
+                 <div className="absolute inset-0 rounded-full border border-brand-accent/30 animate-ping"></div>
             </div>
-            <p className="font-bold text-white text-lg tracking-tight uppercase">{message}</p>
-            <p className="text-text-secondary text-xs mt-2 font-mono">Por favor espera un momento</p>
+            <p className="font-black text-white text-lg tracking-tight uppercase px-4 text-center">{message}</p>
+            <p className="text-text-secondary text-[10px] uppercase tracking-widest mt-2">{state === 'fetching' ? 'Conectando...' : 'Procesando vision...'}</p>
         </div>
     );
 };
@@ -663,10 +664,10 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                                                 setActiveFilterCategory(key);
                                                 setActiveSubFilter('TODOS');
                                             }} 
-                                            className={`flex flex-col items-center justify-center p-2 rounded-xl flex-1 min-w-[4.5rem] h-14 flex-shrink-0 transition-all duration-200 border ${ 
+                                            className={`flex flex-col items-center justify-center p-2 rounded-xl flex-1 min-w-[4.5rem] h-14 flex-shrink-0 transition-all duration-200 border active:scale-95 shadow-sm ${ 
                                                 isActive 
-                                                    ? `bg-text-primary border-text-primary shadow-md scale-[1.02]` 
-                                                    : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover' 
+                                                    ? `bg-text-primary border-text-primary ${activeColorClass} !text-bg-base` 
+                                                    : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover hover:border-surface-border/80' 
                                             }`}
                                         >
                                             <Icon className={`w-4 h-4 mb-1 ${isActive ? 'text-surface-bg' : 'opacity-60'}`} />

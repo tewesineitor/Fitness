@@ -35,7 +35,7 @@ export const GalleryWidget: React.FC<{ onShowGallery: () => void; title?: string
                 </div>
                 <div className="flex justify-center items-center">
                     {lastPhoto ? (
-                        <div className="relative w-full aspect-[4/5] sm:aspect-video bg-black rounded-2xl overflow-hidden border border-surface-border/50 shadow-inner group/img cursor-pointer" onClick={onShowGallery}>
+                        <div className="relative w-full aspect-[4/5] sm:aspect-video bg-black rounded-2xl overflow-hidden border border-surface-border/50 shadow-inner group/img cursor-pointer transition-all duration-300 hover:shadow-xl active:scale-95" onClick={onShowGallery}>
                             <img src={lastPhoto.url_foto} alt="Última foto" className="w-full h-full object-cover opacity-80 group-hover/img:opacity-100 group-hover/img:scale-105 transition-all duration-700"/>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
@@ -103,8 +103,8 @@ export const HistoryWidget: React.FC<{ onShowHistoryList: () => void; onViewHist
                     {recentSessions.length > 0 ? (
                         <div className="space-y-3">
                             {recentSessions.map(session => (
-                                <button key={session.id_sesion} onClick={() => onViewHistoricalSession(session)} className="w-full flex items-center gap-4 p-3 sm:p-4 bg-surface-hover/30 border border-surface-border/50 rounded-2xl hover:bg-surface-hover hover:border-surface-border transition-all group/btn">
-                                    <div className="w-10 h-10 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-text-secondary group-hover/btn:text-brand-accent group-hover/btn:border-brand-accent/30 group-hover/btn:bg-brand-accent/5 transition-all">
+                                <button key={session.id_sesion} onClick={() => onViewHistoricalSession(session)} className="w-full flex items-center gap-4 p-3 sm:p-4 bg-surface-hover/30 border border-surface-border/50 rounded-2xl hover:bg-surface-hover hover:border-surface-border transition-all duration-300 active:scale-95 group/btn">
+                                    <div className="w-10 h-10 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-text-secondary group-hover/btn:text-brand-accent group-hover/btn:border-brand-accent/30 group-hover/btn:bg-brand-accent/10 transition-all duration-300">
                                         {getRoutineTypeIcon(session.tipo_rutina)}
                                     </div>
                                     <div className="flex-grow text-left flex flex-col justify-center min-w-0">
