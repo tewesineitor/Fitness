@@ -2,7 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 let supabaseInstance: SupabaseClient | null = null;
 
-export const getSupabase = () => {
+export const getSupabase = (): SupabaseClient | null => {
     if (supabaseInstance) return supabaseInstance;
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -24,6 +24,3 @@ export const getSupabase = () => {
         return null;
     }
 };
-
-// For backward compatibility if needed, but we should migrate to getSupabase()
-export const supabase = getSupabase()!;

@@ -1,5 +1,6 @@
 
-import { ProgressState, Action, DesgloseFuerza, HistorialDeMetricasEntry } from '../types';
+import { ProgressState, DesgloseFuerza, HistorialDeMetricasEntry, LoggedSet } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
 
 export const initialProgressState: ProgressState = {
@@ -19,7 +20,10 @@ export const initialProgressState: ProgressState = {
 
 const calculateE1RM = (weight: number, reps: number) => weight * (1 + reps / 30);
 
-export const progressReducer = (state: ProgressState = initialProgressState, action: Action): ProgressState => {
+const getLoggedSetWeight = (set: LoggedSet & { peso?: number }) =>
+    set.weight ?? set.peso ?? 0;
+
+export const progressReducer = (state: ProgressState = initialProgressState, action: AppAction): ProgressState => {
     switch (action.type) {
         case actionTypes.START_CHALLENGE:
             return { ...state, planStartDate: new Date() };
@@ -71,7 +75,10 @@ export const progressReducer = (state: ProgressState = initialProgressState, act
                 strengthExercises.forEach(ex => {
                     if (!ex.sets || ex.sets.length === 0) return;
                     
-                    const bestE1RM = ex.sets.reduce((maxE1RM, set) => Math.max(maxE1RM, calculateE1RM(set.peso, set.reps)), 0);
+                    const bestE1RM = ex.sets.reduce(
+                        (maxE1RM, set) => Math.max(maxE1RM, calculateE1RM(getLoggedSetWeight(set), set.reps)),
+                        0
+                    );
                     const oldPR = newPersonalRecords[ex.exerciseId]?.weight || 0;
                     if (bestE1RM > oldPR) {
                         newPersonalRecords[ex.exerciseId] = { weight: bestE1RM, date: newSession.fecha_completado };

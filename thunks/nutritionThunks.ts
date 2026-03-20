@@ -3,6 +3,7 @@ import { ThunkAction, AddedFood, Recipe, FoodItem, MacroNutrients } from '../typ
 import * as actions from '../actions';
 import * as thunks from '../thunks';
 import * as aiService from '../services/aiService';
+import type { OpenFoodFactsProductData } from '../services/aiService';
 import { selectCustomFoodItems } from '../selectors/nutritionSelectors';
 
 
@@ -27,7 +28,12 @@ export const generateRecipeThunk = (prompt: string): ThunkAction<Promise<{ succe
     return result;
 };
 
-export const fetchProductByBarcodeThunk = (barcode: string): ThunkAction<Promise<any | null>> => async (dispatch) => {
+type OpenFoodFactsApiResponse = {
+    status: number;
+    product?: OpenFoodFactsProductData;
+};
+
+export const fetchProductByBarcodeThunk = (barcode: string): ThunkAction<Promise<OpenFoodFactsProductData | null>> => async (dispatch) => {
     try {
         const response = await fetch(`https://mx.openfoodfacts.org/api/v2/product/${barcode}.json`);
 
@@ -40,7 +46,7 @@ export const fetchProductByBarcodeThunk = (barcode: string): ThunkAction<Promise
             throw new Error('Network response was not ok');
         }
 
-        const data = await response.json();
+        const data = await response.json() as OpenFoodFactsApiResponse;
         
         if (data.status === 1 && data.product) {
             dispatch(thunks.showToastThunk('✓ Producto encontrado'));
@@ -56,7 +62,7 @@ export const fetchProductByBarcodeThunk = (barcode: string): ThunkAction<Promise
     }
 };
 
-export const processScannedProductThunk = (productData: any): ThunkAction<Promise<{ foodItem: FoodItem | null; needsConfirmation: boolean }>> => async (dispatch) => {
+export const processScannedProductThunk = (productData: OpenFoodFactsProductData): ThunkAction<Promise<{ foodItem: FoodItem | null; needsConfirmation: boolean }>> => async (dispatch) => {
     const aiResult = await aiService.analyzeNutritionData(productData);
 
     if (aiResult.success && aiResult.data.kcal !== null && aiResult.data.kcal > 0) {

@@ -1,14 +1,14 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { Recipe, FoodItem, AddedFood, Exercise } from '../types';
+import { Recipe, FoodItem, AddedFood, Exercise, MealType } from '../types';
 
 /**
  * El cliente de la API de Google GenAI.
  * Se inicializa directamente asumiendo que `process.env.GEMINI_API_KEY` está disponible en el entorno de ejecución.
  * No es necesario llamar a una función de inicialización.
  */
-let aiInstance: any = null;
-const getAI = () => {
+let aiInstance: GoogleGenAI | null = null;
+const getAI = (): GoogleGenAI => {
     if (!aiInstance) {
         // We use process.env to not break the user's existing setup, but provide a dummy key to prevent immediate crashes if undefined.
         // It's still safer to lazily init since @google/genai has strict browser checks.
@@ -38,6 +38,31 @@ export interface ExtractedActivityData {
 
 type AIServiceResult<T> = { success: true, data: T } | { success: false, error: string };
 
+interface GeneratedRecipeResponse {
+    name: string;
+    mealType: MealType;
+    foods: Array<{ foodItemId: string; portions: number }>;
+    preparation: string;
+}
+
+export interface OpenFoodFactsProductData {
+    [key: string]: unknown;
+    code?: string;
+    product_name?: string;
+    brands?: string;
+}
+
+interface AnalyzedProductResponse {
+    kcal: number | null;
+    protein_g: number | null;
+    carbs_g: number | null;
+    fat_g: number | null;
+    serving_name: string | null;
+    serving_weight_g: number | null;
+    category: FoodCategory | null;
+    correction_applied: boolean;
+}
+
 /**
  * Centralized error handler for AI service calls.
  * It logs the full error for debugging and returns a user-friendly message.
@@ -46,10 +71,26 @@ type AIServiceResult<T> = { success: true, data: T } | { success: false, error: 
  * @param defaultUserMessage A fallback message specific to the function's context.
  * @returns A standardized error object.
  */
-const handleAIError = (error: any, context: string, defaultUserMessage: string): { success: false, error: string } => {
+const stringifyError = (error: unknown): string => {
+    if (error instanceof Error) {
+        return error.message;
+    }
+
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    try {
+        return JSON.stringify(error);
+    } catch {
+        return String(error);
+    }
+};
+
+const handleAIError = (error: unknown, context: string, defaultUserMessage: string): { success: false, error: string } => {
     console.error(`Error en ${context}:`, error);
 
-    const errorString = (error instanceof Error) ? error.message : JSON.stringify(error);
+    const errorString = stringifyError(error);
 
     if (errorString.includes('429')) {
         return { success: false, error: 'Se ha excedido la cuota de la API. Por favor, espera un momento antes de reintentar.' };
@@ -154,7 +195,7 @@ RESPONDE ÚNICAMENTE CON UN JSON VÁLIDO.`;
             }
         });
         
-        const jsonResponse = JSON.parse(response.text);
+        const jsonResponse = JSON.parse(response.text) as GeneratedRecipeResponse;
 
         const foods: AddedFood[] = jsonResponse.foods.map((item: { foodItemId: string; portions: number }) => {
             const foodItem = allFoodData.find(f => f.id === item.foodItemId);
@@ -206,7 +247,7 @@ export const extractNutritionDataFromImage = async (base64Image: string, mimeTyp
             },
         });
         
-        const data = JSON.parse(response.text);
+        const data = JSON.parse(response.text) as ExtractedNutritionData;
         
         // Basic validation
         if (data.protein_g === null && data.carbs_g === null && data.fat_g === null) {
@@ -233,7 +274,7 @@ export interface AnalyzedProductData {
     correctionApplied: boolean;
 }
 
-export const analyzeNutritionData = async (productData: any): Promise<AIServiceResult<AnalyzedProductData>> => {
+export const analyzeNutritionData = async (productData: OpenFoodFactsProductData): Promise<AIServiceResult<AnalyzedProductData>> => {
     try {
         const prompt = `Actúa como un analista de datos nutricionales experto y escéptico. Tu tarea es interpretar los datos de Open Food Facts para UNA SOLA PORCIÓN y determinar si son confiables. Sigue este proceso:
 
@@ -289,7 +330,7 @@ RESPONDE ÚNICAMENTE CON UN JSON VÁLIDO.`;
                 },
             },
         });
-        const jsonResponse = JSON.parse(response.text);
+        const jsonResponse = JSON.parse(response.text) as AnalyzedProductResponse;
         
         return {
             success: true,
@@ -360,7 +401,7 @@ Responde únicamente con el JSON.` };
             },
         });
         
-        const data = JSON.parse(response.text);
+        const data = JSON.parse(response.text) as ExtractedActivityData;
         
         if (data.distance_km === null && data.duration_min === null) {
             return { success: false, error: 'No se pudieron extraer datos clave. Asegúrate que la distancia y duración son visibles.' };
@@ -402,7 +443,7 @@ Responde únicamente con el JSON.` };
             },
         });
         
-        const data = JSON.parse(response.text);
+        const data = JSON.parse(response.text) as ExtractedActivityData;
         
         if (data.distance_km === null && data.duration_min === null) {
             return { success: false, error: 'No se pudieron extraer datos clave. Asegúrate que la distancia y duración son visibles.' };
@@ -446,7 +487,7 @@ Responde únicamente con el JSON.` };
             },
         });
         
-        const data = JSON.parse(response.text);
+        const data = JSON.parse(response.text) as ExtractedActivityData;
         
         if (data.distance_km === null && data.duration_min === null) {
             return { success: false, error: 'No se pudieron extraer datos clave. Asegúrate que la distancia y duración son visibles.' };

@@ -1,4 +1,3 @@
-export * from './data-achievements';
 export * from './data-exercises';
 export * from './data-foods';
 export * from './data-misc';

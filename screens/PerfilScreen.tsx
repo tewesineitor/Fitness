@@ -88,7 +88,7 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 onChange={(e) => setCustomMantra(e.target.value)}
                                 placeholder="Escribe una frase que te inspire..."
                                 rows={2}
-                                className="w-full bg-surface-bg border border-surface-border rounded-xl p-4 text-sm text-white font-bold focus:border-brand-accent outline-none transition-all placeholder:text-white/20 resize-none font-mono leading-relaxed"
+                                className="w-full bg-surface-hover/40 border border-surface-border rounded-xl p-4 text-sm text-text-primary font-medium focus:border-brand-accent outline-none transition-all placeholder:text-text-muted/60 resize-none font-mono leading-relaxed"
                             />
                         </div>
                     </div>

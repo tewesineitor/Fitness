@@ -1,69 +1,84 @@
 import { getSupabase } from './supabaseClient';
 import { Exercise, RoutineTask as Routine, FoodItem, Recipe, AppState } from '../types';
-import { exercises as defaultExercises, defaultRoutines, foodData as defaultFoods, recipesData as defaultRecipes } from '../data';
+import { createPersistedStateSnapshot, PersistedAppState } from '../statePersistence';
+
+type DefaultStaticData = {
+    foods: FoodItem[];
+    exercises: Record<string, Exercise>;
+    routines: Routine[];
+    recipes: Recipe[];
+};
+
+type SeedableTable = 'foods' | 'exercises' | 'routines' | 'recipes';
+
+let defaultStaticDataPromise: Promise<DefaultStaticData> | null = null;
+
+const loadDefaultStaticData = async (): Promise<DefaultStaticData> => {
+    if (!defaultStaticDataPromise) {
+        defaultStaticDataPromise = import('../data').then((module) => ({
+            foods: module.foodData,
+            exercises: module.exercises,
+            routines: module.defaultRoutines,
+            recipes: module.recipesData,
+        }));
+    }
+
+    return defaultStaticDataPromise;
+};
+
+const seedTableIfEmpty = async <Row extends { id: string }>(
+    table: SeedableTable,
+    rows: Row[]
+) => {
+    const supabase = getSupabase();
+    if (!supabase || rows.length === 0) return;
+
+    const { count, error: countError } = await supabase
+        .from(table)
+        .select('*', { count: 'exact', head: true });
+
+    if (countError) {
+        throw countError;
+    }
+
+    if (count !== 0) {
+        return;
+    }
+
+    const { error: upsertError } = await supabase.from(table).upsert(rows, { onConflict: 'id' });
+    if (upsertError) {
+        throw upsertError;
+    }
+};
 
 // --- SEEDING LOGIC ---
 export const seedDatabaseIfEmpty = async () => {
     const supabase = getSupabase();
     if (!supabase) return;
     try {
-        // Check if foods exist
-        const { count: foodCount, error: foodError } = await supabase.from('foods').select('*', { count: 'exact', head: true });
-        if (foodError) throw foodError;
-        
-        if (foodCount === 0) {
-            console.log('Seeding foods...');
-            const { error } = await supabase.from('foods').upsert(defaultFoods, { onConflict: 'id' });
-            if (error) console.error('Error seeding foods:', error);
-        }
-
-        // Check if exercises exist
-        const { count: exCount, error: exError } = await supabase.from('exercises').select('*', { count: 'exact', head: true });
-        if (exError) throw exError;
-
-        if (exCount === 0) {
-            console.log('Seeding exercises...');
-            const exercisesArray = Object.values(defaultExercises);
-            const { error } = await supabase.from('exercises').upsert(exercisesArray, { onConflict: 'id' });
-            if (error) console.error('Error seeding exercises:', error);
-        }
-
-        // Check if routines exist
-        const { count: routineCount, error: routineError } = await supabase.from('routines').select('*', { count: 'exact', head: true });
-        if (routineError) throw routineError;
-
-        if (routineCount === 0) {
-            console.log('Seeding routines...');
-            const { error } = await supabase.from('routines').upsert(defaultRoutines, { onConflict: 'id' });
-            if (error) console.error('Error seeding routines:', error);
-        }
-
-        // Check if recipes exist
-        const { count: recipeCount, error: recipeError } = await supabase.from('recipes').select('*', { count: 'exact', head: true });
-        if (recipeError) throw recipeError;
-
-        if (recipeCount === 0) {
-            console.log('Seeding recipes...');
-            const { error } = await supabase.from('recipes').upsert(defaultRecipes, { onConflict: 'id' });
-            if (error) console.error('Error seeding recipes:', error);
-        }
-
-        console.log('Database check complete.');
-    } catch (error) {
+        const defaults = await loadDefaultStaticData();
+        await Promise.all([
+            seedTableIfEmpty('foods', defaults.foods),
+            seedTableIfEmpty('exercises', Object.values(defaults.exercises)),
+            seedTableIfEmpty('routines', defaults.routines),
+            seedTableIfEmpty('recipes', defaults.recipes),
+        ]);
+    } catch (error: unknown) {
         console.error('Error checking/seeding database:', error);
     }
 };
 
 // --- FETCHING LOGIC ---
-export const fetchStaticData = async () => {
+export const fetchStaticData = async (): Promise<{
+    foods: FoodItem[];
+    exercises: Record<string, Exercise>;
+    routines: Routine[];
+    recipes: Recipe[];
+}> => {
     const supabase = getSupabase();
+    const defaults = await loadDefaultStaticData();
     if (!supabase) {
-        return {
-            foods: defaultFoods,
-            exercises: defaultExercises,
-            routines: defaultRoutines,
-            recipes: defaultRecipes
-        };
+        return defaults;
     }
     try {
         const [foodsRes, exercisesRes, routinesRes, recipesRes] = await Promise.all([
@@ -73,26 +88,21 @@ export const fetchStaticData = async () => {
             supabase.from('recipes').select('*')
         ]);
 
-        const foods = foodsRes.data as FoodItem[] || defaultFoods;
+        const foods = foodsRes.data as FoodItem[] || defaults.foods;
         
-        const exercisesArray = exercisesRes.data as Exercise[] || Object.values(defaultExercises);
+        const exercisesArray = exercisesRes.data as Exercise[] || Object.values(defaults.exercises);
         const exercises = exercisesArray.reduce((acc, ex) => {
             acc[ex.id] = ex;
             return acc;
         }, {} as Record<string, Exercise>);
 
-        const routines = routinesRes.data as Routine[] || defaultRoutines;
-        const recipes = recipesRes.data as Recipe[] || defaultRecipes;
+        const routines = routinesRes.data as Routine[] || defaults.routines;
+        const recipes = recipesRes.data as Recipe[] || defaults.recipes;
 
         return { foods, exercises, routines, recipes };
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Error fetching static data from Supabase:', error);
-        return {
-            foods: defaultFoods,
-            exercises: defaultExercises,
-            routines: defaultRoutines,
-            recipes: defaultRecipes
-        };
+        return defaults;
     }
 };
 
@@ -101,7 +111,7 @@ export const fetchStaticData = async () => {
 // to a 'user_state' table for now to ensure all forms and edits are persisted to the DB.
 // In a production app, this would be broken down into individual tables (profiles, logs, etc.)
 
-export const fetchUserState = async (): Promise<AppState | null> => {
+export const fetchUserState = async (): Promise<PersistedAppState | null> => {
     const supabase = getSupabase();
     if (!supabase) return null;
     
@@ -123,40 +133,35 @@ export const fetchUserState = async (): Promise<AppState | null> => {
             throw error;
         }
 
-        return data.state_json as AppState;
-    } catch (error) {
+        return data.state_json as PersistedAppState;
+    } catch (error: unknown) {
         console.error('Error fetching user state from Supabase:', error);
         return null;
     }
 };
 
-export const saveUserState = async (state: AppState) => {
+export const saveUserState = async (state: AppState | PersistedAppState, userId?: string) => {
     const supabase = getSupabase();
     if (!supabase) return;
     
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) return;
-    
     try {
-        // Create a serializable copy of the state
-        const stateToSave = JSON.parse(JSON.stringify(state));
-        stateToSave.lastUpdated = Date.now();
+        const effectiveUserId = userId ?? (await supabase.auth.getSession()).data.session?.user?.id;
+        if (!effectiveUserId) return;
 
-        // Manually convert Set to Array for storage
-        if (state.progress.progressTracker.activityDates instanceof Set) {
-            stateToSave.progress.progressTracker.activityDates = Array.from(state.progress.progressTracker.activityDates);
-        }
+        const stateToSave = createPersistedStateSnapshot(state);
+        stateToSave.lastUpdated = Date.now();
 
         const { error } = await supabase
             .from('user_state')
             .upsert({ 
-                user_id: session.user.id, 
+                user_id: effectiveUserId, 
                 state_json: stateToSave,
                 updated_at: new Date().toISOString()
             }, { onConflict: 'user_id' });
 
         if (error) throw error;
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Error saving user state to Supabase:', error);
+        throw error;
     }
 };

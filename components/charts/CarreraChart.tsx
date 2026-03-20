@@ -7,6 +7,12 @@ import { CardioIcon, MountainIcon, FireIcon } from '../icons';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
 type ActivityType = 'carrera' | 'senderismo' | 'rucking';
+type ChartPoint = {
+    date: string;
+    fullDate: number;
+    distancia: number;
+    ritmo: number;
+};
 
 const getCutoffDate = (range: TimeRange): Date => {
     const date = new Date();
@@ -94,14 +100,13 @@ const CarreraChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
                     ritmo: d.duration / d.distance
                 };
             })
-            .filter(Boolean)
-            // @ts-ignore
+            .filter((item): item is ChartPoint => item !== null)
             .sort((a, b) => a.fullDate - b.fullDate);
 
         if (data.length === 0) return { chartData: [], stats: null };
 
-        const totalDist = data.reduce((acc: number, curr: any) => acc + curr.distancia, 0);
-        const validPaces = data.map((d: any) => d.ritmo).filter((r: number) => r > 0 && r < 30);
+        const totalDist = data.reduce((acc, curr) => acc + curr.distancia, 0);
+        const validPaces = data.map((d) => d.ritmo).filter((r) => r > 0 && r < 30);
         const bestPace = validPaces.length > 0 ? Math.min(...validPaces) : 0;
 
         return { chartData: data, stats: { totalDist, bestPace, count: data.length } };

@@ -2,19 +2,32 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# Fit Architect
 
-This contains everything you need to run your app locally.
+Fit Architect is a fitness and nutrition SPA for logging workouts, meals, body measurements, photos and session history. It uses React, TypeScript, Vite, Supabase and local persistence so the app stays usable even when network sync is not immediate.
 
-View your app in AI Studio: https://ai.studio/apps/a908191c-2663-4570-8d02-e9e5bd82a6ca
+## Features
+- Daily dashboard for routine, habits and macros.
+- Nutrition flow with meal logging, recipes, barcode/AI helpers and weekly summaries.
+- Workout flow with routines, active sessions and post-workout summaries.
+- Progress flow with metrics, photos and charts.
+- Auth and per-user cloud sync with Supabase.
+- Lazy-loaded screens and chunk splitting for faster initial load.
 
-## Run Locally
+## Setup
+1. Install dependencies with `npm install`.
+2. Create `.env.local` from `.env.example`.
+3. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+4. If you want AI-powered features, provide `GEMINI_API_KEY` in the runtime/build environment.
+5. Start the app with `npm run dev`.
 
-**Prerequisites:**  Node.js
+## Scripts
+- `npm run dev` starts the Vite dev server.
+- `npm run build` creates the production build.
+- `npm run preview` serves the build locally.
+- `npm run lint` runs the TypeScript check.
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Notes
+- The app is organized in the repository root, not in `src/`.
+- Supabase is required for auth and cloud sync.
+- Local storage is used as a fast per-user fallback and for offline-friendly reloads.

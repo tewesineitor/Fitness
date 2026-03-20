@@ -125,14 +125,16 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-6 pb-32">
                 <header className="animate-fade-in-up flex gap-3 pt-6">
                     <div className="flex-1 flex justify-between items-center bg-surface-bg p-1 rounded-xl border border-surface-border shadow-sm">
-                        <Button variant="tertiary" onClick={() => { vibrate(5); handlePreviousDay(); }} icon={ChevronRightIcon} className="!p-2.5 hover:bg-surface-hover rounded-lg [&_svg]:rotate-180 text-text-secondary hover:text-text-primary transition-colors" />
+                        <Button variant="tertiary" onClick={() => { vibrate(5); handlePreviousDay(); }} icon={ChevronRightIcon} aria-label="Ver día anterior" className="!p-2.5 hover:bg-surface-hover rounded-lg [&_svg]:rotate-180 text-text-secondary hover:text-text-primary transition-colors" />
                         <h1 className="text-[11px] font-bold text-text-primary uppercase tracking-[0.2em]">{formatDateHeader(displayedDate)}</h1>
-                        <Button variant="tertiary" onClick={() => { vibrate(5); handleNextDay(); }} disabled={isToday(displayedDate)} icon={ChevronRightIcon} className={`!p-2.5 rounded-lg transition-colors ${isToday(displayedDate) ? 'text-surface-border cursor-not-allowed' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}`} />
+                        <Button variant="tertiary" onClick={() => { vibrate(5); handleNextDay(); }} disabled={isToday(displayedDate)} icon={ChevronRightIcon} aria-label="Ver día siguiente" className={`!p-2.5 rounded-lg transition-colors ${isToday(displayedDate) ? 'text-surface-border cursor-not-allowed' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}`} />
                     </div>
                     
                     {isToday(displayedDate) && (
-                        <button 
+                        <button
+                            type="button"
                             onClick={() => { vibrate(5); onGoToAddFood(); }}
+                            aria-label="Agregar comida"
                             className="bg-brand-accent text-white rounded-xl w-14 flex-shrink-0 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all border border-brand-accent"
                         >
                             <PlusIcon className="w-6 h-6" />

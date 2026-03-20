@@ -2,7 +2,7 @@
 import { ThunkAction, RoutineTask, WorkoutStats, DesgloseEjercicio, DesgloseFuerza, HistorialDeSesionesEntry, DesgloseTiempo, DesgloseCardioLibre } from '../types';
 import * as actions from '../actions';
 import * as thunks from '../thunks';
-import { selectAllExercises, selectHistorialDeSesiones } from '../selectors/workoutSelectors';
+import { selectAllExercises } from '../selectors/workoutSelectors';
 import { selectProgressTracker } from '../selectors/progressSelectors';
 import { selectCardioLogData } from '../selectors/sessionSelectors';
 
@@ -18,7 +18,6 @@ export const finishRoutineThunk = (routine: RoutineTask, stats: WorkoutStats): T
     }
 
     const allExercises = selectAllExercises(state);
-    const historialDeSesiones = selectHistorialDeSesiones(state);
     const progressTracker = selectProgressTracker(state);
 
     const loggedExerciseIds = new Set([
@@ -84,9 +83,6 @@ export const finishRoutineThunk = (routine: RoutineTask, stats: WorkoutStats): T
     const uniqueTaskId = `${routine.id}-${routine.timeOfDay}`;
     dispatch(actions.completeTask(uniqueTaskId));
 
-    if (historialDeSesiones.length === 0) {
-        dispatch(actions.unlockAchievement('beginner-architect'));
-    }
 };
 
 export const saveCardioLogThunk = (distance: number, notes: string): ThunkAction => (dispatch, getState) => {
@@ -127,7 +123,7 @@ export const saveCardioLogThunk = (distance: number, notes: string): ThunkAction
 };
 
 export const skipCardioLogThunk = (): ThunkAction => (dispatch) => {
-    dispatch(saveCardioLogThunk(0, 'Omitido'));
+    dispatch(actions.clearCardioLogData());
 };
 
 export const saveCardioLibreLogThunk = (log: DesgloseCardioLibre): ThunkAction => (dispatch) => {

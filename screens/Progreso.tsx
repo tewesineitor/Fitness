@@ -1,6 +1,6 @@
 
 import React, { useState, useContext, useMemo } from 'react';
-import { HistorialDeSesionesEntry } from '../types';
+import { HistorialDeSesionesEntry, HistorialDeMetricasEntry } from '../types';
 import { AppContext } from '../contexts';
 import { GalleryWidget, HistoryWidget } from '../components/ProgressWidgetsGrid';
 import { WorkoutSummaryScreen } from './WorkoutSummary';
@@ -57,18 +57,35 @@ const Progreso: React.FC = () => {
 
     // ── Derive latest stat values ──────────────────────────────────────────
     const latestMetrics = useMemo(() => {
-        const sorted = [...(progress?.metricHistory ?? [])].sort(
-            (a, b) => new Date(b.fecha_registro).getTime() - new Date(a.fecha_registro).getTime()
-        );
-        const latest = sorted[0];
-        const prev   = sorted[1];
+        const history = progress?.metricHistory ?? [];
+        let latest: HistorialDeMetricasEntry | null = null;
+        let prev: HistorialDeMetricasEntry | null = null;
+        let latestTime = -Infinity;
+        let prevTime = -Infinity;
+
+        for (const entry of history) {
+            const entryTime = new Date(entry.fecha_registro).getTime();
+            if (entryTime > latestTime) {
+                prev = latest;
+                prevTime = latestTime;
+                latest = entry;
+                latestTime = entryTime;
+                continue;
+            }
+
+            if (entryTime > prevTime) {
+                prev = entry;
+                prevTime = entryTime;
+            }
+        }
+
         return {
-            weight:       latest?.peso_kg  ?? null,
-            prevWeight:   prev?.peso_kg    ?? null,
-            waist:        latest?.cintura_cm ?? null,
-            sessions:     state.workout.historialDeSesiones.length,
+            weight: latest?.peso_kg ?? null,
+            prevWeight: prev?.peso_kg ?? null,
+            waist: latest?.cintura_cm ?? null,
+            sessions: state.workout.historialDeSesiones.length,
         };
-    }, [progress, state.workout.historialDeSesiones]);
+    }, [progress?.metricHistory, state.workout.historialDeSesiones.length]);
 
     const weightTrend = latestMetrics.weight !== null && latestMetrics.prevWeight !== null
         ? (latestMetrics.weight < latestMetrics.prevWeight ? 'down' : latestMetrics.weight > latestMetrics.prevWeight ? 'up' : 'neutral')

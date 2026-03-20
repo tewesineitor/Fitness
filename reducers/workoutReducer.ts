@@ -1,10 +1,9 @@
-
-import { WorkoutState, Action, DayOfWeek, TimeOfDay, Exercise, RoutineTask, HistorialDeSesionesEntry, DesgloseFuerza, DesgloseCardioLibre } from '../types';
-import { exercises as exercisesData, defaultRoutines } from '../data';
+import { WorkoutState, DayOfWeek, TimeOfDay, Exercise, RoutineTask, HistorialDeSesionesEntry, DesgloseFuerza, DesgloseCardioLibre } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
 
 export const initialWorkoutState: WorkoutState = {
-    userRoutines: [...defaultRoutines],
+    userRoutines: [],
     userExercises: [],
     weeklySchedule: {
         Lunes: { Mañana: 'default-torso' },
@@ -14,11 +13,11 @@ export const initialWorkoutState: WorkoutState = {
     },
     cardioWeek: 1,
     historialDeSesiones: [],
-    allExercises: exercisesData,
+    allExercises: {},
     exerciseImages: {},
 };
 
-export const workoutReducer = (state: WorkoutState = initialWorkoutState, action: Action): WorkoutState => {
+export const workoutReducer = (state: WorkoutState = initialWorkoutState, action: AppAction): WorkoutState => {
     switch(action.type) {
         case actionTypes.ADD_USER_ROUTINE: {
             const newRoutine: RoutineTask = { ...action.payload, id: `user-routine-${Date.now()}`, isUserCreated: true };
@@ -29,8 +28,24 @@ export const workoutReducer = (state: WorkoutState = initialWorkoutState, action
             return { ...state, userRoutines: updatedRoutines };
         }
         case actionTypes.DELETE_USER_ROUTINE: {
-            const filteredRoutines = state.userRoutines.filter(r => r.id !== action.payload);
-            return { ...state, userRoutines: filteredRoutines };
+            const routineId = action.payload;
+            const filteredRoutines = state.userRoutines.filter(r => r.id !== routineId);
+            const cleanedSchedule = Object.entries(state.weeklySchedule).reduce((scheduleAcc, [day, daySchedule]) => {
+                const filteredDaySchedule = Object.entries(daySchedule || {}).reduce((dayAcc, [time, scheduledRoutineId]) => {
+                    if (scheduledRoutineId !== routineId) {
+                        dayAcc[time] = scheduledRoutineId;
+                    }
+                    return dayAcc;
+                }, {} as Record<string, string>);
+
+                if (Object.keys(filteredDaySchedule).length > 0) {
+                    scheduleAcc[day] = filteredDaySchedule;
+                }
+
+                return scheduleAcc;
+            }, {} as Record<string, Record<string, string>>);
+
+            return { ...state, userRoutines: filteredRoutines, weeklySchedule: cleanedSchedule };
         }
         case actionTypes.ADD_USER_EXERCISE: {
              const newExercise: Exercise = { ...action.payload, id: `user-exercise-${Date.now()}`, isUserCreated: true, };

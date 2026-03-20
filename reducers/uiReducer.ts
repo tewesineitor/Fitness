@@ -1,12 +1,10 @@
 
-import { UIState, Action, Achievement, Screen } from '../types';
-import { achievementsData } from '../data';
+import { UIState, Screen } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
 
 export const initialUIState: UIState = {
     activeScreen: 'Hoy',
-    unlockedAchievements: [],
-    achievementToShow: null,
     toastMessage: null,
     isProfileOpen: false,
     showPhaseChangeModal: false,
@@ -17,7 +15,7 @@ export const initialUIState: UIState = {
     syncStatus: 'synced',
 };
 
-export const uiReducer = (state: UIState = initialUIState, action: Action): UIState => {
+export const uiReducer = (state: UIState = initialUIState, action: AppAction): UIState => {
     switch (action.type) {
         case actionTypes.SET_ACTIVE_SCREEN:
             return { ...state, activeScreen: action.payload };
@@ -25,14 +23,6 @@ export const uiReducer = (state: UIState = initialUIState, action: Action): UISt
             return { ...state, toastMessage: action.payload };
         case actionTypes.CLEAR_TOAST:
             return { ...state, toastMessage: null };
-        case actionTypes.UNLOCK_ACHIEVEMENT: {
-            if (state.unlockedAchievements.includes(action.payload)) return state;
-            const newUnlocked = [...state.unlockedAchievements, action.payload];
-            const achievement = achievementsData[action.payload];
-            return { ...state, unlockedAchievements: newUnlocked, achievementToShow: achievement ? { ...achievement } : null };
-        }
-        case actionTypes.DISMISS_ACHIEVEMENT:
-            return { ...state, achievementToShow: null };
         case actionTypes.OPEN_PROFILE:
             return { ...state, isProfileOpen: true };
         case actionTypes.CLOSE_PROFILE:

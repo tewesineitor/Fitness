@@ -3,7 +3,7 @@ import { AppContext } from '../contexts';
 import * as actions from '../actions';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { dailyGoals as defaultGoals } from '../data';
+import { dailyGoals as defaultGoals } from '../data-misc';
 import { SparklesIcon, ChevronRightIcon, CheckIcon } from '../components/icons';
 
 const OnboardingScreen: React.FC = () => {

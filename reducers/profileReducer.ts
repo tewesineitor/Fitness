@@ -1,6 +1,7 @@
-import { ProfileState, Action, Theme } from '../types';
+import { ProfileState, Theme } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
-import { dailyGoals as defaultGoals } from '../data';
+import { dailyGoals as defaultGoals } from '../data-misc';
 
 export const initialProfileState: ProfileState = {
     userName: '',
@@ -9,7 +10,7 @@ export const initialProfileState: ProfileState = {
     customMantra: '',
 };
 
-export const profileReducer = (state: ProfileState = initialProfileState, action: Action): ProfileState => {
+export const profileReducer = (state: ProfileState = initialProfileState, action: AppAction): ProfileState => {
     switch (action.type) {
         case actionTypes.UPDATE_PROFILE:
             return { ...state, userName: action.payload.name, dailyGoals: action.payload.goals, customMantra: action.payload.customMantra };

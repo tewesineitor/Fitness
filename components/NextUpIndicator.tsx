@@ -1,7 +1,6 @@
 
 import React, { useContext } from 'react';
 import { RoutineStep } from '../types';
-import GlassCard from './GlassCard';
 import { AppContext } from '../contexts';
 import { selectAllExercises } from '../selectors/workoutSelectors';
 import { ChevronRightIcon } from './icons';

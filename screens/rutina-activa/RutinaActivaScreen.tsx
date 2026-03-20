@@ -134,7 +134,11 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
             setWorkoutStats(prev => {
                 const newLogs = { ...prev.logs };
                 delete newLogs[exerciseId];
-                return { ...prev, logs: newLogs };
+                return {
+                    ...prev,
+                    logs: newLogs,
+                    exercisesCompleted: Object.keys(newLogs).length,
+                };
             });
         }
         
@@ -168,7 +172,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
             ...prev,
             logs: { ...prev.logs, [exerciseId]: newLogs },
             weightLifted: prev.weightLifted + (setLog.weight * setLog.reps),
-            exercisesCompleted: Object.keys(prev.logs).length
+            exercisesCompleted: Object.keys({ ...prev.logs, [exerciseId]: newLogs }).length
         }));
 
         const isLastSet = newLogs.length >= step.sets;

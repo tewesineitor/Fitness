@@ -123,3 +123,17 @@ export const DotsHorizontalIcon: React.FC<IconProps> = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h.01M12 12h.01M19 12h.01" />
   </svg>
 );
+
+export const TrophyIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.5a2.5 2.5 0 0 0-3-2.5H6v6h1.5a2.5 2.5 0 0 0 2.5-2.5V14" />
+    <path d="M12 12v10" />
+    <path d="M18 18.5a2.5 2.5 0 0 0-2.5-2.5H14v6h1.5a2.5 2.5 0 0 0 2.5-2.5z" />
+    <path d="M12 2v10" />
+    <path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4" />
+    <path d="M12 2a4 4 0 0 0-4 4v4a4 4 0 0 0 4 4" />
+  </svg>
+);

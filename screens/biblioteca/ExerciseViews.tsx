@@ -1,8 +1,8 @@
 
 import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { exercises as allExercisesData } from '../../data';
-import { Exercise, DesgloseFuerza } from '../../types';
-import { ChevronRightIcon, StrengthIcon, StarIcon, CalendarIcon, BookOpenIcon, ChartBarIcon, SparklesIcon, ArrowUpIcon, TshirtIcon, RookieRunnerIcon, PostureIcon, UserCircleIcon, FireIcon, YogaIcon, SearchIcon } from '../../components/icons';
+import { Exercise, DesgloseFuerza, ExerciseLibraryCategory } from '../../types';
+import { ChevronRightIcon, StrengthIcon, StarIcon, CalendarIcon, BookOpenIcon, ChartBarIcon, SparklesIcon, ArrowUpIcon, TshirtIcon, PostureIcon, UserCircleIcon, FireIcon, YogaIcon, SearchIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import Button from '../../components/Button';
 
@@ -363,8 +363,8 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
                 </div>
                 
                 <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
-                    {['Todos', 'Corporal', 'Equipo'].map(filter => (
-                        <FilterButton key={filter} label={filter} isActive={equipmentFilter === filter} onClick={() => setEquipmentFilter(filter as any)} />
+                    {(['Todos', 'Corporal', 'Equipo'] as const).map(filter => (
+                        <FilterButton key={filter} label={filter} isActive={equipmentFilter === filter} onClick={() => setEquipmentFilter(filter)} />
                     ))}
                 </div>
 
@@ -400,7 +400,7 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
     );
 };
 
-const ExerciseListByCategoryView: React.FC<{ category: 'yoga'|'postura'|'calentamiento'|'estiramiento'|'movilidad', onSelectExercise: (ex: Exercise) => void, onBack: () => void }> = ({ category, onSelectExercise, onBack }) => {
+const ExerciseListByCategoryView: React.FC<{ category: Exclude<ExerciseLibraryCategory, 'fuerza'>, onSelectExercise: (ex: Exercise) => void, onBack: () => void }> = ({ category, onSelectExercise, onBack }) => {
     const { state } = useContext(AppContext)!;
     const [searchTerm, setSearchTerm] = useState('');
     const categoryNameMap = { yoga: 'Yoga', postura: 'Corrección Postural', calentamiento: 'Calentamiento Dinámico', estiramiento: 'Estiramientos', movilidad: 'Movilidad' };
@@ -479,7 +479,7 @@ const ExerciseListByCategoryView: React.FC<{ category: 'yoga'|'postura'|'calenta
 
 // --- MAIN FLOW COMPONENT ---
 
-type Category = 'fuerza' | 'yoga' | 'postura' | 'calentamiento' | 'estiramiento' | 'movilidad';
+type Category = ExerciseLibraryCategory;
 interface ExerciseFlowProps { onBack: () => void; category?: Category | null; initialExercise?: Exercise; }
 
 const ExerciseFlow: React.FC<ExerciseFlowProps> = ({ onBack, category, initialExercise }) => {

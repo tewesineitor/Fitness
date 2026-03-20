@@ -1,4 +1,3 @@
-export * from './AchievementIcons';
 export * from './ActionIcons';
 export * from './FoodIcons';
 export * from './HealthIcons';

@@ -5,8 +5,6 @@ import { Screen, AddedFood } from '../types';
 export const setActiveScreen = (payload: Screen) => ({ type: actionTypes.SET_ACTIVE_SCREEN, payload } as const);
 export const showToast = (payload: string) => ({ type: actionTypes.SHOW_TOAST, payload } as const);
 export const clearToast = () => ({ type: actionTypes.CLEAR_TOAST } as const);
-export const unlockAchievement = (payload: string) => ({ type: actionTypes.UNLOCK_ACHIEVEMENT, payload } as const);
-export const dismissAchievement = () => ({ type: actionTypes.DISMISS_ACHIEVEMENT } as const);
 export const openProfile = () => ({ type: actionTypes.OPEN_PROFILE } as const);
 export const closeProfile = () => ({ type: actionTypes.CLOSE_PROFILE } as const);
 export const showPhaseChangeModal = () => ({ type: actionTypes.SHOW_PHASE_CHANGE_MODAL } as const);

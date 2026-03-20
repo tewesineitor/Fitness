@@ -1,30 +1,28 @@
 
-import { Dispatch, SetStateAction } from 'react';
+import type { ComponentType } from 'react';
+
+export type IconComponent = ComponentType<{ className?: string }>;
 
 // --- UI Types ---
 export type Screen = 'Hoy' | 'Nutrición' | 'Biblioteca' | 'Progreso' | 'RutinaActiva';
-
-export interface Achievement {
-    id: string;
-    title: string;
-    description: string;
-    icon: any; // Using any for React.FC component to avoid complex React imports
-}
 
 export type SyncStatus = 'synced' | 'syncing' | 'error' | 'offline';
 
 export interface UIState {
     activeScreen: Screen;
-    unlockedAchievements: string[];
-    achievementToShow: Achievement | null;
     toastMessage: string | null;
     isProfileOpen: boolean;
     showPhaseChangeModal: boolean;
     isModalOpen: boolean;
     isBottomNavVisible: boolean;
     navigationTarget: 'library-planner' | null;
-    mealBuilderInitialState: { foods: any[], mealName?: string } | null;
+    mealBuilderInitialState: MealBuilderState | null;
     syncStatus: SyncStatus;
+}
+
+export interface MealBuilderState {
+    foods: AddedFood[];
+    mealName?: string;
 }
 
 // --- Profile Types ---
@@ -140,6 +138,8 @@ export interface Exercise {
     description: string;
     isUserCreated?: boolean;
 }
+
+export type ExerciseLibraryCategory = Exclude<Exercise['category'], 'cardio'>;
 
 export interface StrengthStep {
     type: 'exercise';
@@ -297,7 +297,7 @@ export type LibraryTab = 'routines' | 'recipes' | 'exercises';
 export interface LibraryItem {
     title: string;
     content: string;
-    items?: { name: string; description: string; icon?: any }[];
+    items?: { name: string; description: string; icon?: IconComponent }[];
 }
 
 export interface LibraryCategory {
@@ -306,14 +306,11 @@ export interface LibraryCategory {
 }
 
 // --- Navigation Types ---
-export interface FlowState {
-    type: 'none' | 'recipe' | 'routine' | 'exercise';
-    mode?: 'planner' | 'routines';
-    initial?: any;
-    initialRoutine?: any;
-    initialExercise?: any;
-    category?: any;
-}
+export type FlowState =
+    | { type: 'none' }
+    | { type: 'recipe'; initial?: Recipe | 'new' }
+    | { type: 'routine'; mode?: 'planner' | 'routines'; initialRoutine?: RoutineTask | 'new' }
+    | { type: 'exercise'; category?: ExerciseLibraryCategory | null; initialExercise?: Exercise };
 
 // --- App State & Actions ---
 export interface AppState {
@@ -328,7 +325,12 @@ export interface AppState {
 
 export interface Action {
     type: string;
-    payload?: any;
+    payload?: unknown;
+}
+
+export interface ReplaceStateAction {
+    type: 'REPLACE_STATE';
+    payload: AppState;
 }
 
 export type ThunkAction<ReturnType = void> = (
@@ -336,4 +338,4 @@ export type ThunkAction<ReturnType = void> = (
     getState: () => AppState
 ) => ReturnType;
 
-export type ThunkDispatch = (action: Action | ThunkAction<any>) => any;
+export type ThunkDispatch<ActionType extends Action = Action> = <ReturnType = void>(action: ActionType | ThunkAction<ReturnType>) => ReturnType;

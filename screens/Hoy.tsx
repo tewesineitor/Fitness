@@ -193,7 +193,9 @@ const HoyScreen: React.FC = () => {
                     </p>
                 </div>
                 <button
+                    type="button"
                     onClick={() => dispatch(actions.openProfile())}
+                    aria-label="Abrir perfil"
                     className="relative active:scale-90 transition-transform duration-150"
                 >
                     <div className="bg-surface-bg border border-surface-border p-2.5 rounded-full hover:bg-surface-hover hover:border-brand-accent/30 transition-all shadow-sm">

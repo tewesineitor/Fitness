@@ -1,8 +1,7 @@
 
-import { NutritionState, Action, Recipe, FoodItem, LoggedMeal } from '../types';
+import { NutritionState, Recipe, FoodItem, LoggedMeal } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
-
-import { foodData, recipesData } from '../data';
 
 export const initialNutritionState: NutritionState = {
     myRecipes: [],
@@ -10,11 +9,11 @@ export const initialNutritionState: NutritionState = {
     consumedMacros: { kcal: 0, protein: 0, carbs: 0, fat: 0 },
     loggedMeals: [],
     favoritedPlanRecipeIds: [],
-    allFoods: foodData,
-    allRecipes: recipesData,
+    allFoods: [],
+    allRecipes: [],
 };
 
-export const nutritionReducer = (state: NutritionState = initialNutritionState, action: Action): NutritionState => {
+export const nutritionReducer = (state: NutritionState = initialNutritionState, action: AppAction): NutritionState => {
     switch (action.type) {
         case actionTypes.REGISTER_MEAL: {
              const { mealItems, name, timing } = action.payload;

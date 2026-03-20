@@ -1,15 +1,6 @@
 
-import React, { useContext, useEffect } from 'react';
-import { Screen, Achievement, SyncStatus } from './types';
-import HoyScreen from './screens/Hoy';
-import BibliotecaScreen from './screens/Biblioteca';
-import NutricionScreen from './screens/Nutricion';
-import Progreso from './screens/Progreso';
-import PerfilScreen from './screens/PerfilScreen';
-import RutinaActivaScreen from './screens/rutina-activa/RutinaActivaScreen';
-import { WorkoutSummaryScreen } from './screens/WorkoutSummary';
-import ProgressiveCardioLogModal from './components/dialogs/ProgressiveCardioLogModal';
-import OnboardingScreen from './screens/OnboardingScreen';
+import React, { useContext, useEffect, lazy, Suspense } from 'react';
+import { Screen, SyncStatus } from './types';
 import { HomeIcon, BookOpenIcon, PlateIcon, ChartBarIcon, CheckCircleIcon } from './components/icons';
 import { AppContext } from './contexts';
 import { AppProvider } from './AppProvider';
@@ -17,15 +8,14 @@ import * as actions from './actions';
 import * as thunks from './thunks';
 import Button from './components/Button';
 import Modal from './components/Modal';
+import AppChunkFallback from './components/AppChunkFallback';
 import { vibrate } from './utils/helpers';
 
 import {
     selectActiveScreen,
     selectIsBottomNavVisible,
-    selectIsModalOpen,
     selectIsProfileOpen,
     selectToastMessage,
-    selectAchievementToShow,
     selectShowPhaseChangeModal,
     selectSyncStatus
 } from './selectors/uiSelectors';
@@ -35,23 +25,17 @@ import {
     selectCardioLogData
 } from './selectors/sessionSelectors';
 
-const AchievementUnlockedPopup: React.FC<{ achievement: Achievement, onDismiss: () => void }> = ({ achievement, onDismiss }) => {
-    const Icon = achievement.icon;
-    return (
-        <Modal onClose={onDismiss} className="max-w-sm">
-            <div className="p-8 text-center" role="document" aria-labelledby="achievement-title">
-                <div className="mx-auto bg-brand-accent/10 rounded-full w-28 h-28 flex items-center justify-center animate-pop-in">
-                    <Icon className="w-20 h-20 text-brand-accent" />
-                </div>
-                <h2 id="achievement-title" className="text-2xl font-bold text-text-primary mt-6">¡Logro Desbloqueado!</h2>
-                <p className="text-lg text-brand-accent font-semibold mt-1">{achievement.title}</p>
-                <Button onClick={onDismiss} className="mt-8 w-full" size="large">
-                    ¡Genial!
-                </Button>
-            </div>
-        </Modal>
-    );
-};
+const HoyScreen = lazy(() => import('./screens/Hoy'));
+const BibliotecaScreen = lazy(() => import('./screens/Biblioteca'));
+const NutricionScreen = lazy(() => import('./screens/Nutricion'));
+const ProgresoScreen = lazy(() => import('./screens/Progreso'));
+const PerfilScreen = lazy(() => import('./screens/PerfilScreen'));
+const RutinaActivaScreen = lazy(() => import('./screens/rutina-activa/RutinaActivaScreen'));
+const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen'));
+const ProgressiveCardioLogModal = lazy(() => import('./components/dialogs/ProgressiveCardioLogModal'));
+const WorkoutSummaryScreen = lazy(() =>
+    import('./screens/WorkoutSummary').then((mod) => ({ default: mod.WorkoutSummaryScreen }))
+);
 
 const SyncIndicator = ({ status }: { status: SyncStatus }) => {
     if (status === 'synced') return null;
@@ -102,27 +86,32 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const applyTheme = (t: string) => {
-      root.classList.remove('light');
-      root.classList.add('dark');
+    const applyTheme = () => {
+      const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      root.classList.toggle('dark', isDark);
+      root.classList.toggle('light', !isDark);
     };
 
-    applyTheme(theme);
+    applyTheme();
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (theme === 'system') {
+        applyTheme();
+      }
+    };
 
     if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = () => applyTheme('system');
       mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
     }
+
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
   
   const activeScreen = selectActiveScreen(state);
   const isBottomNavVisible = selectIsBottomNavVisible(state);
-  const isModalOpen = selectIsModalOpen(state);
   const isProfileOpen = selectIsProfileOpen(state);
   const toastMessage = selectToastMessage(state);
-  const achievementToShow = selectAchievementToShow(state);
   const showPhaseChangeModal = selectShowPhaseChangeModal(state);
   const activeRoutine = selectActiveRoutine(state);
   const workoutSummaryData = selectWorkoutSummaryData(state);
@@ -134,53 +123,61 @@ const App: React.FC = () => {
   const renderMainContent = () => {
     // Render Onboarding if user is new
     if (state.profile.userName === '') {
-        return <OnboardingScreen />;
+        return (
+            <Suspense fallback={<AppChunkFallback />}>
+                <OnboardingScreen />
+            </Suspense>
+        );
     }
 
     const screens: { id: Screen; component: React.ReactNode }[] = [
         { id: 'Hoy', component: <HoyScreen /> },
         { id: 'Nutrición', component: <NutricionScreen /> },
         { id: 'Biblioteca', component: <BibliotecaScreen /> },
-        { id: 'Progreso', component: <Progreso /> },
+        { id: 'Progreso', component: <ProgresoScreen /> },
     ];
 
     return (
-        <div className="text-text-primary min-h-screen font-sans flex flex-col h-screen relative bg-transparent overflow-hidden">
-            <SyncIndicator status={syncStatus} />
-            <main className="flex-grow relative w-full max-w-3xl mx-auto h-full overflow-y-auto hide-scrollbar">
-                <div className={isBottomNavVisible ? 'pb-28' : 'pb-8'}>
-                    {screens.find(s => s.id === activeScreen)?.component}
-                </div>
-            </main>
-            
-            {isBottomNavVisible && (
-              <BottomDock activeScreen={activeScreen} setActiveScreen={(screen) => dispatch(actions.setActiveScreen(screen))} />
-            )}
-        </div>
+        <Suspense fallback={<AppChunkFallback />}>
+            <div className="text-text-primary min-h-screen font-sans flex flex-col h-screen relative bg-transparent overflow-hidden">
+                <SyncIndicator status={syncStatus} />
+                <main className="flex-grow relative w-full max-w-3xl mx-auto h-full overflow-y-auto hide-scrollbar">
+                    <div className={isBottomNavVisible ? 'pb-28' : 'pb-8'}>
+                        {screens.find(s => s.id === activeScreen)?.component}
+                    </div>
+                </main>
+                
+                {isBottomNavVisible && (
+                  <BottomDock activeScreen={activeScreen} setActiveScreen={(screen) => dispatch(actions.setActiveScreen(screen))} />
+                )}
+            </div>
+        </Suspense>
     );
   };
   
   const renderFocusContent = () => {
     return (
-        <div className="fixed inset-0 z-50 animate-fade-in-up bg-bg-base overflow-hidden">
-            <div className="w-full max-w-3xl mx-auto h-full relative">
-                {activeRoutine && <RutinaActivaScreen activeRoutine={activeRoutine} />}
-                {workoutSummaryData && <WorkoutSummaryScreen 
-                      historicalEntry={workoutSummaryData.historicalEntry}
-                      onExit={() => {
-                          dispatch(actions.closeSummary());
-                          dispatch(actions.setActiveScreen('Hoy'));
-                      }}
-                  />}
-                {cardioLogData && (
-                      <ProgressiveCardioLogModal
-                          onSave={(distance, notes) => dispatch(thunks.saveCardioLogThunk(distance, notes))}
-                          onClose={() => dispatch(thunks.skipCardioLogThunk())}
-                      />
-                )}
-                {isProfileOpen && <PerfilScreen onClose={() => dispatch(actions.closeProfile())} />}
+        <Suspense fallback={<AppChunkFallback />}>
+            <div className="fixed inset-0 z-50 animate-fade-in-up bg-bg-base overflow-hidden">
+                <div className="w-full max-w-3xl mx-auto h-full relative">
+                    {activeRoutine && <RutinaActivaScreen activeRoutine={activeRoutine} />}
+                    {workoutSummaryData && <WorkoutSummaryScreen 
+                          historicalEntry={workoutSummaryData.historicalEntry}
+                          onExit={() => {
+                              dispatch(actions.closeSummary());
+                              dispatch(actions.setActiveScreen('Hoy'));
+                          }}
+                      />}
+                    {cardioLogData && (
+                          <ProgressiveCardioLogModal
+                              onSave={(distance, notes) => dispatch(thunks.saveCardioLogThunk(distance, notes))}
+                              onClose={() => dispatch(thunks.skipCardioLogThunk())}
+                          />
+                    )}
+                    {isProfileOpen && <PerfilScreen onClose={() => dispatch(actions.closeProfile())} />}
+                </div>
             </div>
-        </div>
+        </Suspense>
     );
   };
 
@@ -190,7 +187,6 @@ const App: React.FC = () => {
       {isFocusMode ? renderFocusContent() : renderMainContent()}
       
       {toastMessage && <Toast message={toastMessage} />}
-      {achievementToShow && <AchievementUnlockedPopup achievement={achievementToShow} onDismiss={() => dispatch(actions.dismissAchievement())} />}
       {showPhaseChangeModal && <PhaseChangeModal onDismiss={() => dispatch(actions.dismissPhaseChangeModal())} />}
     </>
   );
@@ -223,8 +219,11 @@ const BottomDock: React.FC<BottomNavProps> = ({ activeScreen, setActiveScreen })
                 const isActive = activeScreen === screen;
                 return (
                     <button
+                        type="button"
                         key={screen}
                         onClick={() => { vibrate(10); setActiveScreen(screen); }}
+                        aria-label={`Ir a ${screen}`}
+                        aria-current={isActive ? 'page' : undefined}
                         className={`
                             relative w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group active:scale-90
                             ${isActive ? 'bg-surface-hover shadow-inner text-brand-accent' : 'hover:bg-surface-hover/50 text-text-secondary'}

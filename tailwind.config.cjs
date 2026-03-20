@@ -1,0 +1,105 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: 'class',
+  content: [
+    './index.html',
+    './index.tsx',
+    './App.tsx',
+    './*.ts',
+    './*.tsx',
+    './actions/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './hooks/**/*.{ts,tsx}',
+    './reducers/**/*.{ts,tsx}',
+    './screens/**/*.{ts,tsx}',
+    './selectors/**/*.{ts,tsx}',
+    './services/**/*.{ts,tsx}',
+    './thunks/**/*.{ts,tsx}',
+    './utils/**/*.{ts,tsx}',
+  ],
+  safelist: [
+    'group-hover:bg-brand-protein/10',
+    'group-hover:bg-brand-carbs/10',
+    'group-hover:bg-brand-fat/10',
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
+      colors: {
+        'brand-accent': 'rgb(var(--color-brand-accent-rgb) / <alpha-value>)',
+        'brand-protein': 'rgb(var(--color-brand-protein-rgb) / <alpha-value>)',
+        'brand-carbs': 'rgb(var(--color-brand-carbs-rgb) / <alpha-value>)',
+        'brand-fat': 'rgb(var(--color-brand-fat-rgb) / <alpha-value>)',
+        'text-primary': 'rgb(var(--color-text-primary-rgb) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--color-text-secondary-rgb) / <alpha-value>)',
+        'text-muted': 'rgb(var(--color-text-muted-rgb) / <alpha-value>)',
+        'surface-bg': 'rgb(var(--color-surface-bg-rgb) / <alpha-value>)',
+        'surface-border': 'rgba(var(--color-surface-border-rgb), var(--color-surface-border-opacity))',
+        'surface-hover': 'rgb(var(--color-surface-hover-rgb) / <alpha-value>)',
+        'bg-base': 'var(--color-bg-base)',
+        'input-bg': 'var(--color-input-bg)',
+        'input-border': 'var(--color-input-border)',
+        success: 'rgb(var(--color-success-rgb) / <alpha-value>)',
+        warning: 'rgb(var(--color-warning-rgb) / <alpha-value>)',
+        danger: 'rgb(var(--color-danger-rgb) / <alpha-value>)',
+        destructive: 'rgb(var(--color-danger-rgb) / <alpha-value>)',
+      },
+      boxShadow: {
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        glow: 'var(--shadow-glow)',
+      },
+      transitionTimingFunction: {
+        spring: 'var(--ease-spring)',
+        smooth: 'var(--ease-smooth)',
+        snap: 'var(--ease-snap)',
+      },
+      animation: {
+        'fade-in-up': 'fadeInUp 0.35s var(--ease-smooth) forwards',
+        'pop-in': 'popIn 0.3s var(--ease-spring) forwards',
+        'scale-in': 'scaleIn 0.35s var(--ease-smooth) forwards',
+        'slide-in-up': 'slideInUp 0.4s var(--ease-smooth) forwards',
+        'glow-pulse': 'glowPulse 2.5s ease-in-out infinite',
+        scan: 'scan 2s linear infinite',
+        'scan-vertical': 'scanVertical 2s linear infinite',
+      },
+      keyframes: {
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(12px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        popIn: {
+          '0%': { opacity: '0', transform: 'scale(0.92)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95) translateY(8px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+        slideInUp: {
+          '0%': { opacity: '0', transform: 'translateY(24px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 0px transparent' },
+          '50%': { boxShadow: 'var(--shadow-glow)' },
+        },
+        scan: {
+          '0%': { transform: 'translateY(-100px)' },
+          '50%': { transform: 'translateY(100px)' },
+          '100%': { transform: 'translateY(-100px)' },
+        },
+        scanVertical: {
+          '0%': { top: '0%' },
+          '50%': { top: '100%' },
+          '100%': { top: '0%' },
+        },
+      },
+    },
+  },
+};

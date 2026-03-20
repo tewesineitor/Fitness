@@ -1,11 +1,11 @@
 import React from 'react';
-import { AppState, Action, ThunkAction, ThunkDispatch } from './types';
+import { AppState, ThunkDispatch } from './types';
+import type { AppAction } from './actions';
 
 export type AppContextType = {
   state: AppState;
-  dispatch: ThunkDispatch;
+  dispatch: ThunkDispatch<AppAction>;
   showToast: (message: string) => void;
-  unlockAchievement: (achievementId: string) => void;
 };
 
 export const AppContext = React.createContext<AppContextType | null>(null);

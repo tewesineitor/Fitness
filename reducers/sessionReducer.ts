@@ -1,4 +1,5 @@
-import { SessionState, Action } from '../types';
+import { SessionState } from '../types';
+import type { AppAction } from '../actions';
 import * as actionTypes from '../actions/actionTypes';
 
 export const initialSessionState: SessionState = {
@@ -12,7 +13,7 @@ export const initialSessionState: SessionState = {
     cardioLogData: null,
 };
 
-export const sessionReducer = (state: SessionState = initialSessionState, action: Action): SessionState => {
+export const sessionReducer = (state: SessionState = initialSessionState, action: AppAction): SessionState => {
     switch(action.type) {
         case actionTypes.UPDATE_DAILY_HABIT:
             return { ...state, dailyHabits: { ...state.dailyHabits, ...action.payload } };

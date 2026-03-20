@@ -1,72 +1,77 @@
-# Fit Architect - Documentación del Proyecto
+# Fit Architect - Documentacion del Proyecto
 
-## 1. Introducción
-**Fit Architect** es una aplicación web progresiva (PWA/SPA) diseñada para la gestión integral del fitness, nutrición y progreso personal. Su objetivo es permitir a los usuarios llevar un control detallado de sus rutinas de entrenamiento, ingesta calórica y de macronutrientes, evolución antropométrica y hábitos diarios, todo en una interfaz moderna, rápida y de alto contraste.
+## 1. Resumen
+Fit Architect es una SPA de fitness y nutricion para registrar entrenamiento, comidas, progreso corporal y sesiones completas. La app esta hecha con React 18, TypeScript y Vite, y usa un estado global propio basado en `useReducer` + `createContext`.
 
-## 2. Arquitectura Técnica y Stack
-*   **Frontend:** React 18 (Functional Components, Hooks).
-*   **Lenguaje:** TypeScript (Tipado estricto para modelos de datos y estado).
-*   **Build Tool:** Vite.
-*   **Estilos:** Tailwind CSS (Utility-first, diseño responsivo, soporte nativo para temas claro/oscuro/sistema).
-*   **Backend / Base de Datos:** Supabase (Autenticación de usuarios y almacenamiento de datos en la nube).
-*   **Almacenamiento Local:** `localStorage` para persistencia offline y carga rápida (Optimistic UI).
+El proyecto no usa una carpeta `src/`. La raiz del repositorio contiene la app, los reducers, los thunks, los selectors, los componentes y las vistas.
 
-## 3. Estructura del Proyecto
-El proyecto sigue una estructura modular basada en dominios:
-*   `/src/actions/`: Creadores de acciones (Action Creators) y Thunks para la lógica asíncrona.
-*   `/src/reducers/`: Reducers que manejan las mutaciones del estado global, divididos por dominio (`ui`, `profile`, `progress`, `workout`, `nutrition`, `session`).
-*   `/src/contexts/`: Configuración del `AppContext` que provee el estado global y la función `dispatch` a toda la app.
-*   `/src/components/`: Componentes UI reutilizables (Botones, Inputs, Iconos, Modales, Tarjetas).
-*   `/src/screens/`: Vistas principales de la aplicación (Hoy, Nutrición, Entrenamiento, Progreso, Perfil, Onboarding).
-*   `/src/services/`: Integración con servicios externos (ej. `supabaseClient.ts`).
-*   `/src/types.ts`: Definiciones de interfaces y tipos de TypeScript (El "contrato" de los datos).
-*   `/src/data.ts`: Datos estáticos iniciales (ej. base de datos de alimentos por defecto, rutinas predefinidas).
+## 2. Stack y servicios
+- `Frontend`: React 18 + TypeScript.
+- `Build`: Vite.
+- `Estilos`: Tailwind local via `tailwind.config.cjs` + `postcss.config.cjs`, con tokens CSS en `styles/tailwind.css`.
+- `Auth y sync`: Supabase.
+- `Persistencia local`: `localStorage` por usuario.
+- `IA`: `@google/genai` para flujos de alimentos, recetas, imagenes y analisis de datos.
+- `OCR/barcode`: `@zxing/browser`.
+- `Graficas`: `recharts`.
 
-## 4. Gestión del Estado (State Management)
-La aplicación utiliza un patrón similar a Redux pero implementado nativamente con `React.useReducer` y `React.createContext`.
-El estado global (`AppState`) se divide en 6 ramas principales:
+## 3. Estructura real
+- `App.tsx`: shell principal, navegacion, focus mode, lazy loading de pantallas y modales.
+- `AppProvider.tsx`: bootstrap de auth, carga de estado, merge de datos estaticos, reset diario y sync.
+- `statePersistence.ts`: helpers puros para hidratar, guardar y fusionar estado.
+- `services/supabaseService.ts`: seed, fetch y save del estado y de datos estaticos.
+- `reducers/`: mutaciones por dominio.
+- `actions/`, `thunks/`, `selectors/`: capa de flujo y consultas derivadas.
+- `components/`: primitives y bloques reutilizables.
+- `screens/`: vistas de alto nivel.
+- `data-*.ts`: catalogos y datos base.
 
-1.  **`profile`**: Datos del usuario (nombre, mantra, metas diarias de macros/calorías, preferencias de tema).
-2.  **`session`**: Estado efímero de la sesión actual (rutina activa, progreso del entrenamiento en vivo, hábitos diarios completados, temporizadores).
-3.  **`nutrition`**: Registro de comidas (`loggedMeals`), alimentos personalizados, recetas creadas por el usuario y macros consumidos en el día.
-4.  **`workout`**: Historial de entrenamientos, rutinas personalizadas creadas por el usuario y biblioteca de ejercicios.
-5.  **`progress`**: Historial de métricas corporales (peso, medidas antropométricas, fotos de progreso).
-6.  **`ui`**: Estado de la interfaz (pantalla activa, modales abiertos, notificaciones/toasts, logros desbloqueados).
+## 4. Arquitectura de estado
+El `AppState` se divide en seis ramas:
+- `profile`: identidad, metas y tema.
+- `session`: estado efimero del flujo activo, resumenes y tareas diarias.
+- `nutrition`: comidas, recetas, alimentos personalizados y macros consumidos.
+- `workout`: rutinas, ejercicios, historial y agenda semanal.
+- `progress`: metricas corporales, fotos y tracker de progreso.
+- `ui`: pantalla activa, modales, toast, navegacion auxiliar y estado de sync.
 
-**Flujo de Sincronización:**
-1. El usuario realiza una acción (ej. registrar peso).
-2. Se dispara un `dispatch` que actualiza el estado local inmediatamente (UI rápida).
-3. Un `useEffect` en `AppProvider` detecta el cambio, guarda en `localStorage` y hace un *debounce* de 2 segundos para sincronizar el estado completo con Supabase de forma transparente en segundo plano.
+El provider mantiene una referencia al estado actual, serializa cambios para `localStorage` y hace debounce para guardar en Supabase. El ultimo cambio gana entre estado local y remoto usando `lastUpdated`.
 
-## 5. Flujo de Usuario (User Flow)
-1.  **Autenticación:** El usuario inicia sesión vía Supabase Auth.
-2.  **Onboarding:** Si el perfil no tiene un nombre registrado (`state.profile.userName === ''`), se muestra la pantalla de `OnboardingScreen`. Aquí el usuario ingresa su nombre, medidas iniciales y define sus metas de macronutrientes.
-3.  **Navegación Principal (Bottom Nav):**
-    *   **Hoy:** Dashboard diario. Muestra el resumen de macros, hábitos diarios (sueño, pasos) y permite iniciar la rutina programada para el día.
-    *   **Nutrición:** Buscador de alimentos, escáner/registro de comidas, creación de recetas y visualización del progreso calórico del día.
-    *   **Entrenamiento:** Biblioteca de rutinas, creador de rutinas personalizadas e historial de sesiones. Al iniciar una rutina, la app entra en un "Modo Enfoque" (Focus Mode) que oculta la navegación y guía paso a paso.
-    *   **Progreso:** Tarjetas de evolución anatómica (peso, medidas), gráficos de progreso y registro de nuevas medidas.
-4.  **Perfil (Ajustes):** Accesible desde la cabecera. Permite cambiar el tema visual, ajustar las metas de macros (con modos predefinidos: Estricto, Balanceado, Flexible), editar el mantra personal, reiniciar el onboarding o cerrar sesión.
+## 5. Flujo de usuario
+1. El usuario entra y la app intenta leer la sesion de Supabase.
+2. Si no hay `userName`, se muestra `OnboardingScreen`.
+3. La navegacion principal muestra `Hoy`, `Nutricion`, `Biblioteca` y `Progreso`.
+4. Si hay rutina activa, resumen de entrenamiento o modal de cardio, la app entra en focus mode y oculta la barra inferior.
+5. Desde `Perfil` se ajustan tema, metas diarias y datos personales.
 
-## 6. Base de Datos (Supabase)
-La aplicación utiliza Supabase como Backend-as-a-Service (BaaS).
-*   **Auth:** Maneja la creación de cuentas y el inicio de sesión.
-*   **Database:** La aplicación guarda el estado del usuario (`AppState`) asociado a su `user_id`. 
-    *   *Lógica de inicialización:* Al cargar la app, `AppProvider` intenta recuperar el estado desde Supabase. Si falla o no hay conexión, hace un fallback a `localStorage`. 
-    *   *Fusión de datos (Merge):* Las entidades estáticas (ejercicios base, alimentos base) se combinan con los datos generados por el usuario para asegurar que las actualizaciones de la app (nuevos ejercicios añadidos por los desarrolladores) no borren ni sobreescriban los datos personalizados del usuario.
+## 6. Persistencia y sincronizacion
+- `localStorage` usa una clave por usuario: `fitArchitectState_<userId>`.
+- Supabase guarda el snapshot completo en `user_state.state_json`.
+- `statePersistence.ts` hidrata fechas, sets, metas y theme.
+- El theme se guarda aparte en `fitArchitectTheme`.
+- El `syncStatus` se normaliza al guardar para evitar bucles de autosave.
+- Los datos estaticos se fusionan con el estado del usuario para no perder rutinas, ejercicios o alimentos nuevos.
 
-## 7. Guía para Continuar el Desarrollo
-*   **Agregar una nueva pantalla:**
-    1. Crea el componente en `/src/screens/`.
-    2. Añade el ID de la pantalla al tipo `Screen` en `types.ts`.
-    3. Regístrala en el array `screens` dentro de `App.tsx`.
-*   **Modificar el estado global:**
-    1. Define la nueva propiedad en la interfaz correspondiente en `types.ts`.
-    2. Crea el tipo de acción en `actions/actionTypes.ts`.
-    3. Crea el Action Creator en `actions/`.
-    4. Maneja la acción en el reducer correspondiente dentro de `/reducers/`.
-*   **Estilos y UI:**
-    *   Utiliza los componentes base existentes (`Button`, `Input`, `FloatingDock`) para mantener la consistencia.
-    *   Los colores principales están definidos en la configuración de Tailwind (ej. `brand-accent`, `surface-bg`, `text-primary`). Usa estas variables CSS para soportar el modo oscuro/claro automáticamente.
-*   **Modo Enfoque (Focus Mode):**
-    *   Si creas una vista que requiere toda la atención del usuario (como un entrenamiento activo o un resumen post-entrenamiento), asegúrate de que la variable `isFocusMode` en `App.tsx` la evalúe como `true` para ocultar la navegación inferior y otros elementos distractores.
+## 7. Performance
+- Las pantallas principales se cargan con `React.lazy`.
+- `Progreso` y `Nutricion` siguen dividiendo carga interna en componentes y chunks separados.
+- `vite.config.ts` separa vendors pesados como `react`, `recharts`, `@google/genai` y `@zxing/browser`.
+
+## 8. Guia de desarrollo
+- Para agregar una pantalla nueva, crea el componente en `screens/`, actualiza el tipo `Screen` en `types.ts` y agrega el import lazy en `App.tsx`.
+- Para agregar estado global, define el tipo en `types.ts`, la accion en `actions/actionTypes.ts`, el creador en `actions/` y la logica en el reducer correspondiente.
+- Para UI nueva, reutiliza `Button`, `Input`, `Modal`, `SectionHeader`, `PillTabs` y los tokens CSS existentes.
+- Para vistas intensivas, usa `focus mode` si necesitan bloquear la navegacion y priorizar la experiencia de una sola tarea.
+
+## 9. Variables y scripts
+Variables de entorno:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `GEMINI_API_KEY` para funciones de IA al compilar o ejecutar con ese entorno disponible
+
+Scripts:
+- `npm install`
+- `npm run dev`
+- `npm run build`
+- `npm run preview`
+- `npm run lint`
