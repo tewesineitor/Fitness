@@ -244,7 +244,7 @@ const RecipeEditorView: React.FC<{ onBack: () => void; existingRecipe?: Recipe; 
                         <div className="relative">
                             <select 
                                 value={mealType} 
-                                onChange={e => setMealType(e.target.value as any)} 
+                                onChange={e => setMealType(e.target.value as MealType)} 
                                 className="w-full bg-surface-bg border border-surface-border rounded-xl p-4 text-sm font-bold text-white focus:border-brand-accent outline-none appearance-none uppercase transition-colors tracking-wide"
                             >
                                 <option>Desayuno</option>

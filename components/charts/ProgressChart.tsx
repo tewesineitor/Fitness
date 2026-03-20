@@ -4,6 +4,23 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { AppContext } from '../../contexts';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
+type MetricKey = 'peso_kg' | 'cintura_cm' | 'caderas_cm' | 'cuello_cm' | 'hombros_cm' | 'pecho_cm' | 'muslo_cm' | 'biceps_cm';
+type ChartPoint = {
+    date: string;
+    fullDate: number;
+    value: number;
+};
+
+type TooltipPayloadItem = {
+    value: number;
+};
+
+type ChartTooltipProps = {
+    active?: boolean;
+    payload?: TooltipPayloadItem[];
+    label?: string;
+    unit: string;
+};
 
 const getCutoffDate = (range: TimeRange): Date => {
     const date = new Date();
@@ -17,7 +34,7 @@ const getCutoffDate = (range: TimeRange): Date => {
     return date;
 };
 
-const CustomTooltip = ({ active, payload, label, unit }: any) => {
+const CustomTooltip = ({ active, payload, label, unit }: ChartTooltipProps) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-surface-bg/90 border border-surface-border px-3 py-2 rounded-lg shadow-sm backdrop-blur-md ring-1 ring-white/5">
@@ -34,9 +51,9 @@ const CustomTooltip = ({ active, payload, label, unit }: any) => {
 const ProgressChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
     const { state } = React.useContext(AppContext)!;
     const { metricHistory } = state.progress;
-    const [activeMetric, setActiveMetric] = React.useState<'peso_kg' | 'cintura_cm' | 'caderas_cm' | 'cuello_cm' | 'hombros_cm' | 'pecho_cm' | 'muslo_cm' | 'biceps_cm'>('peso_kg');
+    const [activeMetric, setActiveMetric] = React.useState<MetricKey>('peso_kg');
 
-    const config = {
+    const config: Record<MetricKey, { label: string; unit: string; color: string }> = {
         peso_kg: { label: 'Peso', unit: 'kg', color: '#FF4E00' },
         cintura_cm: { label: 'Cintura', unit: 'cm', color: '#00E5FF' },
         caderas_cm: { label: 'Caderas', unit: 'cm', color: '#FF006A' },
@@ -52,7 +69,7 @@ const ProgressChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
         
         const cutoffDate = getCutoffDate(timeRange);
 
-        const data = metricHistory
+        const data: ChartPoint[] = metricHistory
             .filter(entry => entry[activeMetric] !== undefined && entry[activeMetric] !== null && new Date(entry.fecha_registro) >= cutoffDate)
             .map(entry => ({
                 date: new Date(entry.fecha_registro).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
@@ -86,10 +103,10 @@ const ProgressChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
         <div className="w-full h-full flex flex-col">
             {/* 1. Metric Selector Pills */}
             <div className="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                {Object.entries(config).map(([key, conf]) => (
+                {(Object.entries(config) as [MetricKey, (typeof config)[MetricKey]][]).map(([key, conf]) => (
                     <button
                         key={key}
-                        onClick={() => setActiveMetric(key as any)}
+                        onClick={() => setActiveMetric(key)}
                         className={`
                             whitespace-nowrap px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all
                             ${activeMetric === key 

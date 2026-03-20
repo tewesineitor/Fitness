@@ -17,13 +17,15 @@ import RawDataDebugModal from '../../components/dialogs/RawDataDebugModal';
 import DataCorrectionModal from '../../components/dialogs/DataCorrectionModal';
 import { selectDailyGoals } from '../../selectors/profileSelectors';
 import { selectConsumedMacros } from '../../selectors/nutritionSelectors';
+import type { OpenFoodFactsProductData } from '../../services/aiService';
+import type { IconComponent } from '../../types';
 
 // --- TYPES & CONSTANTS ---
 type FoodCategory = FoodItem['category'];
 type MainCategory = 'Todos' | 'Proteínas' | 'Carbohidratos' | 'Frutas y Verduras' | 'Grasas' | 'Preparados';
 type ProcessingState = 'fetching' | 'analyzing' | null;
 
-const filterCategories: { key: MainCategory; label: string; icon: React.FC<any>; activeColorClass: string }[] = [
+const filterCategories: { key: MainCategory; label: string; icon: IconComponent; activeColorClass: string }[] = [
     { key: 'Todos', label: 'Todos', icon: BookOpenIcon, activeColorClass: 'text-white bg-white/10' },
     { key: 'Proteínas', label: 'Proteínas', icon: ProteinShakeIcon, activeColorClass: 'text-brand-protein bg-brand-protein/10 border-brand-protein/20' },
     { key: 'Carbohidratos', label: 'Carbs', icon: BowlIcon, activeColorClass: 'text-brand-carbs bg-brand-carbs/10 border-brand-carbs/20' },
@@ -289,7 +291,7 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
     const [processingImageUrl, setProcessingImageUrl] = useState<string | null>(null);
     const [processingBarcodeState, setProcessingBarcodeState] = useState<ProcessingState>(null);
     const [showImageSourceModal, setShowImageSourceModal] = useState(false);
-    const [debugData, setDebugData] = useState<any | null>(null);
+    const [debugData, setDebugData] = useState<OpenFoodFactsProductData | null>(null);
     const [foodForConfirmation, setFoodForConfirmation] = useState<FoodItem | null>(null);
     
     const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -417,7 +419,7 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
         }
     }, [dispatch]);
     
-    const proceedWithAnalysis = async (productData: any) => {
+    const proceedWithAnalysis = async (productData: OpenFoodFactsProductData) => {
         setDebugData(null);
         setProcessingBarcodeState('analyzing');
         const result = await dispatch(thunks.processScannedProductThunk(productData));

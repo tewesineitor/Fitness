@@ -14,6 +14,17 @@ type ChartPoint = {
     ritmo: number;
 };
 
+type TooltipPayloadItem = {
+    payload: ChartPoint;
+};
+
+type ChartTooltipProps = {
+    active?: boolean;
+    payload?: TooltipPayloadItem[];
+    label?: string;
+    color: string;
+};
+
 const getCutoffDate = (range: TimeRange): Date => {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
@@ -32,7 +43,7 @@ const formatPace = (pace: number) => {
     return `${mins}'${secs.toString().padStart(2, '0')}"`;
 };
 
-const CustomTooltip = ({ active, payload, label, color }: any) => {
+const CustomTooltip = ({ active, payload, label, color }: ChartTooltipProps) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload;
         return (

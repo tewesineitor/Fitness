@@ -8,6 +8,13 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
     const { dispatch } = useContext(AppContext)!;
     const [viewMode, setViewMode] = useState<'grid' | 'compare'>('grid');
     const [timeFilter, setTimeFilter] = useState<'all' | '1m' | '3m' | '6m' | '1y'>('all');
+    const timeFilters: { id: typeof timeFilter; label: string }[] = [
+        { id: 'all', label: 'TODO' },
+        { id: '1m', label: '1M' },
+        { id: '3m', label: '3M' },
+        { id: '6m', label: '6M' },
+        { id: '1y', label: '1A' },
+    ];
     
     const filteredPhotos = useMemo(() => {
         if (timeFilter === 'all') return photos;
@@ -115,16 +122,10 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
 
                 {viewMode === 'grid' && (
                     <div className="hidden sm:flex items-center bg-surface-hover/50 p-1 rounded-xl border border-surface-border/50">
-                        {[
-                            { id: 'all', label: 'TODO' },
-                            { id: '1m', label: '1M' },
-                            { id: '3m', label: '3M' },
-                            { id: '6m', label: '6M' },
-                            { id: '1y', label: '1A' }
-                        ].map((filter) => (
+                        {timeFilters.map((filter) => (
                             <button
                                 key={filter.id}
-                                onClick={() => setTimeFilter(filter.id as any)}
+                                onClick={() => setTimeFilter(filter.id)}
                                 className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${timeFilter === filter.id ? 'bg-white text-black shadow-md' : 'text-text-secondary hover:text-white'}`}
                             >
                                 {filter.label}

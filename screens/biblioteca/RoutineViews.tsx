@@ -1,6 +1,6 @@
 
 import React, { useState, useContext, useMemo, useEffect } from 'react';
-import { RoutineTask, TimeOfDay, RoutineTaskType, Exercise, RoutineStep, StrengthStep, YogaStep, DayOfWeek } from '../../types';
+import { IconComponent, RoutineTask, TimeOfDay, RoutineTaskType, Exercise, RoutineStep, StrengthStep, YogaStep, DayOfWeek } from '../../types';
 import { ChevronRightIcon, PlusIcon, TrashIcon, CheckIcon, MountainIcon, StrengthIcon, YogaIcon, PostureIcon, CardioIcon, MeditationIcon, ClockIcon, SearchIcon, XIcon, CalendarIcon, ArrowDownIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import Button from '../../components/Button';
@@ -350,7 +350,7 @@ const RoutineEditor: React.FC<{ onBack: () => void, existingRoutine?: RoutineTas
     
     const removeStep = (index: number) => setFlow(flow.filter((_, i) => i !== index));
 
-    const routineTypes: { value: RoutineTaskType, label: string, icon: any }[] = [
+    const routineTypes: { value: RoutineTaskType; label: string; icon: IconComponent }[] = [
         { value: 'strength', label: 'Fuerza', icon: StrengthIcon },
         { value: 'cardio', label: 'Cardio', icon: CardioIcon },
         { value: 'yoga', label: 'Yoga', icon: YogaIcon },

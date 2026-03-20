@@ -6,6 +6,21 @@ import { DesgloseFuerza } from '../../types';
 import { ChevronRightIcon } from '../icons';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
+type ChartPoint = {
+    date: string;
+    fullDate: number;
+    value: number;
+};
+
+type TooltipPayloadItem = {
+    value: number;
+};
+
+type ChartTooltipProps = {
+    active?: boolean;
+    payload?: TooltipPayloadItem[];
+    label?: string;
+};
 
 const getCutoffDate = (range: TimeRange): Date => {
     const date = new Date();
@@ -24,7 +39,7 @@ const calculateE1RM = (weight: number, reps: number) => {
     return weight * (1 + reps / 30);
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-surface-bg/90 border border-surface-border px-3 py-2 rounded-lg shadow-sm backdrop-blur-md ring-1 ring-white/5">
@@ -76,7 +91,7 @@ const StrengthChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
         if (!selectedExerciseId) return { chartData: [], stats: null, minVal: 0, maxVal: 100 };
         
         const cutoffDate = getCutoffDate(timeRange);
-        const data = [];
+        const data: ChartPoint[] = [];
         
         for (const session of historialDeSesiones) {
             const date = new Date(session.fecha_completado);

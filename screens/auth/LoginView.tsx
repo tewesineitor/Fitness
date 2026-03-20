@@ -4,6 +4,9 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { StrengthIcon } from '../../components/icons';
 
+const getErrorMessage = (error: unknown, fallback: string) =>
+    error instanceof Error ? error.message : fallback;
+
 const LoginView: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,7 +23,7 @@ const LoginView: React.FC = () => {
 
         const supabase = getSupabase();
         if (!supabase) {
-            setError('Error de conexión con la base de datos.');
+            setError('Error de conexion con la base de datos.');
             setLoading(false);
             return;
         }
@@ -45,8 +48,8 @@ const LoginView: React.FC = () => {
                 setError('Cuenta creada. Revisa tu correo para confirmar el enlace.');
                 setShowResend(true);
             }
-        } catch (err: any) {
-            setError(err.message || 'Ocurrió un error');
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, 'Ocurrio un error'));
         } finally {
             setLoading(false);
         }
@@ -71,7 +74,7 @@ const LoginView: React.FC = () => {
             if (error) {
                 setError(error.message);
             } else {
-                setError('Correo de confirmación reenviado. Revisa tu bandeja de entrada o spam.');
+                setError('Correo de confirmacion reenviado. Revisa tu bandeja de entrada o spam.');
             }
         }
 
@@ -87,7 +90,7 @@ const LoginView: React.FC = () => {
                     </div>
                     <h1 className="text-2xl font-black uppercase tracking-tight text-text-primary">FitArchitect</h1>
                     <p className="text-sm text-text-secondary mt-1">
-                        {isLogin ? 'Inicia sesión en tu cuenta' : 'Crea tu cuenta personal'}
+                        {isLogin ? 'Inicia sesion en tu cuenta' : 'Crea tu cuenta personal'}
                     </p>
                 </div>
 
@@ -99,7 +102,7 @@ const LoginView: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <Input
-                        label="Correo electrónico"
+                        label="Correo electronico"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -108,7 +111,7 @@ const LoginView: React.FC = () => {
                         required
                     />
                     <Input
-                        label="Contraseña"
+                        label="Contrasena"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -138,7 +141,7 @@ const LoginView: React.FC = () => {
                             size="small"
                             className="w-full text-xs underline"
                         >
-                            Reenviar confirmación
+                            Reenviar confirmacion
                         </Button>
                     </div>
                 )}
@@ -151,7 +154,7 @@ const LoginView: React.FC = () => {
                         size="small"
                         className="w-full text-xs uppercase tracking-wider"
                     >
-                        {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+                        {isLogin ? 'No tienes cuenta? Registrate' : 'Ya tienes cuenta? Inicia sesion'}
                     </Button>
                 </div>
             </div>
