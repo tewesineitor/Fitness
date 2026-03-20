@@ -7,7 +7,15 @@ import { Recipe, FoodItem, AddedFood, Exercise } from '../types';
  * Se inicializa directamente asumiendo que `process.env.GEMINI_API_KEY` está disponible en el entorno de ejecución.
  * No es necesario llamar a una función de inicialización.
  */
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiInstance: any = null;
+const getAI = () => {
+    if (!aiInstance) {
+        // We use process.env to not break the user's existing setup, but provide a dummy key to prevent immediate crashes if undefined.
+        // It's still safer to lazily init since @google/genai has strict browser checks.
+        aiInstance = new GoogleGenAI({ apiKey: typeof process !== 'undefined' && process.env ? process.env.GEMINI_API_KEY || 'missing_key' : 'missing_key' });
+    }
+    return aiInstance;
+};
 
 type FoodCategory = FoodItem['category'];
 
@@ -83,7 +91,7 @@ export const categorizeProductName = async (productName: string): Promise<AIServ
             'Suplementos',
             'Untables / Extras'
         ];
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: "gemini-2.5-flash",
             contents: `Clasifica el siguiente producto alimenticio en la categoría más apropiada de esta lista: ${categories.join(', ')}. Responde únicamente con el nombre de la categoría. Producto: "${productName}"`,
         });
@@ -120,7 +128,7 @@ ${availableFoodsString}
 
 RESPONDE ÚNICAMENTE CON UN JSON VÁLIDO.`;
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: fullPrompt,
             config: {
@@ -181,7 +189,7 @@ export const extractNutritionDataFromImage = async (base64Image: string, mimeTyp
         const imagePart = { inlineData: { data: base64Image, mimeType } };
         const textPart = { text: "Analiza la imagen de esta tabla nutrimental. Enfócate exclusivamente en la columna etiquetada como 'por Porción'. Ignora las columnas 'por 100g' a menos que sea la única disponible. Si la tabla no especifica el tamaño de la porción en gramos (ej. '1 barrita'), y tú puedes inferir el peso por el empaque, úsalo. Si no es posible, deja el tamaño de la porción como una descripción. Extrae: 'serving_size_string' (ej. '1 barrita (45g)'), 'protein_g', 'carbs_g', 'fat_g'. Si un valor no está presente o es cero, devuélvelo como tal. Responde únicamente con un JSON válido." };
         
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
             config: {
@@ -261,7 +269,7 @@ ${JSON.stringify(productData, null, 2)}
 
 RESPONDE ÚNICAMENTE CON UN JSON VÁLIDO.`;
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -304,7 +312,7 @@ RESPONDE ÚNICAMENTE CON UN JSON VÁLIDO.`;
 // --- MISC AI ---
 export const generateExerciseImage = async (exercise: Exercise): Promise<AIServiceResult<string>> => {
     try {
-        const response = await ai.models.generateImages({
+        const response = await getAI().models.generateImages({
             model: 'imagen-4.0-generate-001',
             prompt: `Vector illustration of a person performing the exercise "${exercise.name}". Minimalist, clean lines, on a dark background. The style should be modern and sleek, similar to a fitness app icon.`,
             config: {
@@ -334,7 +342,7 @@ export const extractRunDataFromImage = async (base64Image: string, mimeType: str
 - Ganancia de elevación en metros (elevation_gain_m).
 Responde únicamente con el JSON.` };
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
             config: {
@@ -376,7 +384,7 @@ export const extractHikeDataFromImage = async (base64Image: string, mimeType: st
 - Ganancia de elevación en metros (elevation_gain_m).
 Responde únicamente con el JSON.` };
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
             config: {
@@ -419,7 +427,7 @@ export const extractRuckingDataFromImage = async (base64Image: string, mimeType:
 - Peso cargado en la mochila en kilogramos (weight_carried_kg).
 Responde únicamente con el JSON.` };
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
             config: {

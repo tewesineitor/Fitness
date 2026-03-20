@@ -84,7 +84,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
     return (
         <>
             <section>
-                <SectionHeader title="Metas Nutricionales" colorClass="bg-brand-fat" />
+                <SectionHeader title="Metas Nutricionales" dotClass="bg-brand-fat" />
                 
                 <div className="bg-surface-bg p-4 rounded-2xl border-l-2 border-l-brand-accent border-y border-r border-surface-border space-y-5 hover:bg-surface-hover/50 transition-colors shadow-sm">
                     {/* Calories (Big) */}

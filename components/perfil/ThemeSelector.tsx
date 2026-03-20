@@ -30,7 +30,7 @@ export const ThemeTile: React.FC<{
 export const ThemeSelector: React.FC<{ theme: Theme; updateTheme: (t: Theme) => void }> = ({ theme, updateTheme }) => {
     return (
         <section>
-            <SectionHeader title="Interfaz Visual" colorClass="bg-text-primary" />
+            <SectionHeader title="Interfaz Visual" dotClass="bg-text-primary" />
             <div className="bg-surface-bg p-4 rounded-2xl border border-surface-border shadow-sm">
                 <div className="grid grid-cols-3 gap-3">
                     <ThemeTile theme="light" currentTheme={theme} onSelect={updateTheme} icon={SunIcon} label="Claro" />

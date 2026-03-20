@@ -6,6 +6,13 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Fit Architect - Pain</title>
+    <script type="module">
+      import RefreshRuntime from "/@react-refresh"
+      RefreshRuntime.injectIntoGlobalHook(window)
+      window.$RefreshReg$ = () => {}
+      window.$RefreshSig$ = () => (type) => type
+      window.__vite_plugin_react_preamble_installed__ = true
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -242,21 +249,7 @@
         }
       }
     </script>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom": "https://esm.sh/react-dom@^18.2.0",
-    "react-dom/": "https://esm.sh/react-dom@^18.2.0/",
-    "react/": "https://esm.sh/react@^18.2.0/",
-    "react": "https://esm.sh/react@^18.2.0",
-    "@google/genai": "https://esm.sh/@google/genai",
-    "recharts": "https://esm.sh/recharts@2.12.7",
-    "@zxing/browser": "https://esm.sh/@zxing/browser@0.1.5",
-    "vite": "https://esm.sh/vite@^7.3.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-  }
-}
-</script>
+
 <link rel="stylesheet" href="/index.css">
 </head>
   <body>

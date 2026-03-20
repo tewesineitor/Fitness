@@ -13,7 +13,7 @@ export const AccountSection: React.FC<{
 }> = ({ onClose, dispatch, name, goals, customMantra }) => {
     return (
         <section className="mb-12 mt-8">
-            <SectionHeader title="Ajustes de Cuenta" colorClass="bg-text-secondary" />
+            <SectionHeader title="Ajustes de Cuenta" dotClass="bg-text-secondary" />
             <div className="bg-surface-bg p-4 rounded-2xl border border-surface-border shadow-sm space-y-3">
                 <Button 
                     onClick={() => {

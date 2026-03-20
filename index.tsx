@@ -2,44 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import AppWithProvider from './App';
 
+console.log(">>> index.tsx: IMPORTS AND APP MODULE LOADED");
+
 const rootElement = document.getElementById('root');
 if (!rootElement) {
+  console.error(">>> index.tsx: ROOT ELEMENT NOT FOUND!");
   throw new Error("Could not find root element to mount to");
 }
 
-// Suppress Recharts defaultProps warning in React 18 and width/height warnings
-const originalError = console.error;
-const originalWarn = console.warn;
+console.log(">>> index.tsx: ROOT ELEMENT FOUND, CREATING ROOT");
 
-console.error = (...args: any[]) => {
-  const msg = args[0];
-  if (typeof msg === 'string') {
-    // Suppress defaultProps warning for Recharts components
-    if (msg.includes('defaultProps') && (
-      msg.includes('XAxis') || 
-      msg.includes('YAxis') || 
-      (args.length > 1 && (String(args[1]).includes('XAxis') || String(args[1]).includes('YAxis')))
-    )) {
-      return;
-    }
-  }
-  originalError(...args);
-};
-
-console.warn = (...args: any[]) => {
-  const msg = args[0];
-  if (typeof msg === 'string') {
-    // Suppress chart width/height warning
-    if (msg.includes('width(0) and height(0) of chart should be greater than 0')) {
-      return;
-    }
-  }
-  originalWarn(...args);
-};
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <AppWithProvider />
-  </React.StrictMode>
-);
+try {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <AppWithProvider />
+    </React.StrictMode>
+  );
+  console.log(">>> index.tsx: RENDER CALLED SUCCESSFULLY");
+} catch (error) {
+  console.error(">>> index.tsx: CRITICAL ERROR DURING MOUNT:", error);
+}

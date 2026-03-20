@@ -655,7 +655,7 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                         <div className="flex flex-col gap-2 pt-[10px] pb-0">
                             {/* Level 1: Main Categories */}
                             <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-                                {filterCategories.map(({ key, label, icon: Icon }) => {
+                                {filterCategories.map(({ key, label, icon: Icon, activeColorClass }) => {
                                     const isActive = activeFilterCategory === key;
                                     return (
                                         <button 

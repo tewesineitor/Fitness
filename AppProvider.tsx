@@ -372,6 +372,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
     }, [state.profile.theme]);
 
+    console.log(">>> AppProvider: RENDERING", { isInitialized, authInitialized, hasSession: !!session });
+
     if (!isInitialized || !authInitialized) {
         return (
             <div className="h-screen w-screen flex items-center justify-center bg-bg-base">
