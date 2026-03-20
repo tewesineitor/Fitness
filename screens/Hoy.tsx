@@ -29,7 +29,6 @@ import {
 import { selectConsumedMacros } from '../selectors/nutritionSelectors';
 import { selectSessionState } from '../selectors/sessionSelectors';
 import { selectProgressState } from '../selectors/progressSelectors';
-import { ProgressRings } from '../components/ProgressRings';
 import WeeklyGlanceWidget from '../components/hoy/WeeklyGlanceWidget';
 import DailyNonNegotiablesWidget from '../components/hoy/DailyNonNegotiablesWidget';
 import RuckingSession from './rutina-activa/RuckingSession';

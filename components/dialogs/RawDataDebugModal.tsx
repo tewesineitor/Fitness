@@ -3,7 +3,7 @@ import Modal from '../Modal';
 import Button from '../Button';
 
 interface RawDataDebugModalProps {
-  data: any;
+  data: unknown;
   onConfirm: () => void;
   onCancel: () => void;
 }

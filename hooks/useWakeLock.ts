@@ -28,10 +28,10 @@ export const useWakeLock = (enabled: boolean) => {
                     sentinelRef.current.addEventListener('release', () => {
                         // Lock released
                     });
-                } catch (err: any) {
+                } catch (err: unknown) {
                     // Specific handling for NotAllowedError which happens in IFrames (like AI Studio preview)
                     // or when the device is in low power mode. We fail silently here to avoid console noise.
-                    if (err.name !== 'NotAllowedError') {
+                    if (!(err instanceof Error) || err.name !== 'NotAllowedError') {
                         console.warn(`Wake Lock request failed: ${err}`);
                     }
                 }

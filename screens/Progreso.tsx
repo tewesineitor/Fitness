@@ -14,6 +14,7 @@ import StatChip from '../components/StatChip';
 import PillTabs from '../components/PillTabs';
 import { selectProgressState } from '../selectors/progressSelectors';
 import { ScaleIcon, StrengthIcon, CardioIcon } from '../components/icons';
+import type { StatTrend } from '../components/StatChip';
 
 type SubScreen = 'main' | 'gallery' | 'history' | 'session-detail';
 type TimeRange = '1M' | '3M' | 'ALL';
@@ -87,7 +88,7 @@ const Progreso: React.FC = () => {
         };
     }, [progress?.metricHistory, state.workout.historialDeSesiones.length]);
 
-    const weightTrend = latestMetrics.weight !== null && latestMetrics.prevWeight !== null
+    const weightTrend: StatTrend | undefined = latestMetrics.weight !== null && latestMetrics.prevWeight !== null
         ? (latestMetrics.weight < latestMetrics.prevWeight ? 'down' : latestMetrics.weight > latestMetrics.prevWeight ? 'up' : 'neutral')
         : undefined;
 
@@ -119,7 +120,7 @@ const Progreso: React.FC = () => {
                     value={latestMetrics.weight !== null ? latestMetrics.weight.toFixed(1) : '—'}
                     unit="kg"
                     label="Peso"
-                    trend={weightTrend as any}
+                    trend={weightTrend}
                     colorClass="text-brand-accent"
                 />
                 <StatChip

@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
 
+export type StatTrend = 'up' | 'down' | 'neutral';
+
 interface StatChipProps {
   /** Primary numeric or text value */
   value: string | number;
@@ -8,7 +10,7 @@ interface StatChipProps {
   /** Secondary descriptor line */
   label: string;
   /** Optional trend indicator: positive / negative / neutral */
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: StatTrend;
   /** Coloring accent class (e.g., 'text-brand-protein') */
   colorClass?: string;
   /** Optional icon */
@@ -38,12 +40,12 @@ const StatChip: React.FC<StatChipProps> = ({
   fullHeight = false,
   className = '',
 }) => {
-  const trendIcon: Record<'up' | 'down' | 'neutral', string> = {
+  const trendIcon: Record<StatTrend, string> = {
     up:      '↑',
     down:    '↓',
     neutral: '→',
   };
-  const trendColor: Record<'up' | 'down' | 'neutral', string> = {
+  const trendColor: Record<StatTrend, string> = {
     up:      'text-success',
     down:    'text-danger',
     neutral: 'text-text-muted',

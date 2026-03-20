@@ -129,24 +129,3 @@ export const HistoryWidget: React.FC<{ onShowHistoryList: () => void; onViewHist
     );
 };
 
-// Main Component (Kept for backwards compatibility if needed, but we'll use individual exports)
-interface ProgressWidgetsGridProps {
-    onShowGallery: () => void;
-    onShowHistoryList: () => void;
-    onViewHistoricalSession: (session: HistorialDeSesionesEntry) => void;
-}
-
-const ProgressWidgetsGrid: React.FC<ProgressWidgetsGridProps> = ({ 
-    onShowGallery, 
-    onShowHistoryList,
-    onViewHistoricalSession
-}) => {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <GalleryWidget onShowGallery={onShowGallery} />
-            <HistoryWidget onShowHistoryList={onShowHistoryList} onViewHistoricalSession={onViewHistoricalSession} />
-        </div>
-    );
-};
-
-export default ProgressWidgetsGrid;

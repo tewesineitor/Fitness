@@ -64,7 +64,6 @@ export const useAppBootstrap = ({
                     const localTime = localState.lastUpdated || 0;
 
                     if (localTime > dbTime) {
-                        console.log('Local state is newer than DB state. Using local state.');
                         finalState = localState;
                         try {
                             await saveUserState(localState, userId);

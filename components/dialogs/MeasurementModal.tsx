@@ -58,7 +58,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
     };
 
     const handleSave = () => {
-        const payload: any = { date: todayStr };
+        const payload: Parameters<typeof actions.addMetricEntry>[0] = { date: todayStr };
         if (weight) payload.weight = parseFloat(weight);
         if (waist) payload.waist = parseFloat(waist);
         if (hips) payload.hips = parseFloat(hips);
