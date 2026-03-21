@@ -6,7 +6,6 @@ import { ChevronRightIcon, FireIcon, InformationCircleIcon, StrengthIcon, YogaIc
 import { Exercise } from '../../../types';
 import { vibrate } from '../../../utils/helpers';
 import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
-import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
 
 interface PotentiationScreenProps {
     exerciseName: string;
@@ -93,10 +92,8 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
     return (
         <div className="relative flex h-full flex-col overflow-hidden bg-bg-base/50">
             <header className="z-10 flex-shrink-0 px-6 pt-8 text-center animate-fade-in-down">
-                <Tag variant="status" tone={isWarmup ? 'protein' : 'accent'} size="sm" className="mx-auto">
-                    <Icon className="h-3.5 w-3.5" />
+                <Tag variant="status" tone={isWarmup ? 'protein' : 'accent'} size="sm" className="mx-auto" icon={Icon} count={`${currentItemIndex + 1}/${totalItems}`}>
                     {label}
-                    <span className="text-text-secondary">{currentItemIndex + 1}/{totalItems}</span>
                 </Tag>
             </header>
 

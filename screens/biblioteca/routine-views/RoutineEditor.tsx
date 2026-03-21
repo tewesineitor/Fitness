@@ -121,22 +121,26 @@ const RoutineEditor: React.FC<{ onBack: () => void; existingRoutine?: RoutineTas
                         />
                     </div>
 
-                    <div className="bg-surface-hover p-1 rounded-xl border border-surface-border flex w-full mb-8 overflow-hidden">
-                        {routineTypes.map(rt => {
-                            const isSelected = type === rt.value;
-                            const Icon = rt.icon;
-                            return (
-                                <button
-                                    key={rt.value}
-                                    onClick={() => setType(rt.value)}
-                                    className={`flex-1 flex flex-row items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all duration-200 ${isSelected ? 'bg-white text-black shadow-sm font-bold' : 'text-text-secondary hover:text-text-primary hover:bg-white/5 font-medium'}`}
-                                >
-                                    <Icon className="w-4 h-4 flex-shrink-0" />
-                                    <span className="text-[10px] sm:text-xs uppercase tracking-wider truncate">{rt.label}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
+                    <DialogSectionCard className="mb-8">
+                        <div className="grid grid-cols-2 gap-3">
+                            {routineTypes.map(rt => {
+                                const isSelected = type === rt.value;
+                                const Icon = rt.icon;
+                                return (
+                                    <OptionTile
+                                        key={rt.value}
+                                        icon={Icon}
+                                        title={rt.label}
+                                        description={rt.value === 'strength' ? 'Volumen y progresion' : rt.value === 'cardio' ? 'Resistencia y ritmo' : rt.value === 'yoga' ? 'Movilidad y control' : 'Foco mental'}
+                                        active={isSelected}
+                                        tone={rt.value === 'strength' ? 'protein' : rt.value === 'cardio' ? 'carbs' : rt.value === 'yoga' ? 'accent' : 'success'}
+                                        onClick={() => setType(rt.value)}
+                                        className="px-4 py-5"
+                                    />
+                                );
+                            })}
+                        </div>
+                    </DialogSectionCard>
                 </div>
 
                 <div className="space-y-4">
@@ -151,8 +155,9 @@ const RoutineEditor: React.FC<{ onBack: () => void; existingRoutine?: RoutineTas
                         if (step.type === 'exercise') {
                             const s = step as StrengthStep;
                             return (
-                                <div key={index} className="bg-surface-bg rounded-2xl overflow-hidden border border-surface-border group animate-fade-in-up hover:border-brand-accent/30 transition-all hover:shadow-lg shadow-sm" style={{ animationDelay: `${index * 50}ms` }}>
-                                    <div className="flex items-center gap-4 p-4 bg-gradient-to-b from-white/5 to-transparent">
+                            <div key={index} style={{ animationDelay: `${index * 50}ms` }}>
+                                <DialogSectionCard className="group animate-fade-in-up hover:border-brand-accent/30 transition-all hover:shadow-lg shadow-sm">
+                                    <div className="flex items-center gap-4 p-0 bg-gradient-to-b from-white/5 to-transparent">
                                         <div className="w-8 h-8 rounded-lg bg-surface-bg text-brand-accent flex items-center justify-center text-xs font-bold border border-surface-border font-mono shadow-inner">
                                             {index + 1}
                                         </div>
@@ -162,20 +167,50 @@ const RoutineEditor: React.FC<{ onBack: () => void; existingRoutine?: RoutineTas
                                         <Button variant="destructive" size="small" onClick={() => removeStep(index)} className="!p-2 rounded-lg" icon={TrashIcon} />
                                     </div>
 
-                                    <div className="grid grid-cols-4 gap-2 p-4 pt-0">
-                                        <MetricInput label="Sets" value={s.sets} onChange={v => updateStep(index, { ...s, sets: +v })} type="number" />
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Sets</label>
+                                            <StepperControl
+                                                value={s.sets}
+                                                decrementLabel="Reducir sets"
+                                                incrementLabel="Aumentar sets"
+                                                onDecrement={() => updateStep(index, { ...s, sets: Math.max(1, s.sets - 1) })}
+                                                onIncrement={() => updateStep(index, { ...s, sets: s.sets + 1 })}
+                                                size="small"
+                                            />
+                                        </div>
                                         <MetricInput label="Reps" value={s.reps} onChange={v => updateStep(index, { ...s, reps: v })} />
-                                        <MetricInput label="RIR" value={s.rir} onChange={v => updateStep(index, { ...s, rir: v })} />
-                                        <MetricInput label="Rest" value={s.rest} onChange={v => updateStep(index, { ...s, rest: +v })} type="number" unit="s" />
+                                        <SelectField
+                                            label="RIR"
+                                            value={s.rir}
+                                            onChange={e => updateStep(index, { ...s, rir: e.target.value })}
+                                        >
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3+</option>
+                                        </SelectField>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Rest</label>
+                                            <StepperControl
+                                                value={`${s.rest}s`}
+                                                decrementLabel="Reducir descanso"
+                                                incrementLabel="Aumentar descanso"
+                                                onDecrement={() => updateStep(index, { ...s, rest: Math.max(15, s.rest - 15) })}
+                                                onIncrement={() => updateStep(index, { ...s, rest: s.rest + 15 })}
+                                                size="small"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            );
+                                </DialogSectionCard>
+                            </div>
+                        );
                         }
 
                         if (step.type === 'pose') {
                             const s = step as YogaStep;
                             return (
-                                <div key={index} className="bg-surface-bg rounded-2xl border border-surface-border p-4 flex items-center justify-between animate-fade-in-up hover:border-purple-400/30 transition-colors shadow-sm">
+                                <DialogSectionCard key={index} className="flex items-center justify-between animate-fade-in-up hover:border-purple-400/30 transition-colors shadow-sm">
                                     <div className="flex items-center gap-4">
                                         <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xs font-bold border border-purple-500/20 font-mono">{index + 1}</div>
                                         <div>
@@ -184,19 +219,26 @@ const RoutineEditor: React.FC<{ onBack: () => void; existingRoutine?: RoutineTas
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-24">
-                                            <MetricInput label="Tiempo" value={s.duration} onChange={v => updateStep(index, { ...s, duration: +v })} type="number" unit="s" />
+                                        <div className="w-28">
+                                            <StepperControl
+                                                value={`${s.duration}s`}
+                                                decrementLabel="Reducir tiempo"
+                                                incrementLabel="Aumentar tiempo"
+                                                onDecrement={() => updateStep(index, { ...s, duration: Math.max(15, s.duration - 15) })}
+                                                onIncrement={() => updateStep(index, { ...s, duration: s.duration + 15 })}
+                                                size="small"
+                                            />
                                         </div>
                                         <Button variant="destructive" size="small" onClick={() => removeStep(index)} className="!p-2 rounded-lg" icon={TrashIcon} />
                                     </div>
-                                </div>
+                                </DialogSectionCard>
                             );
                         }
 
                         if (step.type === 'warmup' || step.type === 'cooldown') {
                             const isWarmup = step.type === 'warmup';
                             return (
-                                <div key={index} className={`p-4 rounded-2xl flex justify-between items-center border border-dashed transition-all ${isWarmup ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/40' : 'border-brand-accent/20 bg-brand-accent/5 hover:border-brand-accent/40'} animate-fade-in-up`}>
+                                <DialogSectionCard key={index} className={`flex justify-between items-center border-dashed transition-all ${isWarmup ? 'border-orange-500/20 bg-orange-500/5 hover:border-orange-500/40' : 'border-brand-accent/20 bg-brand-accent/5 hover:border-brand-accent/40'} animate-fade-in-up`}>
                                     <div className="flex items-center gap-4">
                                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border font-mono ${isWarmup ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 'bg-brand-accent/10 text-brand-accent border-brand-accent/20'}`}>{index + 1}</div>
                                         <div>
@@ -207,7 +249,7 @@ const RoutineEditor: React.FC<{ onBack: () => void; existingRoutine?: RoutineTas
                                         </div>
                                     </div>
                                     <Button variant="destructive" size="small" onClick={() => removeStep(index)} className="!p-2 rounded-lg" icon={TrashIcon} />
-                                </div>
+                                </DialogSectionCard>
                             );
                         }
 

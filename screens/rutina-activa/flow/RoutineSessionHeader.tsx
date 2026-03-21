@@ -15,9 +15,8 @@ const formatClock = (seconds: number) => new Date(seconds * 1000).toISOString().
 const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime, isResting, onSkip, onExit }) => {
     return (
         <header className="relative z-30 mx-auto flex w-full max-w-3xl items-center justify-between px-6 pb-2 pt-6">
-            <Tag variant="status" tone={isResting ? 'accent' : 'success'} size="md">
+            <Tag variant="status" tone={isResting ? 'accent' : 'success'} size="md" count={formatClock(globalTime)}>
                 {isResting ? 'Descanso' : 'Activo'}
-                <span className="font-mono text-sm text-text-primary tabular-nums">{formatClock(globalTime)}</span>
             </Tag>
 
             <div className="flex items-center gap-3">
