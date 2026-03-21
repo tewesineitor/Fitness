@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Tag from '../../components/Tag';
+import ImmersiveFocusShell from '../../components/layout/ImmersiveFocusShell';
 import { CardioIcon, ChevronRightIcon } from '../../components/icons';
 import { cacoMethodData } from '../../data';
 import { vibrate } from '../../utils/helpers';
@@ -59,11 +60,21 @@ const CardioScreen: React.FC<CardioScreenProps> = ({ cardioWeek, onComplete }) =
   const intervalTone = isRunInterval ? 'accent' : 'protein';
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
-
-      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 hide-scrollbar">
-        <div className="mx-auto flex h-full max-w-md flex-col">
+    <ImmersiveFocusShell
+      contentClassName="pb-32 pt-8"
+      bottomBar={
+        <Button
+          variant="high-contrast"
+          onClick={() => { vibrate(10); onComplete(); }}
+          size="large"
+          className="mx-auto w-full max-w-md"
+          icon={ChevronRightIcon}
+        >
+          Finalizar cardio
+        </Button>
+      }
+    >
+      <div className="mx-auto flex h-full max-w-md flex-col">
           <div className="text-center">
             <Tag variant="status" tone="accent" size="sm">
               Week {cardioWeek}
@@ -113,20 +124,7 @@ const CardioScreen: React.FC<CardioScreenProps> = ({ cardioWeek, onComplete }) =
             </Card>
           </div>
         </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 border-t border-surface-border bg-bg-base px-6 pb-safe pt-5 shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)]">
-        <Button
-          variant="high-contrast"
-          onClick={() => { vibrate(10); onComplete(); }}
-          size="large"
-          className="mx-auto w-full max-w-md"
-          icon={ChevronRightIcon}
-        >
-          Finalizar cardio
-        </Button>
-      </div>
-    </div>
+    </ImmersiveFocusShell>
   );
 };
 

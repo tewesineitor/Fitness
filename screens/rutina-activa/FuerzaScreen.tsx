@@ -1,274 +1,274 @@
-
-import React, { useState, useMemo, useContext, useEffect } from 'react';
-import { StrengthStep, LoggedSet, DesgloseFuerza, RoutineStep } from '../../types';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import type { DesgloseFuerza, LoggedSet, RoutineStep, StrengthStep } from '../../types';
 import Button from '../../components/Button';
+import Card from '../../components/Card';
 import ChipButton from '../../components/ChipButton';
 import IconButton from '../../components/IconButton';
 import Tag from '../../components/Tag';
-import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon, CheckIcon } from '../../components/icons';
-import { AppContext } from '../../contexts';
-import { selectHistorialDeSesiones, selectAllExercises } from '../../selectors/workoutSelectors';
-import { vibrate } from '../../utils/helpers';
+import {
+  CalculatorIcon,
+  CheckIcon,
+  ChartBarIcon,
+  ClockIcon,
+  InformationCircleIcon,
+} from '../../components/icons';
 import PlateCalculatorModal from '../../components/dialogs/PlateCalculatorModal';
 import NextUpIndicator from '../../components/NextUpIndicator';
+import ImmersiveFocusShell from '../../components/layout/ImmersiveFocusShell';
+import { AppContext } from '../../contexts';
+import { selectAllExercises, selectHistorialDeSesiones } from '../../selectors/workoutSelectors';
+import { vibrate } from '../../utils/helpers';
 
 interface FuerzaScreenProps {
-    step: StrengthStep;
-    onSetComplete: (setLog: LoggedSet) => void;
-    loggedSets: LoggedSet[];
-    onShowExerciseDetails: () => void;
-    nextStep?: RoutineStep;
+  step: StrengthStep;
+  onSetComplete: (setLog: LoggedSet) => void;
+  loggedSets: LoggedSet[];
+  onShowExerciseDetails: () => void;
+  nextStep?: RoutineStep;
 }
 
 const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, loggedSets, onShowExerciseDetails, nextStep }) => {
-    const { state } = useContext(AppContext)!;
-    const activeRoutine = state.session.activeRoutine;
-    const technicalFocus = activeRoutine?.technicalFocus;
+  const { state } = useContext(AppContext)!;
+  const activeRoutine = state.session.activeRoutine;
+  const technicalFocus = activeRoutine?.technicalFocus;
 
-    const historialDeSesiones = selectHistorialDeSesiones(state);
-    const allExercises = selectAllExercises(state);
-    const exercise = allExercises[step.exerciseId];
-    const [showCalculator, setShowCalculator] = useState(false);
+  const historialDeSesiones = selectHistorialDeSesiones(state);
+  const allExercises = selectAllExercises(state);
+  const exercise = allExercises[step.exerciseId];
+  const [showCalculator, setShowCalculator] = useState(false);
 
-    // Filter historical sessions to find the last time this exercise was performed
-    const previousSessionData = useMemo(() => {
-        const prevSession = [...historialDeSesiones]
-            .sort((a, b) => new Date(b.fecha_completado).getTime() - new Date(a.fecha_completado).getTime())
-            .find(s => s.desglose_ejercicios.some(e => 'exerciseId' in e && e.exerciseId === step.exerciseId));
-        
-        if (!prevSession) return null;
-        
-        const exerciseData = prevSession.desglose_ejercicios.find(e => 'exerciseId' in e && e.exerciseId === step.exerciseId) as DesgloseFuerza;
-        if (!exerciseData || !exerciseData.sets) return null;
+  const previousSessionData = useMemo(() => {
+    const prevSession = [...historialDeSesiones]
+      .sort((a, b) => new Date(b.fecha_completado).getTime() - new Date(a.fecha_completado).getTime())
+      .find((session) => session.desglose_ejercicios.some((item) => 'exerciseId' in item && item.exerciseId === step.exerciseId));
 
-        return {
-            date: new Date(prevSession.fecha_completado),
-            sets: exerciseData.sets
-        };
-    }, [historialDeSesiones, step.exerciseId]);
-    
-    const currentSetIndex = loggedSets.length;
-    const isFinished = currentSetIndex >= step.sets;
-    
-    // Auto-fill logic based on previous set or previous session
-    const initialSet = useMemo(() => {
-        if (currentSetIndex > 0) return loggedSets[currentSetIndex - 1];
-        if (previousSessionData && previousSessionData.sets[currentSetIndex]) {
-            const prevSet = previousSessionData.sets[currentSetIndex];
-            return { weight: prevSet.weight, reps: prevSet.reps };
-        }
-        return { weight: 0, reps: 0 };
-    }, [currentSetIndex, loggedSets, previousSessionData]);
+    if (!prevSession) return null;
 
-    const [weight, setWeight] = useState<string>('');
-    const [reps, setReps] = useState<string>('');
-    const [rir, setRir] = useState<number | null>(null);
+    const exerciseData = prevSession.desglose_ejercicios.find((item) => 'exerciseId' in item && item.exerciseId === step.exerciseId) as DesgloseFuerza;
+    if (!exerciseData || !exerciseData.sets) return null;
 
-    useEffect(() => {
-        setWeight(initialSet.weight > 0 ? initialSet.weight.toString() : '');
-        setReps(initialSet.reps > 0 ? initialSet.reps.toString() : '');
-        setRir(null);
-    }, [initialSet, currentSetIndex]);
-    
-    const handleCompleteSet = () => {
-        vibrate(20);
-        onSetComplete({ 
-            weight: parseFloat(weight) || 0, 
-            reps: parseInt(reps) || 0,
-            rir: rir ?? undefined
-        });
+    return {
+      date: new Date(prevSession.fecha_completado),
+      sets: exerciseData.sets,
     };
+  }, [historialDeSesiones, step.exerciseId]);
 
-    const getRelativeTime = (date: Date) => {
-        const diff = new Date().getTime() - date.getTime();
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        if (days === 0) return 'Hoy';
-        if (days === 1) return 'Ayer';
-        return `Hace ${days} d`;
-    };
+  const currentSetIndex = loggedSets.length;
+  const isFinished = currentSetIndex >= step.sets;
 
-    const prevSetData = previousSessionData?.sets[currentSetIndex];
-    
-    return (
-        <div className="flex flex-col h-full relative bg-bg-base/50 overflow-hidden">
-            {showCalculator && (
-                <PlateCalculatorModal 
-                    targetWeight={parseFloat(weight) || 20} 
-                    onClose={() => setShowCalculator(false)} 
-                />
-            )}
-            
-            <div className="flex-grow overflow-y-auto px-6 pt-6 pb-40 hide-scrollbar flex flex-col">
-                
-                {/* HUD Header */}
-                <div className="flex flex-col gap-2 flex-shrink-0 animate-fade-in-down">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <Tag tone="protein" variant="status" className="mb-3">
-                                LOGGING SET {currentSetIndex + 1}/{step.sets}
-                            </Tag>
-                            <h1 className="text-3xl sm:text-4xl font-display font-black text-text-primary uppercase tracking-tight leading-none drop-shadow-md pr-4">
-                                {step.title}
-                            </h1>
-                        </div>
-                        <IconButton 
-                            onClick={() => { vibrate(5); onShowExerciseDetails(); }}
-                            variant="icon-only"
-                            icon={InformationCircleIcon}
-                            label="Ver Técnica"
-                        />
-                    </div>
+  const initialSet = useMemo(() => {
+    if (currentSetIndex > 0) return loggedSets[currentSetIndex - 1];
+    if (previousSessionData && previousSessionData.sets[currentSetIndex]) {
+      const prevSet = previousSessionData.sets[currentSetIndex];
+      return { weight: prevSet.weight, reps: prevSet.reps };
+    }
+    return { weight: 0, reps: 0 };
+  }, [currentSetIndex, loggedSets, previousSessionData]);
 
-                    {/* HUD Stats Row */}
-                    <div className="flex items-center gap-3 mt-2 opacity-80">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
-                            <ChartBarIcon className="w-4 h-4 text-brand-accent" />
-                            Target: <span className="text-brand-accent">{step.reps}</span>
-                        </div>
-                        <div className="w-1 h-1 rounded-full bg-surface-border"></div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
-                            <ClockIcon className="w-4 h-4 text-brand-accent" />
-                            Descanso: <span className="text-brand-accent">{step.rest}s</span>
-                        </div>
-                    </div>
-                </div>
+  const [weight, setWeight] = useState<string>('');
+  const [reps, setReps] = useState<string>('');
+  const [rir, setRir] = useState<number | null>(null);
 
-                {technicalFocus && (
-                    <div className="mt-6 p-4 rounded-2xl bg-brand-accent/5 border border-brand-accent/20 flex items-start gap-3 backdrop-blur-sm animate-fade-in-up">
-                        <InformationCircleIcon className="w-5 h-5 text-brand-accent flex-shrink-0 mt-0.5" />
-                        <p className="text-xs font-medium text-text-primary leading-relaxed shadow-sm">{technicalFocus}</p>
-                    </div>
-                )}
+  useEffect(() => {
+    setWeight(initialSet.weight > 0 ? initialSet.weight.toString() : '');
+    setReps(initialSet.reps > 0 ? initialSet.reps.toString() : '');
+    setRir(null);
+  }, [initialSet, currentSetIndex]);
 
-                {!isFinished && (
-                    <div className="flex-grow flex flex-col justify-center mt-8 space-y-8 min-h-[300px]">
-                        
-                        {/* THE MASSIVE INPUTS */}
-                        <div className="grid grid-cols-2 gap-4">
-                            {/* Weight Input */}
-                            <div className="bg-surface-bg/60 backdrop-blur-md border border-surface-border rounded-[2rem] p-5 relative shadow-sm flex flex-col group focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all">
-                                <div className="flex justify-between items-center mb-4">
-                                    <label className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em]">Carga (kg)</label>
-                                    <IconButton 
-                                        onClick={() => { vibrate(5); setShowCalculator(true); }}
-                                        variant="ghost"
-                                        size="small"
-                                        icon={CalculatorIcon}
-                                        label="Calculadora"
-                                    />
-                                </div>
-                                <input 
-                                    type="number" 
-                                    value={weight} 
-                                    onChange={(e) => setWeight(e.target.value)} 
-                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-text-primary outline-none p-0 leading-none placeholder:text-text-muted tracking-tighter"
-                                    placeholder="0"
-                                    inputMode="decimal"
-                                />
-                                {prevSetData && (
-                                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
-                                        <CalendarIcon className="w-3 h-3 text-text-muted" />
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-text-primary">{prevSetData.weight}kg</span></span>
-                                    </div>
-                                )}
-                            </div>
+  const handleCompleteSet = () => {
+    vibrate(20);
+    onSetComplete({
+      weight: parseFloat(weight) || 0,
+      reps: parseInt(reps) || 0,
+      rir: rir ?? undefined,
+    });
+  };
 
-                            {/* Reps Input */}
-                            <div className="bg-surface-bg/60 backdrop-blur-md border border-surface-border rounded-[2rem] p-5 relative shadow-sm flex flex-col focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all">
-                                <label className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em] mb-4">Reps</label>
-                                <input 
-                                    type="number" 
-                                    value={reps} 
-                                    onChange={(e) => setReps(e.target.value)} 
-                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-text-primary outline-none p-0 leading-none placeholder:text-text-muted tracking-tighter mt-auto"
-                                    placeholder="0"
-                                    inputMode="numeric"
-                                />
-                                {prevSetData && (
-                                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-text-primary">{prevSetData.reps}</span></span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+  const getRelativeTime = (date: Date) => {
+    const diff = new Date().getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) return 'Hoy';
+    if (days === 1) return 'Ayer';
+    return `Hace ${days} d`;
+  };
 
-                        {/* PREMIUM RIR SELECTOR */}
-                        <div className="w-full animate-fade-in-up" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
-                            <div className="flex items-center justify-between mb-3 px-1">
-                                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Reps en Reserva (RIR)</p>
-                                <InformationCircleIcon className="w-4 h-4 text-text-muted opacity-50" />
-                            </div>
-                            <div className="bg-surface-bg/80 backdrop-blur-md p-1.5 rounded-[1.5rem] border border-surface-border flex">
-                                {[0, 1, 2, 3].map((val) => {
-                                    const isSelected = rir === val;
-                                    return (
-                                        <ChipButton
-                                            key={val}
-                                            onClick={() => { vibrate(5); setRir(val); }}
-                                            active={isSelected}
-                                            tone="accent"
-                                            size="medium"
-                                            className="flex-1"
-                                        >
-                                            {val === 3 ? '3+' : val}
-                                        </ChipButton>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                )}
+  const prevSetData = previousSessionData?.sets[currentSetIndex];
 
-                {/* CURRENT SESSION LOGGER TAPE */}
-                <div className="mt-8 mb-4 flex-shrink-0 flex justify-center">
-                    <div className="flex gap-2.5 overflow-x-auto hide-scrollbar px-4 py-2">
-                        {Array.from({ length: step.sets }).map((_, i) => {
-                            const isLogged = i < currentSetIndex;
-                            const isCurrent = i === currentSetIndex;
+  return (
+    <ImmersiveFocusShell
+      contentClassName="pb-40 pt-6"
+      bottomBar={
+        !isFinished ? (
+          <Button variant="high-contrast" onClick={handleCompleteSet} size="large" className="mx-auto w-full max-w-xl">
+            Registrar serie
+          </Button>
+        ) : undefined
+      }
+    >
+      {showCalculator ? <PlateCalculatorModal targetWeight={parseFloat(weight) || 20} onClose={() => setShowCalculator(false)} /> : null}
 
-                            return (
-                                <div key={i} className={`
-                                    flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 transition-all duration-300
-                                    ${isLogged 
-                                        ? 'bg-brand-accent text-brand-accent-foreground shadow-[0_0_12px_rgba(var(--color-brand-accent-rgb),0.4)]' 
-                                        : isCurrent 
-                                            ? 'bg-surface-bg ring-2 ring-brand-accent text-text-primary scale-110 shadow-md' 
-                                            : 'bg-surface-hover/60 text-text-muted opacity-60'
-                                    }
-                                `}>
-                                    {isLogged ? (
-                                        <CheckIcon className="w-5 h-5 text-brand-accent-foreground" />
-                                    ) : (
-                                        <span className={`text-[11px] font-bold uppercase tracking-widest ${isCurrent ? 'text-text-primary shadow-sm' : ''}`}>S{i+1}</span>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {nextStep && (
-                    <div className="mt-auto pt-4">
-                        <NextUpIndicator step={nextStep} />
-                    </div>
-                )}
+      <div className="mx-auto flex max-w-xl flex-col">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <Tag variant="status" tone="protein" size="sm">
+                {isFinished ? 'Bloque completo' : `Set ${currentSetIndex + 1}/${step.sets}`}
+              </Tag>
+              <h1 className="mt-4 text-3xl font-black uppercase tracking-[-0.06em] text-text-primary sm:text-4xl">
+                {step.title}
+              </h1>
+              {exercise ? (
+                <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                  Registra carga, repeticiones y RIR con referencia de la sesion anterior.
+                </p>
+              ) : null}
             </div>
 
-            {/* FIXED ACTION FOOTER */}
-            {!isFinished && (
-                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-bg-base border-t border-surface-border shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)] z-40">
-                    <Button 
-                        variant="primary"
-                        onClick={handleCompleteSet} 
-                        size="large" 
-                        className="w-full max-w-sm mx-auto"
-                    >
-                        REGISTRAR SERIE
-                    </Button>
+            <IconButton
+              onClick={() => { vibrate(5); onShowExerciseDetails(); }}
+              variant="secondary"
+              icon={InformationCircleIcon}
+              label="Ver tecnica"
+            />
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Tag variant="status" tone="accent" size="sm" icon={ChartBarIcon}>
+              Target {step.reps}
+            </Tag>
+            <Tag variant="status" tone="neutral" size="sm" icon={ClockIcon}>
+              Descanso {step.rest}s
+            </Tag>
+            {previousSessionData ? (
+              <Tag variant="status" tone="neutral" size="sm">
+                Ultima vez {getRelativeTime(previousSessionData.date)}
+              </Tag>
+            ) : null}
+          </div>
+
+          {technicalFocus ? (
+            <Card variant="accent" className="mt-5 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-accent">Technical focus</p>
+              <p className="mt-2 text-sm leading-relaxed text-text-primary">{technicalFocus}</p>
+            </Card>
+          ) : null}
+
+          {!isFinished ? (
+            <div className="mt-8 space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Card variant="glass" className="space-y-4 p-5">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Carga (kg)</p>
+                    <IconButton
+                      onClick={() => { vibrate(5); setShowCalculator(true); }}
+                      variant="ghost"
+                      size="small"
+                      icon={CalculatorIcon}
+                      label="Abrir calculadora"
+                    />
+                  </div>
+
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(event) => setWeight(event.target.value)}
+                    className="w-full bg-transparent text-center font-mono text-6xl font-black leading-none tracking-[-0.08em] text-text-primary outline-none placeholder:text-text-muted"
+                    placeholder="0"
+                    inputMode="decimal"
+                  />
+
+                  {prevSetData ? (
+                    <Tag variant="overlay" tone="neutral" size="sm">
+                      Previo {prevSetData.weight} kg
+                    </Tag>
+                  ) : null}
+                </Card>
+
+                <Card variant="glass" className="space-y-4 p-5">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Reps</p>
+
+                  <input
+                    type="number"
+                    value={reps}
+                    onChange={(event) => setReps(event.target.value)}
+                    className="w-full bg-transparent text-center font-mono text-6xl font-black leading-none tracking-[-0.08em] text-text-primary outline-none placeholder:text-text-muted"
+                    placeholder="0"
+                    inputMode="numeric"
+                  />
+
+                  {prevSetData ? (
+                    <Tag variant="overlay" tone="neutral" size="sm">
+                      Previo {prevSetData.reps} reps
+                    </Tag>
+                  ) : null}
+                </Card>
+              </div>
+
+              <Card variant="default" className="space-y-4 p-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">RIR</p>
+                  <Tag variant="status" tone="neutral" size="sm">
+                    Reps en reserva
+                  </Tag>
                 </div>
-            )}
+
+                <div className="flex gap-2">
+                  {[0, 1, 2, 3].map((value) => (
+                    <ChipButton
+                      key={value}
+                      onClick={() => { vibrate(5); setRir(value); }}
+                      active={rir === value}
+                      tone="accent"
+                      size="medium"
+                      className="flex-1"
+                    >
+                      {value === 3 ? '3+' : value}
+                    </ChipButton>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          ) : null}
+
+          <div className="mt-8">
+            <Card variant="default" className="p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Series registradas</p>
+                <Tag variant="overlay" tone="accent" size="sm" count={loggedSets.length}>
+                  Log
+                </Tag>
+              </div>
+
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+                {Array.from({ length: step.sets }).map((_, index) => {
+                  const isLogged = index < currentSetIndex;
+                  const isCurrent = index === currentSetIndex;
+                  return (
+                    <div
+                      key={index}
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-black uppercase tracking-[0.16em] transition-all ${
+                        isLogged
+                          ? 'bg-brand-accent text-brand-accent-foreground shadow-md shadow-brand-accent/20'
+                          : isCurrent
+                            ? 'border border-brand-accent bg-surface-bg text-text-primary'
+                            : 'border border-surface-border bg-surface-hover text-text-muted'
+                      }`}
+                    >
+                      {isLogged ? <CheckIcon className="h-4 w-4" /> : `S${index + 1}`}
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          </div>
+
+          {nextStep ? (
+            <div className="mt-6">
+              <NextUpIndicator step={nextStep} />
+            </div>
+          ) : null}
         </div>
-    );
+    </ImmersiveFocusShell>
+  );
 };
 
 export default FuerzaScreen;

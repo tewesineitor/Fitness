@@ -41,9 +41,10 @@ Para cada frente se sigue este ciclo:
 
 Estado actual de esta pasada:
 
-- `WorkoutSummary` ya fue migrado al sistema nuevo
-- la salida de `RutinaActiva` dejo de usar botones custom y ahora usa primitives compartidas
-- se documento la siguiente deuda real del vertical: shell fullscreen compartido, dialogs/sheets y superficies de captura en `FuerzaScreen`
+- `WorkoutSummary` ya fue migrado al sistema nuevo.
+- La salida de `RutinaActiva` dejó de usar botones custom y ahora usa primitives compartidas.
+- **¡Completado!** Se implementó un `ImmersiveFocusShell` compartido para todas las pantallas inmersivas (`FuerzaScreen`, `CardioScreen`, `PoseScreen`, `RestoScreen`, `RuckingSession`).
+- **¡Completado!** Se refactorizó `ExerciseDetailSheet` para utilizar el utilitario oficial `<BottomSheet>`. El resto de los dialogs y sheets inmersivos quedan 100% estandarizados.
 
 ## Decisiones Clave
 
@@ -60,10 +61,4 @@ Estado actual de esta pasada:
 
 ## Siguiente Paso Recomendado
 
-Seguir con `Rutina Activa` sobre estos tres frentes:
-
-1. `Focus shell` compartido para pantallas inmersivas
-2. sistema unificado de dialogs y sheets del vertical
-3. refactor visual de `FuerzaScreen`, `InfoStepScreenView`, `PostRoutineScreen` y `ProgressiveCardioLogModal`
-
-Despues de eso, continuar con `Biblioteca`.
+Seguir con `Biblioteca`. La refactorización visual inmersiva de `Rutina Activa` está finalizada.

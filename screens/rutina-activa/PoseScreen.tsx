@@ -3,6 +3,7 @@ import Button from '../../components/Button';
 import Card from '../../components/Card';
 import CircularTimer from '../../components/CircularTimer';
 import Tag from '../../components/Tag';
+import ImmersiveFocusShell from '../../components/layout/ImmersiveFocusShell';
 import { InformationCircleIcon, MeditationIcon, YogaIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { selectAllExercises } from '../../selectors/workoutSelectors';
@@ -56,11 +57,8 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
   const tone = step.type === 'pose' ? 'accent' : 'protein';
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
-
-      <div className="flex-1 overflow-y-auto px-6 py-8 hide-scrollbar">
-        <div className="mx-auto flex h-full max-w-md flex-col text-center">
+    <ImmersiveFocusShell contentClassName="py-8">
+      <div className="mx-auto flex h-full max-w-md flex-col text-center">
           <div>
             <Tag variant="status" tone={tone} size="sm">
               {step.type === 'pose' ? 'Pose Hold' : 'Meditation'}
@@ -92,8 +90,7 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
             </Card>
           </div>
         </div>
-      </div>
-    </div>
+    </ImmersiveFocusShell>
   );
 };
 

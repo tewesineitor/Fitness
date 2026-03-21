@@ -52,7 +52,7 @@ const getStepPresentation = (step: RoutineStep, allExercises: Record<string, Exe
     const exercise = allExercises[step.exerciseId];
     return {
       title: exercise?.name ?? step.title,
-      detail: `${step.sets} series · ${step.reps} · RIR ${step.rir}`,
+      detail: `${step.sets} series - ${step.reps} - RIR ${step.rir}`,
       icon: StrengthIcon,
       tone: 'accent' as const,
     };
@@ -151,7 +151,7 @@ const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
         />
 
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 sm:px-6">
-          <Card variant="glass" className="overflow-hidden p-5 sm:p-6">
+          <Card variant="glass" className="relative overflow-hidden p-5 sm:p-6">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--color-brand-accent-rgb),0.18),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.05),transparent_56%)]" />
             <div className="relative grid gap-4 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
               <div className="space-y-3">

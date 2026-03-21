@@ -463,9 +463,10 @@ Ya implementado:
 - adopcion inicial del contrato nuevo en `Hoy`, `Biblioteca`, `Progreso`, `LoginView` y `PillTabs`
 - primera pasada del vertical `Nutricion` con dashboard editorial, `AddFood`, scanner, plate builder y dialogs migrados al sistema nuevo
 - arranque del vertical `Rutina Activa` con `WorkoutSummary` ya migrado y confirmacion de salida alineada con primitives compartidas
+- consolidación del vertical `Rutina Activa` con un `<ImmersiveFocusShell>` compartido para todas las pantallas de flujo interactivo y refactorización completa de `ExerciseDetailSheet`, `FuerzaScreen`, `CardioScreen`, `PoseScreen` y `RuckingSession`.
 
 Siguiente paso:
 
 1. Rematar detalles residuales de `Nutricion` solo si aparecen hallazgos funcionales o de contraste en QA.
-2. Redisenar `Rutina Activa` y `WorkoutSummary`.
+2. (COMPLETADO) Rediseñar `Rutina Activa` y `WorkoutSummary` incorporando su propio global shell inmersivo.
 3. Continuar con `Biblioteca`, luego `Hoy`, `Progreso` y `Perfil/Auth`.
