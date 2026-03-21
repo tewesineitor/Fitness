@@ -35,13 +35,13 @@ interface PlateSummaryProps {
   onTimingChange?: (timing: 'pre-workout' | 'post-workout' | 'general') => void;
 }
 
-const mealTypes: MealType[] = ['Desayuno', 'Almuerzo', 'Cena', 'ColaciÃ³n'];
+const mealTypes: MealType[] = ['Desayuno', 'Almuerzo', 'Cena', 'Colaci\u00F3n'];
 
 const mealTypeLabels: Record<string, string> = {
   Desayuno: 'Desayuno',
   Almuerzo: 'Almuerzo',
   Cena: 'Cena',
-  'ColaciÃ³n': 'Colacion',
+  ['Colaci\u00F3n']: 'Colacion',
 };
 
 const PlateSummary: React.FC<PlateSummaryProps> = ({
@@ -382,7 +382,7 @@ const PlateSummary: React.FC<PlateSummaryProps> = ({
           <div className="mb-4 flex items-center justify-between rounded-[1.35rem] border border-surface-border bg-surface-bg/80 px-4 py-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Ready to register</p>
-              <p className="mt-1 text-sm font-medium text-text-primary">{plate.length} items · {macros.kcal.toFixed(0)} kcal</p>
+              <p className="mt-1 text-sm font-medium text-text-primary">{plate.length} items - {macros.kcal.toFixed(0)} kcal</p>
             </div>
             <Tag variant="overlay" tone="accent" size="sm">
               {selectedMealLabel}

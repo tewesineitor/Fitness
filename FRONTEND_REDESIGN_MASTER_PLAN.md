@@ -462,6 +462,7 @@ Ya implementado:
 - primitives nuevas de layout y feedback
 - adopcion inicial del contrato nuevo en `Hoy`, `Biblioteca`, `Progreso`, `LoginView` y `PillTabs`
 - primera pasada del vertical `Nutricion` con dashboard editorial, `AddFood`, scanner, plate builder y dialogs migrados al sistema nuevo
+- arranque del vertical `Rutina Activa` con `WorkoutSummary` ya migrado y confirmacion de salida alineada con primitives compartidas
 
 Siguiente paso:
 

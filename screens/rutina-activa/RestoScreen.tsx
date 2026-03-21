@@ -1,10 +1,11 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CircularTimer from '../../components/CircularTimer';
 import NextUpIndicator from '../../components/NextUpIndicator';
 import Button from '../../components/Button';
-import { RoutineStep } from '../../types';
-import { PlusIcon, ChevronRightIcon } from '../../components/icons';
+import Card from '../../components/Card';
+import Tag from '../../components/Tag';
+import type { RoutineStep } from '../../types';
+import { ChevronRightIcon, PlusIcon } from '../../components/icons';
 import { vibrate } from '../../utils/helpers';
 
 interface RestoScreenProps {
@@ -16,7 +17,7 @@ interface RestoScreenProps {
 
 const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComplete, nextStep }) => {
   const startDuration = maxDuration || duration;
-  
+
   const [timeLeft, setTimeLeft] = useState(startDuration);
   const [initialDuration, setInitialDuration] = useState(startDuration);
   const onCompleteRef = useRef(onComplete);
@@ -33,125 +34,117 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
     hasVibratedRef.current = false;
   }, [duration, maxDuration]);
 
-  // Function called by CircularTimer every tick
   const handleTimerTick = (remaining: number) => {
-      setTimeLeft(remaining);
+    setTimeLeft(remaining);
 
-      if (remaining <= 0) {
-          setTimeout(() => onCompleteRef.current(), 0);
-          return;
-      }
+    if (remaining <= 0) {
+      setTimeout(() => onCompleteRef.current(), 0);
+      return;
+    }
 
-      if (maxDuration) {
-          const timePassed = initialDuration - remaining;
-          if (timePassed >= duration && !hasVibratedRef.current) {
-              vibrate([200, 100, 200]);
-              hasVibratedRef.current = true;
-          }
-      } else {
-          if (remaining === 1 && !hasVibratedRef.current) {
-               vibrate([200, 100, 200]);
-               hasVibratedRef.current = true;
-          }
+    if (maxDuration) {
+      const timePassed = initialDuration - remaining;
+      if (timePassed >= duration && !hasVibratedRef.current) {
+        vibrate([200, 100, 200]);
+        hasVibratedRef.current = true;
       }
+    } else if (remaining === 1 && !hasVibratedRef.current) {
+      vibrate([200, 100, 200]);
+      hasVibratedRef.current = true;
+    }
   };
 
   const handleAddSeconds = () => {
-      vibrate(5);
-      setTimeLeft(prev => prev + 15);
-      if (maxDuration) {
-          const newTimeLeft = timeLeft + 15;
-          const timePassed = initialDuration - newTimeLeft;
-          if (timePassed < duration) hasVibratedRef.current = false;
-      } else {
-          hasVibratedRef.current = false;
-      }
+    vibrate(5);
+    setTimeLeft((prev) => prev + 15);
+    if (maxDuration) {
+      const newTimeLeft = timeLeft + 15;
+      const timePassed = initialDuration - newTimeLeft;
+      if (timePassed < duration) hasVibratedRef.current = false;
+    } else {
+      hasVibratedRef.current = false;
+    }
   };
 
-  let timerColor = 'text-brand-accent'; 
-  let statusText = 'RECUPERACIÓN';
+  let timerColor = 'text-brand-accent';
+  let statusText = 'Recuperacion';
+  let statusTone: 'accent' | 'success' | 'danger' = 'accent';
 
   if (maxDuration) {
-      const timePassed = initialDuration - timeLeft;
-      if (timePassed < duration) {
-          timerColor = 'text-brand-accent';
-          statusText = 'DESCANSANDO';
-      } else {
-          timerColor = 'text-green-400';
-          statusText = 'LISTO'; 
-      }
+    const timePassed = initialDuration - timeLeft;
+    if (timePassed >= duration) {
+      timerColor = 'text-success';
+      statusText = 'Listo';
+      statusTone = 'success';
+    } else {
+      statusText = 'Descansando';
+    }
   } else if (timeLeft <= 10) {
-      timerColor = 'text-red-400';
-      statusText = 'PREPÁRATE';
+    timerColor = 'text-danger';
+    statusText = 'Preparate';
+    statusTone = 'danger';
   }
 
-  // Determine breathing animation class based on color
-  let breathingClass = 'animate-pulse'; // Default generic
-  if (timerColor === 'text-brand-accent') breathingClass = 'animate-breathe-accent';
-  else if (timerColor === 'text-green-400') breathingClass = 'animate-breathe-green';
-  else if (timerColor === 'text-red-400') breathingClass = 'animate-breathe-red';
-
   return (
-    <div className="flex flex-col h-full bg-bg-base/80 overflow-hidden relative">
-      
-      {/* 1. Status Header */}
-      <div className="flex-shrink-0 text-center pt-10 px-6 animate-fade-in-down z-10">
-          <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-surface-bg/80 border border-surface-border backdrop-blur-md shadow-sm text-[10px] font-black uppercase tracking-[0.25em] text-text-secondary">
-              Fase Actual
-          </span>
-          <h2 className={`text-4xl sm:text-5xl font-display font-black uppercase tracking-tighter mt-4 leading-none drop-shadow-md transition-colors duration-1000 ${timerColor === 'text-green-400' ? 'text-green-400' : 'text-text-primary'}`}>
-              {statusText}
-          </h2>
-      </div>
-      
-      {/* 2. Immersive Breathing Timer (Centered) */}
-      <div className="flex-grow flex items-center justify-center relative py-4 z-0 w-full">
-          {/* Breathing Ambient Glow */}
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-full blur-[70px] pointer-events-none transition-colors duration-1000 ${timerColor.replace('text-', 'bg-')} ${breathingClass} opacity-30`}></div>
-          
-          <div className="transform scale-110 sm:scale-125 transition-transform relative z-10">
-              <CircularTimer 
-                initialDuration={initialDuration} 
-                timeLeft={timeLeft} 
-                strokeColor={timerColor}
-                size={260}
-                strokeWidth={10}
-                onTick={handleTimerTick} 
-              />
+    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
+      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 hide-scrollbar">
+        <div className="mx-auto flex h-full max-w-md flex-col">
+          <div className="text-center">
+            <Tag variant="status" tone={statusTone} size="sm">
+              Rest Phase
+            </Tag>
+            <h2 className={`mt-4 text-4xl font-black uppercase tracking-[-0.06em] ${timerColor}`}>{statusText}</h2>
+            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
+              Mantente en control, recupera respiracion y entra a la siguiente serie con una transicion limpia.
+            </p>
           </div>
-      </div>
-      
-      {/* 3. Bottom Controls & Next Up Drawer */}
-      <div className="flex-shrink-0 w-full mt-auto space-y-4 pb-safe bg-bg-base border-t border-surface-border pt-6 px-6 z-20">
-        
-        {nextStep && (
-            <div className="mb-6 animate-fade-in-up">
-                <NextUpIndicator step={nextStep} />
-            </div>
-        )}
 
-        <div className="flex flex-col sm:flex-row justify-center gap-3 items-stretch sm:items-center pb-6">
-            <Button 
-                onClick={handleAddSeconds} 
-                variant="secondary"
-                size="large"
-                icon={PlusIcon}
-                iconPosition="left"
-                className="w-full sm:w-auto sm:min-w-[160px] justify-center"
-            >
-                +15s
-            </Button>
-            
-            <Button 
-                onClick={() => { vibrate(15); onComplete(); }} 
-                variant="high-contrast"
-                size="large"
-                icon={ChevronRightIcon}
-                iconPosition="right"
-                className="w-full sm:w-auto sm:min-w-[180px] justify-center"
-            >
-                {maxDuration && initialDuration - timeLeft >= duration ? 'Continuar' : 'Omitir'}
-            </Button>
+          <div className="my-auto py-8">
+            <Card variant="glass" className="flex flex-col items-center gap-6 p-6 text-center shadow-xl">
+              <CircularTimer
+                initialDuration={initialDuration}
+                timeLeft={timeLeft}
+                strokeColor={timerColor}
+                size={240}
+                strokeWidth={10}
+                onTick={handleTimerTick}
+              />
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Tiempo restante</p>
+                <p className="mt-2 text-sm font-medium text-text-secondary">
+                  {maxDuration ? `Objetivo base ${duration}s` : 'Cuenta regresiva de recuperacion'}
+                </p>
+              </div>
+            </Card>
+          </div>
+
+          {nextStep ? (
+            <div className="mt-auto">
+              <NextUpIndicator step={nextStep} />
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 border-t border-surface-border bg-bg-base px-6 pb-safe pt-5 shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto flex w-full max-w-md gap-3">
+          <Button onClick={handleAddSeconds} variant="secondary" size="large" icon={PlusIcon} className="flex-1">
+            +15s
+          </Button>
+          <Button
+            onClick={() => {
+              vibrate(15);
+              onComplete();
+            }}
+            variant="high-contrast"
+            size="large"
+            icon={ChevronRightIcon}
+            iconPosition="right"
+            className="flex-[1.4]"
+          >
+            {maxDuration && initialDuration - timeLeft >= duration ? 'Continuar' : 'Omitir'}
+          </Button>
         </div>
       </div>
     </div>
@@ -159,4 +152,3 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
 };
 
 export default RestoScreen;
-

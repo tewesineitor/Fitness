@@ -1,137 +1,220 @@
-
 import React, { useContext, useMemo } from 'react';
-import { HistorialDeSesionesEntry, DesgloseFuerza, DesgloseTiempo, DesgloseCardioLibre } from '../types';
-import { ArrowUpIcon, ArrowDownIcon, StarIcon, ClockIcon, FireIcon, HeartIcon, MountainIcon, StrengthIcon, CheckCircleIcon } from '../components/icons';
 import { AppContext } from '../contexts';
 import Button from '../components/Button';
-import FloatingDock from '../components/FloatingDock';
+import Card from '../components/Card';
+import Tag from '../components/Tag';
+import PageHeader from '../components/layout/PageHeader';
+import PageSection from '../components/layout/PageSection';
+import {
+  CheckCircleIcon,
+  ClockIcon,
+  FireIcon,
+  HeartIcon,
+  MountainIcon,
+  SparklesIcon,
+  StarIcon,
+  StrengthIcon,
+} from '../components/icons';
 import { vibrate } from '../utils/helpers';
+import type {
+  DesgloseCardioLibre,
+  DesgloseFuerza,
+  DesgloseTiempo,
+  HistorialDeSesionesEntry,
+} from '../types';
 
-// --- Reusable Components for this Screen ---
+const formatSessionDate = (value: string) =>
+  new Date(value).toLocaleDateString('es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
 
-const StatCard: React.FC<{ label: string; value: string; icon: React.FC<{className?: string}>; isPR?: boolean }> = ({ label, value, icon: Icon, isPR = false }) => (
-    <div className={`p-4 rounded-2xl flex flex-col items-center justify-center text-center border ${isPR ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-surface-bg border-surface-border shadow-sm'}`}>
-        <div className={`p-2 rounded-full mb-2 ${isPR ? 'bg-yellow-500/20 text-yellow-400' : 'bg-surface-hover text-brand-accent'}`}>
-            <Icon className="w-5 h-5" />
+const formatCardioTitle = (type: HistorialDeSesionesEntry['tipo_rutina']) => {
+  const titles: Record<string, string> = {
+    cardioLibre: 'Carrera libre',
+    senderismo: 'Senderismo',
+    rucking: 'Rucking',
+    cardio: 'Cardio progresivo',
+  };
+
+  return titles[type] ?? 'Actividad';
+};
+
+const SummaryStatCard: React.FC<{
+  label: string;
+  value: string;
+  helper?: string;
+  tone?: 'neutral' | 'accent' | 'success' | 'protein';
+  icon: React.FC<{ className?: string }>;
+}> = ({ label, value, helper, tone = 'neutral', icon: Icon }) => (
+  <Card variant="glass" className="p-4 sm:p-5">
+    <div className="flex items-start justify-between gap-3">
+      <div className="space-y-2">
+        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">{label}</p>
+        <div className="flex items-end gap-2">
+          <span className="font-mono text-4xl font-black tracking-[-0.06em] text-text-primary">{value}</span>
         </div>
-        <p className={`text-3xl font-heading font-bold tracking-tight ${isPR ? 'text-yellow-400' : 'text-text-primary'}`}>{value}</p>
-        <p className="text-[9px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">{label}</p>
+        {helper ? <p className="text-sm text-text-secondary">{helper}</p> : null}
+      </div>
+
+      <Tag variant="overlay" tone={tone} size="sm" icon={Icon}>
+        Metric
+      </Tag>
     </div>
+  </Card>
 );
 
 const ExerciseSummaryCard: React.FC<{
-    currentExercise: DesgloseFuerza;
-    isNewPR?: boolean;
-}> = ({ currentExercise, isNewPR = false }) => {
-    
-    // Calculate best set for display
-    const bestSet = useMemo(() => {
-        if (!currentExercise.sets || currentExercise.sets.length === 0) return null;
-        return [...currentExercise.sets].sort((a, b) => b.weight - a.weight || b.reps - a.reps)[0];
-    }, [currentExercise.sets]);
+  exercise: DesgloseFuerza;
+  isNewPR?: boolean;
+}> = ({ exercise, isNewPR = false }) => {
+  const bestSet = useMemo(() => {
+    if (!exercise.sets?.length) return null;
+    return [...exercise.sets].sort((a, b) => b.weight - a.weight || b.reps - a.reps)[0];
+  }, [exercise.sets]);
 
-    // Calculate total volume
-    const volume = useMemo(() => {
-        return currentExercise.sets.reduce((acc, s) => acc + (s.weight * s.reps), 0);
-    }, [currentExercise.sets]);
+  const volume = useMemo(
+    () => exercise.sets.reduce((acc, set) => acc + set.weight * set.reps, 0),
+    [exercise.sets]
+  );
 
-    if (!bestSet) return null;
+  if (!bestSet) return null;
 
-    return (
-        <div className="bg-surface-bg p-4 rounded-2xl relative overflow-hidden group border border-surface-border shadow-sm hover:bg-surface-hover transition-colors">
-            {isNewPR && (
-                <div className="absolute top-0 right-0 p-2">
-                    <StarIcon className="w-4 h-4 text-yellow-400" />
-                </div>
-            )}
-            
-            <div className="flex justify-between items-start mb-2 pr-6">
-                <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wide leading-none">{currentExercise.nombre_ejercicio}</h3>
-            </div>
+  return (
+    <Card variant="elevated" className="p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <Tag variant="status" tone={isNewPR ? 'accent' : 'neutral'} size="sm" icon={isNewPR ? StarIcon : StrengthIcon}>
+              {isNewPR ? 'Nuevo record' : 'Fuerza'}
+            </Tag>
+          </div>
 
-            <div className="flex items-center justify-between mt-2">
-                <div className="bg-brand-accent/5 px-3 py-1.5 rounded-lg border border-brand-accent/10">
-                    <p className="text-[9px] text-text-secondary uppercase tracking-wider mb-0.5">Mejor Serie</p>
-                    <p className="text-base font-heading font-bold text-white tracking-wide">{bestSet.weight}kg <span className="text-text-secondary font-sans text-xs lowercase">x</span> {bestSet.reps}</p>
-                </div>
-                <div className="text-right">
-                    <p className="text-[9px] text-text-secondary uppercase tracking-wider mb-0.5">Volumen</p>
-                    <p className="text-sm font-mono text-text-secondary">{volume} kg</p>
-                </div>
-            </div>
+          <h3 className="text-lg font-black uppercase tracking-[-0.03em] text-text-primary">
+            {exercise.nombre_ejercicio}
+          </h3>
         </div>
-    );
+
+        <div className="rounded-2xl border border-brand-accent/15 bg-brand-accent/8 p-3 text-brand-accent">
+          <StrengthIcon className="h-5 w-5" />
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <Card variant="default" className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Mejor serie</p>
+          <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-text-primary">
+            {bestSet.weight}kg <span className="text-sm text-text-secondary">x {bestSet.reps}</span>
+          </p>
+        </Card>
+
+        <Card variant="default" className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Volumen</p>
+          <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-text-primary">{volume} kg</p>
+        </Card>
+      </div>
+    </Card>
+  );
 };
 
-// --- Cardio Summary --- (Kept mostly similar but ensuring consistent button style)
+const TimeBlockCard: React.FC<{ block: DesgloseTiempo }> = ({ block }) => {
+  const minutes = Math.floor(block.duracion_completada_seg / 60);
+  const seconds = block.duracion_completada_seg % 60;
 
-const CardioStatItem: React.FC<{ icon: React.FC<{className?: string}>, value: string, label: string, unit: string }> = ({ icon: Icon, value, label, unit }) => (
-    <div className="p-4 rounded-2xl flex flex-col items-center justify-center text-center bg-surface-bg border border-surface-border shadow-sm">
-        <Icon className="w-6 h-6 text-brand-accent mb-2" />
-        <p className="text-3xl font-heading font-bold text-text-primary tracking-tight">{value}</p>
-        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{label} <span className="opacity-50 lowercase">({unit})</span></p>
+  return (
+    <Card variant="default" className="p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Bloque de tiempo</p>
+          <h3 className="mt-2 text-lg font-black uppercase tracking-[-0.03em] text-text-primary">
+            {block.nombre_ejercicio}
+          </h3>
+        </div>
+
+        <Tag variant="overlay" tone="accent" size="sm" icon={ClockIcon}>
+          {minutes}m {seconds}s
+        </Tag>
+      </div>
+    </Card>
+  );
+};
+
+const CardioSummaryScreen: React.FC<{
+  entry: HistorialDeSesionesEntry;
+  onExit: () => void;
+  isHistoricalView: boolean;
+}> = ({ entry, onExit, isHistoricalView }) => {
+  const details = entry.desglose_ejercicios[0] as DesgloseCardioLibre;
+  const distanceDisplay = details.distance > 0 ? details.distance.toFixed(2) : '0.00';
+
+  return (
+    <div className="relative h-full overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(var(--color-brand-accent-rgb),0.12),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(var(--color-brand-protein-rgb),0.08),transparent_35%)]" />
+
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="overflow-y-auto pb-32">
+          <PageHeader
+            size="wide"
+            eyebrow={
+              <Tag variant="overlay" tone="accent" size="sm" icon={SparklesIcon}>
+                Session recap
+              </Tag>
+            }
+            title={formatCardioTitle(entry.tipo_rutina)}
+            subtitle={formatSessionDate(entry.fecha_completado)}
+          />
+
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pb-10 sm:px-6">
+            <PageSection
+              eyebrow="Metrica principal"
+              title="Distancia registrada"
+              subtitle="Resumen editorial del bloque cardio para cerrar la sesion con contexto claro."
+              surface="glass"
+            >
+              <div className="space-y-5">
+                <div className="text-center">
+                  <p className="font-mono text-[5.5rem] font-black leading-none tracking-[-0.09em] text-text-primary sm:text-[7rem]">
+                    {distanceDisplay}
+                  </p>
+                  <p className="mt-2 text-[11px] font-black uppercase tracking-[0.28em] text-brand-accent">
+                    Kilometros
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <SummaryStatCard icon={ClockIcon} label="Tiempo" value={`${entry.duracion_total_min} min`} tone="accent" />
+                  <SummaryStatCard icon={ClockIcon} label="Ritmo" value={details.pace || '-'} helper="min/km" />
+                  <SummaryStatCard icon={FireIcon} label="Energia" value={`${details.calories || '-'}`} helper="kcal" tone="success" />
+                  <SummaryStatCard icon={HeartIcon} label="Pulso" value={`${details.heartRate || '-'}`} helper="ppm" />
+                  {entry.tipo_rutina === 'rucking' && details.weightCarried ? (
+                    <SummaryStatCard icon={MountainIcon} label="Carga" value={`${details.weightCarried} kg`} helper="peso cargado" tone="protein" />
+                  ) : null}
+                </div>
+              </div>
+            </PageSection>
+          </div>
+        </div>
+
+        <div className="border-t border-surface-border bg-bg-base/95 p-4 pb-safe backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-3xl">
+            <Button
+              onClick={() => {
+                vibrate(10);
+                onExit();
+              }}
+              variant="high-contrast"
+              size="large"
+              className="w-full"
+            >
+              {isHistoricalView ? 'Cerrar resumen' : 'Finalizar sesion'}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
-);
-
-const CardioLibreSummary: React.FC<{ entry: HistorialDeSesionesEntry, onExit: () => void }> = ({ entry, onExit }) => {
-    const details = entry.desglose_ejercicios[0] as DesgloseCardioLibre;
-    
-    const titleMap: Record<string, string> = {
-        'cardioLibre': 'Carrera',
-        'senderismo': 'Senderismo',
-        'rucking': 'Rucking',
-        'cardio': 'Cardio Progresivo'
-    };
-    const title = titleMap[entry.tipo_rutina] || 'Actividad';
-    const distanceDisplay = details.distance > 0 ? details.distance.toFixed(2) : '0.00';
-
-    return (
-        <div className="h-full w-full flex flex-col animate-fade-in-up bg-bg-base overflow-hidden">
-            <div className="p-4 sm:p-6 h-full flex flex-col w-full relative">
-                <header className="mb-8 flex-shrink-0 pt-4">
-                    <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
-                        Resumen de Sesión
-                    </p>
-                    <h1 className="text-3xl sm:text-4xl font-heading font-black text-text-primary uppercase tracking-tight">{title}</h1>
-                    <p className="text-sm font-medium text-text-secondary mt-1">{new Date(entry.fecha_completado).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-                </header>
-                
-                <div className="flex-grow overflow-y-auto space-y-6 hide-scrollbar pb-32">
-                    <div className="text-center py-8 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl pointer-events-none"></div>
-                        <p className="text-9xl font-heading font-black text-text-primary tracking-tighter drop-shadow-lg relative z-10">{distanceDisplay}</p>
-                        <p className="text-sm font-bold text-brand-accent uppercase tracking-[0.3em] relative z-10">Kilómetros</p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <CardioStatItem icon={ClockIcon} value={details.pace || '-'} label="Ritmo" unit="min/km" />
-                        <CardioStatItem icon={ClockIcon} value={`${entry.duracion_total_min}`} label="Tiempo" unit="min" />
-                        <CardioStatItem icon={FireIcon} value={`${details.calories || '-'}`} label="Energía" unit="kcal" />
-                        <CardioStatItem icon={HeartIcon} value={`${details.heartRate || '-'}`} label="Pulso" unit="ppm" />
-                        {entry.tipo_rutina === 'rucking' && details.weightCarried && (
-                            <CardioStatItem icon={StrengthIcon} value={`${details.weightCarried}`} label="Peso" unit="kg" />
-                        )}
-                    </div>
-                </div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 pb-safe bg-bg-base border-t border-surface-border z-40">
-                        <Button 
-                            onClick={() => { vibrate(10); onExit(); }} 
-                            variant="high-contrast"
-                            className="w-full py-5 text-sm shadow-[0_4px_14px_0_rgba(var(--color-text-primary-rgb),0.2)]" 
-                            size="large"
-                        >
-                            FINALIZAR SESIÓN
-                        </Button>
-                </div>
-            </div>
-        </div>
-    );
+  );
 };
-
-
-// --- Main Screen ---
 
 interface WorkoutSummaryScreenProps {
   onExit: () => void;
@@ -139,98 +222,121 @@ interface WorkoutSummaryScreenProps {
   historicalEntry: HistorialDeSesionesEntry;
 }
 
-export const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ onExit, isHistoricalView = false, historicalEntry }) => {
-    const { state } = useContext(AppContext)!;
-    const { newPRs } = state.session.workoutSummaryData || { newPRs: [] };
-    
-    if (historicalEntry.tipo_rutina === 'cardioLibre' || historicalEntry.tipo_rutina === 'senderismo' || historicalEntry.tipo_rutina === 'rucking' || historicalEntry.tipo_rutina === 'cardio') {
-        return <CardioLibreSummary entry={historicalEntry} onExit={onExit} />;
+export const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({
+  onExit,
+  isHistoricalView = false,
+  historicalEntry,
+}) => {
+  const { state } = useContext(AppContext)!;
+  const { newPRs = [] } = state.session.workoutSummaryData || {};
+
+  if (
+    historicalEntry.tipo_rutina === 'cardioLibre' ||
+    historicalEntry.tipo_rutina === 'senderismo' ||
+    historicalEntry.tipo_rutina === 'rucking' ||
+    historicalEntry.tipo_rutina === 'cardio'
+  ) {
+    return <CardioSummaryScreen entry={historicalEntry} onExit={onExit} isHistoricalView={isHistoricalView} />;
+  }
+
+  const totalVolume = historicalEntry.desglose_ejercicios.reduce((total, exercise) => {
+    if ('sets' in exercise && Array.isArray(exercise.sets)) {
+      return total + exercise.sets.reduce((volume, set) => volume + set.weight * set.reps, 0);
     }
-    
-    const totalVolume = historicalEntry.desglose_ejercicios.reduce((total, ex) => {
-        if ('sets' in ex && Array.isArray(ex.sets)) {
-            return total + ex.sets.reduce((vol, set) => vol + set.weight * set.reps, 0);
-        }
-        return total;
-    }, 0);
-    
-    const strengthExercises = historicalEntry.desglose_ejercicios.filter(
-        (ex): ex is DesgloseFuerza => 'sets' in ex && Array.isArray((ex as DesgloseFuerza).sets) && (ex as DesgloseFuerza).sets.length > 0
-    );
-    const timedExercises = historicalEntry.desglose_ejercicios.filter((ex): ex is DesgloseTiempo => 'duracion_completada_seg' in ex);
 
-    return (
-        <div className="h-full w-full flex flex-col animate-fade-in-up bg-bg-base overflow-hidden">
-            <div className="p-4 sm:p-6 h-full flex flex-col w-full relative">
-                <header className="mb-6 flex-shrink-0 pt-4">
-                    <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
-                        Resumen de Entrenamiento
-                    </p>
-                    <h1 className="text-2xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight leading-none mb-1 drop-shadow-md">{historicalEntry.nombre_rutina}</h1>
-                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">{new Date(historicalEntry.fecha_completado).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-                </header>
+    return total;
+  }, 0);
 
-                <div className="flex-grow overflow-y-auto space-y-8 hide-scrollbar pb-32">
-                    {/* Overall Stats */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <StatCard label="Duración" value={`${historicalEntry.duracion_total_min}'`} icon={ClockIcon} />
-                        <StatCard label="Volumen Total" value={totalVolume > 0 ? `${(totalVolume / 1000).toFixed(1)}k` : '-'} icon={StrengthIcon} />
-                        <StatCard label="Ejercicios" value={`${historicalEntry.desglose_ejercicios.length}`} icon={CheckCircleIcon} />
-                        <StatCard label="Nuevos Récords" value={`${newPRs?.length || 0}`} icon={StarIcon} isPR={true} />
-                    </div>
+  const strengthExercises = historicalEntry.desglose_ejercicios.filter(
+    (exercise): exercise is DesgloseFuerza =>
+      'sets' in exercise && Array.isArray((exercise as DesgloseFuerza).sets) && (exercise as DesgloseFuerza).sets.length > 0
+  );
 
-                    {/* Per-Exercise Summary List */}
-                    {strengthExercises.length > 0 && (
-                        <div>
-                            <div className="flex items-center gap-2 mb-4 px-1">
-                                <h3 className="text-xs font-black text-text-secondary uppercase tracking-[0.2em]">Desempeño por Ejercicio</h3>
-                            </div>
-                            <div className="space-y-3">
-                                {strengthExercises.map((ex, index) => (
-                                    <ExerciseSummaryCard 
-                                        key={index} 
-                                        currentExercise={ex} 
-                                        isNewPR={!isHistoricalView && newPRs?.includes(ex.exerciseId)}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    
-                    {timedExercises.length > 0 && (
-                        <div>
-                             <div className="flex items-center gap-2 mb-4 px-1 mt-6">
-                                <h3 className="text-xs font-black text-text-secondary uppercase tracking-[0.2em]">Bloques de Tiempo</h3>
-                            </div>
-                             <div className="space-y-3">
-                                {timedExercises.map((ex, i) => {
-                                    const duration = ex.duracion_completada_seg;
-                                    return (
-                                        <div key={i} className="bg-surface-bg p-4 rounded-xl flex justify-between items-center border border-surface-border shadow-sm hover:bg-surface-hover transition-colors">
-                                            <p className="font-heading font-bold text-white text-lg uppercase">{ex.nombre_ejercicio}</p>
-                                            <p className="text-brand-accent font-heading text-xl font-bold">{Math.floor(duration / 60)}m {duration % 60}s</p>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
+  const timedExercises = historicalEntry.desglose_ejercicios.filter(
+    (exercise): exercise is DesgloseTiempo => 'duracion_completada_seg' in exercise
+  );
+
+  return (
+    <div className="relative h-full overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(var(--color-brand-accent-rgb),0.12),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(var(--color-success-rgb),0.08),transparent_35%)]" />
+
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="overflow-y-auto pb-32">
+          <PageHeader
+            size="wide"
+            eyebrow={
+              <Tag variant="overlay" tone="accent" size="sm" icon={SparklesIcon}>
+                Workout recap
+              </Tag>
+            }
+            title={historicalEntry.nombre_rutina}
+            subtitle={formatSessionDate(historicalEntry.fecha_completado)}
+          />
+
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pb-10 sm:px-6">
+            <PageSection
+              eyebrow="Resumen general"
+              title="Lectura de la sesion"
+              subtitle="Volumen, duracion y records del bloque completado."
+            >
+              <div className="grid gap-3 sm:grid-cols-2">
+                <SummaryStatCard icon={ClockIcon} label="Duracion" value={`${historicalEntry.duracion_total_min} min`} tone="accent" />
+                <SummaryStatCard icon={StrengthIcon} label="Volumen total" value={totalVolume > 0 ? `${(totalVolume / 1000).toFixed(1)}k` : '-'} helper="kg movidos" tone="protein" />
+                <SummaryStatCard icon={CheckCircleIcon} label="Ejercicios" value={`${historicalEntry.desglose_ejercicios.length}`} />
+                <SummaryStatCard icon={StarIcon} label="Nuevos records" value={`${newPRs.length}`} tone="success" />
+              </div>
+            </PageSection>
+
+            {strengthExercises.length > 0 ? (
+              <PageSection
+                eyebrow="Fuerza"
+                title="Desempeno por ejercicio"
+                subtitle="Mejores series y volumen acumulado por movimiento."
+              >
+                <div className="space-y-3">
+                  {strengthExercises.map((exercise) => (
+                    <ExerciseSummaryCard
+                      key={`${exercise.exerciseId}-${exercise.nombre_ejercicio}`}
+                      exercise={exercise}
+                      isNewPR={!isHistoricalView && newPRs.includes(exercise.exerciseId)}
+                    />
+                  ))}
                 </div>
-                
-                {/* Fixed Footer with Solid Button */}
-                {/* Fixed Footer with Solid Button */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 pb-safe bg-bg-base border-t border-surface-border z-40">
-                        <Button 
-                            onClick={() => { vibrate(10); onExit(); }} 
-                            variant="high-contrast"
-                            className="w-full py-5 text-sm shadow-[0_4px_14px_0_rgba(var(--color-text-primary-rgb),0.2)]" 
-                            size="large"
-                        >
-                            {isHistoricalView ? 'CERRAR RESUMEN' : 'FINALIZAR ENTRENAMIENTO'}
-                        </Button>
+              </PageSection>
+            ) : null}
+
+            {timedExercises.length > 0 ? (
+              <PageSection
+                eyebrow="Tiempo"
+                title="Bloques cronometrados"
+                subtitle="Resumen de segmentos por duracion dentro de la sesion."
+              >
+                <div className="space-y-3">
+                  {timedExercises.map((exercise, index) => (
+                    <TimeBlockCard key={`${exercise.nombre_ejercicio}-${index}`} block={exercise} />
+                  ))}
                 </div>
-            </div>
+              </PageSection>
+            ) : null}
+          </div>
         </div>
-    );
+
+        <div className="border-t border-surface-border bg-bg-base/95 p-4 pb-safe backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-3xl">
+            <Button
+              onClick={() => {
+                vibrate(10);
+                onExit();
+              }}
+              variant="high-contrast"
+              size="large"
+              className="w-full"
+            >
+              {isHistoricalView ? 'Cerrar resumen' : 'Finalizar entrenamiento'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };

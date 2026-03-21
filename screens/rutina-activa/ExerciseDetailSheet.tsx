@@ -1,73 +1,73 @@
-
 import React from 'react';
-import { Exercise } from '../../types';
+import type { Exercise } from '../../types';
 import Button from '../../components/Button';
+import DialogSectionCard from '../../components/DialogSectionCard';
 import IconButton from '../../components/IconButton';
+import Tag from '../../components/Tag';
 import ExerciseImage from '../../components/ExerciseImage';
 import { XIcon } from '../../components/icons';
 
 interface ExerciseDetailSheetProps {
-    exercise: Exercise;
-    onClose: () => void;
+  exercise: Exercise;
+  onClose: () => void;
 }
 
 const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
-    <div className="text-text-secondary whitespace-pre-wrap leading-relaxed font-medium text-sm">
-        {text.split(/(\*\*.*?\*\*)/g).map((part, index) => 
-            part.startsWith('**') 
-                ? <strong key={index} className="font-black text-text-primary block mt-6 mb-2 uppercase tracking-wider text-xs">{part.slice(2, -2)}</strong> 
-                : <span key={index}>{part}</span>
-        )}
-    </div>
+  <div className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-text-secondary">
+    {text.split(/(\*\*.*?\*\*)/g).map((part, index) =>
+      part.startsWith('**') ? (
+        <strong key={index} className="mb-2 mt-6 block text-[10px] font-black uppercase tracking-[0.22em] text-text-primary">
+          {part.slice(2, -2)}
+        </strong>
+      ) : (
+        <span key={index}>{part}</span>
+      )
+    )}
+  </div>
 );
 
-const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onClose }) => {
-    return (
-        <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-end justify-center animate-fade-in-up"
-            onClick={onClose}
-        >
-            <div 
-                className="w-full max-w-2xl max-h-[90vh] bg-bg-base border-t border-surface-border rounded-t-[2.5rem] flex flex-col shadow-lg overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Drag Handle Area & Header */}
-                <div className="w-full flex flex-col items-center pt-4 pb-2 flex-shrink-0 bg-bg-base z-10">
-                     <div className="w-12 h-1.5 bg-surface-border rounded-full mb-4"></div>
-                     <div className="w-full px-6 flex justify-between items-center">
-                        <span className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Detalle de Técnica</span>
-                        <IconButton
-                            onClick={onClose}
-                            icon={XIcon}
-                            label="Cerrar detalle de técnica"
-                            variant="secondary"
-                            size="medium"
-                        />
-                     </div>
-                </div>
+const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onClose }) => (
+  <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/70 backdrop-blur-md animate-fade-in" onClick={onClose}>
+    <div
+      className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[2rem] border border-surface-border bg-bg-base shadow-2xl sm:rounded-[2rem]"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <div className="relative overflow-hidden border-b border-surface-border p-5">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-brand-accent/10 via-transparent to-brand-protein/10" />
 
-                {/* Content */}
-                <div className="flex-grow overflow-y-auto px-6 pb-6 pt-2 hide-scrollbar">
-                    <div className="w-full aspect-video bg-surface-bg rounded-3xl overflow-hidden mb-8 border border-surface-border shadow-sm relative group mt-4">
-                         <ExerciseImage exercise={exercise} className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
-                         <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-transparent to-transparent opacity-60"></div>
-                    </div>
-                    
-                    <h2 className="text-3xl font-black text-text-primary uppercase tracking-tight leading-none mb-6">{exercise.name}</h2>
-                    
-                    <div className="p-6 bg-surface-bg rounded-3xl border border-surface-border shadow-sm">
-                        <FormattedDescription text={exercise.description} />
-                    </div>
-                </div>
-                
-                <div className="p-6 flex-shrink-0 bg-bg-base border-t border-surface-border pb-safe">
-                    <Button onClick={onClose} variant="high-contrast" className="w-full text-xs" size="large">
-                        Volver al Entrenamiento
-                    </Button>
-                </div>
-            </div>
+        <div className="relative z-10 flex items-start justify-between gap-4">
+          <div>
+            <Tag variant="status" tone="accent" size="sm">
+              Exercise Detail
+            </Tag>
+            <h2 className="mt-3 text-2xl font-black uppercase tracking-[-0.04em] text-text-primary">{exercise.name}</h2>
+          </div>
+
+          <IconButton onClick={onClose} icon={XIcon} label="Cerrar detalle" variant="secondary" size="small" />
         </div>
-    );
-};
+      </div>
+
+      <div className="flex-1 space-y-5 overflow-y-auto p-5 hide-scrollbar">
+        <div className="aspect-video overflow-hidden rounded-[1.75rem] border border-surface-border bg-surface-bg shadow-sm">
+          <ExerciseImage exercise={exercise} className="h-full w-full object-cover" />
+        </div>
+
+        <DialogSectionCard className="space-y-4 p-5">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Tecnica</p>
+            <h3 className="mt-2 text-lg font-black uppercase tracking-[-0.04em] text-text-primary">Guia de ejecucion</h3>
+          </div>
+          <FormattedDescription text={exercise.description} />
+        </DialogSectionCard>
+      </div>
+
+      <div className="border-t border-surface-border p-5">
+        <Button onClick={onClose} variant="high-contrast" className="w-full" size="large">
+          Volver al entrenamiento
+        </Button>
+      </div>
+    </div>
+  </div>
+);
 
 export default ExerciseDetailSheet;

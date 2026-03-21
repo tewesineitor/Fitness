@@ -1,10 +1,12 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { YogaStep, MeditationStep } from '../../types';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import Button from '../../components/Button';
+import Card from '../../components/Card';
 import CircularTimer from '../../components/CircularTimer';
-import { InformationCircleIcon, YogaIcon, MeditationIcon } from '../../components/icons';
+import Tag from '../../components/Tag';
+import { InformationCircleIcon, MeditationIcon, YogaIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { selectAllExercises } from '../../selectors/workoutSelectors';
-import Button from '../../components/Button';
+import type { MeditationStep, YogaStep } from '../../types';
 
 interface PoseScreenProps {
   step: YogaStep | MeditationStep;
@@ -15,12 +17,11 @@ interface PoseScreenProps {
 const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExerciseDetails }) => {
   const { state } = useContext(AppContext)!;
   const allExercises = selectAllExercises(state);
-  
+
   const exercise = 'exerciseId' in step ? allExercises[step.exerciseId] : null;
   const canShowDetails = !!exercise;
-  const subtitle = step.type === 'pose' ? 'Mantén la postura' : 'Concéntrate en tu respiración';
+  const subtitle = step.type === 'pose' ? 'Manten la postura con respiracion estable.' : 'Mantente presente y regula la respiracion.';
 
-  // FIX: Add state and logic to manage the timer countdown.
   const [timeLeft, setTimeLeft] = useState(step.duration);
   const onCompleteRef = useRef(onComplete);
 
@@ -28,12 +29,10 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Reset timer if step duration changes
   useEffect(() => {
     setTimeLeft(step.duration);
   }, [step.duration]);
 
-  // Timer logic
   useEffect(() => {
     if (timeLeft <= 0) {
       setTimeout(() => onCompleteRef.current(), 0);
@@ -41,7 +40,7 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
     }
 
     const timerId = window.setInterval(() => {
-      setTimeLeft(prevTime => {
+      setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timerId);
           return 0;
@@ -54,32 +53,46 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
   }, [timeLeft]);
 
   const Icon = step.type === 'pose' ? YogaIcon : MeditationIcon;
+  const tone = step.type === 'pose' ? 'accent' : 'protein';
 
   return (
-    <div className="flex flex-col items-center text-center w-full h-full px-4 py-6 animate-pop-in">
-        <div className="flex-grow flex flex-col items-center justify-center overflow-y-auto hide-scrollbar w-full">
-            <div className="inline-flex items-center gap-3 mb-4">
-                <div className="p-3 bg-surface-bg rounded-full">
-                    <Icon className="w-8 h-8 text-brand-accent" />
-                </div>
+    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
+
+      <div className="flex-1 overflow-y-auto px-6 py-8 hide-scrollbar">
+        <div className="mx-auto flex h-full max-w-md flex-col text-center">
+          <div>
+            <Tag variant="status" tone={tone} size="sm">
+              {step.type === 'pose' ? 'Pose Hold' : 'Meditation'}
+            </Tag>
+
+            <div className="mt-5 flex justify-center">
+              <div className="rounded-[1.5rem] border border-surface-border bg-surface-bg/80 p-5 shadow-sm">
+                <Icon className="h-10 w-10 text-brand-accent" />
+              </div>
             </div>
-            <Button
+
+            <h2 className="mt-5 text-3xl font-black uppercase tracking-[-0.05em] text-text-primary">{step.title}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">{subtitle}</p>
+          </div>
+
+          <div className="my-auto py-8">
+            <Card variant="glass" className="flex flex-col items-center gap-6 p-6 shadow-xl">
+              <CircularTimer initialDuration={step.duration} timeLeft={timeLeft} size={240} strokeWidth={10} />
+              <Button
                 onClick={onShowExerciseDetails}
                 disabled={!canShowDetails}
-                variant="ghost"
-                size="large"
-                icon={canShowDetails ? InformationCircleIcon : undefined}
-                iconPosition="right"
-                className="w-full mb-2 h-auto min-h-[3.5rem] px-4 py-3 text-3xl normal-case tracking-tight text-text-primary hover:text-brand-accent disabled:hover:text-text-primary"
-            >
-                {step.title}
-            </Button>
-            <p className="text-text-secondary mb-8">{subtitle}</p>
+                variant="secondary"
+                size="medium"
+                icon={InformationCircleIcon}
+                className="w-full"
+              >
+                Ver tecnica
+              </Button>
+            </Card>
+          </div>
         </div>
-        
-        <div className="flex-shrink-0 w-full flex justify-center pb-safe">
-             <CircularTimer initialDuration={step.duration} timeLeft={timeLeft} />
-        </div>
+      </div>
     </div>
   );
 };

@@ -1,8 +1,9 @@
-
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { cacoMethodData } from '../../data';
-import { CardioIcon, ChevronRightIcon } from '../../components/icons';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../../components/Button';
+import Card from '../../components/Card';
+import Tag from '../../components/Tag';
+import { CardioIcon, ChevronRightIcon } from '../../components/icons';
+import { cacoMethodData } from '../../data';
 import { vibrate } from '../../utils/helpers';
 
 interface CardioScreenProps {
@@ -11,108 +12,122 @@ interface CardioScreenProps {
 }
 
 const CardioScreen: React.FC<CardioScreenProps> = ({ cardioWeek, onComplete }) => {
-    const weekData = useMemo(() => cacoMethodData.find(d => d.week === cardioWeek) || cacoMethodData[0], [cardioWeek]);
-    
-    const [currentRep, setCurrentRep] = useState(1);
-    const [isRunInterval, setIsRunInterval] = useState(true);
-    const [intervalTimeLeft, setIntervalTimeLeft] = useState(weekData.runInterval);
-    const [totalTimeElapsed, setTotalTimeElapsed] = useState(0);
-    
-    const totalDuration = (weekData.runInterval + weekData.walkInterval) * weekData.repetitions;
-    const onCompleteRef = useRef(onComplete);
+  const weekData = useMemo(() => cacoMethodData.find((data) => data.week === cardioWeek) || cacoMethodData[0], [cardioWeek]);
 
-    useEffect(() => {
-        onCompleteRef.current = onComplete;
-    }, [onComplete]);
+  const [currentRep, setCurrentRep] = useState(1);
+  const [isRunInterval, setIsRunInterval] = useState(true);
+  const [intervalTimeLeft, setIntervalTimeLeft] = useState(weekData.runInterval);
+  const [totalTimeElapsed, setTotalTimeElapsed] = useState(0);
 
-    useEffect(() => {
-        const timer = window.setInterval(() => {
-            setIntervalTimeLeft(prev => {
-                if (prev <= 1) {
-                    vibrate([100, 50, 100]); // Haptic notification for interval switch
-                    
-                    if (isRunInterval) {
-                        setIsRunInterval(false);
-                        return weekData.walkInterval;
-                    } else {
-                        if (currentRep < weekData.repetitions) {
-                            setCurrentRep(r => r + 1);
-                            setIsRunInterval(true);
-                            return weekData.runInterval;
-                        } else {
-                            setTimeout(() => onCompleteRef.current(), 0);
-                            return 0;
-                        }
-                    }
-                }
-                return prev - 1;
-            });
-            setTotalTimeElapsed(t => t + 1);
-        }, 1000);
+  const totalDuration = (weekData.runInterval + weekData.walkInterval) * weekData.repetitions;
+  const onCompleteRef = useRef(onComplete);
 
-        return () => window.clearInterval(timer);
-    }, [isRunInterval, currentRep, weekData]);
-    
-    const progressPercent = Math.min((totalTimeElapsed / totalDuration) * 100, 100);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
-    return (
-        <div className="flex flex-col h-full bg-bg-base/80 overflow-hidden relative">
-            <div className="flex-grow flex flex-col items-center justify-between px-6 pt-10 pb-32 animate-fade-in-up">
-                
-                {/* HUD Header */}
-                <header className="flex flex-col items-center gap-4 flex-shrink-0 w-full">
-                    <div className="p-4 bg-surface-bg/80 backdrop-blur-md rounded-2xl border border-surface-border shadow-sm ring-1 ring-brand-accent/10">
-                        <CardioIcon className="w-10 h-10 text-brand-accent drop-shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.5)]" />
-                    </div>
-                    <div className="bg-surface-bg/80 backdrop-blur-md px-5 py-2 rounded-full border border-surface-border shadow-sm">
-                        <p className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">
-                            Semana <span className="text-brand-accent">{cardioWeek}</span> • Rep <span className="text-brand-accent">{currentRep}</span>/{weekData.repetitions}
-                        </p>
-                    </div>
-                </header>
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setIntervalTimeLeft((prev) => {
+        if (prev <= 1) {
+          vibrate([100, 50, 100]);
 
-                {/* Massive Timer & Status */}
-                <main className="flex flex-col items-center justify-center flex-grow w-full relative my-8">
-                     <p className={`text-[15vw] sm:text-[12vw] font-display font-black transition-colors duration-500 leading-none tracking-tighter mb-6 relative z-10 ${isRunInterval ? 'text-brand-accent drop-shadow-[0_0_40px_rgba(var(--color-brand-accent-rgb),0.6)]' : 'text-brand-protein drop-shadow-[0_0_30px_rgba(var(--color-brand-protein-rgb),0.4)]'}`}>
-                        {isRunInterval ? 'CORRE' : 'CAMINA'}
-                    </p>
-                    
-                    <div className={`relative z-10 bg-surface-bg/80 border rounded-[2rem] px-10 py-6 backdrop-blur-xl shadow-lg transition-colors duration-500 ${isRunInterval ? 'border-brand-accent/30 ring-1 ring-brand-accent/20' : 'border-surface-border'}`}>
-                        <p className="text-[20vw] sm:text-[15vw] font-heading font-black text-white leading-none tracking-tighter tabular-nums drop-shadow-md">
-                            {Math.floor(intervalTimeLeft / 60)}:{(intervalTimeLeft % 60).toString().padStart(2, '0')}
-                        </p>
-                    </div>
-                </main>
+          if (isRunInterval) {
+            setIsRunInterval(false);
+            return weekData.walkInterval;
+          }
 
-                {/* Progress Tape */}
-                <footer className="w-full max-w-sm flex-shrink-0">
-                    <div className="flex justify-between items-end mb-3 px-1">
-                        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Progreso Total</p>
-                        <p className="text-[10px] font-heading font-bold text-white">{Math.round(progressPercent)}%</p>
-                    </div>
-                    <div className="w-full bg-surface-bg/80 rounded-full h-2.5 overflow-hidden border border-surface-border shadow-inner relative">
-                        <div 
-                            className="absolute top-0 left-0 bottom-0 bg-brand-accent transition-all duration-1000 linear shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.6)]" 
-                            style={{ width: `${progressPercent}%` }}
-                        ></div>
-                    </div>
-                </footer>
+          if (currentRep < weekData.repetitions) {
+            setCurrentRep((value) => value + 1);
+            setIsRunInterval(true);
+            return weekData.runInterval;
+          }
+
+          setTimeout(() => onCompleteRef.current(), 0);
+          return 0;
+        }
+        return prev - 1;
+      });
+      setTotalTimeElapsed((value) => value + 1);
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [isRunInterval, currentRep, weekData]);
+
+  const progressPercent = Math.min((totalTimeElapsed / totalDuration) * 100, 100);
+  const intervalLabel = isRunInterval ? 'Corre' : 'Camina';
+  const intervalTone = isRunInterval ? 'accent' : 'protein';
+
+  return (
+    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
+
+      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 hide-scrollbar">
+        <div className="mx-auto flex h-full max-w-md flex-col">
+          <div className="text-center">
+            <Tag variant="status" tone="accent" size="sm">
+              Week {cardioWeek}
+            </Tag>
+            <div className="mt-5 flex justify-center">
+              <div className="rounded-[1.5rem] border border-surface-border bg-surface-bg/80 p-5 shadow-sm">
+                <CardioIcon className="h-10 w-10 text-brand-accent" />
+              </div>
             </div>
+            <h2 className="mt-5 text-4xl font-black uppercase tracking-[-0.07em] text-text-primary">{intervalLabel}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+              Rep {currentRep}/{weekData.repetitions} · corre {weekData.runInterval}s / camina {weekData.walkInterval}s
+            </p>
+          </div>
 
-            {/* FIXED ACTION FOOTER */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-40">
-                <Button 
-                    variant="high-contrast"
-                    onClick={() => { vibrate(10); onComplete(); }} 
-                    size="large" 
-                    className="w-full max-w-sm mx-auto"
-                    icon={ChevronRightIcon}
-                >
-                    FINALIZAR CARDIO
-                </Button>
-            </div>
+          <div className="my-auto py-8">
+            <Card variant="glass" className="space-y-6 p-6 shadow-xl">
+              <div className="text-center">
+                <Tag variant="status" tone={intervalTone} size="sm">
+                  Intervalo activo
+                </Tag>
+                <p className="mt-4 font-mono text-7xl font-black leading-none tracking-[-0.08em] text-text-primary">
+                  {Math.floor(intervalTimeLeft / 60)}:{(intervalTimeLeft % 60).toString().padStart(2, '0')}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Card variant="default" className="p-4 text-center">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Progreso</p>
+                  <p className="mt-2 font-mono text-3xl font-black text-text-primary">{Math.round(progressPercent)}%</p>
+                </Card>
+                <Card variant="default" className="p-4 text-center">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">Tiempo total</p>
+                  <p className="mt-2 font-mono text-3xl font-black text-text-primary">{Math.floor(totalTimeElapsed / 60)}:{(totalTimeElapsed % 60).toString().padStart(2, '0')}</p>
+                </Card>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">
+                  <span>Progreso total</span>
+                  <span>{Math.round(progressPercent)}%</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full border border-surface-border bg-bg-base">
+                  <div className="h-full bg-brand-accent transition-all duration-1000" style={{ width: `${progressPercent}%` }} />
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
-    );
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 border-t border-surface-border bg-bg-base px-6 pb-safe pt-5 shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)]">
+        <Button
+          variant="high-contrast"
+          onClick={() => { vibrate(10); onComplete(); }}
+          size="large"
+          className="mx-auto w-full max-w-md"
+          icon={ChevronRightIcon}
+        >
+          Finalizar cardio
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default CardioScreen;
