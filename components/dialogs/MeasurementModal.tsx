@@ -25,7 +25,7 @@ const MeasurementInput: React.FC<{
                 value={value} 
                 onChange={e => onChange(e.target.value)} 
                 placeholder="0" 
-                className="w-full bg-transparent outline-none text-lg font-bold text-white placeholder:text-text-secondary/60"
+                className="w-full bg-transparent outline-none text-lg font-bold text-text-primary placeholder:text-text-secondary/60"
             />
             <span className="text-xs font-bold text-text-secondary">{unit}</span>
         </div>
@@ -101,7 +101,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
                                 <div className="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center">
                                     <ScaleIcon className="w-4 h-4 text-brand-accent" />
                                 </div>
-                                <h3 className="text-xs font-bold text-white uppercase tracking-widest">Peso Corporal</h3>
+                                <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest">Peso Corporal</h3>
                             </div>
                             <MeasurementInput label="Peso Actual" value={weight} onChange={setWeight} unit="kg" />
                         </div>
@@ -112,7 +112,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
                                 <div className="w-8 h-8 rounded-lg bg-brand-carbs/10 flex items-center justify-center">
                                     <RulerHorizontalIcon className="w-4 h-4 text-brand-carbs" />
                                 </div>
-                                <h3 className="text-xs font-bold text-white uppercase tracking-widest">Medidas Clave</h3>
+                                <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest">Medidas Clave</h3>
                             </div>
                             
                             <div className="grid grid-cols-2 gap-x-4 gap-y-6">
@@ -132,7 +132,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
                                 <div className="w-8 h-8 rounded-lg bg-brand-fat/10 flex items-center justify-center">
                                     <CameraIcon className="w-4 h-4 text-brand-fat" />
                                 </div>
-                                <h3 className="text-xs font-bold text-white uppercase tracking-widest">Foto de Progreso</h3>
+                                <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest">Foto de Progreso</h3>
                             </div>
                             
                             <label className="relative w-full aspect-video rounded-xl overflow-hidden group border-2 border-dashed border-surface-border hover:border-brand-fat/50 transition-all active:scale-[0.98] flex flex-col items-center justify-center cursor-pointer bg-surface-bg">
@@ -140,7 +140,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
                                     <>
                                         <img src={photoUrl} alt="Progreso" className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span className="text-xs font-bold text-white uppercase tracking-widest">Cambiar Foto</span>
+                                            <span className="text-xs font-bold text-text-primary uppercase tracking-widest">Cambiar Foto</span>
                                         </div>
                                     </>
                                 ) : (
@@ -148,7 +148,7 @@ const MeasurementModal: React.FC<MeasurementModalProps> = ({ onClose }) => {
                                         <div className="w-10 h-10 rounded-xl bg-surface-hover border border-surface-border flex items-center justify-center mb-2 group-hover:bg-brand-fat/10 group-hover:border-brand-fat/30 transition-all shadow-sm">
                                             <CameraIcon className="w-5 h-5 text-brand-fat" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-text-secondary group-hover:text-white uppercase tracking-widest transition-colors">Añadir Foto</span>
+                                        <span className="text-[10px] font-bold text-text-secondary group-hover:text-text-primary uppercase tracking-widest transition-colors">Añadir Foto</span>
                                     </>
                                 )}
                                 <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />

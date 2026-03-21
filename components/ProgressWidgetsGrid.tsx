@@ -7,7 +7,7 @@ import Button from './Button';
 
 // Widget Wrapper - Clean Utility Style
 const WidgetCard: React.FC<{ children: React.ReactNode; className?: string; }> = ({ children, className = '' }) => (
-    <div className={`bg-surface-bg p-6 rounded-3xl flex flex-col justify-between h-full border border-surface-border shadow-lg relative overflow-hidden group ${className}`}>
+    <div className={`bg-surface-bg p-6 rounded-2xl flex flex-col justify-between h-full border border-surface-border shadow-lg relative overflow-hidden group ${className}`}>
         {children}
     </div>
 );
@@ -39,10 +39,10 @@ export const GalleryWidget: React.FC<{ onShowGallery: () => void; title?: string
                             <img src={lastPhoto.url_foto} alt="Última foto" className="w-full h-full object-cover opacity-80 group-hover/img:opacity-100 group-hover/img:scale-105 transition-all duration-700"/>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+                                <span className="text-[10px] font-bold text-text-primary uppercase tracking-widest bg-surface-bg/75 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
                                     {new Date(lastPhoto.fecha_registro).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
                                 </span>
-                                <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover/img:bg-brand-accent group-hover/img:border-brand-accent group-hover/img:text-black transition-colors">
+                                <div className="w-8 h-8 rounded-full bg-surface-bg/75 backdrop-blur-md flex items-center justify-center border border-white/20 text-text-primary group-hover/img:bg-surface-hover group-hover/img:border-brand-accent/20 transition-colors">
                                     <ChevronRightIcon className="w-4 h-4" />
                                 </div>
                             </div>
@@ -111,7 +111,7 @@ export const HistoryWidget: React.FC<{ onShowHistoryList: () => void; onViewHist
                                          <p className="font-bold text-xs sm:text-sm text-text-primary uppercase tracking-wide truncate group-hover/btn:text-brand-accent transition-colors">{session.nombre_rutina}</p>
                                          <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">{new Date(session.fecha_completado).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}</p>
                                     </div>
-                                    <ChevronRightIcon className="w-4 h-4 text-text-secondary group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
+                                    <ChevronRightIcon className="w-4 h-4 text-text-secondary group-hover/btn:text-text-primary group-hover/btn:translate-x-1 transition-all" />
                                 </button>
                             ))}
                         </div>

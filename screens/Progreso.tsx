@@ -164,8 +164,8 @@ const Progreso: React.FC = () => {
                                 onClick={() => setChartTimeRange(opt)}
                                 className={[
                                     'px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 active:scale-95',
-                                    chartTimeRange === opt
-                                        ? 'bg-brand-accent text-white shadow-sm'
+                                chartTimeRange === opt
+                                        ? 'bg-text-primary text-bg-base shadow-sm'
                                         : 'text-text-secondary hover:text-text-primary',
                                 ].join(' ')}
                             >

@@ -1,8 +1,10 @@
-
 import React, { useState, useMemo, useContext, useCallback, useRef, useEffect } from 'react';
 import { FoodItem, AddedFood, MealType } from '../../types';
 import { AppContext } from '../../contexts';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import ChipButton from '../../components/ChipButton';
+import Tag from '../../components/Tag';
 import FloatingDock from '../../components/FloatingDock';
 import { SearchIcon, ChevronRightIcon, PlusIcon, PencilIcon, TrashIcon, BarcodeIcon, ProteinShakeIcon, BowlIcon, MoleculeIcon, AppleIcon, CameraIcon, MinusIcon, PhotoIcon, BookOpenIcon, PlateIcon, XIcon, SparklesIcon } from '../../components/icons';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
@@ -26,7 +28,7 @@ type MainCategory = 'Todos' | 'Proteínas' | 'Carbohidratos' | 'Frutas y Verdura
 type ProcessingState = 'fetching' | 'analyzing' | null;
 
 const filterCategories: { key: MainCategory; label: string; icon: IconComponent; activeColorClass: string }[] = [
-    { key: 'Todos', label: 'Todos', icon: BookOpenIcon, activeColorClass: 'text-white bg-white/10' },
+    { key: 'Todos', label: 'Todos', icon: BookOpenIcon, activeColorClass: 'text-text-primary bg-text-primary/10 border-text-primary/20' },
     { key: 'Proteínas', label: 'Proteínas', icon: ProteinShakeIcon, activeColorClass: 'text-brand-protein bg-brand-protein/10 border-brand-protein/20' },
     { key: 'Carbohidratos', label: 'Carbs', icon: BowlIcon, activeColorClass: 'text-brand-carbs bg-brand-carbs/10 border-brand-carbs/20' },
     { key: 'Frutas y Verduras', label: 'Verduras', icon: AppleIcon, activeColorClass: 'text-green-400 bg-green-400/10 border-green-400/20' },
@@ -188,34 +190,38 @@ const FoodItemCard: React.FC<{ food: FoodItem; quantity: number; onQuantityChang
                         <div className="flex items-center gap-1.5 flex-shrink-0">
                             {isSelected ? (
                                 <div className="flex items-center bg-surface-bg rounded-xl border border-surface-border shadow-sm overflow-hidden">
-                                    <button onClick={() => { vibrate(5); onQuantityChange(-0.5); }} className="p-2 hover:bg-surface-hover text-text-secondary hover:text-brand-accent transition-colors border-r border-surface-border"><MinusIcon className="w-3 h-3" /></button>
+                                    <IconButton onClick={() => { vibrate(5); onQuantityChange(-0.5); }} variant="ghost" size="small" icon={MinusIcon} label="Menos" className="!rounded-none border-r border-surface-border" />
                                     <button onClick={onEditPortion} className="px-3 text-center font-bold text-[11px] text-text-primary hover:text-brand-accent transition-colors font-mono">{quantity % 1 === 0 ? quantity : quantity.toFixed(1)}</button>
-                                    <button onClick={() => { vibrate(5); onQuantityChange(0.5); }} className="p-2 hover:bg-surface-hover text-text-secondary hover:text-brand-accent transition-colors border-l border-surface-border"><PlusIcon className="w-3 h-3" /></button>
+                                    <IconButton onClick={() => { vibrate(5); onQuantityChange(0.5); }} variant="ghost" size="small" icon={PlusIcon} label="Más" className="!rounded-none border-l border-surface-border" />
                                 </div>
                             ) : (
-                                <button 
+                                <IconButton 
                                     onClick={() => { vibrate(5); onQuantityChange(1); }} 
-                                    className="bg-surface-hover hover:bg-brand-accent text-brand-accent hover:text-surface-bg w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border border-surface-border shadow-sm active:scale-90"
-                                >
-                                    <PlusIcon className="w-5 h-5" />
-                                </button>
+                                    variant="outline"
+                                    icon={PlusIcon}
+                                    label="Añadir"
+                                    className="!rounded-xl"
+                                />
                             )}
 
                             {/* Action Buttons */}
                             <div className="flex gap-1.5 ml-0.5">
-                                <button 
+                                <IconButton 
                                     onClick={(e) => { e.stopPropagation(); onEditFood(); }} 
-                                    className="w-9 h-9 bg-surface-bg border border-surface-border rounded-xl flex items-center justify-center text-text-secondary hover:text-brand-accent hover:border-brand-accent/40 shadow-sm active:scale-90 transition-all"
-                                >
-                                    <PencilIcon className="w-4 h-4"/>
-                                </button>
+                                    variant="icon-only"
+                                    icon={PencilIcon}
+                                    label="Editar"
+                                    className="!rounded-xl"
+                                />
                                 {onDeleteFood && (
-                                    <button 
+                                    <IconButton 
                                         onClick={(e) => { e.stopPropagation(); onDeleteFood(); }} 
-                                        className="w-9 h-9 bg-surface-bg border border-surface-border rounded-xl flex items-center justify-center text-text-secondary hover:text-red-500 hover:border-red-500/40 shadow-sm active:scale-90 transition-all"
-                                    >
-                                        <TrashIcon className="w-4 h-4"/>
-                                    </button>
+                                        variant="destructive"
+                                        size="medium"
+                                        icon={TrashIcon}
+                                        label="Eliminar"
+                                        className="!rounded-xl"
+                                    />
                                 )}
                             </div>
                         </div>
@@ -246,11 +252,10 @@ const ProcessingModal: React.FC<{ state: ProcessingState }> = ({ state }) => {
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col justify-center items-center z-[200] animate-scale-in">
             <div className="relative mb-6">
-                <div className="w-16 h-16 border-4 border-surface-border rounded-full flex items-center justify-center bg-surface-bg shadow-lg shadow-brand-accent/20">
+                <div className="w-16 h-16 border-4 border-t-brand-accent border-surface-border rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
                     <SparklesIcon className="w-6 h-6 text-brand-accent animate-pulse" />
                 </div>
-                {/* Omit the raw spin, keep it tactile/pulsing */}
-                 <div className="absolute inset-0 rounded-full border border-brand-accent/30 animate-ping"></div>
             </div>
             <p className="font-black text-white text-lg tracking-tight uppercase px-4 text-center">{message}</p>
             <p className="text-text-secondary text-[10px] uppercase tracking-widest mt-2">{state === 'fetching' ? 'Conectando...' : 'Procesando vision...'}</p>
@@ -486,7 +491,7 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
     const handleScroll = useCallback(() => {
         if (!scrollContainerRef.current) return;
         const currentScrollY = scrollContainerRef.current.scrollTop;
-        const scrollThreshold = 50; // Increased threshold for stability
+        const scrollThreshold = 50; 
 
         if (currentScrollY <= 10) {
             setShowControls(true);
@@ -496,7 +501,6 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
 
         const diff = currentScrollY - lastScrollY.current;
         
-        // Only toggle if difference is significant
         if (Math.abs(diff) > scrollThreshold) {
             if (diff > 0 && showControls) {
                 setShowControls(false);
@@ -543,7 +547,7 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                     <div className="p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-sm font-black text-brand-accent uppercase tracking-[0.2em]">Fuente de Imagen</h3>
-                            <button onClick={() => setShowImageSourceModal(false)}><XIcon className="w-5 h-5 text-text-secondary hover:text-text-primary"/></button>
+                            <IconButton onClick={() => setShowImageSourceModal(false)} icon={XIcon} label="Cerrar" variant="ghost" />
                         </div>
                         
                         <div className="grid grid-cols-2 gap-4">
@@ -594,19 +598,18 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                 <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pb-0 pt-2 sm:pt-4">
                     <div className="flex items-center justify-between mb-2 relative">
                         <div className="flex items-center gap-3">
-                            <button onClick={onBack} className="p-2 bg-surface-hover rounded-xl text-text-secondary hover:text-text-primary transition-all border border-surface-border active:scale-95">
-                                <ChevronRightIcon className="w-4 h-4 rotate-180" />
-                            </button>
+                            <IconButton onClick={onBack} icon={ChevronRightIcon} label="Volver" variant="secondary" size="small" className="rotate-180" />
                             <h1 className="text-lg sm:text-xl font-black text-text-primary uppercase tracking-tight leading-none ml-[15px]">Añadir Comida</h1>
                         </div>
 
                         <div className="relative">
-                            <button 
+                            <IconButton 
                                 onClick={() => setShowAddOptions(!showAddOptions)}
-                                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all border ${showAddOptions ? 'bg-brand-accent text-surface-bg border-brand-accent' : 'bg-surface-hover text-text-primary border-surface-border'}`}
-                            >
-                                <PlusIcon className={`w-5 h-5 transition-transform duration-300 ${showAddOptions ? 'rotate-45' : ''}`} />
-                            </button>
+                                variant={showAddOptions ? "primary" : "secondary"}
+                                icon={PlusIcon}
+                                label="Opciones"
+                                className={`!rounded-xl transition-all duration-300 ${showAddOptions ? 'rotate-45' : ''}`}
+                            />
 
                             {/* Dropdown Menu - Fully Opaque */}
                             {showAddOptions && (
@@ -657,24 +660,25 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                         <div className="flex flex-col gap-2 pt-[10px] pb-0">
                             {/* Level 1: Main Categories */}
                             <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-                                {filterCategories.map(({ key, label, icon: Icon, activeColorClass }) => {
+                                {filterCategories.map(({ key, label, icon: Icon }) => {
                                     const isActive = activeFilterCategory === key;
+                                    const tone = key === 'Proteínas' ? 'protein' : key === 'Carbohidratos' ? 'carbs' : key === 'Grasas' ? 'neutral' : key === 'Frutas y Verduras' ? 'success' : key === 'Preparados' ? 'accent' : 'neutral';
+                                    
                                     return (
-                                        <button 
-                                            key={key} 
+                                        <ChipButton
+                                            key={key}
+                                            active={isActive}
+                                            tone={tone as any}
+                                            size="medium"
+                                            icon={Icon}
                                             onClick={() => {
                                                 setActiveFilterCategory(key);
                                                 setActiveSubFilter('TODOS');
-                                            }} 
-                                            className={`flex flex-col items-center justify-center p-2 rounded-xl flex-1 min-w-[4.5rem] h-14 flex-shrink-0 transition-all duration-200 border active:scale-95 shadow-sm ${ 
-                                                isActive 
-                                                    ? `bg-text-primary border-text-primary ${activeColorClass} !text-bg-base` 
-                                                    : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover hover:border-surface-border/80' 
-                                            }`}
+                                            }}
+                                            className="min-w-[4.5rem] flex-1"
                                         >
-                                            <Icon className={`w-4 h-4 mb-1 ${isActive ? 'text-surface-bg' : 'opacity-60'}`} />
-                                            <span className={`text-[8px] font-bold leading-tight uppercase tracking-widest ${isActive ? 'text-surface-bg' : 'opacity-60'}`}> {label} </span>
-                                        </button>
+                                            {label}
+                                        </ChipButton>
                                     );
                                 })}
                             </div>
@@ -682,41 +686,31 @@ export const AddFoodView: React.FC<AddFoodViewProps> = ({ onBack, allFoodData, i
                             {/* Level 2: Sub-Filters (Contextual Chips) */}
                             {activeFilterCategory !== 'Todos' && (
                                 <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar animate-fade-in-up py-2">
-                                    <button
+                                    <ChipButton
+                                        active={activeSubFilter === 'TODOS'}
                                         onClick={() => setActiveSubFilter('TODOS')}
-                                        className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-all border ${
-                                            activeSubFilter === 'TODOS' 
-                                                ? 'bg-brand-accent text-surface-bg border-brand-accent' 
-                                                : 'bg-surface-hover text-text-secondary border-surface-border hover:text-text-primary hover:border-text-primary/30'
-                                        }`}
+                                        size="small"
                                     >
                                         Todos
-                                    </button>
+                                    </ChipButton>
                                     
-                                    {categoryFilterMap[activeFilterCategory]?.map((subCat) => {
-                                        const isActive = activeSubFilter === subCat;
-                                        
-                                        return (
-                                            <button
-                                                key={subCat}
-                                                onClick={() => setActiveSubFilter(subCat)}
-                                                className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-all border ${
-                                                    isActive 
-                                                        ? 'bg-brand-accent text-surface-bg border-brand-accent' 
-                                                        : 'bg-surface-hover text-text-secondary border-surface-border hover:text-text-primary hover:border-text-primary/30'
-                                                }`}
-                                            >
-                                                {subCategoryLabels[subCat] || subCat}
-                                            </button>
-                                        );
-                                    })}
+                                    {categoryFilterMap[activeFilterCategory]?.map((subCat) => (
+                                        <ChipButton
+                                            key={subCat}
+                                            active={activeSubFilter === subCat}
+                                            onClick={() => setActiveSubFilter(subCat)}
+                                            size="small"
+                                        >
+                                            {subCategoryLabels[subCat] || subCat}
+                                        </ChipButton>
+                                    ))}
                                 </div>
                             )}
                         </div>
                     )}
                 </div>
             </header>
-            
+
             {/* --- Main Content (Scrollable) --- */}
             <div 
                 ref={scrollContainerRef}

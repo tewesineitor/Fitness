@@ -21,7 +21,7 @@ interface PillTabsProps<T extends string> {
  *
  * Visual spec:
  *  - Height: 36px total (h-9)
- *  - Active: bg-brand-accent text-white pill, animated slide
+ *  - Active: bg-brand-accent text-brand-accent-foreground pill, animated slide
  *  - Inactive: ghost text-secondary, hover lightens
  *  - Container: bg-surface-hover/40 bordered pill, p-1
  *
@@ -62,13 +62,13 @@ function PillTabs<T extends string>({
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/50',
               'active:scale-[0.96]',
               isActive
-                ? 'bg-brand-accent text-white shadow-sm shadow-brand-accent/20'
+                ? 'bg-text-primary text-bg-base shadow-md shadow-black/10'
                 : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
             ].join(' ')}
           >
             {Icon && (
               <Icon
-                className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? 'text-white' : 'text-text-muted'}`}
+                className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? 'text-bg-base' : 'text-text-muted'}`}
               />
             )}
             <span className="truncate">{tab.label}</span>
@@ -77,7 +77,7 @@ function PillTabs<T extends string>({
                 className={[
                   'flex-shrink-0 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-black flex items-center justify-center',
                   isActive
-                    ? 'bg-white/20 text-white'
+                    ? 'bg-bg-base/20 text-bg-base'
                     : 'bg-surface-border text-text-secondary',
                 ].join(' ')}
               >

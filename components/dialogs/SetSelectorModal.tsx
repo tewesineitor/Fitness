@@ -22,7 +22,7 @@ const SetSelectorModal: React.FC<SetSelectorModalProps> = ({ onSelect, onClose }
                 variant="tertiary" 
                 size="small" 
                 onClick={onClose} 
-                className="!p-0 text-text-secondary hover:text-white"
+                className="!p-0 text-text-secondary hover:text-text-primary"
                 icon={XIcon}
             />
         </div>
@@ -38,10 +38,10 @@ const SetSelectorModal: React.FC<SetSelectorModalProps> = ({ onSelect, onClose }
                 <button
                     key={num}
                     onClick={() => onSelect(num)}
-                    className="aspect-square rounded-2xl bg-surface-bg border border-surface-border hover:border-brand-accent hover:bg-brand-accent hover:text-white transition-all duration-200 flex flex-col items-center justify-center group active:scale-[0.98] shadow-sm"
+                    className="aspect-square rounded-2xl bg-surface-bg border border-surface-border hover:border-brand-accent hover:bg-brand-accent hover:text-text-primary transition-all duration-200 flex flex-col items-center justify-center group active:scale-[0.98] shadow-sm"
                 >
-                    <span className="text-4xl font-black text-white group-hover:text-white transition-colors">{num}</span>
-                    <span className="text-[10px] font-bold text-text-secondary group-hover:text-white/80 uppercase tracking-widest mt-1">Series</span>
+                    <span className="text-4xl font-black text-text-primary group-hover:text-text-primary transition-colors">{num}</span>
+                    <span className="text-[10px] font-bold text-text-secondary group-hover:text-text-primary/80 uppercase tracking-widest mt-1">Series</span>
                 </button>
             ))}
             </div>

@@ -105,10 +105,10 @@ const CardioScreen: React.FC<CardioScreenProps> = ({ cardioWeek, onComplete }) =
                     variant="high-contrast"
                     onClick={() => { vibrate(10); onComplete(); }} 
                     size="large" 
-                    className="w-full max-w-sm mx-auto py-5 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:scale-[1.02] active:scale-95 transition-all text-sm font-extrabold tracking-widest uppercase flex flex-col gap-1 items-center justify-center leading-none"
+                    className="w-full max-w-sm mx-auto"
                     icon={ChevronRightIcon}
                 >
-                    <span>FINALIZAR CARDIO</span>
+                    FINALIZAR CARDIO
                 </Button>
             </div>
         </div>

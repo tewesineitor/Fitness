@@ -45,7 +45,7 @@ const ProgressiveCardioLogModal: React.FC<ProgressiveCardioLogModalProps> = ({ o
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
                                 placeholder="Ej. 5.2"
-                                className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-white font-mono text-lg placeholder:text-white/20 transition-colors shadow-sm"
+                                className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-text-primary font-mono text-lg placeholder:text-text-muted transition-colors shadow-sm"
                             />
                         </div>
                         <div>
@@ -56,7 +56,7 @@ const ProgressiveCardioLogModal: React.FC<ProgressiveCardioLogModalProps> = ({ o
                                 onChange={(e) => setNotes(e.target.value)}
                                 placeholder="¿Cómo te sentiste? ¿Algún detalle importante?"
                                 rows={4}
-                                className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-sm font-bold text-white placeholder:text-white/20 resize-none leading-relaxed transition-colors shadow-sm"
+                                className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-sm font-bold text-text-primary placeholder:text-text-muted resize-none leading-relaxed transition-colors shadow-sm"
                             />
                         </div>
                     </div>

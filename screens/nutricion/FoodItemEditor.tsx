@@ -136,7 +136,7 @@ export const FoodItemEditor: React.FC<{ category?: FoodCategory; onClose: () => 
     };
 
     const isEditableDefault = isEditing && !existingFood.isUserCreated;
-    const inputClasses = "w-full p-4 bg-surface-bg border border-surface-border rounded-xl text-sm font-bold text-white placeholder:text-white/20 focus:border-brand-accent outline-none transition-colors uppercase tracking-wide shadow-sm";
+    const inputClasses = "w-full p-4 bg-surface-bg border border-surface-border rounded-xl text-sm font-bold text-text-primary placeholder:text-text-muted focus:border-brand-accent outline-none transition-colors uppercase tracking-wide shadow-sm";
     const labelClasses = "text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-2 block pl-1";
 
     const categories: FoodCategory[] = [

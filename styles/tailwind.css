@@ -14,6 +14,7 @@
   --color-text-muted-rgb: 161, 161, 170;
 
   --color-brand-accent-rgb: 109, 40, 217;
+  --color-brand-accent-foreground-rgb: 255, 255, 255;
   --color-brand-accent-glow: rgba(109, 40, 217, 0.12);
   --color-brand-accent-subtle: rgba(109, 40, 217, 0.08);
 
@@ -59,6 +60,7 @@
   --color-text-muted-rgb: 113, 113, 122;
 
   --color-brand-accent-rgb: 167, 139, 250;
+  --color-brand-accent-foreground-rgb: 9, 9, 11;
   --color-brand-accent-glow: rgba(167, 139, 250, 0.2);
   --color-brand-accent-subtle: rgba(167, 139, 250, 0.08);
 
@@ -129,6 +131,72 @@ select {
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
+}
+
+@layer components {
+  .ui-tag {
+    @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap select-none border font-semibold transition-all duration-200 ease-smooth;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base;
+  }
+
+  .ui-tag[data-interactive='true'] {
+    @apply active:scale-[0.98];
+  }
+
+  .ui-tag--sm {
+    @apply h-7 px-2.5 text-[10px] tracking-[0.16em] rounded-full;
+  }
+
+  .ui-tag--md {
+    @apply h-8 px-3 text-[11px] tracking-[0.16em] rounded-full;
+  }
+
+  .ui-tag--lg {
+    @apply h-9 px-3.5 text-[11px] tracking-[0.18em] rounded-full;
+  }
+
+  .ui-tag--filter {
+    @apply bg-surface-bg text-text-secondary border-surface-border shadow-sm;
+    @apply hover:bg-surface-hover hover:text-text-primary hover:border-surface-border/80;
+  }
+
+  .ui-tag--filter[data-active='true'] {
+    background-color: rgb(var(--color-brand-accent-rgb));
+    border-color: rgb(var(--color-brand-accent-rgb));
+    color: rgb(var(--color-brand-accent-foreground-rgb));
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-tag--status {
+    @apply bg-surface-hover/60 text-text-secondary border-surface-border/80;
+  }
+
+  .ui-tag--status[data-active='true'] {
+    background-color: rgb(var(--color-brand-accent-rgb) / 0.1);
+    border-color: rgb(var(--color-brand-accent-rgb) / 0.2);
+    color: rgb(var(--color-brand-accent-rgb));
+  }
+
+  .ui-tag--overlay {
+    background-color: rgb(var(--color-surface-bg-rgb) / 0.78);
+    @apply text-text-primary border-surface-border/60 backdrop-blur-md shadow-sm;
+  }
+
+  .ui-tag--overlay[data-active='true'] {
+    background-color: rgb(var(--color-brand-accent-rgb) / 0.12);
+    border-color: rgb(var(--color-brand-accent-rgb) / 0.2);
+    color: rgb(var(--color-brand-accent-rgb));
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-tag__icon {
+    @apply h-3.5 w-3.5 flex-shrink-0;
+  }
+
+  .ui-tag__count {
+    @apply ml-0.5 inline-flex items-center justify-center rounded-full bg-surface-hover/80 px-1.5 py-0.5;
+    @apply text-[9px] font-black tracking-[0.12em] text-text-secondary;
+  }
 }
 
 button:not([disabled]):active,

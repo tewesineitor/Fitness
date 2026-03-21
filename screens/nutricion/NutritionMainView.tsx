@@ -135,7 +135,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             type="button"
                             onClick={() => { vibrate(5); onGoToAddFood(); }}
                             aria-label="Agregar comida"
-                            className="bg-brand-accent text-white rounded-xl w-14 flex-shrink-0 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all border border-brand-accent"
+                            className="bg-brand-accent text-brand-accent-foreground rounded-xl w-14 flex-shrink-0 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all border border-brand-accent"
                         >
                             <PlusIcon className="w-6 h-6" />
                         </button>

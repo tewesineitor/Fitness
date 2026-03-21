@@ -2,7 +2,6 @@
 import React from 'react';
 import { RoutineTask, RoutineTaskType } from '../../types';
 import { 
-    ChevronRightIcon, 
     StrengthIcon, 
     CardioIcon, 
     YogaIcon, 
@@ -11,6 +10,7 @@ import {
     MountainIcon,
     TrashIcon 
 } from '../icons';
+import Tag from '../Tag';
 
 interface RoutineCardProps {
     routine: RoutineTask;
@@ -50,7 +50,7 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onClick, onDelete })
                 {/* Icon Box */}
                 <div className={`
                     w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 
-                    bg-black/40 border border-surface-border shadow-inner transition-colors
+                    bg-surface-hover border border-surface-border shadow-inner transition-colors
                     ${accentColor}
                 `}>
                     <RoutineTypeIcon type={routine.type} className="w-6 h-6" />
@@ -58,22 +58,22 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onClick, onDelete })
 
                 {/* Content */}
                 <div className="flex-grow min-w-0">
-                    <h3 className="font-black text-text-primary text-sm uppercase tracking-tight group-hover:text-white transition-colors truncate">
+                    <h3 className="font-black text-text-primary text-sm uppercase tracking-tight transition-colors truncate">
                         {routine.name}
                     </h3>
                     <div className="flex items-center gap-2 mt-1.5">
-                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${isStrength ? 'bg-brand-protein/10 text-brand-protein border-brand-protein/20' : 'bg-brand-accent/10 text-brand-accent border-brand-accent/20'}`}>
+                        <Tag variant="status" tone={isStrength ? 'protein' : 'accent'} size="sm">
                             {routine.type === 'strength' ? 'FUERZA' : routine.type === 'cardio' ? 'CARDIO' : 'MOVILIDAD'}
-                        </span>
-                        <span className="text-[9px] font-bold text-text-secondary bg-surface-hover px-2 py-0.5 rounded border border-surface-border uppercase tracking-wider">
+                        </Tag>
+                        <Tag variant="status" size="sm">
                             {routine.flow.length * 3} MIN
-                        </span>
+                        </Tag>
                     </div>
                 </div>
 
                 {/* Action */}
                 <div className="flex-shrink-0 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-surface-hover flex items-center justify-center text-text-primary group-hover:bg-brand-accent group-hover:text-black transition-colors border border-surface-border">
+                    <div className="w-8 h-8 rounded-full bg-surface-bg flex items-center justify-center text-text-secondary group-hover:bg-surface-hover group-hover:text-text-primary transition-colors border border-surface-border">
                         <svg className="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                 </div>
@@ -83,7 +83,7 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onClick, onDelete })
             {onDelete && (
                 <button 
                     onClick={(e) => { e.stopPropagation(); onDelete(); }} 
-                    className="absolute top-3 right-3 p-2 bg-red-500/10 text-red-400 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white scale-90 group-hover:scale-100 hover:shadow-lg z-20"
+                    className="absolute top-3 right-3 p-2 bg-red-500/10 text-red-400 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-text-primary scale-90 group-hover:scale-100 hover:shadow-lg z-20"
                 >
                     <TrashIcon className="w-3.5 h-3.5" />
                 </button>

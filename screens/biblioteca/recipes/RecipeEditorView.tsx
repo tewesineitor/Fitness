@@ -18,7 +18,7 @@ const MacroHUD: React.FC<{ macros: MacroNutrients }> = ({ macros }) => (
         <p className="text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-3 text-center">Resumen Nutricional</p>
         <div className="flex justify-between items-center px-2">
             <div className="text-center">
-                <span className="block text-2xl font-black text-white tracking-tighter">{macros.kcal.toFixed(0)}</span>
+                <span className="block text-2xl font-black text-text-primary tracking-tighter">{macros.kcal.toFixed(0)}</span>
                 <span className="text-[9px] font-bold text-brand-accent uppercase tracking-wider">Kcal</span>
             </div>
             <div className="h-8 w-px bg-surface-border"></div>
@@ -66,7 +66,7 @@ const IngredientRow: React.FC<{
                         step="0.1"
                         value={item.portions}
                         onChange={e => onUpdatePortion(e.target.value)}
-                        className="w-12 py-1.5 text-center bg-transparent text-sm font-bold text-white outline-none focus:text-brand-accent transition-colors"
+                        className="w-12 py-1.5 text-center bg-transparent text-sm font-bold text-text-primary outline-none focus:text-brand-accent transition-colors"
                     />
                 </div>
                 <Button 
@@ -98,8 +98,8 @@ const AddIngredientModal: React.FC<{
         <Modal onClose={onClose} className="max-w-2xl h-[85vh] !p-0 flex flex-col bg-bg-base border border-surface-border rounded-[2rem] overflow-hidden">
             {/* Header */}
             <div className="p-5 border-b border-surface-border bg-surface-bg/90 backdrop-blur-md flex justify-between items-center z-10 flex-shrink-0">
-                <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Seleccionar Ingrediente</h3>
-                <button onClick={onClose} className="p-2 rounded-full hover:bg-surface-hover text-text-secondary hover:text-white transition-colors">
+                <h3 className="text-sm font-black text-text-primary uppercase tracking-[0.2em]">Seleccionar Ingrediente</h3>
+                <button onClick={onClose} className="p-2 rounded-full hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-colors">
                     <XIcon className="w-5 h-5" />
                 </button>
             </div>
@@ -115,7 +115,7 @@ const AddIngredientModal: React.FC<{
                         placeholder="BUSCAR INGREDIENTE..."
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-4 bg-surface-bg border border-surface-border rounded-2xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none text-sm font-bold text-white placeholder:text-white/20 transition-all uppercase tracking-wide"
+                        className="w-full pl-10 pr-4 py-4 bg-surface-bg border border-surface-border rounded-2xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent outline-none text-sm font-bold text-text-primary placeholder:text-text-muted transition-all uppercase tracking-wide"
                         autoFocus
                     />
                 </div>
@@ -132,7 +132,7 @@ const AddIngredientModal: React.FC<{
                         style={{ animationDelay: `${index * 30}ms` }}
                     >
                         <div>
-                            <span className="block font-bold text-sm text-text-primary group-hover:text-white uppercase tracking-tight">{food.name}</span>
+                            <span className="block font-bold text-sm text-text-primary group-hover:text-text-primary uppercase tracking-tight">{food.name}</span>
                             <span className="text-[10px] text-text-secondary font-mono tracking-wider">{food.standardPortion}</span>
                         </div>
                         <PlusIcon className="w-4 h-4 text-surface-border group-hover:text-brand-accent transition-colors" />
@@ -220,7 +220,7 @@ const RecipeEditorView: React.FC<{ onBack: () => void; existingRecipe?: Recipe; 
             {isAddingIngredient && <AddIngredientModal allFoodData={allFoodData} onSelect={handleAddIngredient} onClose={() => setIsAddingIngredient(false)} />}
             
             <header className="p-4 sm:p-6 flex-shrink-0 border-b border-surface-border bg-bg-base/80 backdrop-blur-md sticky top-0 z-20">
-                <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="!p-0 [&_svg]:rotate-180 text-text-secondary hover:text-white mb-4 text-xs uppercase tracking-widest">
+                <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="!p-0 [&_svg]:rotate-180 text-text-secondary hover:text-text-primary mb-4 text-xs uppercase tracking-widest">
                     Volver
                 </Button>
                 <h1 className="text-2xl font-black text-text-primary uppercase tracking-tight leading-none">
@@ -245,7 +245,7 @@ const RecipeEditorView: React.FC<{ onBack: () => void; existingRecipe?: Recipe; 
                             <select 
                                 value={mealType} 
                                 onChange={e => setMealType(e.target.value as MealType)} 
-                                className="w-full bg-surface-bg border border-surface-border rounded-xl p-4 text-sm font-bold text-white focus:border-brand-accent outline-none appearance-none uppercase transition-colors tracking-wide"
+                                className="w-full bg-surface-bg border border-surface-border rounded-xl p-4 text-sm font-bold text-text-primary focus:border-brand-accent outline-none appearance-none uppercase transition-colors tracking-wide"
                             >
                                 <option>Desayuno</option>
                                 <option>Almuerzo</option>
@@ -285,7 +285,7 @@ const RecipeEditorView: React.FC<{ onBack: () => void; existingRecipe?: Recipe; 
                             variant="secondary" 
                             onClick={() => setIsAddingIngredient(true)} 
                             icon={PlusIcon} 
-                            className="w-full mt-4 !py-4 !border-dashed border-surface-border hover:border-brand-accent/50 !rounded-xl text-xs uppercase tracking-widest text-text-secondary hover:text-white"
+                            className="w-full mt-4 !py-4 !border-dashed border-surface-border hover:border-brand-accent/50 !rounded-xl text-xs uppercase tracking-widest text-text-secondary hover:text-text-primary"
                         >
                             Añadir Ingrediente
                         </Button>
@@ -300,7 +300,7 @@ const RecipeEditorView: React.FC<{ onBack: () => void; existingRecipe?: Recipe; 
                         onChange={e => setPreparation(e.target.value)} 
                         placeholder="Describe los pasos del proceso..." 
                         rows={6} 
-                        className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-sm font-medium text-white placeholder:text-white/20 resize-none leading-relaxed transition-colors tracking-wide"
+                        className="w-full p-4 bg-surface-bg border border-surface-border rounded-xl focus:border-brand-accent outline-none text-sm font-medium text-text-primary placeholder:text-text-muted resize-none leading-relaxed transition-colors tracking-wide"
                     />
                 </div>
             </main>

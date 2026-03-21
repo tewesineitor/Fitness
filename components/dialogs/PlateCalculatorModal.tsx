@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import IconButton from '../IconButton';
 import { XIcon, MinusIcon, PlusIcon } from '../icons';
 import { vibrate } from '../../utils/helpers';
 
@@ -59,13 +60,13 @@ const PlateCalculatorModal: React.FC<PlateCalculatorModalProps> = ({ targetWeigh
             <div className="flex flex-col h-full overflow-hidden">
                 {/* Fixed Header */}
                 <div className="p-6 pb-4 border-b border-surface-border flex-shrink-0 flex justify-between items-center bg-surface-bg/80 backdrop-blur-md z-10">
-                    <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] drop-shadow-sm flex items-center gap-2">Calculadora <span className="text-brand-accent">Discos</span></h3>
-                    <Button 
-                        variant="tertiary" 
+                    <h3 className="text-sm font-black text-text-primary uppercase tracking-[0.2em] drop-shadow-sm flex items-center gap-2">Calculadora <span className="text-brand-accent">Discos</span></h3>
+                    <IconButton 
+                        variant="ghost" 
                         size="small" 
                         onClick={() => { vibrate(5); onClose(); }} 
-                        className="!p-2 rounded-full text-text-secondary hover:text-white bg-surface-hover/50 hover:bg-surface-border transition-colors"
                         icon={XIcon}
+                        label="Cerrar"
                     />
                 </div>
 
@@ -104,20 +105,22 @@ const PlateCalculatorModal: React.FC<PlateCalculatorModalProps> = ({ targetWeigh
                         <div>
                             <label className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em] block mb-2 pl-1">Peso Total (kg)</label>
                             <div className="flex items-center gap-3">
-                                <Button 
+                                <IconButton 
                                     variant="secondary" 
                                     onClick={() => { vibrate(10); setWeight(Math.max(barWeight, weight - 2.5)); }} 
-                                    className="w-14 h-14 !p-0 rounded-2xl bg-surface-hover hover:bg-surface-border active:scale-95 transition-all text-white border-surface-border" 
+                                    className="w-14 h-14 !p-0 rounded-2xl" 
                                     icon={MinusIcon} 
+                                    label="Menos"
                                 />
                                 <div className="flex-grow bg-bg-base rounded-2xl border border-surface-border p-3 text-center shadow-inner h-14 flex items-center justify-center">
-                                    <span className="text-3xl font-heading font-black text-white tracking-tighter">{weight}</span>
+                                    <span className="text-3xl font-heading font-black text-text-primary tracking-tighter">{weight}</span>
                                 </div>
-                                <Button 
+                                <IconButton 
                                     variant="secondary" 
                                     onClick={() => { vibrate(10); setWeight(weight + 2.5); }} 
-                                    className="w-14 h-14 !p-0 rounded-2xl bg-surface-hover hover:bg-surface-border active:scale-95 transition-all text-white border-surface-border" 
+                                    className="w-14 h-14 !p-0 rounded-2xl" 
                                     icon={PlusIcon} 
+                                    label="Más"
                                 />
                             </div>
                         </div>
@@ -129,7 +132,7 @@ const PlateCalculatorModal: React.FC<PlateCalculatorModalProps> = ({ targetWeigh
                                     <button
                                         key={w}
                                         onClick={() => { vibrate(5); setBarWeight(w); }}
-                                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${barWeight === w ? 'bg-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] scale-105' : 'text-text-secondary hover:text-white hover:bg-surface-hover'}`}
+                                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${barWeight === w ? 'bg-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] scale-105' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}`}
                                     >
                                         {w}k
                                     </button>

@@ -31,6 +31,7 @@ module.exports = {
       },
       colors: {
         'brand-accent': 'rgb(var(--color-brand-accent-rgb) / <alpha-value>)',
+        'brand-accent-foreground': 'rgb(var(--color-brand-accent-foreground-rgb) / <alpha-value>)',
         'brand-protein': 'rgb(var(--color-brand-protein-rgb) / <alpha-value>)',
         'brand-carbs': 'rgb(var(--color-brand-carbs-rgb) / <alpha-value>)',
         'brand-fat': 'rgb(var(--color-brand-fat-rgb) / <alpha-value>)',

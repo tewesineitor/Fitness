@@ -4,6 +4,7 @@ import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Respons
 import { AppContext } from '../../contexts';
 import { DesgloseCardioLibre } from '../../types';
 import { CardioIcon, MountainIcon, FireIcon } from '../icons';
+import ChipButton from '../ChipButton';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
 type ActivityType = 'carrera' | 'senderismo' | 'rucking';
@@ -50,7 +51,7 @@ const CustomTooltip = ({ active, payload, label, color }: ChartTooltipProps) => 
             <div className="bg-surface-bg/90 border border-surface-border px-3 py-2 rounded-lg shadow-sm backdrop-blur-md ring-1 ring-white/5">
                 <p className="text-[9px] text-text-secondary uppercase tracking-wider mb-1">{label}</p>
                 <div className="space-y-0.5">
-                    <p className="text-sm font-bold text-white flex justify-between gap-4">
+                    <p className="text-sm font-bold text-text-primary flex justify-between gap-4">
                         <span>Distancia</span>
                         <span className="font-heading">{data.distancia.toFixed(2)} km</span>
                     </p>
@@ -127,34 +128,24 @@ const CarreraChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
         <div className="w-full h-full flex flex-col">
             {/* 1. Sub-Tabs */}
             <div className="flex justify-center mb-3">
-                <div className="flex bg-surface-bg p-1 rounded-xl border border-surface-border shadow-sm overflow-x-auto hide-scrollbar">
-                    <button 
-                        onClick={() => setActivityType('carrera')} 
-                        className={`
-                            flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap
-                            ${activityType === 'carrera' ? 'bg-brand-accent text-black shadow-sm' : 'text-text-secondary hover:text-white'}
-                        `}
-                    >
-                        <CardioIcon className="w-3 h-3" /> Carrera
-                    </button>
-                    <button 
-                        onClick={() => setActivityType('senderismo')} 
-                        className={`
-                            flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap
-                            ${activityType === 'senderismo' ? 'bg-white text-black shadow-sm' : 'text-text-secondary hover:text-white'}
-                        `}
-                    >
-                        <MountainIcon className="w-3 h-3" /> Senderismo
-                    </button>
-                    <button 
-                        onClick={() => setActivityType('rucking')} 
-                        className={`
-                            flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap
-                            ${activityType === 'rucking' ? 'bg-brand-protein text-black shadow-sm' : 'text-text-secondary hover:text-white'}
-                        `}
-                    >
-                        <FireIcon className="w-3 h-3" /> Rucking
-                    </button>
+                <div className="flex bg-surface-bg p-1 rounded-full border border-surface-border shadow-sm overflow-x-auto hide-scrollbar gap-1">
+                    {([
+                        { id: 'carrera', label: 'Carrera', icon: CardioIcon, tone: 'accent' },
+                        { id: 'senderismo', label: 'Senderismo', icon: MountainIcon, tone: 'neutral' },
+                        { id: 'rucking', label: 'Rucking', icon: FireIcon, tone: 'protein' },
+                    ] as const).map(({ id, label, icon, tone }) => (
+                        <ChipButton
+                            key={id}
+                            onClick={() => setActivityType(id)}
+                            active={activityType === id}
+                            tone={tone}
+                            size="small"
+                            icon={icon}
+                            className="shrink-0"
+                        >
+                            {label}
+                        </ChipButton>
+                    ))}
                 </div>
             </div>
 
@@ -163,7 +154,7 @@ const CarreraChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
                 <div className="grid grid-cols-2 gap-8 mb-2 pl-1">
                     <div>
                         <p className="text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-1">Distancia Total</p>
-                        <p className="text-3xl font-black font-heading text-white leading-none">
+                        <p className="text-3xl font-black font-heading text-text-primary leading-none">
                             {stats.totalDist.toFixed(1)}<span className="text-xs ml-1 text-text-secondary font-sans">km</span>
                         </p>
                     </div>

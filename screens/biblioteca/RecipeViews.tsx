@@ -1,10 +1,13 @@
 
 import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { Recipe } from '../../types';
-import { ChevronRightIcon, PlusIcon, PencilIcon, TrashIcon, SparklesIcon, PlateIcon, SearchIcon, FilterIcon } from '../../components/icons';
+import { ChevronRightIcon, PlusIcon, PencilIcon, TrashIcon, SparklesIcon, PlateIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { calculateMacros, vibrate } from '../../utils/helpers';
 import Button from '../../components/Button';
+import ChipButton from '../../components/ChipButton';
+import IconButton from '../../components/IconButton';
+import Tag from '../../components/Tag';
 import RecipeEditorView from './recipes/RecipeEditorView';
 import RecipeDetailView from './recipes/RecipeDetailView';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
@@ -16,9 +19,9 @@ const defaultRecipeImage = 'https://images.unsplash.com/photo-1546069901-ba9599a
 // --- SUB-COMPONENTS ---
 
 const MacroPill: React.FC<{ label: string, value: number, colorClass: string }> = ({ label, value, colorClass }) => (
-    <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md border border-white/5 bg-surface-bg/40 backdrop-blur-md`}>
+    <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md border border-surface-border bg-surface-bg/40 backdrop-blur-md`}>
         <div className={`w-1.5 h-1.5 rounded-full ${colorClass}`}></div>
-        <span className="text-[9px] font-bold text-white leading-none">{value.toFixed(0)}{label}</span>
+        <span className="text-[9px] font-bold text-text-primary leading-none">{value.toFixed(0)}{label}</span>
     </div>
 );
 
@@ -57,7 +60,7 @@ const RecipeGeneratorModal: React.FC<{
                     </div>
                 </div>
                 
-                <h3 className="text-xl font-black text-center text-white uppercase tracking-tight mb-2">Chef IA <span className="text-brand-accent">v2.0</span></h3>
+                <h3 className="text-xl font-black text-center text-text-primary uppercase tracking-tight mb-2">Chef IA <span className="text-brand-accent">v2.0</span></h3>
                 <p className="text-xs text-center text-text-secondary mb-6 max-w-xs mx-auto leading-relaxed">
                     Algoritmo de generación culinaria. Ingresa parámetros (ingredientes, tipo de dieta, antojo) para compilar una nueva receta.
                 </p>
@@ -67,7 +70,7 @@ const RecipeGeneratorModal: React.FC<{
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         placeholder="Ej: Tengo pollo, arroz y aguacate. Quiero algo rápido y picante..."
-                        className="w-full p-4 bg-surface-hover border border-surface-border rounded-xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent/50 outline-none text-sm h-32 resize-none transition-all placeholder:text-surface-border font-medium text-white"
+                        className="w-full p-4 bg-surface-hover border border-surface-border rounded-xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent/50 outline-none text-sm h-32 resize-none transition-all placeholder:text-surface-border font-medium text-text-primary"
                         disabled={isLoading}
                     />
                     {/* Corner accent */}
@@ -107,7 +110,7 @@ const RecipeCard: React.FC<{
     return (
         <div 
             onClick={onSelect} 
-            className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden group cursor-pointer bg-surface-bg border border-surface-border active:scale-[0.98] transition-all duration-300 shadow-lg"
+            className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden group cursor-pointer bg-surface-bg border border-surface-border active:scale-[0.98] transition-all duration-300 shadow-lg"
         >
             {/* Background Image */}
             <img 
@@ -122,32 +125,36 @@ const RecipeCard: React.FC<{
 
             {/* Top Badge: Type */}
             <div className="absolute top-3 left-3">
-                <span className="px-2.5 py-1 rounded-lg bg-surface-bg/60 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white uppercase tracking-wider shadow-sm">
+                <Tag variant="overlay" size="sm">
                     {recipe.mealType || 'General'}
-                </span>
+                </Tag>
             </div>
 
             {/* Action Buttons (User Recipes Only) */}
             {isUserRecipe && (
                 <div className="absolute top-3 right-3 flex flex-col gap-2">
-                    <button 
+                    <IconButton
                         onClick={(e) => { e.stopPropagation(); onEdit?.(); }} 
-                        className="w-8 h-8 flex items-center justify-center bg-surface-bg/60 backdrop-blur-md border border-white/10 rounded-full text-white hover:bg-brand-accent hover:text-black transition-all"
-                    >
-                        <PencilIcon className="w-3.5 h-3.5"/>
-                    </button>
-                    <button 
+                        icon={PencilIcon}
+                        label="Editar receta"
+                        variant="secondary"
+                        size="small"
+                        className="bg-surface-bg/70 backdrop-blur-md"
+                    />
+                    <IconButton
                         onClick={(e) => { e.stopPropagation(); onDelete?.(); }} 
-                        className="w-8 h-8 flex items-center justify-center bg-surface-bg/60 backdrop-blur-md border border-white/10 rounded-full text-red-400 hover:bg-red-500 hover:text-white transition-all"
-                    >
-                        <TrashIcon className="w-3.5 h-3.5"/>
-                    </button>
+                        icon={TrashIcon}
+                        label="Eliminar receta"
+                        variant="destructive"
+                        size="small"
+                        className="bg-surface-bg/70 backdrop-blur-md"
+                    />
                 </div>
             )}
 
             {/* Bottom Content */}
             <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2">
-                <h4 className="font-black text-white text-sm leading-tight line-clamp-2 uppercase tracking-tight drop-shadow-md">
+                <h4 className="font-black text-text-primary text-sm leading-tight line-clamp-2 uppercase tracking-tight drop-shadow-md">
                     {recipe.name}
                 </h4>
                 
@@ -203,13 +210,13 @@ const RecipesListView: React.FC<RecipesListViewProps> = ({ onBack, onSelectRecip
                 
                 {/* Header */}
                 <div className="pt-6">
-                    <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="!p-0 [&_svg]:rotate-180 text-text-secondary hover:text-white text-xs uppercase tracking-widest mb-4">
+                    <Button variant="ghost" onClick={onBack} icon={ChevronRightIcon} className="!px-0 hover:!bg-transparent [&_svg]:rotate-180 text-xs uppercase tracking-widest mb-4">
                         Volver
                     </Button>
                     
                     <div className="flex justify-between items-end">
                         <div className="flex flex-col gap-1">
-                            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tighter uppercase leading-none">
+                            <h1 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tighter uppercase leading-none">
                                 Base de <span className="text-brand-accent">Datos</span>
                             </h1>
                             <p className="text-[10px] text-text-secondary font-medium uppercase tracking-wider">Archivo Culinario</p>
@@ -217,41 +224,32 @@ const RecipesListView: React.FC<RecipesListViewProps> = ({ onBack, onSelectRecip
 
                         {/* Compact Action Bar */}
                         <div className="flex gap-2">
-                            <button 
+                            <IconButton
                                 onClick={() => { vibrate(5); onGenerateRecipe(); }} 
-                                className="w-12 h-12 rounded-xl flex items-center justify-center bg-surface-bg border border-surface-border text-brand-accent hover:bg-surface-hover hover:border-brand-accent/50 transition-all shadow-lg active:scale-95 group"
-                                title="Chef IA"
-                            >
-                                <SparklesIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                            </button>
-                            <button 
+                                icon={SparklesIcon}
+                                label="Chef IA"
+                                variant="outline"
+                                size="large"
+                            />
+                            <IconButton
                                 onClick={() => { vibrate(5); onCreateRecipe(); }} 
-                                className="w-12 h-12 rounded-xl flex items-center justify-center bg-surface-bg border border-surface-border text-white hover:bg-white hover:text-black transition-all shadow-lg active:scale-95 group"
-                                title="Crear Nueva"
-                            >
-                                <PlusIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                            </button>
+                                icon={PlusIcon}
+                                label="Crear receta"
+                                variant="primary"
+                                size="large"
+                            />
                         </div>
                     </div>
                 </div>
                 
                 {/* Tabs (Glass Pill Style) */}
-                 <div className="flex p-1 bg-surface-bg rounded-xl border border-surface-border w-full relative">
-                    <div 
-                        className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-surface-hover border border-surface-border rounded-lg transition-all duration-300 ease-out shadow-sm ${activeTab === 'plan' ? 'left-1' : 'left-[calc(50%+2px)]'}`}
-                    ></div>
-                    <button 
-                        onClick={() => setActiveTab('plan')} 
-                        className={`flex-1 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors relative z-10 ${activeTab === 'plan' ? 'text-white' : 'text-text-secondary hover:text-text-primary'}`}
-                    >
+                <div className="flex p-1 bg-surface-bg rounded-full border border-surface-border w-full gap-1">
+                    <ChipButton onClick={() => setActiveTab('plan')} active={activeTab === 'plan'} tone="accent" size="medium" className="flex-1">
                         Del Plan
-                    </button>
-                     <button 
-                        onClick={() => setActiveTab('user')} 
-                        className={`flex-1 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors relative z-10 ${activeTab === 'user' ? 'text-white' : 'text-text-secondary hover:text-text-primary'}`}
-                    >
+                    </ChipButton>
+                    <ChipButton onClick={() => setActiveTab('user')} active={activeTab === 'user'} tone="accent" size="medium" className="flex-1">
                         Mis Recetas
-                    </button>
+                    </ChipButton>
                 </div>
 
                 {/* Grid */}
@@ -271,7 +269,7 @@ const RecipesListView: React.FC<RecipesListViewProps> = ({ onBack, onSelectRecip
                             />
                         </div>
                     )) : (
-                        <div className="col-span-2 py-16 flex flex-col items-center justify-center text-center p-6 rounded-3xl border border-dashed border-surface-border bg-surface-bg/20">
+                        <div className="col-span-2 py-16 flex flex-col items-center justify-center text-center p-6 rounded-2xl border border-dashed border-surface-border bg-surface-bg/20">
                             <div className="w-16 h-16 bg-surface-hover rounded-full flex items-center justify-center mb-4 border border-surface-border shadow-inner text-text-secondary/30">
                                 <PlateIcon className="w-8 h-8" />
                             </div>

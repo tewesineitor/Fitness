@@ -2,6 +2,8 @@
 import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { StrengthStep, LoggedSet, DesgloseFuerza, RoutineStep } from '../../types';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import Tag from '../../components/Tag';
 import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { selectHistorialDeSesiones, selectAllExercises } from '../../selectors/workoutSelectors';
@@ -101,30 +103,29 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                 <div className="flex flex-col gap-2 flex-shrink-0 animate-fade-in-down">
                     <div className="flex justify-between items-start">
                         <div>
-                            <span className="inline-block px-3 py-1 bg-surface-bg/80 border border-surface-border rounded-full text-[10px] font-black tracking-[0.2em] uppercase text-brand-protein mb-3 backdrop-blur-md">
+                            <Tag tone="protein" variant="status" className="mb-3">
                                 LOGGING SET {currentSetIndex + 1}/{step.sets}
-                            </span>
-                            <h1 className="text-3xl sm:text-4xl font-display font-black text-white uppercase tracking-tight leading-none drop-shadow-md pr-4">
+                            </Tag>
+                            <h1 className="text-3xl sm:text-4xl font-display font-black text-text-primary uppercase tracking-tight leading-none drop-shadow-md pr-4">
                                 {step.title}
                             </h1>
                         </div>
-                        <button 
+                        <IconButton 
                             onClick={() => { vibrate(5); onShowExerciseDetails(); }}
-                            className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-bg/80 border border-surface-border flex items-center justify-center text-text-secondary hover:text-white hover:border-brand-accent/50 transition-colors backdrop-blur-md"
-                            aria-label="Ver Técnica"
-                        >
-                            <InformationCircleIcon className="w-6 h-6" />
-                        </button>
+                            variant="icon-only"
+                            icon={InformationCircleIcon}
+                            label="Ver Técnica"
+                        />
                     </div>
 
                     {/* HUD Stats Row */}
                     <div className="flex items-center gap-3 mt-2 opacity-80">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-white uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
                             <ChartBarIcon className="w-4 h-4 text-brand-accent" />
                             Target: <span className="text-brand-accent">{step.reps}</span>
                         </div>
                         <div className="w-1 h-1 rounded-full bg-surface-border"></div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-white uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
                             <ClockIcon className="w-4 h-4 text-brand-accent" />
                             Descanso: <span className="text-brand-accent">{step.rest}s</span>
                         </div>
@@ -134,7 +135,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                 {technicalFocus && (
                     <div className="mt-6 p-4 rounded-2xl bg-brand-accent/5 border border-brand-accent/20 flex items-start gap-3 backdrop-blur-sm animate-fade-in-up">
                         <InformationCircleIcon className="w-5 h-5 text-brand-accent flex-shrink-0 mt-0.5" />
-                        <p className="text-xs font-medium text-white/90 leading-relaxed shadow-sm">{technicalFocus}</p>
+                        <p className="text-xs font-medium text-text-primary leading-relaxed shadow-sm">{technicalFocus}</p>
                     </div>
                 )}
 
@@ -147,25 +148,26 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                             <div className="bg-surface-bg/60 backdrop-blur-md border border-surface-border rounded-[2rem] p-5 relative shadow-sm flex flex-col group focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all">
                                 <div className="flex justify-between items-center mb-4">
                                     <label className="text-xs font-bold text-text-secondary uppercase tracking-[0.2em]">Carga (kg)</label>
-                                    <button 
+                                    <IconButton 
                                         onClick={() => { vibrate(5); setShowCalculator(true); }}
-                                        className="p-1.5 rounded-lg bg-surface-hover text-brand-accent hover:bg-surface-hover/80 transition-colors"
-                                    >
-                                        <CalculatorIcon className="w-4 h-4" />
-                                    </button>
+                                        variant="ghost"
+                                        size="small"
+                                        icon={CalculatorIcon}
+                                        label="Calculadora"
+                                    />
                                 </div>
                                 <input 
                                     type="number" 
                                     value={weight} 
                                     onChange={(e) => setWeight(e.target.value)} 
-                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tighter"
+                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-text-primary outline-none p-0 leading-none placeholder:text-text-muted tracking-tighter"
                                     placeholder="0"
                                     inputMode="decimal"
                                 />
                                 {prevSetData && (
                                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
                                         <CalendarIcon className="w-3 h-3 text-text-muted" />
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-white">{prevSetData.weight}kg</span></span>
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-text-primary">{prevSetData.weight}kg</span></span>
                                     </div>
                                 )}
                             </div>
@@ -177,13 +179,13 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                                     type="number" 
                                     value={reps} 
                                     onChange={(e) => setReps(e.target.value)} 
-                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-white outline-none p-0 leading-none placeholder:text-white/10 tracking-tighter mt-auto"
+                                    className="w-full bg-transparent text-center text-5xl sm:text-6xl font-display font-black text-text-primary outline-none p-0 leading-none placeholder:text-text-muted tracking-tighter mt-auto"
                                     placeholder="0"
                                     inputMode="numeric"
                                 />
                                 {prevSetData && (
                                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-surface-bg border border-surface-border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md whitespace-nowrap">
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-white">{prevSetData.reps}</span></span>
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Previo: <span className="text-text-primary">{prevSetData.reps}</span></span>
                                     </div>
                                 )}
                             </div>
@@ -204,7 +206,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                                             onClick={() => { vibrate(5); setRir(val); }}
                                             className={`
                                                 flex-1 py-3 sm:py-4 rounded-[1.25rem] text-sm font-bold transition-all duration-300 relative
-                                                ${isSelected ? 'text-black shadow-sm' : 'text-text-secondary hover:text-white hover:bg-white/5'}
+                                                ${isSelected ? 'text-black shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}
                                             `}
                                         >
                                             {isSelected && (
@@ -236,7 +238,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                                     ${isLogged 
                                         ? 'bg-brand-accent border-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.2)]' 
                                         : isCurrent 
-                                            ? 'bg-surface-bg border-white text-white scale-110 shadow-lg' 
+                                            ? 'bg-surface-bg border-text-primary text-text-primary scale-110 shadow-lg' 
                                             : 'bg-surface-bg border-surface-border text-text-muted opacity-50'
                                     }
                                 `}>
@@ -244,7 +246,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                                     {isLogged ? (
                                         <span className="font-display font-black text-lg leading-none mt-1">{loggedData?.weight}</span>
                                     ) : isCurrent ? (
-                                        <div className="w-2 h-2 rounded-full bg-white mt-2 animate-pulse"></div>
+                                        <div className="w-2 h-2 rounded-full bg-brand-accent mt-2 animate-pulse"></div>
                                     ) : null}
                                 </div>
                             );
@@ -261,14 +263,14 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
 
             {/* FIXED ACTION FOOTER */}
             {!isFinished && (
-                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-40">
+                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent z-40">
                     <Button 
                         variant="primary"
                         onClick={handleCompleteSet} 
                         size="large" 
-                        className="w-full max-w-sm mx-auto py-5 rounded-2xl shadow-[0_0_30px_rgba(var(--color-brand-accent-rgb),0.3)] hover:scale-[1.02] active:scale-95 transition-all text-sm font-extrabold tracking-widest uppercase flex flex-col gap-1 items-center justify-center leading-none"
+                        className="w-full max-w-sm mx-auto"
                     >
-                        <span>REGISTRAR SERIE</span>
+                        REGISTRAR SERIE
                     </Button>
                 </div>
             )}

@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import IconButton from '../IconButton';
+import Tag from '../Tag';
 import { LoggedMeal, AddedFood } from '../../types';
 import { vibrate } from '../../utils/helpers';
 import { XIcon, TrashIcon, CheckIcon, PencilIcon, MinusIcon, PlusIcon } from '../icons';
@@ -46,8 +48,8 @@ const MealEditorModal: React.FC<MealEditorModalProps> = ({ meal, onSave, onClose
         <Modal onClose={onClose} className="max-w-md">
             <div className="p-6 max-h-[85vh] overflow-hidden flex flex-col">
                 <div className="flex justify-between items-center mb-6 flex-shrink-0">
-                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Editar Comida</h3>
-                    <button onClick={() => { vibrate(5); onClose(); }} className="text-text-secondary hover:text-white"><XIcon className="w-5 h-5"/></button>
+                    <h3 className="text-xl font-black text-text-primary uppercase tracking-tight">Editar Comida</h3>
+                    <IconButton onClick={() => { vibrate(5); onClose(); }} icon={XIcon} label="Cerrar" variant="ghost" />
                 </div>
 
                 {editingItem && (
@@ -68,7 +70,7 @@ const MealEditorModal: React.FC<MealEditorModalProps> = ({ meal, onSave, onClose
                         type="text" 
                         value={name} 
                         onChange={e => setName(e.target.value)} 
-                        className="w-full bg-surface-hover border border-surface-border rounded-xl p-3 text-sm font-bold text-white focus:border-brand-accent outline-none transition-colors"
+                        className="w-full bg-surface-hover border border-surface-border rounded-xl p-3 text-sm font-bold text-text-primary focus:border-brand-accent outline-none transition-colors"
                     />
                 </div>
 
@@ -85,11 +87,11 @@ const MealEditorModal: React.FC<MealEditorModalProps> = ({ meal, onSave, onClose
                                 
                                 <div className="flex items-center gap-2 flex-shrink-0">
                                     <div className="flex items-center bg-surface-hover rounded-lg p-0.5 border border-surface-border">
-                                        <button onClick={() => { vibrate(5); handleUpdatePortion(item.foodItem.id, item.portions - 0.5); }} className="p-1.5 hover:bg-white/10 rounded-md text-text-secondary hover:text-brand-accent transition-colors"><MinusIcon className="w-3 h-3" /></button>
-                                        <button onClick={() => { vibrate(5); setEditingItem(item); }} className="p-1.5 hover:bg-white/10 rounded-md text-text-secondary hover:text-brand-accent transition-colors"><PencilIcon className="w-3 h-3" /></button>
-                                        <button onClick={() => { vibrate(5); handleUpdatePortion(item.foodItem.id, item.portions + 0.5); }} className="p-1.5 hover:bg-white/10 rounded-md text-text-secondary hover:text-brand-accent transition-colors"><PlusIcon className="w-3 h-3" /></button>
+                                        <IconButton onClick={() => { vibrate(5); handleUpdatePortion(item.foodItem.id, item.portions - 0.5); }} variant="ghost" size="small" icon={MinusIcon} label="Menos" />
+                                        <IconButton onClick={() => { vibrate(5); setEditingItem(item); }} variant="ghost" size="small" icon={PencilIcon} label="Editar" />
+                                        <IconButton onClick={() => { vibrate(5); handleUpdatePortion(item.foodItem.id, item.portions + 0.5); }} variant="ghost" size="small" icon={PlusIcon} label="Más" />
                                     </div>
-                                    <button onClick={() => { vibrate(10); handleRemoveItem(item.foodItem.id); }} className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"><TrashIcon className="w-4 h-4" /></button>
+                                    <IconButton onClick={() => { vibrate(10); handleRemoveItem(item.foodItem.id); }} variant="destructive" size="medium" icon={TrashIcon} label="Eliminar" />
                                 </div>
                             </div>
                         ))

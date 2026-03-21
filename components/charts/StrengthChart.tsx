@@ -4,6 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { AppContext } from '../../contexts';
 import { DesgloseFuerza } from '../../types';
 import { ChevronRightIcon } from '../icons';
+import Tag from '../Tag';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
 type ChartPoint = {
@@ -44,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
         return (
             <div className="bg-surface-bg/90 border border-surface-border px-3 py-2 rounded-lg shadow-sm backdrop-blur-md ring-1 ring-white/5">
                 <p className="text-[9px] text-text-secondary uppercase tracking-wider mb-0.5">{label}</p>
-                <p className="text-sm font-black font-heading text-white">
+                <p className="text-sm font-black font-heading text-text-primary">
                     {payload[0].value.toFixed(1)} <span className="text-[10px] text-brand-protein font-sans">kg</span>
                 </p>
             </div>
@@ -141,7 +142,7 @@ const StrengthChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
             <div className="relative mb-3" ref={dropdownRef}>
                 <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="w-full bg-surface-hover border border-surface-border text-white text-xs font-bold uppercase tracking-wider rounded-xl py-3 pl-4 pr-10 flex items-center justify-between outline-none focus:border-brand-accent/50 transition-colors cursor-pointer"
+                    className="w-full bg-surface-bg border border-surface-border text-text-primary text-xs font-semibold uppercase tracking-[0.16em] rounded-xl py-3 pl-4 pr-10 flex items-center justify-between outline-none focus:border-brand-accent/50 transition-all shadow-sm hover:border-brand-accent/20 hover:bg-surface-hover cursor-pointer"
                 >
                     <span className="truncate">
                         {selectedExerciseId 
@@ -161,10 +162,10 @@ const StrengthChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
                                     setSelectedExerciseId(ex.id);
                                     setIsDropdownOpen(false);
                                 }}
-                                className={`w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors
+                                className={`w-full text-left px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] transition-colors
                                     ${selectedExerciseId === ex.id 
                                         ? 'bg-brand-accent/10 text-brand-accent' 
-                                        : 'text-text-secondary hover:bg-surface-hover hover:text-white'
+                                        : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
                                     }
                                 `}
                             >
@@ -183,9 +184,13 @@ const StrengthChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
                         <span className="text-3xl font-black font-heading text-text-primary tracking-tight leading-none">
                             {stats.pr.toFixed(1)}<span className="text-xs ml-1 text-text-secondary font-sans">kg</span>
                         </span>
-                        <div className={`flex items-center justify-center min-w-[60px] text-[10px] font-bold px-2 py-1 rounded-md ${stats.improvement >= 0 ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                        <Tag
+                            variant="status"
+                            tone={stats.improvement === 0 ? 'neutral' : stats.improvement >= 0 ? 'success' : 'danger'}
+                            size="md"
+                        >
                             {stats.improvement > 0 ? '+' : ''}{stats.improvement.toFixed(1)} kg
-                        </div>
+                        </Tag>
                     </div>
                 </div>
             )}

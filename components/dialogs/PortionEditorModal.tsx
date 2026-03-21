@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { AddedFood, MacroNutrients, FoodItem } from '../../types';
 import Modal from '../Modal';
 import Button from '../Button';
+import ChipButton from '../ChipButton';
 import { vibrate } from '../../utils/helpers';
 
 interface UnitOption { key: string; label: string; toPortions: (value: number) => number; fromPortions: (portions: number) => number; step: number; }
@@ -148,21 +149,22 @@ const PortionEditorModal: React.FC<{ food: AddedFood; onSave: (newPortions: numb
                 
                 {/* Scrollable container for unit chips with flex-wrap for better layout */}
                 <div className="flex flex-wrap gap-2 p-1 max-h-32 overflow-y-auto mb-6 justify-center">
-                    {unitOptions.map(unit => (
-                        <button 
-                            key={unit.key} 
-                            onClick={() => { vibrate(5); setActiveUnitKey(unit.key); }} 
-                            className={`px-3 py-1.5 rounded-full font-semibold text-xs transition-colors border ${
-                                activeUnitKey === unit.key 
-                                    ? 'bg-brand-accent text-accent-text border-brand-accent' 
-                                    : unit.key.startsWith('target_') 
-                                        ? 'bg-brand-accent/5 text-text-secondary border-brand-accent/20 hover:bg-brand-accent/10'
-                                        : 'bg-surface-bg text-text-secondary border-surface-border hover:bg-surface-hover'
-                            }`}
-                        >
-                            {unit.label}
-                        </button>
-                    ))}
+                    {unitOptions.map(unit => {
+                        const isActive = activeUnitKey === unit.key;
+                        const tone = unit.key.startsWith('target_') ? 'accent' : 'neutral';
+                        
+                        return (
+                            <ChipButton
+                                key={unit.key}
+                                active={isActive}
+                                tone={tone as any}
+                                size="small"
+                                onClick={() => { vibrate(5); setActiveUnitKey(unit.key); }}
+                            >
+                                {unit.label}
+                            </ChipButton>
+                        );
+                    })}
                 </div>
 
                 <div className="relative">
@@ -171,7 +173,7 @@ const PortionEditorModal: React.FC<{ food: AddedFood; onSave: (newPortions: numb
                         step={activeUnit.step} 
                         value={inputValue} 
                         onChange={handleInputChange} 
-                        className="w-full text-center text-4xl sm:text-5xl font-bold bg-surface-bg border border-surface-border rounded-2xl focus:border-brand-accent outline-none p-6 text-white font-mono tracking-tighter shadow-inner transition-all"
+                        className="w-full text-center text-4xl sm:text-5xl font-bold bg-surface-bg border border-surface-border rounded-2xl focus:border-brand-accent outline-none p-6 text-text-primary font-mono tracking-tighter shadow-inner transition-all"
                     />
                     <span className="block text-center text-sm text-text-secondary mt-2 font-medium">
                         {activeUnit.label}

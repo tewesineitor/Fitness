@@ -3,6 +3,9 @@ import { HistorialDeMetricasEntry } from '../../types';
 import { XIcon, CameraIcon, SwitchHorizontalIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import * as actions from '../../actions';
+import Button from '../../components/Button';
+import ChipButton from '../../components/ChipButton';
+import Tag from '../../components/Tag';
 
 const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: () => void }> = ({ photos, onClose }) => {
     const { dispatch } = useContext(AppContext)!;
@@ -121,27 +124,26 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                 </div>
 
                 {viewMode === 'grid' && (
-                    <div className="hidden sm:flex items-center bg-surface-hover/50 p-1 rounded-xl border border-surface-border/50">
+                    <div className="hidden sm:flex items-center gap-1 bg-surface-hover/50 p-1 rounded-full border border-surface-border/50">
                         {timeFilters.map((filter) => (
-                            <button
+                            <ChipButton
                                 key={filter.id}
                                 onClick={() => setTimeFilter(filter.id)}
-                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${timeFilter === filter.id ? 'bg-white text-black shadow-md' : 'text-text-secondary hover:text-white'}`}
+                                active={timeFilter === filter.id}
+                                tone="accent"
+                                size="small"
                             >
                                 {filter.label}
-                            </button>
+                            </ChipButton>
                         ))}
                     </div>
                 )}
                 
                 <div className="flex items-center gap-2 sm:gap-4">
                     {viewMode === 'compare' && (
-                        <button 
-                            onClick={() => setViewMode('grid')} 
-                            className="px-4 py-2 bg-surface-hover border border-surface-border rounded-xl text-[10px] font-bold uppercase tracking-widest text-text-primary hover:bg-white hover:text-black transition-all active:scale-95 shadow-sm"
-                        >
+                        <Button onClick={() => setViewMode('grid')} variant="secondary" size="small">
                             Volver
-                        </button>
+                        </Button>
                     )}
 
                     <button 
@@ -186,19 +188,23 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                         {/* Main Comparison View */}
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center justify-between px-2">
-                                <div className="flex bg-surface-hover/50 p-1 rounded-xl border border-surface-border/50">
-                                    <button 
+                                <div className="flex bg-surface-hover/50 p-1 rounded-full border border-surface-border/50 gap-1">
+                                    <ChipButton
                                         onClick={() => setSelectorMode('before')}
-                                        className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${selectorMode === 'before' ? 'bg-white text-black shadow-md' : 'text-text-secondary hover:text-white'}`}
+                                        active={selectorMode === 'before'}
+                                        tone="neutral"
+                                        size="small"
                                     >
                                         Seleccionar Antes
-                                    </button>
-                                    <button 
+                                    </ChipButton>
+                                    <ChipButton
                                         onClick={() => setSelectorMode('after')}
-                                        className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${selectorMode === 'after' ? 'bg-brand-accent text-black shadow-md' : 'text-text-secondary hover:text-white'}`}
+                                        active={selectorMode === 'after'}
+                                        tone="accent"
+                                        size="small"
                                     >
                                         Seleccionar Después
-                                    </button>
+                                    </ChipButton>
                                 </div>
                                 <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold text-text-secondary uppercase tracking-widest">
                                     <span>Desliza para comparar</span>
@@ -221,9 +227,9 @@ const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: (
                                 <div className="absolute inset-0">
                                     <img src={beforePhoto.url_foto} alt="" className="w-full h-full object-cover" />
                                     <div className="absolute top-8 left-8 z-20">
-                                        <div className="bg-black/40 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 shadow-2xl">
-                                            <p className="text-[10px] font-black text-white uppercase tracking-[0.3em]">ANTES</p>
-                                        </div>
+                                        <Tag variant="overlay" size="lg" className="!tracking-[0.3em] !font-black">
+                                            Antes
+                                        </Tag>
                                     </div>
                                     <div className="absolute bottom-8 left-8 z-20">
                                         <div className="bg-black/40 backdrop-blur-xl p-4 rounded-3xl border border-white/10 shadow-2xl">

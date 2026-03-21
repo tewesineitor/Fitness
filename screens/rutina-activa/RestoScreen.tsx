@@ -98,7 +98,7 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
           <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-surface-bg/80 border border-surface-border backdrop-blur-md shadow-sm text-[10px] font-black uppercase tracking-[0.25em] text-text-secondary">
               Fase Actual
           </span>
-          <h2 className={`text-4xl sm:text-5xl font-display font-black uppercase tracking-tighter mt-4 leading-none drop-shadow-md transition-colors duration-1000 ${timerColor === 'text-green-400' ? 'text-green-400' : 'text-white'}`}>
+          <h2 className={`text-4xl sm:text-5xl font-display font-black uppercase tracking-tighter mt-4 leading-none drop-shadow-md transition-colors duration-1000 ${timerColor === 'text-green-400' ? 'text-green-400' : 'text-text-primary'}`}>
               {statusText}
           </h2>
       </div>
@@ -121,7 +121,7 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
       </div>
       
       {/* 3. Bottom Controls & Next Up Drawer */}
-      <div className="flex-shrink-0 w-full mt-auto space-y-4 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent pt-10 px-6 z-20">
+      <div className="flex-shrink-0 w-full mt-auto space-y-4 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent pt-10 px-6 z-20">
         
         {nextStep && (
             <div className="mb-6 animate-fade-in-up">
@@ -141,7 +141,7 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
             
             <button 
                 onClick={() => { vibrate(15); onComplete(); }} 
-                className="w-20 h-20 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:scale-[1.05] active:scale-95 transition-all z-10 ring-4 ring-white/10"
+                className="w-20 h-20 rounded-full bg-text-primary text-bg-base flex items-center justify-center shadow-[0_0_40px_rgba(var(--color-text-primary-rgb),0.4)] hover:scale-[1.05] active:scale-95 transition-all z-10 ring-4 ring-text-primary/10"
                 aria-label={maxDuration && initialDuration - timeLeft >= duration ? 'Continuar' : 'Omitir'}
             >
                 <ChevronRightIcon className="w-8 h-8 ml-1" />

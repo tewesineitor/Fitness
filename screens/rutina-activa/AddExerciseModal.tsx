@@ -5,6 +5,8 @@ import { selectAllExercises } from '../../selectors/workoutSelectors';
 import { Exercise } from '../../types';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import Tag from '../../components/Tag';
 import ExerciseImage from '../../components/ExerciseImage';
 import { SearchIcon, XIcon, ChevronRightIcon } from '../../components/icons';
 import { vibrate } from '../../utils/helpers';
@@ -33,12 +35,12 @@ const AddExerciseModal: React.FC<{
             {/* Header */}
             <div className="p-5 border-b border-surface-border bg-surface-bg/90 backdrop-blur-md flex justify-between items-center z-10 flex-shrink-0">
                 <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] drop-shadow-sm">Añadir Ejercicio</h3>
-                <Button 
-                    variant="tertiary" 
+                <IconButton 
+                    variant="ghost" 
                     size="small" 
                     onClick={() => { vibrate(5); onClose(); }} 
-                    className="!p-2 rounded-full text-text-secondary hover:text-white bg-surface-hover/50 hover:bg-surface-border transition-colors"
                     icon={XIcon}
+                    label="Cerrar"
                 />
             </div>
             
@@ -75,7 +77,7 @@ const AddExerciseModal: React.FC<{
                         <div className="flex-grow min-w-0">
                             <p className="font-bold text-sm text-text-primary uppercase tracking-tight truncate group-hover:text-white transition-colors">{ex.name}</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[9px] font-bold text-brand-accent uppercase bg-brand-accent/10 px-2 py-0.5 rounded border border-brand-accent/20">{ex.category}</span>
+                                <Tag size="sm" tone="accent" variant="status">{ex.category}</Tag>
                             </div>
                         </div>
                         <ChevronRightIcon className="w-5 h-5 text-text-secondary group-hover:text-brand-accent group-hover:translate-x-1 transition-transform" />

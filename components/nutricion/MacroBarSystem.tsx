@@ -1,4 +1,5 @@
 import React from 'react';
+import Tag from '../Tag';
 
 // --- CONFIGURACIÓN DE LÍMITES POR DEFECTO ---
 export const DEFAULT_FAT_ABS_MAX = 90;
@@ -60,7 +61,7 @@ export const AdvancedMacroRow: React.FC<{
                 <div className="flex justify-between items-end mb-2.5">
                     <div className="flex items-center gap-2">
                         <span className={`text-[10px] font-bold uppercase tracking-widest text-text-primary/70`}>{label}</span>
-                        <span className="bg-brand-protein/10 text-brand-protein px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider border border-brand-protein/20">PRIORIDAD</span>
+                        <Tag variant="status" size="sm" tone="protein">PRIORIDAD</Tag>
                     </div>
                     <div className="text-right">
                         <div className="flex flex-col items-end">

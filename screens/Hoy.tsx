@@ -35,6 +35,8 @@ import RuckingSession from './rutina-activa/RuckingSession';
 import CardioLibreLogModal from '../components/dialogs/CardioLibreLogModal';
 import SectionHeader from '../components/SectionHeader';
 import MacroArcGauge from '../components/MacroArcGauge';
+import Button from '../components/Button';
+import IconButton from '../components/IconButton';
 import { vibrate } from '../utils/helpers';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -191,16 +193,13 @@ const HoyScreen: React.FC = () => {
                         {customMantra || `Hola, ${userName}`}
                     </p>
                 </div>
-                <button
-                    type="button"
+                <IconButton
                     onClick={() => dispatch(actions.openProfile())}
-                    aria-label="Abrir perfil"
-                    className="relative active:scale-90 transition-transform duration-150"
-                >
-                    <div className="bg-surface-bg border border-surface-border p-2.5 rounded-full hover:bg-surface-hover hover:border-brand-accent/30 transition-all shadow-sm">
-                        <UserCircleIcon className="w-6 h-6 text-text-secondary" />
-                    </div>
-                </button>
+                    icon={UserCircleIcon}
+                    label="Abrir perfil"
+                    variant="secondary"
+                    size="large"
+                />
             </header>
 
             {/* ── ROW 1: WEEK STRIP + INNEGOCIABLES (bento 2-col) ───── */}
@@ -308,12 +307,9 @@ const HoyScreen: React.FC = () => {
                             La recuperación es parte esencial del proceso. Descansa bien.
                         </p>
                         <div className="mt-2 flex flex-col gap-1.5 w-full max-w-[220px]">
-                            <button
-                                onClick={() => { vibrate(5); setIsLoggingActivity('run'); }}
-                                className="text-[10px] font-bold text-text-secondary border border-surface-border rounded-lg py-2 hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95"
-                            >
-                                + Registrar actividad libre
-                            </button>
+                            <Button onClick={() => { vibrate(5); setIsLoggingActivity('run'); }} variant="secondary" size="small" className="w-full">
+                                Registrar actividad libre
+                            </Button>
                         </div>
                     </div>
                 )}

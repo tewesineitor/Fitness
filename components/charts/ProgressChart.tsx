@@ -2,6 +2,8 @@
 import * as React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AppContext } from '../../contexts';
+import ChipButton from '../ChipButton';
+import Tag from '../Tag';
 
 type TimeRange = '1M' | '3M' | '6M' | 'ALL';
 type MetricKey = 'peso_kg' | 'cintura_cm' | 'caderas_cm' | 'cuello_cm' | 'hombros_cm' | 'pecho_cm' | 'muslo_cm' | 'biceps_cm';
@@ -39,7 +41,7 @@ const CustomTooltip = ({ active, payload, label, unit }: ChartTooltipProps) => {
         return (
             <div className="bg-surface-bg/90 border border-surface-border px-3 py-2 rounded-lg shadow-sm backdrop-blur-md ring-1 ring-white/5">
                 <p className="text-[9px] text-text-secondary uppercase tracking-wider mb-0.5">{label}</p>
-                <p className="text-sm font-black font-heading text-white">
+                <p className="text-sm font-black font-heading text-text-primary">
                     {payload[0].value.toFixed(1)} <span className="text-[10px] text-brand-accent font-sans">{unit}</span>
                 </p>
             </div>
@@ -104,19 +106,16 @@ const ProgressChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
             {/* 1. Metric Selector Pills */}
             <div className="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
                 {(Object.entries(config) as [MetricKey, (typeof config)[MetricKey]][]).map(([key, conf]) => (
-                    <button
+                    <ChipButton
                         key={key}
                         onClick={() => setActiveMetric(key)}
-                        className={`
-                            whitespace-nowrap px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all
-                            ${activeMetric === key 
-                                ? 'bg-white text-black border-white shadow-sm' 
-                                : 'bg-transparent text-text-secondary border-surface-border hover:border-white/30 hover:text-white'
-                            }
-                        `}
+                        active={activeMetric === key}
+                        tone="accent"
+                        size="small"
+                        className="shrink-0"
                     >
                         {conf.label}
-                    </button>
+                    </ChipButton>
                 ))}
             </div>
 
@@ -128,9 +127,13 @@ const ProgressChart: React.FC<{ timeRange: TimeRange }> = ({ timeRange }) => {
                         <span className="text-3xl font-black font-heading text-text-primary tracking-tight leading-none">
                             {stats.current.toFixed(1)}<span className="text-xs ml-1 text-text-secondary font-sans">{activeConfig.unit}</span>
                         </span>
-                        <div className={`flex items-center justify-center min-w-[60px] text-[10px] font-bold px-2 py-1 rounded-md ${stats.change <= 0 ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                        <Tag
+                            variant="status"
+                            tone={stats.change === 0 ? 'neutral' : stats.change <= 0 ? 'success' : 'danger'}
+                            size="md"
+                        >
                             {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)} {activeConfig.unit}
-                        </div>
+                        </Tag>
                     </div>
                 </div>
             )}

@@ -5,6 +5,8 @@ import { Exercise, DesgloseFuerza, ExerciseLibraryCategory } from '../../types';
 import { ChevronRightIcon, StrengthIcon, StarIcon, CalendarIcon, BookOpenIcon, ChartBarIcon, SparklesIcon, ArrowUpIcon, TshirtIcon, PostureIcon, UserCircleIcon, FireIcon, YogaIcon, SearchIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import Button from '../../components/Button';
+import ChipButton from '../../components/ChipButton';
+import Tag from '../../components/Tag';
 
 // --- SHARED & UTILITY COMPONENTS ---
 
@@ -135,9 +137,9 @@ const MuscleTags: React.FC<{ description: string }> = ({ description }) => {
     return (
         <div className="flex flex-wrap gap-1 mt-2">
             {muscles.split(',').map(muscle => (
-                <span key={muscle.trim()} className="border border-surface-border bg-surface-hover text-text-secondary text-[10px] uppercase tracking-wider px-2 py-1">
+                <Tag key={muscle.trim()} variant="status" size="sm">
                     {muscle.trim()}
-                </span>
+                </Tag>
             ))}
         </div>
     );
@@ -202,7 +204,7 @@ const ExerciseDetailView: React.FC<{ exercise: Exercise, onBack: () => void, onS
     return (
         <div className="animate-fade-in-up">
             <header className="fixed top-0 left-0 right-0 z-20 p-4 max-w-3xl mx-auto">
-                <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="bg-black/60 backdrop-blur-sm !px-3 !py-1 !rounded-none border border-surface-border text-xs uppercase [&_svg]:rotate-180">
+                <Button variant="secondary" onClick={onBack} icon={ChevronRightIcon} size="small" className="bg-surface-bg/80 backdrop-blur-sm [&_svg]:rotate-180">
                     Volver
                 </Button>
             </header>
@@ -211,7 +213,7 @@ const ExerciseDetailView: React.FC<{ exercise: Exercise, onBack: () => void, onS
                 <ExerciseCardImage exercise={exercise} className="absolute inset-0 w-full h-full" />
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_0%,rgba(var(--color-surface-bg-rgb),1)_100%)]"></div>
                 <div className="absolute bottom-6 left-6 right-6">
-                    <h1 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight leading-none mb-2">
+                    <h1 className="text-2xl sm:text-4xl font-black text-text-primary uppercase tracking-tight leading-none mb-2">
                         {exercise.name}
                     </h1>
                     <MuscleTags description={exercise.description} />
@@ -225,7 +227,7 @@ const ExerciseDetailView: React.FC<{ exercise: Exercise, onBack: () => void, onS
                             <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                                 <SparklesIcon className="w-3 h-3 text-brand-accent"/> Récord (e1RM)
                             </p>
-                            <p className="font-black text-2xl text-white">{progressionData.pr ? `${progressionData.pr.weight.toFixed(1)}` : '-'}<span className="text-xs text-brand-accent ml-1">KG</span></p>
+                            <p className="font-black text-2xl text-text-primary">{progressionData.pr ? `${progressionData.pr.weight.toFixed(1)}` : '-'}<span className="text-xs text-brand-accent ml-1">KG</span></p>
                         </div>
                         <div className="p-4 text-center hover:bg-surface-hover/50 transition-colors cursor-default">
                             <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
@@ -288,9 +290,9 @@ const SimpleExerciseCard: React.FC<{ exercise: Exercise; onSelect: () => void }>
                     {exercise.name}
                 </h4>
                 <div className="flex flex-wrap gap-1 mt-1">
-                     <span className="text-[8px] font-bold text-text-secondary bg-surface-bg border border-surface-border px-1.5 py-0.5 rounded uppercase tracking-wider">
+                     <Tag variant="status" size="sm" className="!h-6 !px-2">
                         {getMusclesWorked(exercise.description)?.split(',')[0] || 'GENERAL'}
-                     </span>
+                     </Tag>
                 </div>
             </div>
             <div className="p-1.5 rounded-full bg-surface-bg text-text-secondary group-hover:text-bg-base group-hover:bg-brand-accent transition-all duration-300 transform group-hover:translate-x-1">
@@ -310,9 +312,9 @@ const FilterButton: React.FC<{
     isActive: boolean;
     onClick: () => void;
 }> = ({ label, isActive, onClick }) => (
-    <button onClick={onClick} className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider border transition-colors ${isActive ? 'bg-white text-black border-white' : 'bg-transparent text-text-secondary border-surface-border hover:border-text-secondary'}`}>
+    <ChipButton onClick={onClick} active={isActive} tone="accent" size="small">
         {label}
-    </button>
+    </ChipButton>
 );
 
 const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, onBack: () => void }> = ({ onSelectExercise, onBack }) => {
@@ -346,7 +348,9 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
     return (
         <div className="p-4 sm:p-6">
             <div>
-                <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="mb-4 !p-0 [&_svg]:rotate-180 text-text-secondary hover:text-white">Volver</Button>
+                <Button variant="ghost" onClick={onBack} icon={ChevronRightIcon} className="mb-4 !px-0 hover:!bg-transparent [&_svg]:rotate-180">
+                    Volver
+                </Button>
                 <h1 className="text-3xl font-black uppercase tracking-tight mb-6">Ejercicios: Fuerza</h1>
                 
                 <div className="relative mb-4 group">
@@ -358,7 +362,7 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
                         placeholder="BUSCAR EJERCICIO..." 
                         value={searchTerm} 
                         onChange={e => setSearchTerm(e.target.value)} 
-                        className="w-full pl-11 p-4 bg-surface-hover/50 border border-surface-border focus:border-brand-accent/50 focus:bg-surface-hover outline-none text-xs font-bold uppercase tracking-widest text-white rounded-2xl transition-all shadow-inner placeholder:text-text-secondary/50" 
+                        className="w-full pl-11 p-4 bg-surface-hover/50 border border-surface-border focus:border-brand-accent/50 focus:bg-surface-hover outline-none text-xs font-bold uppercase tracking-widest text-text-primary rounded-2xl transition-all shadow-inner placeholder:text-text-secondary/50" 
                     />
                 </div>
                 
@@ -370,16 +374,16 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
 
                 <div className="flex gap-4 overflow-x-auto hide-scrollbar border-b border-surface-border pb-4 mb-2">
                     {muscleGroups.map(group => (
-                        <button 
-                            key={group} 
+                        <ChipButton
+                            key={group}
                             onClick={() => setActiveMuscleGroup(group)}
-                            className={`flex-shrink-0 text-[10px] font-bold uppercase tracking-[0.2em] transition-all relative pb-1 ${activeMuscleGroup === group ? 'text-brand-accent' : 'text-text-secondary hover:text-white'}`}
+                            active={activeMuscleGroup === group}
+                            tone="accent"
+                            size="small"
+                            className="flex-shrink-0"
                         >
                             {group}
-                            {activeMuscleGroup === group && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-accent rounded-full"></div>
-                            )}
-                        </button>
+                        </ChipButton>
                     ))}
                 </div>
             </div>
@@ -388,7 +392,7 @@ const StrengthLibraryView: React.FC<{ onSelectExercise: (ex: Exercise) => void, 
                 {filteredExercises.map((ex, i) => <SimpleExerciseCard key={ex.id} exercise={ex} onSelect={() => onSelectExercise(ex)} />)} 
                 {filteredExercises.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-12 opacity-50">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-16 h-16 bg-surface-hover/60 rounded-full flex items-center justify-center mb-4">
                             <SearchIcon className="w-8 h-8 text-text-secondary" />
                         </div>
                         <p className="text-sm font-bold text-text-secondary uppercase tracking-widest">No encontrado</p>
@@ -426,14 +430,16 @@ const ExerciseListByCategoryView: React.FC<{ category: Exclude<ExerciseLibraryCa
     return (
         <div className="p-4 sm:p-6 pb-6">
             <div>
-                <Button variant="tertiary" onClick={onBack} icon={ChevronRightIcon} className="mb-4 !p-0 [&_svg]:rotate-180 text-text-secondary hover:text-white">Volver</Button>
+                <Button variant="ghost" onClick={onBack} icon={ChevronRightIcon} className="mb-4 !px-0 hover:!bg-transparent [&_svg]:rotate-180">
+                    Volver
+                </Button>
                 <h1 className="text-3xl font-black uppercase tracking-tight mb-6">Ejercicios: {categoryNameMap[category]}</h1>
                 
                 <div className="relative mb-6 group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <SearchIcon className="h-4 w-4 text-text-secondary group-focus-within:text-brand-accent" />
                     </div>
-                    <input type="search" placeholder="BUSCAR..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full pl-9 p-3 bg-surface-hover border border-surface-border focus:border-brand-accent outline-none text-xs font-mono uppercase text-white rounded-xl transition-colors" />
+                    <input type="search" placeholder="BUSCAR..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full pl-9 p-3 bg-surface-hover border border-surface-border focus:border-brand-accent outline-none text-xs font-mono uppercase text-text-primary rounded-xl transition-colors" />
                 </div>
             </div>
             
@@ -464,7 +470,7 @@ const ExerciseListByCategoryView: React.FC<{ category: Exclude<ExerciseLibraryCa
                 
                 {testExercises.length === 0 && correctionExercises.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-12 opacity-50">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-16 h-16 bg-surface-hover/60 rounded-full flex items-center justify-center mb-4">
                             <SearchIcon className="w-8 h-8 text-text-secondary" />
                         </div>
                         <p className="text-sm font-bold text-text-secondary uppercase tracking-widest">No encontrado</p>

@@ -41,7 +41,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
                         </div>
                     </div>
                     
-                    <h1 className="text-4xl sm:text-5xl font-display font-black text-white uppercase tracking-tighter leading-[0.9] drop-shadow-md">
+                    <h1 className="text-4xl sm:text-5xl font-display font-black text-text-primary uppercase tracking-tighter leading-[0.9] drop-shadow-md">
                         Misión<br/>Cumplida
                     </h1>
                 </div>
@@ -59,7 +59,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
                             <ChartBarIcon className="w-5 h-5 text-brand-accent" />
                         </div>
                         <div>
-                            <p className="text-4xl font-heading font-black text-white tracking-tighter leading-none mb-1">
+                            <p className="text-4xl font-heading font-black text-text-primary tracking-tighter leading-none mb-1">
                                 {(totalVolume / 1000).toFixed(1)}<span className="text-lg text-brand-accent">T</span>
                             </p>
                             <p className="text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] leading-snug">
@@ -73,7 +73,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
                         className="col-span-1 bg-surface-bg/80 backdrop-blur-md p-4 rounded-3xl border border-surface-border flex flex-col justify-center shadow-lg animate-fade-in-up"
                         style={{ animationDelay: '300ms', animationFillMode: 'both' }}
                     >
-                        <p className="text-3xl font-heading font-black text-white tracking-tighter leading-none mb-1">
+                        <p className="text-3xl font-heading font-black text-text-primary tracking-tighter leading-none mb-1">
                             {exercisesDone}
                         </p>
                         <p className="text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em]">
@@ -90,7 +90,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
                             <FireIcon className="w-5 h-5" />
                         </div>
                         <div>
-                             <p className="text-lg font-heading font-black text-white tracking-tighter leading-none">
+                             <p className="text-lg font-heading font-black text-text-primary tracking-tighter leading-none">
                                 Épico
                             </p>
                             <p className="text-[8px] font-bold text-brand-accent uppercase tracking-[0.2em]">
@@ -103,7 +103,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
             </div>
 
             {/* Fixed Actions Footer */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-20 animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
+            <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent z-20 animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
                 <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
                     <Button 
                         variant="primary"
@@ -117,7 +117,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
                     <Button 
                         variant="tertiary"
                         onClick={() => { vibrate(5); onAddExercise(); }} 
-                        className="w-full py-4 rounded-2xl bg-surface-bg border border-surface-border text-text-secondary hover:text-white hover:bg-surface-hover active:scale-[0.98] transition-all font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-2xl bg-surface-bg border border-surface-border text-text-secondary hover:text-text-primary hover:bg-surface-hover active:scale-[0.98] transition-all font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
                         icon={PlusIcon}
                     >
                         AÑADIR EXTRA

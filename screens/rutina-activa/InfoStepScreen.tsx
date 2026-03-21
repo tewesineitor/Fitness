@@ -33,12 +33,12 @@ const PotentiationScreen: React.FC<{ exerciseName: string; onStartWorkout: () =>
                 Series de Aproximación
             </h2>
             
-            <h1 className="text-4xl sm:text-5xl font-display font-black text-white uppercase tracking-tighter leading-none flex-shrink-0 drop-shadow-md mb-8">
+            <h1 className="text-4xl sm:text-5xl font-display font-black text-text-primary uppercase tracking-tighter leading-none flex-shrink-0 drop-shadow-md mb-8">
                 ¡PREPARAR!
             </h1>
             
             <div className="w-full max-w-sm">
-                <p className="font-bold text-white text-xl uppercase tracking-tight mb-4 break-words">{exerciseName}</p>
+                <p className="font-bold text-text-primary text-xl uppercase tracking-tight mb-4 break-words">{exerciseName}</p>
                 <div className="h-px w-16 mx-auto bg-brand-accent/30 mb-4"></div>
                 <p className="text-sm text-text-secondary font-medium px-4">
                     Realiza 2-3 series con peso ligero para activar el sistema nervioso antes de tu primera serie de trabajo.
@@ -129,7 +129,7 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
             <div className="pt-8 px-6 text-center z-10 flex-shrink-0 animate-fade-in-down">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-bg/80 border border-surface-border backdrop-blur-md shadow-sm">
                     <Icon className={`w-3.5 h-3.5 ${colorClass}`} />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">
                         {isWarmup ? 'CALENTAMIENTO' : 'ENFRIAMIENTO'}
                     </span>
                     <span className="text-[10px] font-bold text-text-secondary">
@@ -158,19 +158,19 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
 
                 {/* Exercise Info strictly contained below the timer */}
                 <div className="text-center w-full px-6 max-w-sm animate-fade-in-up">
-                    <h2 className="text-3xl font-display font-black text-white uppercase tracking-tight leading-tight mb-2 drop-shadow-md">
+                    <h2 className="text-3xl font-display font-black text-text-primary uppercase tracking-tight leading-tight mb-2 drop-shadow-md">
                         {currentExercise.name}
                     </h2>
                     
                     <div className="flex items-center justify-center gap-3">
                         {reps && (
-                            <span className="text-sm font-bold text-white uppercase tracking-widest bg-white/10 px-3 py-1 rounded-lg border border-white/5">
+                            <span className="text-sm font-bold text-text-primary uppercase tracking-widest bg-surface-bg/50 px-3 py-1 rounded-lg border border-surface-border">
                                 {reps}
                             </span>
                         )}
                         <button 
                             onClick={() => { vibrate(5); onShowExerciseDetails(currentExercise.id); }}
-                            className="text-xs font-bold text-text-secondary hover:text-white uppercase tracking-widest flex items-center gap-1 transition-colors px-2 py-1"
+                            className="text-xs font-bold text-text-secondary hover:text-text-primary uppercase tracking-widest flex items-center gap-1 transition-colors px-2 py-1"
                         >
                             <InformationCircleIcon className="w-4 h-4" />
                             Técnica
@@ -180,7 +180,7 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
             </div>
 
             {/* Fixed Bottom Controls */}
-            <div className="flex-shrink-0 pb-safe px-6 pt-4 bg-gradient-to-t from-black via-black/90 to-transparent z-20 space-y-4">
+            <div className="flex-shrink-0 pb-safe px-6 pt-4 bg-gradient-to-t from-bg-base via-bg-base/90 to-transparent z-20 space-y-4">
                 {/* Progress Strip */}
                 <div className="flex items-center gap-1 h-1.5 w-full bg-surface-bg rounded-full p-0.5 border border-surface-border">
                     {step.items.map((_, index) => (
@@ -199,14 +199,14 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
                     <Button 
                         variant="tertiary" 
                         onClick={() => { vibrate(5); onSkipAll(); }} 
-                        className="flex-1 !bg-surface-bg !border-surface-border hover:!bg-surface-hover hover:text-white text-text-muted font-bold text-[10px] uppercase tracking-widest"
+                        className="flex-1 !bg-surface-bg !border-surface-border hover:!bg-surface-hover hover:text-text-primary text-text-muted font-bold text-[10px] uppercase tracking-widest"
                     >
                         SALTAR
                     </Button>
                     <Button 
                         variant="secondary" 
                         onClick={() => { vibrate(10); advanceToNextItem(); }} 
-                        className="flex-[2] bg-white text-black font-extrabold text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 transition-all"
+                        className="flex-[2] bg-text-primary text-bg-base font-extrabold text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(var(--color-text-primary-rgb),0.2)] hover:scale-[1.02] active:scale-95 transition-all"
                     >
                         <span className="flex items-center justify-center gap-1">
                             SIGUIENTE <ChevronRightIcon className="w-4 h-4" />

@@ -336,7 +336,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
                     <div className="bg-surface-bg/50 backdrop-blur-md p-6 rounded-[2rem] mb-6 border border-surface-border shadow-lg shadow-black/50 ring-1 ring-brand-accent/20">
                         <StrengthIcon className="w-16 h-16 text-brand-accent drop-shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.5)]" />
                     </div>
-                    <h1 className="text-4xl font-display font-black text-white uppercase tracking-tight mb-3 drop-shadow-md">{activeRoutine.name}</h1>
+                    <h1 className="text-4xl font-display font-black text-text-primary uppercase tracking-tight mb-3 drop-shadow-md">{activeRoutine.name}</h1>
                     <p className="text-text-secondary font-medium text-sm max-w-xs mx-auto bg-surface-bg/80 backdrop-blur-sm px-4 py-2 rounded-full border border-surface-border">
                         {activeRoutine.flow.length} bloques programados • PREPÁRATE
                     </p>
@@ -404,7 +404,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
                 </div>
             </div>
             {/* Sticky Bottom Action Area */}
-            <div className="sticky bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-black via-black/95 to-transparent z-40 flex flex-col items-center gap-3">
+            <div className="sticky bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent z-40 flex flex-col items-center gap-3">
                 <Button 
                     variant="primary"
                     onClick={() => { vibrate(15); setIsStarted(true); }} 
@@ -415,7 +415,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
                 </Button>
                 <button 
                     onClick={() => { vibrate(5); dispatch(actions.exitRoutine()); }} 
-                    className="text-[11px] font-bold text-text-secondary hover:text-white uppercase tracking-[0.2em] px-4 pt-2 pb-1 transition-colors relative z-50"
+                    className="text-[11px] font-bold text-text-secondary hover:text-text-primary uppercase tracking-[0.2em] px-4 pt-2 pb-1 transition-colors relative z-50"
                 >
                     Volver
                 </button>
@@ -424,11 +424,11 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
     );
 
     return (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black text-text-primary font-sans h-[100dvh]">
+        <div className="fixed inset-0 z-50 flex flex-col bg-bg-base text-text-primary font-sans h-[100dvh]">
             {/* Background */}
             <div className="absolute inset-0 z-0 pointer-events-none">
                 <ImmersiveBackground exercise={bgExercise} />
-                <div className="absolute inset-0 bg-black/70 backdrop-blur-[4px]"></div>
+                <div className="absolute inset-0 bg-bg-base/80 backdrop-blur-[8px]"></div>
             </div>
 
             {/* Modals */}
@@ -483,7 +483,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
                     {/* Time */}
                     <div className="flex items-center gap-2 bg-surface-bg/80 border border-surface-border rounded-full px-4 py-2 backdrop-blur-md shadow-sm">
                         <div className={`w-2 h-2 rounded-full ${isResting ? 'bg-brand-accent animate-pulse' : 'bg-green-400'}`}></div>
-                        <span className="font-mono text-sm font-bold text-white tabular-nums">
+                        <span className="font-mono text-sm font-bold text-text-primary tabular-nums">
                             {new Date(globalTime * 1000).toISOString().substr(14, 5)}
                         </span>
                     </div>
