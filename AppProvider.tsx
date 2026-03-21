@@ -10,6 +10,7 @@ import { useSupabaseAuthSession } from './appAuth';
 import { useAppBootstrap } from './appBootstrap';
 import { useAppStateSync } from './appSync';
 import { useDailyProgressReset } from './appDailyReset';
+import AppLoadingScreen from './components/layout/AppLoadingScreen';
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, baseDispatch] = useReducer(rootReducer, initialState);
@@ -81,12 +82,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     if (!isInitialized || !authInitialized) {
         return (
-            <div className="h-screen w-screen flex items-center justify-center bg-bg-base">
-                <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 border-4 border-surface-border border-t-brand-accent rounded-full animate-spin" />
-                    <p className="mt-4 text-xs font-bold text-text-secondary uppercase tracking-widest">Conectando con Supabase...</p>
-                </div>
-            </div>
+            <AppLoadingScreen
+                label="Conectando con Supabase"
+                description="Sincronizando estado inicial"
+            />
         );
     }
 
