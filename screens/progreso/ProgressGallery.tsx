@@ -10,6 +10,7 @@ import Tag from '../../components/Tag';
 const ProgressGallery: React.FC<{ photos: HistorialDeMetricasEntry[], onClose: () => void }> = ({ photos, onClose }) => {
     const { dispatch } = useContext(AppContext)!;
     const [viewMode, setViewMode] = useState<'grid' | 'compare'>('grid');
+    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
     const [timeFilter, setTimeFilter] = useState<'all' | '1m' | '3m' | '6m' | '1y'>('all');
     const timeFilters: { id: typeof timeFilter; label: string }[] = [
         { id: 'all', label: 'TODO' },

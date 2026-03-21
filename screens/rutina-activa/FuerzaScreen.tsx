@@ -4,7 +4,7 @@ import { StrengthStep, LoggedSet, DesgloseFuerza, RoutineStep } from '../../type
 import Button from '../../components/Button';
 import IconButton from '../../components/IconButton';
 import Tag from '../../components/Tag';
-import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon } from '../../components/icons';
+import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon, CheckIcon } from '../../components/icons';
 import { AppContext } from '../../contexts';
 import { selectHistorialDeSesiones, selectAllExercises } from '../../selectors/workoutSelectors';
 import { vibrate } from '../../utils/helpers';
@@ -222,32 +222,27 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                 )}
 
                 {/* CURRENT SESSION LOGGER TAPE */}
-                <div className="mt-8 mb-4 flex-shrink-0 relative">
-                    {/* The Tape line */}
-                    <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-surface-border -translate-y-1/2 z-0"></div>
-                    
-                    <div className="flex gap-3 overflow-x-auto hide-scrollbar relative z-10 px-2 py-4">
+                <div className="mt-8 mb-4 flex-shrink-0 flex justify-center">
+                    <div className="flex gap-2.5 overflow-x-auto hide-scrollbar px-4 py-2">
                         {Array.from({ length: step.sets }).map((_, i) => {
                             const isLogged = i < currentSetIndex;
                             const isCurrent = i === currentSetIndex;
-                            const loggedData = isLogged ? loggedSets[i] : null;
 
                             return (
                                 <div key={i} className={`
-                                    flex flex-col items-center justify-center w-16 h-16 rounded-2xl flex-shrink-0 transition-all border-2
+                                    flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 transition-all duration-300
                                     ${isLogged 
-                                        ? 'bg-brand-accent border-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.2)]' 
+                                        ? 'bg-brand-accent text-brand-accent-foreground shadow-[0_0_12px_rgba(var(--color-brand-accent-rgb),0.4)]' 
                                         : isCurrent 
-                                            ? 'bg-surface-bg border-text-primary text-text-primary scale-110 shadow-lg' 
-                                            : 'bg-surface-bg border-surface-border text-text-muted opacity-50'
+                                            ? 'bg-surface-bg ring-2 ring-brand-accent text-text-primary scale-110 shadow-md' 
+                                            : 'bg-surface-hover/60 text-text-muted opacity-60'
                                     }
                                 `}>
-                                    <span className={`text-[9px] font-bold uppercase tracking-widest ${isLogged ? 'text-black/60' : isCurrent ? 'text-text-secondary' : 'text-text-muted'}`}>S{i+1}</span>
                                     {isLogged ? (
-                                        <span className="font-display font-black text-lg leading-none mt-1">{loggedData?.weight}</span>
-                                    ) : isCurrent ? (
-                                        <div className="w-2 h-2 rounded-full bg-brand-accent mt-2 animate-pulse"></div>
-                                    ) : null}
+                                        <CheckIcon className="w-5 h-5 text-brand-accent-foreground" />
+                                    ) : (
+                                        <span className={`text-[11px] font-bold uppercase tracking-widest ${isCurrent ? 'text-text-primary shadow-sm' : ''}`}>S{i+1}</span>
+                                    )}
                                 </div>
                             );
                         })}
@@ -263,7 +258,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
 
             {/* FIXED ACTION FOOTER */}
             {!isFinished && (
-                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent z-40">
+                <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-bg-base border-t border-surface-border shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)] z-40">
                     <Button 
                         variant="primary"
                         onClick={handleCompleteSet} 

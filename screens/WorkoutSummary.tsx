@@ -115,16 +115,16 @@ const CardioLibreSummary: React.FC<{ entry: HistorialDeSesionesEntry, onExit: ()
                     </div>
                 </div>
                 
-                <FloatingDock>
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 pb-safe bg-bg-base border-t border-surface-border z-40">
                         <Button 
                             onClick={() => { vibrate(10); onExit(); }} 
                             variant="high-contrast"
-                            className="w-full py-5 text-sm" 
+                            className="w-full py-5 text-sm shadow-[0_4px_14px_0_rgba(var(--color-text-primary-rgb),0.2)]" 
                             size="large"
                         >
                             FINALIZAR SESIÓN
                         </Button>
-                </FloatingDock>
+                </div>
             </div>
         </div>
     );
@@ -219,16 +219,17 @@ export const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ onEx
                 </div>
                 
                 {/* Fixed Footer with Solid Button */}
-                <FloatingDock>
+                {/* Fixed Footer with Solid Button */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 pb-safe bg-bg-base border-t border-surface-border z-40">
                         <Button 
                             onClick={() => { vibrate(10); onExit(); }} 
                             variant="high-contrast"
-                            className="w-full py-5 text-sm" 
+                            className="w-full py-5 text-sm shadow-[0_4px_14px_0_rgba(var(--color-text-primary-rgb),0.2)]" 
                             size="large"
                         >
                             {isHistoricalView ? 'CERRAR RESUMEN' : 'FINALIZAR ENTRENAMIENTO'}
                         </Button>
-                </FloatingDock>
+                </div>
             </div>
         </div>
     );

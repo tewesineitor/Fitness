@@ -428,7 +428,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
             {/* Background */}
             <div className="absolute inset-0 z-0 pointer-events-none">
                 <ImmersiveBackground exercise={bgExercise} />
-                <div className="absolute inset-0 bg-bg-base/80 backdrop-blur-[8px]"></div>
+                <div className="absolute inset-0 bg-bg-base/90 backdrop-blur-[8px]"></div>
             </div>
 
             {/* Modals */}

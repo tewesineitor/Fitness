@@ -103,7 +103,7 @@ const PostRoutineScreen: React.FC<PostRoutineScreenProps> = ({ onFinish, onAddEx
             </div>
 
             {/* Fixed Actions Footer */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent z-20 animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
+            <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe bg-bg-base border-t border-surface-border shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)] z-20 animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>
                 <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
                     <Button 
                         variant="primary"

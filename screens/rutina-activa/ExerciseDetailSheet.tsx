@@ -14,7 +14,7 @@ const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
     <div className="text-text-secondary whitespace-pre-wrap leading-relaxed font-medium text-sm">
         {text.split(/(\*\*.*?\*\*)/g).map((part, index) => 
             part.startsWith('**') 
-                ? <strong key={index} className="font-black text-white block mt-6 mb-2 uppercase tracking-wider text-xs">{part.slice(2, -2)}</strong> 
+                ? <strong key={index} className="font-black text-text-primary block mt-6 mb-2 uppercase tracking-wider text-xs">{part.slice(2, -2)}</strong> 
                 : <span key={index}>{part}</span>
         )}
     </div>
@@ -35,7 +35,7 @@ const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onC
                      <div className="w-12 h-1.5 bg-surface-border rounded-full mb-4"></div>
                      <div className="w-full px-6 flex justify-between items-center">
                         <span className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Detalle de Técnica</span>
-                        <button onClick={onClose} className="p-2 bg-surface-hover rounded-full hover:bg-surface-border text-white transition-colors">
+                        <button onClick={onClose} className="p-2 bg-surface-hover rounded-full hover:bg-surface-border text-text-primary transition-colors">
                             <XIcon className="w-5 h-5" />
                         </button>
                      </div>
@@ -48,7 +48,7 @@ const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onC
                          <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-transparent to-transparent opacity-60"></div>
                     </div>
                     
-                    <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-none mb-6">{exercise.name}</h2>
+                    <h2 className="text-3xl font-black text-text-primary uppercase tracking-tight leading-none mb-6">{exercise.name}</h2>
                     
                     <div className="p-6 bg-surface-bg rounded-3xl border border-surface-border shadow-sm">
                         <FormattedDescription text={exercise.description} />

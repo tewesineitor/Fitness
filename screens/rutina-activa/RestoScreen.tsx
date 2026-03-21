@@ -121,7 +121,7 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
       </div>
       
       {/* 3. Bottom Controls & Next Up Drawer */}
-      <div className="flex-shrink-0 w-full mt-auto space-y-4 pb-safe bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent pt-10 px-6 z-20">
+      <div className="flex-shrink-0 w-full mt-auto space-y-4 pb-safe bg-bg-base border-t border-surface-border pt-6 px-6 z-20">
         
         {nextStep && (
             <div className="mb-6 animate-fade-in-up">

@@ -35,6 +35,7 @@
   --shadow-glow: 0 0 20px var(--color-brand-accent-glow);
 
   --bg-gradient: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(109, 40, 217, 0.04) 0%, transparent 70%);
+  --bg-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
@@ -81,6 +82,7 @@
   --shadow-glow: 0 0 24px var(--color-brand-accent-glow);
 
   --bg-gradient: radial-gradient(ellipse 70% 45% at 50% -5%, rgba(167, 139, 250, 0.06) 0%, transparent 65%);
+  --bg-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
 
   color-scheme: dark;
 }
@@ -93,7 +95,7 @@ body,
 
 body {
   background-color: var(--color-bg-base);
-  background-image: var(--bg-gradient);
+  background-image: var(--bg-gradient), var(--bg-pattern);
   color: rgb(var(--color-text-primary-rgb));
   font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;

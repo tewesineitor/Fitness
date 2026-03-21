@@ -139,10 +139,10 @@ const App: React.FC = () => {
 
     return (
         <Suspense fallback={<AppChunkFallback />}>
-            <div className="text-text-primary min-h-screen font-sans flex flex-col h-screen relative bg-transparent overflow-hidden">
+            <div className="text-text-primary min-h-screen font-sans flex flex-col h-screen relative bg-bg-base overflow-hidden">
                 <SyncIndicator status={syncStatus} />
-                <main className="flex-grow relative w-full max-w-3xl mx-auto h-full overflow-y-auto hide-scrollbar">
-                    <div className={isBottomNavVisible ? 'pb-28' : 'pb-8'}>
+                <main className="flex-grow relative w-full max-w-2xl mx-auto h-full overflow-y-auto hide-scrollbar">
+                    <div className={isBottomNavVisible ? 'pb-32' : 'pb-8'}>
                         {screens.find(s => s.id === activeScreen)?.component}
                     </div>
                 </main>
@@ -159,7 +159,7 @@ const App: React.FC = () => {
     return (
         <Suspense fallback={<AppChunkFallback />}>
             <div className="fixed inset-0 z-50 animate-fade-in-up bg-bg-base overflow-hidden">
-                <div className="w-full max-w-3xl mx-auto h-full relative">
+                <div className="w-full max-w-2xl mx-auto h-full relative">
                     {activeRoutine && <RutinaActivaScreen activeRoutine={activeRoutine} />}
                     {workoutSummaryData && <WorkoutSummaryScreen 
                           historicalEntry={workoutSummaryData.historicalEntry}

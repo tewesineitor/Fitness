@@ -10,11 +10,11 @@ interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const activeTones: Record<NonNullable<ChipButtonProps['tone']>, string> = {
   neutral: 'bg-text-primary text-bg-base border-text-primary shadow-md',
-  accent: 'bg-brand-accent text-brand-accent-foreground border-brand-accent shadow-md shadow-brand-accent/20',
-  protein: 'bg-brand-protein text-bg-base border-brand-protein shadow-md shadow-brand-protein/20',
-  carbs: 'bg-brand-carbs text-bg-base border-brand-carbs shadow-md shadow-brand-carbs/20',
-  success: 'bg-success text-bg-base border-success shadow-md shadow-success/20',
-  danger: 'bg-danger text-bg-base border-danger shadow-md shadow-danger/20',
+  accent: 'bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/30',
+  protein: 'bg-brand-protein text-black border-brand-protein shadow-md shadow-brand-protein/30',
+  carbs: 'bg-brand-carbs text-black border-brand-carbs shadow-md shadow-brand-carbs/30',
+  success: 'bg-success text-black border-success shadow-md shadow-success/30',
+  danger: 'bg-danger text-white border-danger shadow-md shadow-danger/30',
 };
 
 const sizes: Record<NonNullable<ChipButtonProps['size']>, string> = {

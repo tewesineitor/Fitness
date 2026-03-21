@@ -180,7 +180,7 @@ const InfoStepScreen: React.FC<InfoStepScreenProps> = ({ step, onComplete, onSki
             </div>
 
             {/* Fixed Bottom Controls */}
-            <div className="flex-shrink-0 pb-safe px-6 pt-4 bg-gradient-to-t from-bg-base via-bg-base/90 to-transparent z-20 space-y-4">
+            <div className="flex-shrink-0 pb-safe pb-6 px-6 pt-6 bg-bg-base border-t border-surface-border z-20 space-y-4">
                 {/* Progress Strip */}
                 <div className="flex items-center gap-1 h-1.5 w-full bg-surface-bg rounded-full p-0.5 border border-surface-border">
                     {step.items.map((_, index) => (
