@@ -79,3 +79,38 @@ Scripts:
 - `npm run build`
 - `npm run preview`
 - `npm run lint`
+
+## 10. Estado para Rediseño Total
+
+La app ya no está en fase de "parches visuales".
+La siguiente etapa recomendada es prepararla para un rediseño total del frontend.
+
+Eso implica:
+
+- redefinir por completo el lenguaje visual
+- reconstruir el shell global
+- rehacer los verticales principales sobre un sistema base común
+- evitar cambios cosméticos aislados sobre la UI vieja
+
+### Qué ya está listo
+
+- la lógica principal ya es funcional
+- `AddFoodView`, `RutinaActivaScreen` y `RoutineViews` ya fueron parcialmente divididos
+- `types.ts` y `services/aiService.ts` ya son fachadas/barrels, así que el dominio está menos acoplado
+- ya existe una base inicial de primitives reutilizables
+
+### Qué sigue faltando antes de rediseñar pantallas en serio
+
+- consolidar un design system premium obligatorio
+- extraer un `AppShell` real desde `App.tsx`
+- separar overlays, bottom nav y focus mode
+- definir contratos visuales por feature
+- reconstruir verticales sobre esa base
+
+### Documento de ejecución
+
+El plan operativo completo para esta siguiente fase vive en:
+
+- [FRONTEND_REDESIGN_MASTER_PLAN.md](/D:/07.%20Apps/Fitness/FRONTEND_REDESIGN_MASTER_PLAN.md)
+
+Ese documento divide el trabajo por fases, por vertical y por ownership paralelo para subagentes.
