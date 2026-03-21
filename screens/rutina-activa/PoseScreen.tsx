@@ -63,14 +63,17 @@ const PoseScreen: React.FC<PoseScreenProps> = ({ step, onComplete, onShowExercis
                     <Icon className="w-8 h-8 text-brand-accent" />
                 </div>
             </div>
-            <button 
+            <Button
                 onClick={onShowExerciseDetails}
                 disabled={!canShowDetails}
-                className="group flex items-center justify-center gap-2 text-center w-full mb-2 py-2 rounded-lg transition-colors hover:bg-surface-bg disabled:hover:bg-transparent"
+                variant="ghost"
+                size="large"
+                icon={canShowDetails ? InformationCircleIcon : undefined}
+                iconPosition="right"
+                className="w-full mb-2 h-auto min-h-[3.5rem] px-4 py-3 text-3xl normal-case tracking-tight text-text-primary hover:text-brand-accent disabled:hover:text-text-primary"
             >
-                <h2 className="text-3xl font-bold transition-colors group-hover:text-brand-accent">{step.title}</h2>
-                {canShowDetails && <InformationCircleIcon className="w-6 h-6 text-text-secondary transition-colors group-hover:text-brand-accent" />}
-            </button>
+                {step.title}
+            </Button>
             <p className="text-text-secondary mb-8">{subtitle}</p>
         </div>
         

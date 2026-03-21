@@ -55,7 +55,7 @@ const AddExerciseModal: React.FC<{
                         placeholder="BUSCAR EN ARSENAL..."
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-4 bg-surface-hover/80 border border-surface-border rounded-2xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent focus:bg-surface-bg outline-none text-sm font-bold text-white placeholder:text-text-secondary/50 transition-all uppercase tracking-wide shadow-sm"
+                        className="w-full pl-10 pr-4 py-4 bg-surface-hover/80 border border-surface-border rounded-2xl focus:border-brand-accent focus:ring-1 focus:ring-brand-accent focus:bg-surface-bg outline-none text-sm font-bold text-text-primary placeholder:text-text-secondary/50 transition-all uppercase tracking-wide shadow-sm"
                         autoFocus
                     />
                 </div>
@@ -71,11 +71,11 @@ const AddExerciseModal: React.FC<{
                         className="w-full text-left p-3 bg-surface-bg/80 border border-surface-border rounded-2xl flex items-center gap-4 hover:border-brand-accent/50 hover:bg-surface-hover transition-all group active:scale-[0.98] shadow-sm animate-fade-in-up"
                         style={{ animationDelay: `${Math.min(idx * 50, 500)}ms`, animationFillMode: 'both' }}
                     >
-                        <div className="w-12 h-12 bg-black rounded-[0.85rem] overflow-hidden flex-shrink-0 border border-surface-border group-hover:border-brand-accent/50 transition-colors shadow-sm">
+                        <div className="w-12 h-12 bg-surface-hover rounded-[0.85rem] overflow-hidden flex-shrink-0 border border-surface-border group-hover:border-brand-accent/50 transition-colors shadow-sm">
                             <ExerciseImage exercise={ex} className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" />
                         </div>
                         <div className="flex-grow min-w-0">
-                            <p className="font-bold text-sm text-text-primary uppercase tracking-tight truncate group-hover:text-white transition-colors">{ex.name}</p>
+                            <p className="font-bold text-sm text-text-primary uppercase tracking-tight truncate group-hover:text-brand-accent transition-colors">{ex.name}</p>
                             <div className="flex items-center gap-2 mt-1">
                                 <Tag size="sm" tone="accent" variant="status">{ex.category}</Tag>
                             </div>
@@ -88,7 +88,7 @@ const AddExerciseModal: React.FC<{
                         <div className="w-16 h-16 bg-surface-hover rounded-full flex items-center justify-center mb-4 border border-surface-border">
                             <SearchIcon className="w-8 h-8 text-text-secondary" />
                         </div>
-                        <p className="text-sm font-bold text-white uppercase tracking-widest">No encontrado</p>
+                        <p className="text-sm font-bold text-text-primary uppercase tracking-widest">No encontrado</p>
                         <p className="text-[10px] text-text-secondary mt-1 uppercase tracking-widest">Intenta con otro término</p>
                     </div>
                 )}

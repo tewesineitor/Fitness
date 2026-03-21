@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MacroNutrients, DailyGoals } from '../../types';
 import Button from '../Button';
+import IconButton from '../IconButton';
 import Modal from '../Modal';
 import { SparklesIcon, FireIcon, InformationCircleIcon } from '../icons';
 import { AdvancedMacroRow, DEFAULT_FAT_ABS_MAX, DEFAULT_FAT_MIN, DEFAULT_CARB_ABS_MAX, DEFAULT_CARB_MIN } from './MacroBarSystem';
@@ -145,13 +146,13 @@ export const NutritionSummary: React.FC<{ consumed: MacroNutrients; goals: Daily
                         <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest opacity-50 bg-surface-bg pr-2">
                             Balance Energético (Compartido)
                         </span>
-                        <button 
-                            onClick={() => setShowInfoModal(true)} 
-                            className="text-text-secondary hover:text-brand-accent transition-colors p-1"
-                            aria-label="Información sobre balance compartido"
-                        >
-                            <InformationCircleIcon className="w-4 h-4" />
-                        </button>
+                        <IconButton
+                            onClick={() => setShowInfoModal(true)}
+                            icon={InformationCircleIcon}
+                            label="Información sobre balance compartido"
+                            variant="ghost"
+                            size="small"
+                        />
                         <div className="h-px flex-grow bg-surface-border"></div>
                     </div>
 
@@ -181,7 +182,7 @@ export const NutritionSummary: React.FC<{ consumed: MacroNutrients; goals: Daily
             <div className="px-6 py-4 bg-surface-hover/30 flex items-start gap-3.5 border-t border-surface-border">
                 <SparklesIcon className="w-4 h-4 text-brand-accent flex-shrink-0 mt-0.5 opacity-60" />
                 <p className="text-[10px] text-text-secondary leading-relaxed font-medium">
-                    <span className="text-brand-accent font-bold uppercase tracking-widest mr-1">Cálculo Dinámico:</span> Las barras se ajustan solas. Si excedes el Ideal, entras en modo FLEX y tus macros comparten el presupuesto restante. <button onClick={() => setShowInfoModal(true)} className="underline decoration-brand-accent/30 hover:text-text-primary transition-colors">Ver detalles.</button>
+                    <span className="text-brand-accent font-bold uppercase tracking-widest mr-1">Cálculo Dinámico:</span> Las barras se ajustan solas. Si excedes el Ideal, entras en modo FLEX y tus macros comparten el presupuesto restante. <Button onClick={() => setShowInfoModal(true)} variant="tertiary" size="small" className="h-auto px-0 py-0 text-[10px] font-semibold normal-case tracking-normal underline decoration-brand-accent/30 hover:text-text-primary hover:decoration-brand-accent">Ver detalles.</Button>
                 </p>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import IconButton from '../IconButton';
 import { DesgloseCardioLibre } from '../../types';
 import { CameraIcon, XIcon } from '../icons';
 import * as aiService from '../../services/aiService';
@@ -130,17 +131,23 @@ const CardioLibreLogModal: React.FC<CardioLibreLogModalProps> = ({ activityType,
                      </div>
                  )}
                  <div className={isProcessing ? 'opacity-20 pointer-events-none' : ''}>
-                     <div className="flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center mb-8">
                         <h2 className="text-xs font-black text-text-primary uppercase tracking-[0.2em] flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-brand-accent"></div>
                             {modalTitle}
                         </h2>
-                        <button onClick={() => { vibrate(5); onClose(); }} className="p-2 bg-surface-hover hover:bg-surface-border rounded-xl transition-colors active:scale-95"><XIcon className="w-5 h-5 text-text-secondary hover:text-text-primary"/></button>
+                        <IconButton
+                            onClick={() => { vibrate(5); onClose(); }}
+                            icon={XIcon}
+                            label="Cerrar"
+                            variant="ghost"
+                            size="small"
+                        />
                      </div>
                      
                      <input type="file" ref={imageInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
                      <div className="mb-8">
-                         <Button variant="secondary" onClick={handleImageInputClick} icon={CameraIcon} className="w-full border-dashed border-surface-border bg-surface-hover/30 hover:bg-surface-hover text-text-secondary hover:text-text-primary py-4 rounded-xl">
+                         <Button variant="secondary" size="large" onClick={handleImageInputClick} icon={CameraIcon} className="w-full border-dashed border-surface-border">
                              Subir Resumen con IA
                          </Button>
                      </div>
@@ -204,7 +211,7 @@ const CardioLibreLogModal: React.FC<CardioLibreLogModalProps> = ({ activityType,
                          </div>
                      </div>
                      <div className="mt-10 mb-2">
-                         <Button onClick={handleSave} className="w-full py-4 font-black tracking-[0.2em] text-[10px] rounded-2xl shadow-xl" variant="high-contrast">{saveButtonText}</Button>
+                         <Button onClick={handleSave} className="w-full" size="large" variant="high-contrast">{saveButtonText}</Button>
                      </div>
                  </div>
             </div>

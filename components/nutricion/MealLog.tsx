@@ -1,5 +1,8 @@
 import React from 'react';
 import { LoggedMeal } from '../../types';
+import Button from '../Button';
+import IconButton from '../IconButton';
+import Tag from '../Tag';
 import { SunIcon, BowlIcon, AppleIcon, MoonIcon, ArrowDownIcon, TrashIcon, PencilIcon } from '../icons';
 import { vibrate } from '../../utils/helpers';
 
@@ -39,7 +42,9 @@ export const MealLog: React.FC<MealLogProps> = ({
                     <div className="w-1.5 h-1.5 bg-brand-accent rounded-full"></div>
                     Bitácora de Comidas
                 </h2>
-                <span className="text-[9px] font-bold text-text-secondary/40 uppercase tracking-widest">{mealsForDay.length} {mealsForDay.length === 1 ? 'REGISTRO' : 'REGISTROS'}</span>
+                <Tag variant="status" tone="neutral" size="sm" className="text-[9px] uppercase tracking-widest">
+                    {mealsForDay.length} {mealsForDay.length === 1 ? 'REGISTRO' : 'REGISTROS'}
+                </Tag>
              </div>
 
             <div className="space-y-3">
@@ -50,49 +55,52 @@ export const MealLog: React.FC<MealLogProps> = ({
 
                         return (
                             <div key={meal.id} className={`bg-surface-bg border ${isExpanded ? 'border-brand-accent/30 shadow-md' : 'border-surface-border shadow-sm'} rounded-xl transition-all duration-300 overflow-hidden`}>
-                                <button onClick={() => { vibrate(5); onToggleExpand(meal.id); }} className="w-full flex justify-between items-center p-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`p-2.5 rounded-lg border transition-colors ${isExpanded ? 'bg-brand-accent/10 border-brand-accent/20 text-brand-accent' : 'bg-surface-hover border-surface-border text-text-secondary'}`}>
-                                            <Icon className="w-5 h-5"/>
-                                        </div>
-                                        <div className="text-left">
-                                            <h3 className="text-[13px] font-bold text-text-primary uppercase tracking-tight">{meal.name || new Date(meal.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</h3>
-                                            <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-[11px] font-bold text-text-primary font-mono">{meal.macros.kcal.toFixed(0)} kcal</span>
-                                                <span className="text-surface-border text-[10px]">|</span>
-                                                <div className="flex gap-2 text-[10px] font-bold font-mono">
-                                                    <span className="text-brand-protein">{meal.macros.protein.toFixed(0)}p</span>
-                                                    <span className="text-brand-carbs">{meal.macros.carbs.toFixed(0)}c</span>
-                                                    <span className="text-brand-fat">{meal.macros.fat.toFixed(0)}f</span>
+                                <div className="flex items-stretch gap-2 p-4">
+                                    <Button
+                                        onClick={() => { vibrate(5); onToggleExpand(meal.id); }}
+                                        variant="ghost"
+                                        size="medium"
+                                        className="flex flex-1 items-center justify-between gap-4 text-left px-0"
+                                    >
+                                        <div className="flex items-center gap-4 min-w-0">
+                                            <div className={`p-2.5 rounded-lg border transition-colors ${isExpanded ? 'bg-brand-accent/10 border-brand-accent/20 text-brand-accent' : 'bg-surface-hover border-surface-border text-text-secondary'}`}>
+                                                <Icon className="w-5 h-5"/>
+                                            </div>
+                                            <div className="text-left min-w-0">
+                                                <h3 className="text-[13px] font-bold text-text-primary uppercase tracking-tight truncate">{meal.name || new Date(meal.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</h3>
+                                                <div className="flex items-center gap-2 mt-0.5">
+                                                    <span className="text-[11px] font-bold text-text-primary font-mono">{meal.macros.kcal.toFixed(0)} kcal</span>
+                                                    <span className="text-surface-border text-[10px]">|</span>
+                                                    <div className="flex gap-2 text-[10px] font-bold font-mono">
+                                                        <span className="text-brand-protein">{meal.macros.protein.toFixed(0)}p</span>
+                                                        <span className="text-brand-carbs">{meal.macros.carbs.toFixed(0)}c</span>
+                                                        <span className="text-brand-fat">{meal.macros.fat.toFixed(0)}f</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        {/* Actions Container */}
-                                        <div className="flex items-center gap-0.5 mr-2">
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); vibrate(5); onEditClick(meal); }}
-                                                className="p-2 rounded-lg text-text-secondary hover:text-brand-accent hover:bg-surface-hover transition-colors"
-                                                title="Editar"
-                                            >
-                                                <PencilIcon className="w-3.5 h-3.5" />
-                                            </button>
-                                            
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); vibrate(10); onDeleteClick(meal); }}
-                                                className="p-2 rounded-lg text-text-secondary hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                                                title="Eliminar"
-                                            >
-                                                <TrashIcon className="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-
                                         <div className={`p-1.5 rounded-lg text-text-secondary transition-transform duration-300 border ${isExpanded ? 'rotate-180 bg-brand-accent/10 border-brand-accent/20 text-brand-accent' : 'bg-surface-hover border-surface-border'}`}>
                                             <ArrowDownIcon className="w-3.5 h-3.5"/>
                                         </div>
+                                    </Button>
+
+                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                        <IconButton
+                                            onClick={() => { vibrate(5); onEditClick(meal); }}
+                                            icon={PencilIcon}
+                                            label="Editar"
+                                            variant="ghost"
+                                            size="small"
+                                        />
+                                        <IconButton
+                                            onClick={() => { vibrate(10); onDeleteClick(meal); }}
+                                            icon={TrashIcon}
+                                            label="Eliminar"
+                                            variant="destructive"
+                                            size="small"
+                                        />
                                     </div>
-                                </button>
+                                </div>
                                 
                                 {isExpanded && (
                                      <div className="px-4 pb-4 pt-0 animate-fade-in-up">

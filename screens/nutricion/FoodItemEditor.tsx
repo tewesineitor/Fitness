@@ -2,6 +2,8 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import Input from '../../components/Input';
 import { FoodItem } from '../../types';
 import { AppContext } from '../../contexts';
 import * as actions from '../../actions';
@@ -136,8 +138,8 @@ export const FoodItemEditor: React.FC<{ category?: FoodCategory; onClose: () => 
     };
 
     const isEditableDefault = isEditing && !existingFood.isUserCreated;
-    const inputClasses = "w-full p-4 bg-surface-bg border border-surface-border rounded-xl text-sm font-bold text-text-primary placeholder:text-text-muted focus:border-brand-accent outline-none transition-colors uppercase tracking-wide shadow-sm";
-    const labelClasses = "text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-2 block pl-1";
+    const selectClasses = "w-full h-11 px-3 bg-surface-hover/40 border border-surface-border rounded-xl text-[13px] font-medium text-text-primary focus:border-brand-accent outline-none transition-all shadow-sm appearance-none pr-10";
+    const fieldLabelClass = "text-[9px] font-bold text-text-secondary uppercase tracking-[0.2em] mb-2 block pl-1";
 
     const categories: FoodCategory[] = [
         'Grasas y Aceites',
@@ -169,7 +171,7 @@ export const FoodItemEditor: React.FC<{ category?: FoodCategory; onClose: () => 
                 <div className="p-6 pb-4 border-b border-surface-border flex-shrink-0">
                     <div className="flex justify-between items-center">
                         <h3 className="text-sm font-bold text-text-primary uppercase tracking-[0.2em]">{editorTitle}</h3>
-                        <button type="button" onClick={onClose} className="p-2 -mr-2 text-text-secondary hover:text-text-primary transition-colors"><XIcon className="w-5 h-5"/></button>
+                        <IconButton type="button" onClick={onClose} icon={XIcon} label="Cerrar" variant="ghost" />
                     </div>
                 </div>
                 
@@ -183,19 +185,27 @@ export const FoodItemEditor: React.FC<{ category?: FoodCategory; onClose: () => 
                     )}
 
                     <div className="space-y-4">
-                        <div>
-                            <label htmlFor="food-name" className={labelClasses}>Nombre del Alimento</label>
-                            <input id="food-name" type="text" placeholder="Ej. Pechuga de Pollo" value={name} onChange={e => setName(e.target.value)} className={inputClasses} />
-                        </div>
-                        <div>
-                            <label htmlFor="food-brand" className={labelClasses}>Marca (Opcional)</label>
-                            <input id="food-brand" type="text" placeholder="Ej. San Rafael" value={brand} onChange={e => setBrand(e.target.value)} className={inputClasses} />
-                        </div>
+                        <Input
+                            id="food-name"
+                            type="text"
+                            label="Nombre del Alimento"
+                            placeholder="Ej. Pechuga de Pollo"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                        />
+                        <Input
+                            id="food-brand"
+                            type="text"
+                            label="Marca (Opcional)"
+                            placeholder="Ej. San Rafael"
+                            value={brand}
+                            onChange={e => setBrand(e.target.value)}
+                        />
                         
                         <div>
-                            <label htmlFor="food-category" className={labelClasses}>Categoría</label>
+                            <label htmlFor="food-category" className={fieldLabelClass}>Categoría</label>
                             <div className="relative">
-                                <select id="food-category" value={category} onChange={e => setCategory(e.target.value as FoodCategory)} className={`${inputClasses} appearance-none pr-10`}>
+                                <select id="food-category" value={category} onChange={e => setCategory(e.target.value as FoodCategory)} className={selectClasses}>
                                     {categories.map(cat => (
                                         <option key={cat} value={cat}>{cat}</option>
                                     ))}
@@ -207,43 +217,88 @@ export const FoodItemEditor: React.FC<{ category?: FoodCategory; onClose: () => 
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
-                            <div className="col-span-1">
-                                <label htmlFor="food-portion-qty" className={labelClasses}>Cantidad</label>
-                                <input id="food-portion-qty" type="text" placeholder="100" value={portionQuantity} onChange={e => setPortionQuantity(e.target.value)} className={`${inputClasses} text-center font-mono`} />
-                            </div>
-                            <div className="col-span-2">
-                                <label htmlFor="food-portion-unit" className={labelClasses}>Unidad</label>
-                                <input id="food-portion-unit" type="text" placeholder="g, pza, taza" value={portionUnit} onChange={e => setPortionUnit(e.target.value)} className={inputClasses} />
-                            </div>
+                            <Input
+                                id="food-portion-qty"
+                                type="text"
+                                label="Cantidad"
+                                placeholder="100"
+                                value={portionQuantity}
+                                onChange={e => setPortionQuantity(e.target.value)}
+                                className="text-center font-mono"
+                                containerClassName="col-span-1"
+                            />
+                            <Input
+                                id="food-portion-unit"
+                                type="text"
+                                label="Unidad"
+                                placeholder="g, pza, taza"
+                                value={portionUnit}
+                                onChange={e => setPortionUnit(e.target.value)}
+                                containerClassName="col-span-2"
+                            />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="food-raw-weight" className={labelClasses}>Peso Crudo (g)</label>
-                                <input id="food-raw-weight" type="number" placeholder="Opcional" value={rawWeightG} onChange={e => setRawWeightG(e.target.value)} className={`${inputClasses} font-mono`} />
-                            </div>
-                            <div>
-                                <label htmlFor="food-cooked-weight" className={labelClasses}>Peso Cocido (g)</label>
-                                <input id="food-cooked-weight" type="number" placeholder="Opcional" value={cookedWeightG} onChange={e => setCookedWeightG(e.target.value)} className={`${inputClasses} font-mono`} />
-                            </div>
+                            <Input
+                                id="food-raw-weight"
+                                type="number"
+                                label="Peso Crudo (g)"
+                                placeholder="Opcional"
+                                value={rawWeightG}
+                                onChange={e => setRawWeightG(e.target.value)}
+                                className="font-mono"
+                            />
+                            <Input
+                                id="food-cooked-weight"
+                                type="number"
+                                label="Peso Cocido (g)"
+                                placeholder="Opcional"
+                                value={cookedWeightG}
+                                onChange={e => setCookedWeightG(e.target.value)}
+                                className="font-mono"
+                            />
                         </div>
                     </div>
 
                     <div className="pt-6 border-t border-surface-border">
-                        <label className={labelClasses}>Macronutrientes por Porción</label>
+                        <label className={fieldLabelClass}>Macronutrientes por Porción</label>
                         <div className="grid grid-cols-3 gap-3">
-                            <div className="space-y-1.5">
-                                <input id="food-protein" type="number" step="0.1" placeholder="0" value={protein} onChange={e => setProtein(e.target.value)} className={`${inputClasses} text-center text-base font-mono focus:border-brand-protein/50`} />
-                                <span className="block text-center text-[8px] font-bold text-brand-protein uppercase tracking-[0.2em]">Proteína</span>
-                            </div>
-                            <div className="space-y-1.5">
-                                <input id="food-carbs" type="number" step="0.1" placeholder="0" value={carbs} onChange={e => setCarbs(e.target.value)} className={`${inputClasses} text-center text-base font-mono focus:border-brand-carbs/50`} />
-                                <span className="block text-center text-[8px] font-bold text-brand-carbs uppercase tracking-[0.2em]">Carbs</span>
-                            </div>
-                            <div className="space-y-1.5">
-                                <input id="food-fat" type="number" step="0.1" placeholder="0" value={fat} onChange={e => setFat(e.target.value)} className={`${inputClasses} text-center text-base font-mono focus:border-brand-fat/50`} />
-                                <span className="block text-center text-[8px] font-bold text-brand-fat uppercase tracking-[0.2em]">Grasas</span>
-                            </div>
+                            <Input
+                                id="food-protein"
+                                type="number"
+                                step="0.1"
+                                label="Proteína"
+                                placeholder="0"
+                                value={protein}
+                                onChange={e => setProtein(e.target.value)}
+                                className="text-center text-base font-mono"
+                                containerClassName="space-y-1.5"
+                                focusClassName="focus-within:border-brand-protein/50 focus-within:ring-2 focus-within:ring-brand-protein/15"
+                            />
+                            <Input
+                                id="food-carbs"
+                                type="number"
+                                step="0.1"
+                                label="Carbs"
+                                placeholder="0"
+                                value={carbs}
+                                onChange={e => setCarbs(e.target.value)}
+                                className="text-center text-base font-mono"
+                                containerClassName="space-y-1.5"
+                                focusClassName="focus-within:border-brand-carbs/50 focus-within:ring-2 focus-within:ring-brand-carbs/15"
+                            />
+                            <Input
+                                id="food-fat"
+                                type="number"
+                                step="0.1"
+                                label="Grasas"
+                                placeholder="0"
+                                value={fat}
+                                onChange={e => setFat(e.target.value)}
+                                className="text-center text-base font-mono"
+                                containerClassName="space-y-1.5"
+                                focusClassName="focus-within:border-brand-fat/50 focus-within:ring-2 focus-within:ring-brand-fat/15"
+                            />
                         </div>
                     </div>
 

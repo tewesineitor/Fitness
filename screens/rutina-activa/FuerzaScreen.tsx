@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { StrengthStep, LoggedSet, DesgloseFuerza, RoutineStep } from '../../types';
 import Button from '../../components/Button';
+import ChipButton from '../../components/ChipButton';
 import IconButton from '../../components/IconButton';
 import Tag from '../../components/Tag';
 import { InformationCircleIcon, ClockIcon, ChartBarIcon, CalendarIcon, StrengthIcon, CalculatorIcon, CheckIcon } from '../../components/icons';
@@ -201,19 +202,16 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({ step, onSetComplete, logged
                                 {[0, 1, 2, 3].map((val) => {
                                     const isSelected = rir === val;
                                     return (
-                                        <button
+                                        <ChipButton
                                             key={val}
                                             onClick={() => { vibrate(5); setRir(val); }}
-                                            className={`
-                                                flex-1 py-3 sm:py-4 rounded-[1.25rem] text-sm font-bold transition-all duration-300 relative
-                                                ${isSelected ? 'text-black shadow-sm' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}
-                                            `}
+                                            active={isSelected}
+                                            tone="accent"
+                                            size="medium"
+                                            className="flex-1"
                                         >
-                                            {isSelected && (
-                                                <div className="absolute inset-0 bg-brand-accent rounded-[1.25rem] shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] pointer-events-none layout-transition"></div>
-                                            )}
-                                            <span className="relative z-10">{val === 3 ? '3+' : val}</span>
-                                        </button>
+                                            {val === 3 ? '3+' : val}
+                                        </ChipButton>
                                     );
                                 })}
                             </div>

@@ -2,6 +2,7 @@
 import React from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import IconButton from '../IconButton';
 import { XIcon } from '../icons';
 
 interface SetSelectorModalProps {
@@ -18,12 +19,12 @@ const SetSelectorModal: React.FC<SetSelectorModalProps> = ({ onSelect, onClose }
         {/* Fixed Header */}
         <div className="p-6 pb-4 border-b border-surface-border flex-shrink-0 flex justify-between items-center">
             <h2 className="text-sm font-bold text-text-primary uppercase tracking-[0.2em]">Series del Bloque</h2>
-            <Button 
-                variant="tertiary" 
-                size="small" 
-                onClick={onClose} 
-                className="!p-0 text-text-secondary hover:text-text-primary"
+            <IconButton
+                onClick={onClose}
                 icon={XIcon}
+                label="Cerrar"
+                variant="ghost"
+                size="small"
             />
         </div>
 
@@ -35,14 +36,16 @@ const SetSelectorModal: React.FC<SetSelectorModalProps> = ({ onSelect, onClose }
 
             <div className="grid grid-cols-2 gap-4">
             {setOptions.map(num => (
-                <button
+                <Button
                     key={num}
                     onClick={() => onSelect(num)}
-                    className="aspect-square rounded-2xl bg-surface-bg border border-surface-border hover:border-brand-accent hover:bg-brand-accent hover:text-text-primary transition-all duration-200 flex flex-col items-center justify-center group active:scale-[0.98] shadow-sm"
+                    variant="secondary"
+                    size="large"
+                    className="aspect-square w-full flex-col rounded-2xl"
                 >
-                    <span className="text-4xl font-black text-text-primary group-hover:text-text-primary transition-colors">{num}</span>
-                    <span className="text-[10px] font-bold text-text-secondary group-hover:text-text-primary/80 uppercase tracking-widest mt-1">Series</span>
-                </button>
+                    <span className="text-4xl font-black text-text-primary">{num}</span>
+                    <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1">Series</span>
+                </Button>
             ))}
             </div>
         </div>

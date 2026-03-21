@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CircularTimer from '../../components/CircularTimer';
 import NextUpIndicator from '../../components/NextUpIndicator';
+import Button from '../../components/Button';
 import { RoutineStep } from '../../types';
 import { PlusIcon, ChevronRightIcon } from '../../components/icons';
 import { vibrate } from '../../utils/helpers';
@@ -129,23 +130,28 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
             </div>
         )}
 
-        <div className="flex justify-center gap-6 items-center pb-6">
-            <button 
+        <div className="flex flex-col sm:flex-row justify-center gap-3 items-stretch sm:items-center pb-6">
+            <Button 
                 onClick={handleAddSeconds} 
-                className="w-16 h-16 rounded-full bg-surface-bg/80 backdrop-blur-md border border-surface-border flex flex-col items-center justify-center hover:bg-surface-hover hover:border-text-secondary active:scale-95 transition-all text-text-secondary shadow-lg z-10"
-                aria-label="Añadir 15 segundos"
+                variant="secondary"
+                size="large"
+                icon={PlusIcon}
+                iconPosition="left"
+                className="w-full sm:w-auto sm:min-w-[160px] justify-center"
             >
-                <PlusIcon className="w-5 h-5 mb-0.5" /> 
-                <span className="text-[9px] font-bold uppercase tracking-widest">+15s</span>
-            </button>
+                +15s
+            </Button>
             
-            <button 
+            <Button 
                 onClick={() => { vibrate(15); onComplete(); }} 
-                className="w-20 h-20 rounded-full bg-text-primary text-bg-base flex items-center justify-center shadow-[0_0_40px_rgba(var(--color-text-primary-rgb),0.4)] hover:scale-[1.05] active:scale-95 transition-all z-10 ring-4 ring-text-primary/10"
-                aria-label={maxDuration && initialDuration - timeLeft >= duration ? 'Continuar' : 'Omitir'}
+                variant="high-contrast"
+                size="large"
+                icon={ChevronRightIcon}
+                iconPosition="right"
+                className="w-full sm:w-auto sm:min-w-[180px] justify-center"
             >
-                <ChevronRightIcon className="w-8 h-8 ml-1" />
-            </button>
+                {maxDuration && initialDuration - timeLeft >= duration ? 'Continuar' : 'Omitir'}
+            </Button>
         </div>
       </div>
     </div>
@@ -153,3 +159,4 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
 };
 
 export default RestoScreen;
+

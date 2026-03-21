@@ -77,10 +77,10 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
         return (
             <div className="flex flex-col h-full bg-bg-base p-6 animate-fade-in-up">
                 <header className="mb-8">
-                    <button onClick={onCancel} className="text-text-secondary hover:text-white flex items-center gap-1 text-xs uppercase tracking-widest mb-4">
-                        <ChevronRightIcon className="w-4 h-4 rotate-180" /> Cancelar
-                    </button>
-                    <h1 className="text-2xl font-black text-white uppercase tracking-tighter italic">Rucking Setup</h1>
+                    <Button onClick={onCancel} variant="ghost" size="small" icon={ChevronRightIcon} className="!px-0 hover:!bg-transparent [&_svg]:rotate-180 mb-4">
+                        Cancelar
+                    </Button>
+                    <h1 className="text-2xl font-black text-text-primary uppercase tracking-tighter italic">Rucking Setup</h1>
                     <p className="text-text-secondary text-xs mt-1">Configura tu carga y objetivo.</p>
                 </header>
 
@@ -89,12 +89,12 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
                     <div className="space-y-3">
                         <label className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">Peso en Mochila (kg)</label>
                         <div className="flex items-center gap-4">
-                            <button onClick={() => setWeight(Math.max(0, weight - 1))} className="w-12 h-12 rounded-xl bg-surface-hover border border-surface-border flex items-center justify-center text-xl font-bold text-white hover:bg-brand-accent hover:text-black transition-colors">-</button>
+                            <button onClick={() => setWeight(Math.max(0, weight - 1))} className="w-12 h-12 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-xl font-bold text-text-primary hover:bg-brand-accent hover:text-brand-accent-foreground transition-colors">-</button>
                             <div className="flex-grow text-center bg-surface-bg border border-surface-border rounded-xl py-3">
-                                <span className="text-3xl font-black text-white font-mono">{weight}</span>
+                                <span className="text-3xl font-black text-text-primary font-mono">{weight}</span>
                                 <span className="text-xs text-text-secondary ml-1 font-bold">KG</span>
                             </div>
-                            <button onClick={() => setWeight(weight + 1)} className="w-12 h-12 rounded-xl bg-surface-hover border border-surface-border flex items-center justify-center text-xl font-bold text-white hover:bg-brand-accent hover:text-black transition-colors">+</button>
+                            <button onClick={() => setWeight(weight + 1)} className="w-12 h-12 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-xl font-bold text-text-primary hover:bg-brand-accent hover:text-brand-accent-foreground transition-colors">+</button>
                         </div>
                     </div>
 
@@ -102,12 +102,12 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
                     <div className="space-y-3">
                         <label className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">Tiempo Objetivo (min)</label>
                         <div className="flex items-center gap-4">
-                            <button onClick={() => setTargetTime(Math.max(5, targetTime - 5))} className="w-12 h-12 rounded-xl bg-surface-hover border border-surface-border flex items-center justify-center text-xl font-bold text-white hover:bg-brand-accent hover:text-black transition-colors">-</button>
+                            <button onClick={() => setTargetTime(Math.max(5, targetTime - 5))} className="w-12 h-12 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-xl font-bold text-text-primary hover:bg-brand-accent hover:text-brand-accent-foreground transition-colors">-</button>
                             <div className="flex-grow text-center bg-surface-bg border border-surface-border rounded-xl py-3">
-                                <span className="text-3xl font-black text-white font-mono">{targetTime}</span>
+                                <span className="text-3xl font-black text-text-primary font-mono">{targetTime}</span>
                                 <span className="text-xs text-text-secondary ml-1 font-bold">MIN</span>
                             </div>
-                            <button onClick={() => setTargetTime(targetTime + 5)} className="w-12 h-12 rounded-xl bg-surface-hover border border-surface-border flex items-center justify-center text-xl font-bold text-white hover:bg-brand-accent hover:text-black transition-colors">+</button>
+                            <button onClick={() => setTargetTime(targetTime + 5)} className="w-12 h-12 rounded-xl bg-surface-bg border border-surface-border flex items-center justify-center text-xl font-bold text-text-primary hover:bg-brand-accent hover:text-brand-accent-foreground transition-colors">+</button>
                         </div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
         const progress = Math.min((elapsedTime / (targetTime * 60)) * 100, 100);
         
         return (
-            <div className="flex flex-col h-full bg-black relative overflow-hidden">
+            <div className="flex flex-col h-full bg-bg-base relative overflow-hidden">
                 {/* Background Pulse */}
                 {isActive && (
                     <div className="absolute inset-0 bg-brand-accent/5 animate-pulse pointer-events-none"></div>
@@ -152,7 +152,7 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
                                 />
                             </svg>
                             <div className="text-center">
-                                <span className="block text-6xl font-black text-white font-mono tracking-tighter">{formatTime(elapsedTime)}</span>
+                                <span className="block text-6xl font-black text-text-primary font-mono tracking-tighter">{formatTime(elapsedTime)}</span>
                                 <span className="text-xs font-bold text-text-secondary uppercase tracking-[0.3em] mt-2">Tiempo Total</span>
                             </div>
                         </div>
@@ -161,30 +161,35 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
                         <div className="grid grid-cols-2 gap-8 w-full max-w-xs">
                             <div className="text-center">
                                 <FireIcon className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-                                <span className="block text-2xl font-black text-white font-mono">{calories.toFixed(0)}</span>
+                                <span className="block text-2xl font-black text-text-primary font-mono">{calories.toFixed(0)}</span>
                                 <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Kcal Est.</span>
                             </div>
                             <div className="text-center">
                                 <ClockIcon className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                                <span className="block text-2xl font-black text-white font-mono">{targetTime}</span>
+                                <span className="block text-2xl font-black text-text-primary font-mono">{targetTime}</span>
                                 <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Meta Min</span>
                             </div>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-auto">
-                        <button 
+                        <Button
                             onClick={handlePause}
-                            className={`py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-all ${isActive ? 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 hover:bg-yellow-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20'}`}
+                            variant={isActive ? 'outline' : 'secondary'}
+                            size="large"
+                            icon={isActive ? PauseIcon : PlayIcon}
+                            className={isActive ? 'border-warning/30 text-warning hover:bg-warning/10' : 'border-success/30 text-success hover:bg-success/10'}
                         >
-                            {isActive ? <><PauseIcon className="w-4 h-4" /> Pausar</> : <><PlayIcon className="w-4 h-4" /> Reanudar</>}
-                        </button>
-                        <button 
+                            {isActive ? 'Pausar' : 'Reanudar'}
+                        </Button>
+                        <Button
                             onClick={handleStop}
-                            className="py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 bg-surface-hover text-white border border-surface-border hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/20 transition-all"
+                            variant="destructive"
+                            size="large"
+                            icon={StopIcon}
                         >
-                            <StopIcon className="w-4 h-4" /> Terminar
-                        </button>
+                            Terminar
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -203,11 +208,11 @@ const RuckingSession: React.FC<RuckingSessionProps> = ({ onFinish, onCancel }) =
                 <div className="w-full max-w-sm bg-surface-bg border border-surface-border rounded-2xl p-6 space-y-6">
                     <div className="flex justify-between items-center border-b border-surface-border pb-4">
                         <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">Tiempo</span>
-                        <span className="text-xl font-black text-white font-mono">{formatTime(elapsedTime)}</span>
+                        <span className="text-xl font-black text-text-primary font-mono">{formatTime(elapsedTime)}</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-surface-border pb-4">
                         <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">Carga</span>
-                        <span className="text-xl font-black text-white font-mono">{weight} kg</span>
+                        <span className="text-xl font-black text-text-primary font-mono">{weight} kg</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">Calorías</span>

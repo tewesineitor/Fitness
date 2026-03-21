@@ -2,6 +2,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import { LoggedMeal } from '../../types';
 import { AppContext } from '../../contexts';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
 import { ChevronRightIcon, PlusIcon } from '../../components/icons';
 import { vibrate } from '../../utils/helpers';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
@@ -131,14 +132,14 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                     </div>
                     
                     {isToday(displayedDate) && (
-                        <button
-                            type="button"
+                        <IconButton
                             onClick={() => { vibrate(5); onGoToAddFood(); }}
-                            aria-label="Agregar comida"
-                            className="bg-brand-accent text-brand-accent-foreground rounded-xl w-14 flex-shrink-0 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all border border-brand-accent"
-                        >
-                            <PlusIcon className="w-6 h-6" />
-                        </button>
+                            icon={PlusIcon}
+                            label="Agregar comida"
+                            variant="primary"
+                            size="large"
+                            className="w-14 flex-shrink-0"
+                        />
                     )}
                 </header>
 

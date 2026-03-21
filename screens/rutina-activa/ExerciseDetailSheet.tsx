@@ -2,6 +2,7 @@
 import React from 'react';
 import { Exercise } from '../../types';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
 import ExerciseImage from '../../components/ExerciseImage';
 import { XIcon } from '../../components/icons';
 
@@ -35,9 +36,13 @@ const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onC
                      <div className="w-12 h-1.5 bg-surface-border rounded-full mb-4"></div>
                      <div className="w-full px-6 flex justify-between items-center">
                         <span className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Detalle de Técnica</span>
-                        <button onClick={onClose} className="p-2 bg-surface-hover rounded-full hover:bg-surface-border text-text-primary transition-colors">
-                            <XIcon className="w-5 h-5" />
-                        </button>
+                        <IconButton
+                            onClick={onClose}
+                            icon={XIcon}
+                            label="Cerrar detalle de técnica"
+                            variant="secondary"
+                            size="medium"
+                        />
                      </div>
                 </div>
 
@@ -56,7 +61,7 @@ const ExerciseDetailSheet: React.FC<ExerciseDetailSheetProps> = ({ exercise, onC
                 </div>
                 
                 <div className="p-6 flex-shrink-0 bg-bg-base border-t border-surface-border pb-safe">
-                    <Button onClick={onClose} className="w-full py-5 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg shadow-brand-accent/20" size="large">
+                    <Button onClick={onClose} variant="high-contrast" className="w-full text-xs" size="large">
                         Volver al Entrenamiento
                     </Button>
                 </div>

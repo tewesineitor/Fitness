@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import ChipButton from '../ChipButton';
 import IconButton from '../IconButton';
 import { XIcon, MinusIcon, PlusIcon } from '../icons';
 import { vibrate } from '../../utils/helpers';
@@ -129,13 +130,16 @@ const PlateCalculatorModal: React.FC<PlateCalculatorModalProps> = ({ targetWeigh
                             <label className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em] block mb-2 pl-1">Peso de la Barra</label>
                             <div className="flex p-1.5 bg-bg-base/80 backdrop-blur-sm rounded-[1.25rem] border border-surface-border gap-1.5 shadow-inner">
                                 {[20, 15, 10].map(w => (
-                                    <button
+                                    <ChipButton
                                         key={w}
                                         onClick={() => { vibrate(5); setBarWeight(w); }}
-                                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${barWeight === w ? 'bg-brand-accent text-black shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.3)] scale-105' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'}`}
+                                        active={barWeight === w}
+                                        tone="neutral"
+                                        size="medium"
+                                        className="flex-1 rounded-xl"
                                     >
                                         {w}k
-                                    </button>
+                                    </ChipButton>
                                 ))}
                             </div>
                         </div>
@@ -146,8 +150,9 @@ const PlateCalculatorModal: React.FC<PlateCalculatorModalProps> = ({ targetWeigh
                 <div className="p-6 pt-4 border-t border-surface-border flex-shrink-0 bg-surface-bg/80 z-10">
                     <Button 
                         variant="secondary" 
+                        size="large"
                         onClick={() => { vibrate(10); onClose(); }} 
-                        className="w-full text-[10px] font-bold uppercase tracking-widest bg-surface-hover border-transparent hover:bg-surface-border transition-colors"
+                        className="w-full"
                     >
                         Cerrar Calculadora
                     </Button>
