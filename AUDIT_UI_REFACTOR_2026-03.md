@@ -2,17 +2,19 @@
 
 Fecha: 2026-03-20
 
-## Estado real
+## Estado Real
 
-La migracion visual de `rutina-activa` y `nutricion` mejoro de forma importante, y esta pasada cerro el frente de `AddFoodView` y `BarcodeScannerView` con una extraccion real de subcomponentes.
-Despues de esta pasada:
+La migracion visual de `rutina-activa` y `nutricion` mejoro de forma importante.
+En esta fase:
 
-- `nutricion` ahora separa el flujo de agregar comida en [AddFoodView.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/AddFoodView.tsx), [add-food/AddFoodHeader.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodHeader.tsx), [add-food/FoodCatalogView.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/FoodCatalogView.tsx), [add-food/FoodItemCard.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/FoodItemCard.tsx), [add-food/AddFoodImageSourceModal.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodImageSourceModal.tsx), [add-food/AddFoodProcessingOverlay.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodProcessingOverlay.tsx) y [add-food/useFoodCatalog.ts](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/useFoodCatalog.tsx).
+- `rutina-activa` quedo separada en [hooks/useInfoStepFlow.ts](/D:/07.%20Apps/Fitness/screens/rutina-activa/hooks/useInfoStepFlow.ts), [hooks/useRoutineTimers.ts](/D:/07.%20Apps/Fitness/screens/rutina-activa/hooks/useRoutineTimers.ts), [flow/InfoStepScreenView.tsx](/D:/07.%20Apps/Fitness/screens/rutina-activa/flow/InfoStepScreenView.tsx), [flow/RoutinePreStartView.tsx](/D:/07.%20Apps/Fitness/screens/rutina-activa/flow/RoutinePreStartView.tsx), [flow/RoutineSessionHeader.tsx](/D:/07.%20Apps/Fitness/screens/rutina-activa/flow/RoutineSessionHeader.tsx) y [flow/RoutineStepRenderer.tsx](/D:/07.%20Apps/Fitness/screens/rutina-activa/flow/RoutineStepRenderer.tsx), dejando [RutinaActivaScreen.tsx](/D:/07.%20Apps/Fitness/screens/rutina-activa/RutinaActivaScreen.tsx) como coordinador.
+- `InfoStepScreen` ya no mezcla temporizador, avance y UI de potenciacion en un solo archivo.
+- `rutina-activa` usa ahora `Tag`, `Button`, `IconButton` y `DialogSectionCard` compartidos para estados, header y confirmacion.
+- `nutricion` ya habia separado el flujo de agregar comida en [AddFoodView.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/AddFoodView.tsx), [add-food/AddFoodHeader.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodHeader.tsx), [add-food/FoodCatalogView.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/FoodCatalogView.tsx), [add-food/FoodItemCard.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/FoodItemCard.tsx), [add-food/AddFoodImageSourceModal.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodImageSourceModal.tsx), [add-food/AddFoodProcessingOverlay.tsx](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/AddFoodProcessingOverlay.tsx) y [add-food/useFoodCatalog.ts](/D:/07.%20Apps/Fitness/screens/nutricion/add-food/useFoodCatalog.ts).
 - `BarcodeScannerView` ya usa `DialogSectionCard`, `Tag` e `IconButton` para salir del bloque negro de UI local.
-- `NutritionSummary` fue restaurado para dejar de romper el import de `NutritionMainView`.
 - `npm.cmd run lint` y `npm.cmd run build` pasan.
 
-## Deuda visual que sigue viva
+## Deuda Visual
 
 ### P1
 
@@ -23,17 +25,16 @@ Despues de esta pasada:
 
 - `screens/nutricion/BarcodeScannerView.tsx`
   - La UI base ya esta mejor alineada, pero el overlay fullscreen sigue siendo una excepcion visual intencional.
+- `screens/rutina-activa/flow/RoutineStepRenderer.tsx`
+  - Ya centraliza el branching y permite evolucionar cada tipo de paso con menor friccion, pero sigue siendo un nodo de coordinacion.
 
-## Deuda de mantenibilidad
+## Deuda de Mantenibilidad
 
 ### P1
 
-- `screens/nutricion/AddFoodView.tsx`
-  - El contenedor ya quedo mucho mas chico, pero la siguiente capa a extraer deberia ser el flujo de entrada de imagen/barcode para dejarlo todavia mas declarativo.
-- `screens/nutricion/add-food/*`
-  - Ahora concentra la composicion del flujo; conviene mantener este folder como frontera del dominio de catalogo/nutricion.
 - `screens/rutina-activa/RutinaActivaScreen.tsx`
-  - Sigue orquestando demasiada logica de flujo, timers, branching y modales.
+  - Ya quedo mucho mas chica, pero sigue siendo el punto donde vive la mutacion de flujo y la insercion de pasos.
+  - Si queremos una segunda fase, el siguiente recorte natural es extraer `useRoutineSessionState` y `useRoutineFlowMutations`.
 - `reducers/nutritionReducer.ts`, `reducers/workoutReducer.ts`, `reducers/sessionReducer.ts`
   - Mantienen logica temporal y generacion de datos que deberia vivir fuera del reducer.
 - `services/aiService.ts`
@@ -46,7 +47,7 @@ Despues de esta pasada:
 - `App.tsx` y `AppProvider.tsx`
   - Aun concentran shell, bootstrap, sync y coordinacion global con demasiado conocimiento del estado completo.
 
-## Plan recomendado
+## Plan Recomendado
 
 1. Consolidar `PlateSummary` y los dialogs del flujo activo con los nuevos primitives.
 2. Seguir reduciendo `RutinaActivaScreen` y `RoutineViews` con hooks y renderizadores puros.
@@ -55,5 +56,5 @@ Despues de esta pasada:
 
 ## Conclusion
 
-`AddFoodView` y `BarcodeScannerView` ya quedaron refactorizados de forma real, con primitives compartidos y subcomponentes/hook locales.
-La deuda visual mas fuerte del frente de catalogo quedo bastante reducida; lo que sigue es ya refinamiento incremental, no una reescritura urgente.
+`rutina-activa` ya quedo refactorizado de forma real con hooks y vistas puras.
+La deuda visual mas fuerte de este frente quedo bastante reducida; lo que sigue es refinamiento incremental, no una reescritura urgente.
