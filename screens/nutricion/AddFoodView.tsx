@@ -1,24 +1,24 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { FoodItem, AddedFood, MealType } from '../../types';
+import { AddedFood, FoodItem, MealType } from '../../types';
+import * as thunks from '../../thunks';
+import type { OpenFoodFactsProductData } from '../../services/aiService';
 import { AppContext } from '../../contexts';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
-import { FoodItemEditor } from './FoodItemEditor';
-import { vibrate } from '../../utils/helpers';
-import * as thunks from '../../thunks';
-import BarcodeScannerView from './BarcodeScannerView';
-import PlateSummary from '../../components/nutricion/PlateSummary';
+import DataCorrectionModal from '../../components/dialogs/DataCorrectionModal';
 import PortionEditorModal from '../../components/dialogs/PortionEditorModal';
 import RawDataDebugModal from '../../components/dialogs/RawDataDebugModal';
-import DataCorrectionModal from '../../components/dialogs/DataCorrectionModal';
-import { selectDailyGoals } from '../../selectors/profileSelectors';
+import PlateSummary from '../../components/nutricion/PlateSummary';
 import { selectConsumedMacros } from '../../selectors/nutritionSelectors';
-import type { OpenFoodFactsProductData } from '../../services/aiService';
+import { selectDailyGoals } from '../../selectors/profileSelectors';
+import { vibrate } from '../../utils/helpers';
+import BarcodeScannerView from './BarcodeScannerView';
+import { FoodItemEditor } from './FoodItemEditor';
 import AddFoodHeader from './add-food/AddFoodHeader';
 import AddFoodImageSourceModal from './add-food/AddFoodImageSourceModal';
 import AddFoodProcessingOverlay from './add-food/AddFoodProcessingOverlay';
+import type { FoodCategory, MainCategory, ProcessingState } from './add-food/addFoodTypes';
 import FoodCatalogView from './add-food/FoodCatalogView';
 import { useFoodCatalog } from './add-food/useFoodCatalog';
-import type { FoodCategory, MainCategory, ProcessingState } from './add-food/addFoodTypes';
 
 const AddFoodView: React.FC<{
   onBack: () => void;
@@ -31,7 +31,6 @@ const AddFoodView: React.FC<{
   const consumedMacros = selectConsumedMacros(state);
 
   const [plate, setPlate] = useState<AddedFood[]>(initialFoods);
-  const [showAddOptions, setShowAddOptions] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mealName, setMealName] = useState(initialMealName);
   const [selectedMealType, setSelectedMealType] = useState<MealType>('Desayuno');
@@ -66,25 +65,37 @@ const AddFoodView: React.FC<{
     activeSubFilter,
   });
 
+  const resultsCount = useMemo(() => {
+    if (Array.isArray(foodsToShow)) return foodsToShow.length;
+    return Object.values(foodsToShow).reduce((total, items) => total + items.length, 0);
+  }, [foodsToShow]);
+
   const plateMap = useMemo(() => {
     const map = new Map<string, number>();
-    plate.forEach(item => map.set(item.foodItem.id, item.portions));
+    plate.forEach((item) => map.set(item.foodItem.id, item.portions));
     return map;
   }, [plate]);
 
-  const macros = useMemo(() => plate.reduce((acc, item) => {
-    const itemMacros = item.foodItem?.macrosPerPortion;
-    if (!itemMacros) return acc;
-    acc.kcal += (itemMacros.kcal || 0) * item.portions;
-    acc.protein += (itemMacros.protein || 0) * item.portions;
-    acc.carbs += (itemMacros.carbs || 0) * item.portions;
-    acc.fat += (itemMacros.fat || 0) * item.portions;
-    return acc;
-  }, { kcal: 0, protein: 0, carbs: 0, fat: 0 }), [plate]);
+  const macros = useMemo(
+    () =>
+      plate.reduce(
+        (acc, item) => {
+          const itemMacros = item.foodItem?.macrosPerPortion;
+          if (!itemMacros) return acc;
+          acc.kcal += (itemMacros.kcal || 0) * item.portions;
+          acc.protein += (itemMacros.protein || 0) * item.portions;
+          acc.carbs += (itemMacros.carbs || 0) * item.portions;
+          acc.fat += (itemMacros.fat || 0) * item.portions;
+          return acc;
+        },
+        { kcal: 0, protein: 0, carbs: 0, fat: 0 }
+      ),
+    [plate]
+  );
 
   const handleItemQuantityChange = useCallback((food: FoodItem, delta: number) => {
-    setPlate(prevPlate => {
-      const existingIndex = prevPlate.findIndex(item => item.foodItem.id === food.id);
+    setPlate((prevPlate) => {
+      const existingIndex = prevPlate.findIndex((item) => item.foodItem.id === food.id);
       if (existingIndex !== -1) {
         const newPortions = prevPlate[existingIndex].portions + delta;
         if (newPortions > 0) {
@@ -103,28 +114,34 @@ const AddFoodView: React.FC<{
     });
   }, []);
 
-  const handleUpdateItemPortion = useCallback((foodId: string, newPortions: number) => {
-    setPlate(prevPlate => {
-      if (newPortions <= 0) return prevPlate.filter(item => item.foodItem.id !== foodId);
+  const handleUpdateItemPortion = useCallback(
+    (foodId: string, newPortions: number) => {
+      setPlate((prevPlate) => {
+        if (newPortions <= 0) return prevPlate.filter((item) => item.foodItem.id !== foodId);
 
-      const existingIndex = prevPlate.findIndex(item => item.foodItem.id === foodId);
-      if (existingIndex !== -1) {
-        const newPlate = [...prevPlate];
-        newPlate[existingIndex] = { ...newPlate[existingIndex], portions: newPortions };
-        return newPlate;
-      }
+        const existingIndex = prevPlate.findIndex((item) => item.foodItem.id === foodId);
+        if (existingIndex !== -1) {
+          const newPlate = [...prevPlate];
+          newPlate[existingIndex] = { ...newPlate[existingIndex], portions: newPortions };
+          return newPlate;
+        }
 
-      const foodToAdd = allFoodData.find(f => f.id === foodId);
-      if (foodToAdd) return [...prevPlate, { foodItem: foodToAdd, portions: newPortions }];
-      return prevPlate;
-    });
-    setPortionEditorItem(null);
-  }, [allFoodData]);
+        const foodToAdd = allFoodData.find((food) => food.id === foodId);
+        if (foodToAdd) return [...prevPlate, { foodItem: foodToAdd, portions: newPortions }];
+        return prevPlate;
+      });
+      setPortionEditorItem(null);
+    },
+    [allFoodData]
+  );
 
-  const handleEditItemPortion = useCallback((food: FoodItem) => {
-    const itemInPlate = plate.find(p => p.foodItem.id === food.id);
-    setPortionEditorItem(itemInPlate || { foodItem: food, portions: 0 });
-  }, [plate]);
+  const handleEditItemPortion = useCallback(
+    (food: FoodItem) => {
+      const itemInPlate = plate.find((item) => item.foodItem.id === food.id);
+      setPortionEditorItem(itemInPlate || { foodItem: food, portions: 0 });
+    },
+    [plate]
+  );
 
   const handleOpenEditor = useCallback((category?: FoodCategory, food?: FoodItem) => {
     setEditorCategory(category);
@@ -145,16 +162,19 @@ const AddFoodView: React.FC<{
     }
   };
 
-  const handleScanSuccess = useCallback(async (barcode: string) => {
-    setIsScannerOpen(false);
-    setProcessingBarcodeState('fetching');
-    const productData = await dispatch(thunks.fetchProductByBarcodeThunk(barcode));
-    setProcessingBarcodeState(null);
+  const handleScanSuccess = useCallback(
+    async (barcode: string) => {
+      setIsScannerOpen(false);
+      setProcessingBarcodeState('fetching');
+      const productData = await dispatch(thunks.fetchProductByBarcodeThunk(barcode));
+      setProcessingBarcodeState(null);
 
-    if (productData) {
-      setDebugData(productData);
-    }
-  }, [dispatch]);
+      if (productData) {
+        setDebugData(productData);
+      }
+    },
+    [dispatch]
+  );
 
   const proceedWithAnalysis = async (productData: OpenFoodFactsProductData) => {
     setDebugData(null);
@@ -244,7 +264,10 @@ const AddFoodView: React.FC<{
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-transparent relative overflow-hidden">
+    <div className="relative flex h-full w-full flex-col overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-accent/10 via-brand-protein/5 to-transparent" />
+      <div className="pointer-events-none absolute right-[-6rem] top-24 h-72 w-72 rounded-full bg-brand-carbs/8 blur-3xl" />
+
       <AddFoodProcessingOverlay
         barcodeState={processingBarcodeState}
         imageProcessing={isProcessingImage}
@@ -252,9 +275,22 @@ const AddFoodView: React.FC<{
       />
 
       {isEditorOpen && <FoodItemEditor category={editorCategory} existingFood={foodToEdit || undefined} onClose={handleCloseEditor} />}
-      {foodToDelete && <ConfirmationDialog title="Eliminar Ingrediente" message={`¿Seguro que quieres eliminar "${foodToDelete.name}"?`} onConfirm={handleDelete} onCancel={() => setFoodToDelete(null)} />}
+      {foodToDelete && (
+        <ConfirmationDialog
+          title="Eliminar ingrediente"
+          message={`Seguro que quieres eliminar "${foodToDelete.name}"?`}
+          onConfirm={handleDelete}
+          onCancel={() => setFoodToDelete(null)}
+        />
+      )}
       {isScannerOpen && <BarcodeScannerView onScanSuccess={handleScanSuccess} onClose={handleCloseScanner} />}
-      {portionEditorItem && <PortionEditorModal food={portionEditorItem} onSave={(p) => handleUpdateItemPortion(portionEditorItem.foodItem.id, p)} onClose={() => setPortionEditorItem(null)} />}
+      {portionEditorItem && (
+        <PortionEditorModal
+          food={portionEditorItem}
+          onSave={(portions) => handleUpdateItemPortion(portionEditorItem.foodItem.id, portions)}
+          onClose={() => setPortionEditorItem(null)}
+        />
+      )}
       {showImageSourceModal && (
         <AddFoodImageSourceModal
           open={showImageSourceModal}
@@ -287,11 +323,18 @@ const AddFoodView: React.FC<{
         onBack={onBack}
         searchTerm={searchTerm}
         onSearchTermChange={setSearchTerm}
-        showAddOptions={showAddOptions}
-        onToggleAddOptions={() => setShowAddOptions(prev => !prev)}
-        onOpenManual={() => { vibrate(5); handleOpenEditor(); setShowAddOptions(false); }}
-        onOpenImageSource={() => { vibrate(5); setShowImageSourceModal(true); setShowAddOptions(false); }}
-        onOpenScanner={() => { vibrate(5); setIsScannerOpen(true); setShowAddOptions(false); }}
+        onOpenManual={() => {
+          vibrate(5);
+          handleOpenEditor();
+        }}
+        onOpenImageSource={() => {
+          vibrate(5);
+          setShowImageSourceModal(true);
+        }}
+        onOpenScanner={() => {
+          vibrate(5);
+          setIsScannerOpen(true);
+        }}
         activeFilterCategory={activeFilterCategory}
         onSelectMainCategory={(category) => {
           setActiveFilterCategory(category);
@@ -299,10 +342,13 @@ const AddFoodView: React.FC<{
         }}
         activeSubFilter={activeSubFilter}
         onSelectSubFilter={setActiveSubFilter}
+        plateCount={plate.length}
+        totalKcal={macros.kcal}
+        resultsCount={resultsCount}
       />
 
-      <div className="flex-grow overflow-y-auto pb-40 w-full hide-scrollbar">
-        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-5 pb-[30px] space-y-4">
+      <div className="relative z-10 flex-grow w-full overflow-y-auto pb-40 hide-scrollbar">
+        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 pb-[30px] pt-5 sm:px-6">
           <FoodCatalogView
             foodsToShow={foodsToShow}
             plateMap={plateMap}
@@ -329,7 +375,7 @@ const AddFoodView: React.FC<{
           dailyGoals={dailyGoals}
           consumedMacros={consumedMacros}
           timing={timing}
-          onTimingChange={(t) => setTiming(prev => prev === t ? undefined : t)}
+          onTimingChange={(value) => setTiming((prev) => (prev === value ? undefined : value))}
         />
       )}
     </div>
@@ -337,4 +383,3 @@ const AddFoodView: React.FC<{
 };
 
 export default AddFoodView;
-

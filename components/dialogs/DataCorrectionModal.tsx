@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '../Modal';
 import Button from '../Button';
+import InlineAlert from '../feedback/InlineAlert';
 import { FoodItem } from '../../types';
 import { SparklesIcon } from '../icons';
 
@@ -12,32 +13,61 @@ interface DataCorrectionModalProps {
 
 const DataCorrectionModal: React.FC<DataCorrectionModalProps> = ({ foodItem, onConfirm, onCancel }) => {
   const { macrosPerPortion: macros } = foodItem;
+
   return (
-    <Modal onClose={onCancel} className="max-w-md">
-      <div className="p-6 text-center max-h-[90vh] overflow-y-auto">
-        <div className="mx-auto bg-yellow-400/10 rounded-full w-20 h-20 flex items-center justify-center animate-pop-in mb-4">
-            <SparklesIcon className="w-12 h-12 text-yellow-400" />
-        </div>
-        <h2 className="text-xl font-bold text-text-primary">Datos Sospechosos Detectados</h2>
-        <p className="text-text-secondary my-4">
-          ¡Atención! La información de la base de datos para <span className="font-bold text-text-primary">{foodItem.name}</span> parecía inconsistente.
-          La IA ha propuesto los siguientes valores, pero podrían ser incorrectos. 
-          <strong className="block mt-2 text-text-primary">Por favor, verifica los datos con la etiqueta física del producto.</strong>
-        </p>
-        
-        <div className="bg-surface-bg p-4 rounded-lg my-6 border border-surface-border shadow-sm">
-            <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                <div><div className="font-bold text-lg text-text-primary">{macros.kcal.toFixed(0)}</div><div className="text-text-secondary">Kcal</div></div>
-                <div><div className="font-bold text-lg text-brand-protein">{macros.protein.toFixed(1)}g</div><div className="text-text-secondary">Prot</div></div>
-                <div><div className="font-bold text-lg text-brand-carbs">{macros.carbs.toFixed(1)}g</div><div className="text-text-secondary">Carbs</div></div>
-                <div><div className="font-bold text-lg text-brand-fat">{macros.fat.toFixed(1)}g</div><div className="text-text-secondary">Grasa</div></div>
-            </div>
-            <p className="text-xs text-text-secondary mt-3">Por: <span className="font-semibold">{foodItem.standardPortion}</span></p>
+    <Modal onClose={onCancel} className="max-w-lg">
+      <div className="space-y-6 p-6 text-center">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-warning/10 text-warning">
+          <SparklesIcon className="h-10 w-10" />
         </div>
 
+        <div className="space-y-2">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-text-muted">
+            Verificacion sugerida
+          </p>
+          <h2 className="text-2xl font-semibold tracking-[-0.03em] text-text-primary">
+            Datos sospechosos detectados
+          </h2>
+          <p className="text-sm leading-6 text-text-secondary">
+            La informacion encontrada para <span className="font-semibold text-text-primary">{foodItem.name}</span> parece inconsistente.
+            Revisa los valores antes de confirmar el ingrediente.
+          </p>
+        </div>
+
+        <InlineAlert tone="warning" title="Recomendacion">
+          Compara esta propuesta con la etiqueta física del producto antes de guardarla.
+        </InlineAlert>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="ui-surface p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-text-muted">Kcal</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-text-primary">{macros.kcal.toFixed(0)}</p>
+          </div>
+          <div className="ui-surface p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-text-muted">Prot</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-brand-protein">{macros.protein.toFixed(1)}g</p>
+          </div>
+          <div className="ui-surface p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-text-muted">Carb</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-brand-carbs">{macros.carbs.toFixed(1)}g</p>
+          </div>
+          <div className="ui-surface p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-text-muted">Grasa</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-brand-fat">{macros.fat.toFixed(1)}g</p>
+          </div>
+        </div>
+
+        <p className="text-sm text-text-secondary">
+          Por porcion: <span className="font-semibold text-text-primary">{foodItem.standardPortion}</span>
+        </p>
+
         <div className="flex flex-col gap-3">
-          <Button onClick={onConfirm} className="w-full">Verificar y Editar</Button>
-          <Button variant="secondary" onClick={onCancel} className="w-full">Cancelar</Button>
+          <Button onClick={onConfirm} className="w-full" size="large">
+            Verificar y editar
+          </Button>
+          <Button variant="secondary" onClick={onCancel} className="w-full">
+            Cancelar
+          </Button>
         </div>
       </div>
     </Modal>

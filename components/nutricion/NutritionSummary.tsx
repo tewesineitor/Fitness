@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
-import { MacroNutrients, DailyGoals } from '../../types';
+import React, { useMemo, useState } from 'react';
+import { DailyGoals, MacroNutrients } from '../../types';
 import Button from '../Button';
+import Card from '../Card';
 import IconButton from '../IconButton';
 import Modal from '../Modal';
-import { SparklesIcon, FireIcon, InformationCircleIcon } from '../icons';
+import Tag from '../Tag';
+import { FireIcon, InformationCircleIcon, SparklesIcon } from '../icons';
+import NutritionStatCard from './NutritionStatCard';
 import {
   AdvancedMacroRow,
-  DEFAULT_FAT_ABS_MAX,
-  DEFAULT_FAT_MIN,
   DEFAULT_CARB_ABS_MAX,
   DEFAULT_CARB_MIN,
+  DEFAULT_FAT_ABS_MAX,
+  DEFAULT_FAT_MIN,
 } from './MacroBarSystem';
 
-export const NutritionSummary: React.FC<{ consumed: MacroNutrients; goals: DailyGoals }> = ({ consumed, goals }) => {
+interface NutritionSummaryProps {
+  consumed: MacroNutrients;
+  goals: DailyGoals;
+  mealsCount: number;
+  dateLabel: string;
+}
+
+const NutritionSummary: React.FC<NutritionSummaryProps> = ({
+  consumed,
+  goals,
+  mealsCount,
+  dateLabel,
+}) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
 
   const fatMin = goals.fatMin || DEFAULT_FAT_MIN;
@@ -22,8 +37,8 @@ export const NutritionSummary: React.FC<{ consumed: MacroNutrients; goals: Daily
 
   const idealFat = goals.fat;
   const idealCarbs = goals.carbs;
-
   const totalFlexibleBudgetKcal = idealCarbs * 4 + idealFat * 9;
+
   const remainingKcalForFat = totalFlexibleBudgetKcal - consumed.carbs * 4;
   const rawFatLimit = remainingKcalForFat / 9;
   const dynamicFatMax = Math.min(Math.max(0, rawFatLimit), fatMax);
@@ -35,147 +50,218 @@ export const NutritionSummary: React.FC<{ consumed: MacroNutrients; goals: Daily
   const calorieLimit = goals.kcal;
   const remainingKcal = calorieLimit - consumed.kcal;
   const isKcalOver = remainingKcal < 0;
-  const kcalPercent = Math.min((consumed.kcal / calorieLimit) * 100, 100);
+  const calorieProgress = calorieLimit > 0 ? Math.min((consumed.kcal / calorieLimit) * 100, 100) : 0;
+  const proteinProgress = goals.protein > 0 ? Math.min((consumed.protein / goals.protein) * 100, 999) : 0;
+
+  const fuelStatus = useMemo(() => {
+    if (isKcalOver) {
+      return {
+        badge: 'Excedido',
+        tone: 'danger' as const,
+        copy: 'Hoy ya rebasó el presupuesto energético. Conviene controlar la siguiente comida.',
+      };
+    }
+
+    if (calorieProgress >= 85) {
+      return {
+        badge: 'Afinado',
+        tone: 'accent' as const,
+        copy: 'El día está cerca del objetivo. Mantén precisión en el último bloque de comida.',
+      };
+    }
+
+    return {
+      badge: 'Abierto',
+      tone: 'success' as const,
+      copy: 'Todavía hay margen de maniobra para completar proteína y energía sin forzar el cierre.',
+    };
+  }, [calorieProgress, isKcalOver]);
+
+  const proteinBadge =
+    proteinProgress >= 100 ? 'Meta' : proteinProgress >= 80 ? 'Cerca' : 'En progreso';
 
   return (
-    <div className="bg-surface-bg rounded-xl overflow-hidden border border-surface-border shadow-sm">
-      {showInfoModal && (
-        <Modal onClose={() => setShowInfoModal(false)} className="max-w-sm">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-brand-accent/10 rounded-xl border border-brand-accent/20">
-                <SparklesIcon className="w-6 h-6 text-brand-accent" />
+    <>
+      {showInfoModal ? (
+        <Modal onClose={() => setShowInfoModal(false)} className="max-w-lg">
+          <div className="space-y-5 p-6">
+            <div className="flex items-start gap-3">
+              <div className="rounded-2xl border border-brand-accent/20 bg-brand-accent/10 p-3">
+                <SparklesIcon className="h-6 w-6 text-brand-accent" />
               </div>
-              <h3 className="text-lg font-bold text-text-primary uppercase tracking-tight">Dinamica de Energia</h3>
-            </div>
-
-            <div className="space-y-6">
-              <div className="bg-surface-hover p-4 rounded-xl border border-surface-border">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-text-primary"></div>
-                  <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Fase Independiente (Ideal)</h4>
-                </div>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Mientras estes en zona blanca, tus Carbohidratos y Grasas son independientes.
-                </p>
-              </div>
-
-              <div className="bg-warning/10 p-4 rounded-xl border border-warning/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-warning"></div>
-                  <h4 className="text-sm font-bold text-warning uppercase tracking-widest">Fase Flex (Compartida)</h4>
-                </div>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Si excedes la meta Ideal, entras en una bolsa compartida.
-                </p>
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-accent">Guía de balance</p>
+                <h3 className="text-xl font-black tracking-[-0.03em] text-text-primary">Cómo leer el panel</h3>
               </div>
             </div>
 
-            <Button onClick={() => setShowInfoModal(false)} className="w-full mt-6" size="medium" variant="primary">
-              Entendido
+            <Card variant="inset" className="p-4">
+              <h4 className="text-sm font-bold uppercase tracking-[0.16em] text-text-primary">Proteína fija</h4>
+              <p className="mt-2 text-sm leading-6 text-text-secondary">
+                La proteína se lee contra una meta estable. El objetivo es completar el día sin depender del presupuesto dinámico.
+              </p>
+            </Card>
+
+            <Card variant="inset" className="p-4">
+              <h4 className="text-sm font-bold uppercase tracking-[0.16em] text-text-primary">Carbos y grasa comparten presupuesto</h4>
+              <p className="mt-2 text-sm leading-6 text-text-secondary">
+                Cuando sube uno de los dos, el margen disponible del otro cae. El panel calcula ese intercambio para que el cierre del día no rompa tu objetivo calórico.
+              </p>
+            </Card>
+
+            <Button onClick={() => setShowInfoModal(false)} className="w-full" size="large" variant="high-contrast">
+              Cerrar lectura
             </Button>
           </div>
         </Modal>
-      )}
+      ) : null}
 
-      <div className="p-6 pb-5 relative overflow-hidden">
-        <div className="flex justify-between items-start relative z-10">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <FireIcon className={`w-3.5 h-3.5 ${isKcalOver ? 'text-danger' : 'text-brand-accent'}`} />
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Objetivo Diario</span>
+      <div className="space-y-4">
+        <Card variant="glass" className="relative overflow-hidden p-5 sm:p-6">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--color-brand-accent-rgb),0.14),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.03),transparent_58%)]" />
+
+          <div className="relative grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Tag variant="overlay" tone={fuelStatus.tone} size="sm">
+                  {fuelStatus.badge}
+                </Tag>
+                <Tag variant="overlay" tone="neutral" size="sm">
+                  {dateLabel}
+                </Tag>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-text-secondary">Fuel ledger</p>
+                <div className="flex items-end gap-3">
+                  <span className={`text-5xl font-black tracking-[-0.06em] sm:text-6xl ${isKcalOver ? 'text-danger' : 'text-text-primary'}`}>
+                    {consumed.kcal.toFixed(0)}
+                  </span>
+                  <span className="pb-1 text-sm font-bold uppercase tracking-[0.18em] text-text-secondary">/ {calorieLimit} kcal</span>
+                </div>
+                <p className="max-w-2xl text-sm leading-6 text-text-secondary">{fuelStatus.copy}</p>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] text-text-secondary">
+                  <span>Cobertura del día</span>
+                  <span>{Math.round(calorieProgress)}%</span>
+                </div>
+                <div className="h-3 overflow-hidden rounded-full border border-surface-border bg-surface-hover/70">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${isKcalOver ? 'bg-danger' : 'bg-brand-accent'}`}
+                    style={{ width: `${calorieProgress}%` }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className={`text-4xl sm:text-5xl font-heading font-bold tracking-tight leading-none ${isKcalOver ? 'text-danger' : 'text-text-primary'}`}>
-                {consumed.kcal.toFixed(0)}
-              </span>
-              <span className="text-sm font-bold text-text-secondary/40 uppercase tracking-widest">/ {calorieLimit}</span>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              <NutritionStatCard
+                eyebrow="Restante"
+                value={remainingKcal > 0 ? remainingKcal.toFixed(0) : 0}
+                detail={isKcalOver ? 'Sin margen disponible en kcal.' : 'Presupuesto todavía utilizable hoy.'}
+                icon={FireIcon}
+                tone={isKcalOver ? 'danger' : 'accent'}
+                badge="kcal"
+              />
+              <NutritionStatCard
+                eyebrow="Proteína"
+                value={`${Math.round(Math.min(proteinProgress, 999))}%`}
+                detail={`${consumed.protein.toFixed(0)}g de ${goals.protein.toFixed(0)}g`}
+                tone="protein"
+                badge={proteinBadge}
+              />
+              <NutritionStatCard
+                eyebrow="Registros"
+                value={mealsCount}
+                detail={mealsCount === 0 ? 'Sin bloques cargados.' : `${mealsCount} bloque${mealsCount === 1 ? '' : 's'} registrados hoy.`}
+                tone="neutral"
+                badge={mealsCount === 0 ? 'Vacío' : 'Activo'}
+              />
             </div>
           </div>
+        </Card>
 
-          <div className="text-right">
-            <span className="block text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1 opacity-60">Restante</span>
-            <div className={`text-3xl font-heading font-bold leading-none ${remainingKcal < 0 ? 'text-danger' : 'text-brand-accent'}`}>
-              {remainingKcal > 0 ? remainingKcal.toFixed(0) : 0}
+        <Card variant="default" className="p-5 sm:p-6">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-1">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-text-secondary">Macro orchestration</p>
+              <h3 className="text-xl font-black tracking-[-0.03em] text-text-primary">Distribución diaria</h3>
+              <p className="text-sm leading-6 text-text-secondary">
+                Proteína contra meta fija. Carbos y grasas se recalibran según el presupuesto energético disponible.
+              </p>
             </div>
-          </div>
-        </div>
 
-        <div className="mt-5 h-2 w-full bg-surface-hover rounded-full overflow-hidden border border-surface-border/30">
-          <div
-            className={`h-full transition-all duration-1000 ease-out relative ${isKcalOver ? 'bg-danger' : 'bg-text-primary'}`}
-            style={{ width: `${kcalPercent}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="h-px w-full bg-surface-border"></div>
-
-      <div className="p-6 pt-5 pb-5 relative">
-        <div className="flex justify-between items-end px-1 border-b border-surface-border pb-2.5 mb-6">
-          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest opacity-60">Macro</span>
-          <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest opacity-40">RESTANTE / LIMITE</span>
-        </div>
-
-        <AdvancedMacroRow
-          label="Proteina"
-          current={consumed.protein}
-          ideal={goals.protein}
-          min={goals.protein}
-          absoluteMax={goals.protein}
-          dynamicLimit={goals.protein}
-          colorClass="bg-brand-protein"
-          isProtein={true}
-        />
-
-        <div className="mt-8 relative pl-4">
-          <div className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-surface-border opacity-50"></div>
-          <div className="flex items-center gap-2.5 mb-6">
-            <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest opacity-50 bg-surface-bg pr-2">Balance Energetico (Compartido)</span>
             <IconButton
               onClick={() => setShowInfoModal(true)}
               icon={InformationCircleIcon}
-              label="Informacion sobre balance compartido"
-              variant="ghost"
-              size="small"
+              label="Ver explicación del balance nutricional"
+              variant="secondary"
+              size="medium"
             />
-            <div className="h-px flex-grow bg-surface-border"></div>
           </div>
 
-          <AdvancedMacroRow
-            label="Carbohidratos"
-            current={consumed.carbs}
-            ideal={goals.carbs}
-            min={carbMin}
-            absoluteMax={carbMax}
-            dynamicLimit={dynamicCarbMax}
-            colorClass="bg-brand-carbs"
-          />
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="space-y-4">
+              <AdvancedMacroRow
+                label="Proteína"
+                current={consumed.protein}
+                ideal={goals.protein}
+                min={goals.protein}
+                absoluteMax={goals.protein}
+                dynamicLimit={goals.protein}
+                colorClass="bg-brand-protein"
+                isProtein={true}
+              />
 
-          <AdvancedMacroRow
-            label="Grasas"
-            current={consumed.fat}
-            ideal={goals.fat}
-            min={fatMin}
-            absoluteMax={fatMax}
-            dynamicLimit={dynamicFatMax}
-            colorClass="bg-brand-fat"
-          />
-        </div>
-      </div>
+              <AdvancedMacroRow
+                label="Carbohidratos"
+                current={consumed.carbs}
+                ideal={goals.carbs}
+                min={carbMin}
+                absoluteMax={carbMax}
+                dynamicLimit={dynamicCarbMax}
+                colorClass="bg-brand-carbs"
+              />
 
-      <div className="px-6 py-4 bg-surface-hover/30 flex items-start gap-3.5 border-t border-surface-border">
-        <SparklesIcon className="w-4 h-4 text-brand-accent flex-shrink-0 mt-0.5 opacity-60" />
-        <p className="text-[10px] text-text-secondary leading-relaxed font-medium">
-          <span className="text-brand-accent font-bold uppercase tracking-widest mr-1">Calculo Dinamico:</span> Las barras se ajustan solas.{' '}
-          <Button onClick={() => setShowInfoModal(true)} variant="tertiary" size="small" className="h-auto px-0 py-0 text-[10px] font-semibold normal-case tracking-normal underline decoration-brand-accent/30 hover:text-text-primary hover:decoration-brand-accent">
-            Ver detalles.
-          </Button>
-        </p>
+              <AdvancedMacroRow
+                label="Grasas"
+                current={consumed.fat}
+                ideal={goals.fat}
+                min={fatMin}
+                absoluteMax={fatMax}
+                dynamicLimit={dynamicFatMax}
+                colorClass="bg-brand-fat"
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <NutritionStatCard
+                eyebrow="Límite dinámico carbos"
+                value={`${dynamicCarbMax.toFixed(0)}g`}
+                detail="Máximo disponible hoy sin romper el intercambio con grasas."
+                tone="carbs"
+              />
+              <NutritionStatCard
+                eyebrow="Límite dinámico grasas"
+                value={`${dynamicFatMax.toFixed(0)}g`}
+                detail="Margen actual de grasas según el consumo total del día."
+                tone="accent"
+              />
+              <NutritionStatCard
+                eyebrow="Marco de lectura"
+                value={isKcalOver ? 'Ajustar' : 'Control'}
+                detail="Si te acercas al techo calórico, las próximas decisiones deben ser más limpias y simples."
+                tone={isKcalOver ? 'danger' : 'success'}
+              />
+            </div>
+          </div>
+        </Card>
       </div>
-    </div>
+    </>
   );
 };
 
+export { NutritionSummary };
 export default NutritionSummary;
-

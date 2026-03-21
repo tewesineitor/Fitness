@@ -461,9 +461,10 @@ Ya implementado:
 - shell global con `AppShell`, `BottomNav`, `GlobalOverlays`, `FocusModeLayer`, `ThemeSync`, `PageContainer`, `AuthGate` y `AppLoadingScreen`
 - primitives nuevas de layout y feedback
 - adopcion inicial del contrato nuevo en `Hoy`, `Biblioteca`, `Progreso`, `LoginView` y `PillTabs`
+- primera pasada del vertical `Nutricion` con dashboard editorial, `AddFood`, scanner, plate builder y dialogs migrados al sistema nuevo
 
 Siguiente paso:
 
-1. Redisenar `Nutricion` por vertical completo.
+1. Rematar detalles residuales de `Nutricion` solo si aparecen hallazgos funcionales o de contraste en QA.
 2. Redisenar `Rutina Activa` y `WorkoutSummary`.
 3. Continuar con `Biblioteca`, luego `Hoy`, `Progreso` y `Perfil/Auth`.

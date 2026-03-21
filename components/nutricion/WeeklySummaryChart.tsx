@@ -1,126 +1,189 @@
 import React, { useMemo } from 'react';
 import { LoggedMeal, MacroNutrients } from '../../types';
-import { vibrate } from '../../utils/helpers';
-import { ChartBarIcon, SparklesIcon } from '../icons';
+import Card from '../Card';
+import Tag from '../Tag';
+import { ChartBarIcon, FireIcon, SparklesIcon } from '../icons';
+import NutritionStatCard from './NutritionStatCard';
 
-export const WeeklySummaryChart: React.FC<{ loggedMeals: LoggedMeal[], dailyGoals: MacroNutrients }> = ({ loggedMeals, dailyGoals }) => {
-    const averageMacros = useMemo(() => {
-        const today = new Date();
-        const macrosByDay: Record<string, MacroNutrients> = {};
+interface WeeklySummaryChartProps {
+  loggedMeals: LoggedMeal[];
+  dailyGoals: MacroNutrients;
+  compact?: boolean;
+}
 
-        for (let i = 0; i < 7; i++) {
-            const date = new Date();
-            date.setDate(today.getDate() - i);
-            const dateString = date.toISOString().split('T')[0];
-            macrosByDay[dateString] = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
-        }
+const getDayKey = (date: Date) => date.toISOString().split('T')[0];
 
-        loggedMeals.forEach(meal => {
-            const mealDate = new Date(meal.timestamp);
-            const dateString = mealDate.toISOString().split('T')[0];
-            if (macrosByDay[dateString]) {
-                macrosByDay[dateString].kcal += meal.macros.kcal;
-                macrosByDay[dateString].protein += meal.macros.protein;
-                macrosByDay[dateString].carbs += meal.macros.carbs;
-                macrosByDay[dateString].fat += meal.macros.fat;
-            }
-        });
+const WeeklySummaryChart: React.FC<WeeklySummaryChartProps> = ({
+  loggedMeals,
+  dailyGoals,
+  compact = false,
+}) => {
+  const weekData = useMemo(() => {
+    const today = new Date();
+    const days = Array.from({ length: 7 }).map((_, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - (6 - index));
+      return {
+        date,
+        key: getDayKey(date),
+        label: date.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '').toUpperCase(),
+        dayNumber: date.getDate(),
+        meals: 0,
+        macros: { kcal: 0, protein: 0, carbs: 0, fat: 0 } as MacroNutrients,
+      };
+    });
 
-        const totalMacros = Object.values(macrosByDay).reduce((acc, dayMacros) => {
-            acc.kcal += dayMacros.kcal;
-            acc.protein += dayMacros.protein;
-            acc.carbs += dayMacros.carbs;
-            acc.fat += dayMacros.fat;
-            return acc;
-        }, { kcal: 0, protein: 0, carbs: 0, fat: 0 });
-        
-        const numDays = 7;
+    const dayMap = new Map(days.map((day) => [day.key, day]));
 
-        return {
-            kcal: numDays > 0 ? totalMacros.kcal / numDays : 0,
-            protein: numDays > 0 ? totalMacros.protein / numDays : 0,
-            carbs: numDays > 0 ? totalMacros.carbs / numDays : 0,
-            fat: numDays > 0 ? totalMacros.fat / numDays : 0,
-        };
-    }, [loggedMeals]);
+    loggedMeals.forEach((meal) => {
+      const date = new Date(meal.timestamp);
+      const key = getDayKey(date);
+      const targetDay = dayMap.get(key);
 
-    const chartItems = [
-        { key: 'kcal', label: 'Kcal', colorClass: 'bg-brand-accent', value: averageMacros.kcal, goal: dailyGoals.kcal, unit: '' },
-        { key: 'protein', label: 'Prot.', colorClass: 'bg-brand-protein', value: averageMacros.protein, goal: dailyGoals.protein, unit: 'g' },
-        { key: 'carbs', label: 'Carbs', colorClass: 'bg-brand-carbs', value: averageMacros.carbs, goal: dailyGoals.carbs, unit: 'g' },
-        { key: 'fat', label: 'Grasa', colorClass: 'bg-brand-fat', value: averageMacros.fat, goal: dailyGoals.fat, unit: 'g' },
-    ];
+      if (!targetDay) return;
 
-    return (
-        <section className="bg-surface-bg p-6 rounded-xl relative overflow-hidden border border-surface-border shadow-sm group hover:border-surface-border/80 hover:shadow-md transition-all duration-500">
-            {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+      targetDay.meals += 1;
+      targetDay.macros.kcal += meal.macros.kcal;
+      targetDay.macros.protein += meal.macros.protein;
+      targetDay.macros.carbs += meal.macros.carbs;
+      targetDay.macros.fat += meal.macros.fat;
+    });
 
-            <div className="mb-8 flex items-start justify-between relative z-10">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <ChartBarIcon className="w-4 h-4 text-brand-accent group-hover:scale-110 transition-transform duration-300" />
-                        <h2 className="text-xs font-bold text-text-primary uppercase tracking-widest">Promedio Semanal</h2>
-                    </div>
-                    <p className="text-[9px] text-text-secondary font-bold mt-1 opacity-50 uppercase tracking-widest pl-6">ÚLTIMOS 7 DÍAS</p>
-                </div>
-            </div>
-            
-            <div className="relative pt-6 pb-2">
-                <div className="absolute left-0 right-0 top-[calc(50%+0.5rem)] border-t border-dashed border-surface-border z-0">
-                    <span className="absolute -top-2.5 right-0 text-[8px] font-bold text-text-secondary/60 bg-surface-bg px-2 py-0.5 rounded shadow-sm border border-surface-border uppercase tracking-widest">META</span>
-                </div>
-                
-                <div className="grid grid-cols-4 gap-4 h-36 items-end relative z-10">
-                    {chartItems.map(item => {
-                        const percentage = item.goal > 0 ? Math.min((item.value / item.goal) * 100, 150) : 0; 
-                        const barHeight = Math.min(percentage, 100);
-                        const overflowHeight = Math.max(0, percentage - 100);
-
-                        return (
-                            <div 
-                                key={item.key} 
-                                className="flex flex-col h-full items-center justify-end group/bar cursor-pointer"
-                                onClick={() => vibrate(5)}
-                            >
-                                {/* Animated Tooltip with actual values */}
-                                <div className="absolute top-0 flex flex-col items-center justify-center opacity-0 group-hover/bar:opacity-100 group-hover/bar:-translate-y-3 group-active/bar:scale-95 transition-all duration-300 pointer-events-none z-20">
-                                    <span className="bg-surface-hover border border-surface-border/80 text-[10px] font-bold text-text-primary px-2.5 py-1 rounded-lg shadow-xl shadow-black/50 font-mono flex items-baseline gap-1">
-                                       {item.value.toFixed(0)} <span className="opacity-50 text-[8px]">{item.unit || 'kcal'}</span>
-                                    </span>
-                                </div>
-                                
-                                <div className="w-full max-w-[24px] h-full relative flex items-end">
-                                    {/* Track */}
-                                    <div className="absolute inset-0 bg-surface-hover rounded-t-lg group-hover/bar:bg-surface-border transition-colors duration-300"></div>
-                                    
-                                    {/* Main Bar with spring physics equivalent transitions */}
-                                    <div 
-                                        className={`w-full rounded-t-lg transition-all duration-[1200ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${item.colorClass} group-hover/bar:brightness-110 group-active/bar:scale-y-[0.97] origin-bottom shadow-[inset_0_2px_4px_rgba(255,255,255,0.2)] hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]`} 
-                                        style={{ height: `${barHeight}%` }}
-                                    ></div>
-                                    
-                                    {/* Overflow Bar if exceeds goal */}
-                                    {overflowHeight > 0 && (
-                                        <div 
-                                            className={`absolute bottom-[100%] left-0 right-0 bg-danger/90 rounded-t-lg transition-all duration-[1200ms] delay-100 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[0_-2px_6px_rgba(239,68,68,0.4)] group-hover/bar:brightness-110 group-active/bar:scale-y-[0.97] origin-bottom`} 
-                                            style={{ height: `${overflowHeight}%` }}
-                                        ></div>
-                                    )}
-                                </div>
-                                <p className="text-[9px] font-bold text-text-secondary mt-3 uppercase tracking-widest group-hover/bar:text-text-primary transition-colors duration-300">{item.label}</p>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-            
-            <div className="mt-6 pt-4 border-t border-surface-border flex items-start gap-2.5">
-                <SparklesIcon className="w-3.5 h-3.5 text-brand-accent opacity-60 flex-shrink-0 mt-0.5" />
-                <p className="text-[9px] font-medium text-text-secondary leading-relaxed opacity-70">
-                    Las barras muestran tu <strong className="text-text-primary">promedio diario real</strong> basado en todo lo registrado en los últimos 7 días. Toca las barras para ver los valores exactos.
-                </p>
-            </div>
-        </section>
+    const totals = days.reduce(
+      (acc, day) => {
+        acc.kcal += day.macros.kcal;
+        acc.protein += day.macros.protein;
+        acc.carbs += day.macros.carbs;
+        acc.fat += day.macros.fat;
+        acc.meals += day.meals;
+        return acc;
+      },
+      { kcal: 0, protein: 0, carbs: 0, fat: 0, meals: 0 }
     );
+
+    const bestProteinDay = [...days].sort((a, b) => b.macros.protein - a.macros.protein)[0];
+    const activeDays = days.filter((day) => day.meals > 0).length;
+
+    return {
+      days,
+      averages: {
+        kcal: totals.kcal / 7,
+        protein: totals.protein / 7,
+        carbs: totals.carbs / 7,
+        fat: totals.fat / 7,
+        meals: totals.meals / 7,
+      },
+      bestProteinDay,
+      activeDays,
+    };
+  }, [loggedMeals]);
+
+  const chartHeight = compact ? 8.5 : 11.5;
+
+  return (
+    <div className="space-y-4">
+      <Card variant="glass" className="overflow-hidden p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <ChartBarIcon className="h-4 w-4 text-brand-accent" />
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">Cadencia semanal</p>
+            </div>
+            <h3 className="text-xl font-black tracking-[-0.03em] text-text-primary">Últimos siete días</h3>
+            <p className="text-sm leading-6 text-text-secondary">
+              El panel compara la carga real diaria con el objetivo calórico y deja ver la consistencia del ritmo.
+            </p>
+          </div>
+
+          <Tag variant="overlay" tone="accent" size="sm">
+            {weekData.activeDays}/7 activos
+          </Tag>
+        </div>
+
+        <div className="mt-6 grid grid-cols-7 gap-3 sm:gap-4">
+          {weekData.days.map((day) => {
+            const height = dailyGoals.kcal > 0 ? Math.min((day.macros.kcal / dailyGoals.kcal) * 100, 100) : 0;
+            const isToday = getDayKey(day.date) === getDayKey(new Date());
+
+            return (
+              <div key={day.key} className="flex flex-col items-center gap-3">
+                <div className="flex min-h-[2.75rem] items-end justify-center">
+                  <div className="text-center">
+                    <div className="text-sm font-black tracking-[-0.03em] text-text-primary">
+                      {day.macros.kcal > 0 ? day.macros.kcal.toFixed(0) : '—'}
+                    </div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-text-secondary">kcal</div>
+                  </div>
+                </div>
+
+                <div
+                  className="relative flex w-full max-w-[2.75rem] items-end overflow-hidden rounded-[1.4rem] border border-surface-border bg-surface-hover/70 p-1"
+                  style={{ height: `${chartHeight}rem` }}
+                >
+                  <div className="absolute left-0 right-0 top-[18%] border-t border-dashed border-surface-border/80" />
+                  <div
+                    className={`w-full rounded-[1rem] transition-all duration-700 ${height >= 100 ? 'bg-danger' : 'bg-brand-accent'}`}
+                    style={{ height: `${height}%` }}
+                  />
+                </div>
+
+                <div className="text-center">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">{day.label}</div>
+                  <div className="mt-1 flex justify-center">
+                    <Tag variant="status" tone={isToday ? 'accent' : 'neutral'} size="sm">
+                      {day.dayNumber}
+                    </Tag>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {!compact ? (
+          <div className="mt-6 flex items-start gap-3 border-t border-surface-border/80 pt-4">
+            <SparklesIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-accent" />
+            <p className="text-sm leading-6 text-text-secondary">
+              Una barra al tope indica que ese día se acercó o superó el objetivo calórico. Los días bajos dejan ver huecos de registro o ingesta menor.
+            </p>
+          </div>
+        ) : null}
+      </Card>
+
+      <div className={`grid gap-3 ${compact ? 'sm:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-2 xl:grid-cols-4'}`}>
+        <NutritionStatCard
+          eyebrow="Promedio kcal"
+          value={weekData.averages.kcal.toFixed(0)}
+          detail={`Objetivo diario ${dailyGoals.kcal.toFixed(0)} kcal`}
+          icon={FireIcon}
+          tone="accent"
+          badge="7 días"
+        />
+        <NutritionStatCard
+          eyebrow="Promedio proteína"
+          value={`${weekData.averages.protein.toFixed(0)}g`}
+          detail={`Objetivo diario ${dailyGoals.protein.toFixed(0)}g`}
+          tone="protein"
+          badge={weekData.averages.protein >= dailyGoals.protein ? 'Meta' : 'Gap'}
+        />
+        <NutritionStatCard
+          eyebrow="Promedio comidas"
+          value={weekData.averages.meals.toFixed(1)}
+          detail={`${weekData.activeDays} día${weekData.activeDays === 1 ? '' : 's'} con registros`}
+          tone="neutral"
+          badge="Cadencia"
+        />
+        <NutritionStatCard
+          eyebrow="Pico proteína"
+          value={weekData.bestProteinDay?.label || '—'}
+          detail={weekData.bestProteinDay ? `${weekData.bestProteinDay.macros.protein.toFixed(0)}g de proteína` : 'Sin datos suficientes'}
+          tone="success"
+          badge="Mejor día"
+        />
+      </div>
+    </div>
+  );
 };
+
+export { WeeklySummaryChart };
+export default WeeklySummaryChart;

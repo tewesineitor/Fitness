@@ -1,183 +1,213 @@
 import React from 'react';
 import { LoggedMeal } from '../../types';
 import Button from '../Button';
+import Card from '../Card';
 import IconButton from '../IconButton';
 import Tag from '../Tag';
-import { SunIcon, BowlIcon, AppleIcon, MoonIcon, ArrowDownIcon, TrashIcon, PencilIcon } from '../icons';
+import { EmptyState } from '../feedback';
+import { AppleIcon, ArrowDownIcon, BowlIcon, MoonIcon, PencilIcon, SunIcon, TrashIcon } from '../icons';
 import { vibrate } from '../../utils/helpers';
 
 interface MealLogProps {
-    mealsForDay: LoggedMeal[];
-    expandedMealId: string | null;
-    onToggleExpand: (mealId: string) => void;
-    onEditClick: (meal: LoggedMeal) => void;
-    onDeleteClick: (meal: LoggedMeal) => void;
+  mealsForDay: LoggedMeal[];
+  expandedMealId: string | null;
+  onToggleExpand: (mealId: string) => void;
+  onEditClick: (meal: LoggedMeal) => void;
+  onDeleteClick: (meal: LoggedMeal) => void;
+  emptyAction?: React.ReactNode;
+  previewCount?: number;
 }
 
-export const MealLog: React.FC<MealLogProps> = ({
-    mealsForDay,
-    expandedMealId,
-    onToggleExpand,
-    onEditClick,
-    onDeleteClick
-}) => {
-    const getMealIcon = (meal: LoggedMeal): React.FC<{className?: string}> => {
-        const name = (meal.name || '').toLowerCase();
-        if (name.includes('desayuno')) return SunIcon;
-        if (name.includes('comida') || name.includes('almuerzo')) return BowlIcon;
-        if (name.includes('merienda') || name.includes('colación')) return AppleIcon;
-        if (name.includes('cena')) return MoonIcon;
-        
-        const hour = new Date(meal.timestamp).getHours();
-        if (hour < 11) return SunIcon;
-        if (hour < 16) return BowlIcon;
-        if (hour < 20) return AppleIcon;
-        return MoonIcon;
-    };
+const getMealIcon = (meal: LoggedMeal): React.FC<{ className?: string }> => {
+  const name = (meal.name || '').toLowerCase();
+  if (name.includes('desayuno')) return SunIcon;
+  if (name.includes('comida') || name.includes('almuerzo')) return BowlIcon;
+  if (name.includes('merienda') || name.includes('colación')) return AppleIcon;
+  if (name.includes('cena')) return MoonIcon;
 
-    return (
-        <section className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-             <div className="flex items-center justify-between mb-4 px-1">
-                <h2 className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-brand-accent rounded-full"></div>
-                    Bitácora de Comidas
-                </h2>
-                <Tag variant="status" tone="neutral" size="sm" className="text-[9px] uppercase tracking-widest">
-                    {mealsForDay.length} {mealsForDay.length === 1 ? 'REGISTRO' : 'REGISTROS'}
-                </Tag>
-             </div>
-
-            <div className="space-y-3">
-                {mealsForDay.length > 0 ? (
-                    mealsForDay.map(meal => {
-                        const Icon = getMealIcon(meal);
-                        const isExpanded = expandedMealId === meal.id;
-
-                        return (
-                            <div key={meal.id} className={`bg-surface-bg border ${isExpanded ? 'border-brand-accent/30 shadow-md' : 'border-surface-border shadow-sm'} rounded-xl transition-all duration-300 overflow-hidden`}>
-                                <div className="flex items-stretch gap-2 p-4">
-                                    <Button
-                                        onClick={() => { vibrate(5); onToggleExpand(meal.id); }}
-                                        variant="ghost"
-                                        size="medium"
-                                        className="flex flex-1 items-center justify-between gap-4 text-left px-0"
-                                    >
-                                        <div className="flex items-center gap-4 min-w-0">
-                                            <div className={`p-2.5 rounded-lg border transition-colors ${isExpanded ? 'bg-brand-accent/10 border-brand-accent/20 text-brand-accent' : 'bg-surface-hover border-surface-border text-text-secondary'}`}>
-                                                <Icon className="w-5 h-5"/>
-                                            </div>
-                                            <div className="text-left min-w-0">
-                                                <h3 className="text-[13px] font-bold text-text-primary uppercase tracking-tight truncate">{meal.name || new Date(meal.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</h3>
-                                                <div className="flex items-center gap-2 mt-0.5">
-                                                    <span className="text-[11px] font-bold text-text-primary font-mono">{meal.macros.kcal.toFixed(0)} kcal</span>
-                                                    <span className="text-surface-border text-[10px]">|</span>
-                                                    <div className="flex gap-2 text-[10px] font-bold font-mono">
-                                                        <span className="text-brand-protein">{meal.macros.protein.toFixed(0)}p</span>
-                                                        <span className="text-brand-carbs">{meal.macros.carbs.toFixed(0)}c</span>
-                                                        <span className="text-brand-fat">{meal.macros.fat.toFixed(0)}f</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className={`p-1.5 rounded-lg text-text-secondary transition-transform duration-300 border ${isExpanded ? 'rotate-180 bg-brand-accent/10 border-brand-accent/20 text-brand-accent' : 'bg-surface-hover border-surface-border'}`}>
-                                            <ArrowDownIcon className="w-3.5 h-3.5"/>
-                                        </div>
-                                    </Button>
-
-                                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                                        <IconButton
-                                            onClick={() => { vibrate(5); onEditClick(meal); }}
-                                            icon={PencilIcon}
-                                            label="Editar"
-                                            variant="ghost"
-                                            size="small"
-                                        />
-                                        <IconButton
-                                            onClick={() => { vibrate(10); onDeleteClick(meal); }}
-                                            icon={TrashIcon}
-                                            label="Eliminar"
-                                            variant="destructive"
-                                            size="small"
-                                        />
-                                    </div>
-                                </div>
-                                
-                                {isExpanded && (
-                                     <div className="px-4 pb-4 pt-0 animate-fade-in-up">
-                                        <div className="h-px w-full bg-surface-border mb-4"></div>
-                                        
-                                        {/* Macro Grid */}
-                                        <div className="grid grid-cols-4 gap-2 mb-4 bg-surface-hover/40 p-3 rounded-lg border border-surface-border">
-                                            <div className="text-center">
-                                                <span className="block text-xs font-bold text-text-primary font-mono">{meal.macros.kcal.toFixed(0)}</span>
-                                                <span className="text-[8px] text-text-secondary uppercase font-bold tracking-widest opacity-60">Kcal</span>
-                                            </div>
-                                            <div className="text-center border-l border-surface-border">
-                                                <span className="block text-xs font-bold text-brand-protein font-mono">{meal.macros.protein.toFixed(0)}g</span>
-                                                <span className="text-[8px] text-text-secondary uppercase font-bold tracking-widest opacity-60">Prot</span>
-                                            </div>
-                                            <div className="text-center border-l border-surface-border">
-                                                <span className="block text-xs font-bold text-brand-carbs font-mono">{meal.macros.carbs.toFixed(0)}g</span>
-                                                <span className="text-[8px] text-text-secondary uppercase font-bold tracking-widest opacity-60">Carb</span>
-                                            </div>
-                                            <div className="text-center border-l border-surface-border">
-                                                <span className="block text-xs font-bold text-brand-fat font-mono">{meal.macros.fat.toFixed(0)}g</span>
-                                                <span className="text-[8px] text-text-secondary uppercase font-bold tracking-widest opacity-60">Fat</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-1">
-                                            {meal.foods.map((food, index) => {
-                                                const { foodItem, portions } = food;
-                                                const cleanPortion = foodItem.standardPortion.split('(')[0].trim();
-                                                
-                                                const totalRaw = foodItem.rawWeightG ? foodItem.rawWeightG * portions : null;
-                                                const totalCooked = foodItem.cookedWeightG ? foodItem.cookedWeightG * portions : null;
-
-                                                return (
-                                                    <div key={index} className="flex flex-col border-b border-surface-border last:border-0 pb-2.5 pt-2 last:pb-0 group">
-                                                        <div className="flex justify-between items-baseline gap-3">
-                                                            <span className="font-bold text-[11px] text-text-primary uppercase tracking-tight truncate">{foodItem.name}</span>
-                                                            <span className="text-[9px] text-text-secondary font-bold font-mono flex-shrink-0 bg-surface-hover px-1.5 py-0.5 rounded border border-surface-border">
-                                                                <span className="text-brand-accent">{portions.toLocaleString(undefined, {maximumFractionDigits: 1})}</span>
-                                                                <span className="opacity-40 mx-1">×</span>
-                                                                <span className="opacity-70">{cleanPortion}</span>
-                                                            </span>
-                                                        </div>
-
-                                                        {(totalRaw || totalCooked) && (
-                                                            <div className="flex items-center gap-2 text-[9px] text-text-secondary/60 font-bold font-mono mt-1.5">
-                                                                <div className="w-1 h-1 rounded-full bg-surface-border"></div>
-                                                                {totalRaw && (
-                                                                    <span>{totalRaw.toFixed(0)}g CRUDO</span>
-                                                                )}
-                                                                {totalRaw && totalCooked && (
-                                                                    <span className="text-brand-accent/40">→</span>
-                                                                )}
-                                                                {totalCooked && (
-                                                                    <span>{totalCooked.toFixed(0)}g COCIDO</span>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })
-                ) : (
-                    <div className="text-center py-16 bg-surface-bg/20 rounded-xl border border-dashed border-surface-border p-6">
-                        <div className="w-12 h-12 bg-surface-hover rounded-full flex items-center justify-center mx-auto mb-4 text-text-secondary/30">
-                            <BowlIcon className="w-6 h-6" />
-                        </div>
-                        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Sin registros para este día</p>
-                        <p className="text-[9px] text-text-secondary/50 font-bold mt-1 uppercase tracking-widest max-w-[200px] mx-auto">AÑADE UNA COMIDA PARA COMENZAR</p>
-                    </div>
-                )}
-            </div>
-        </section>
-    );
+  const hour = new Date(meal.timestamp).getHours();
+  if (hour < 11) return SunIcon;
+  if (hour < 16) return BowlIcon;
+  if (hour < 20) return AppleIcon;
+  return MoonIcon;
 };
+
+const formatMealTime = (timestamp: Date) =>
+  new Date(timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+export const MealLog: React.FC<MealLogProps> = ({
+  mealsForDay,
+  expandedMealId,
+  onToggleExpand,
+  onEditClick,
+  onDeleteClick,
+  emptyAction,
+  previewCount,
+}) => {
+  if (mealsForDay.length === 0) {
+    return (
+      <EmptyState
+        icon={<BowlIcon className="h-7 w-7" />}
+        title="Sin registros en este día"
+        description="Cuando registres comidas aquí verás el timeline del día con macros, ingredientes y bloques de energía."
+        action={emptyAction}
+        className="min-h-[18rem]"
+      />
+    );
+  }
+
+  const visibleMeals = previewCount ? mealsForDay.slice(0, previewCount) : mealsForDay;
+  const hiddenMeals = mealsForDay.length - visibleMeals.length;
+
+  return (
+    <div className="space-y-4">
+      {visibleMeals.map((meal, index) => {
+        const Icon = getMealIcon(meal);
+        const isExpanded = expandedMealId === meal.id;
+        const timingLabel =
+          meal.timing === 'pre-workout'
+            ? 'Pre'
+            : meal.timing === 'post-workout'
+              ? 'Post'
+              : null;
+
+        return (
+          <Card
+            key={meal.id}
+            variant={isExpanded ? 'glass' : 'default'}
+            className={`overflow-hidden p-0 transition-all duration-300 ${isExpanded ? 'border-brand-accent/30 shadow-lg' : ''}`}
+          >
+            <div className="flex flex-col gap-0">
+              <div className="flex items-stretch gap-3 px-4 py-4 sm:px-5">
+                <div className="flex w-10 flex-col items-center gap-2 pt-1">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-2xl border ${isExpanded ? 'border-brand-accent/25 bg-brand-accent/10 text-brand-accent' : 'border-surface-border bg-surface-hover text-text-secondary'}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  {index < visibleMeals.length - 1 ? <div className="w-px flex-1 bg-surface-border/80" /> : null}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">
+                          {formatMealTime(meal.timestamp)}
+                        </p>
+                        {timingLabel ? (
+                          <Tag variant="status" tone="accent" size="sm">
+                            {timingLabel}
+                          </Tag>
+                        ) : null}
+                      </div>
+
+                      <div className="space-y-1">
+                        <h3 className="truncate text-lg font-black uppercase tracking-[-0.03em] text-text-primary">
+                          {meal.name || formatMealTime(meal.timestamp)}
+                        </h3>
+                        <p className="text-sm leading-6 text-text-secondary">
+                          {meal.foods.length} ingrediente{meal.foods.length === 1 ? '' : 's'} registrados.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <IconButton
+                        onClick={() => { vibrate(5); onEditClick(meal); }}
+                        icon={PencilIcon}
+                        label="Editar registro"
+                        variant="ghost"
+                        size="small"
+                      />
+                      <IconButton
+                        onClick={() => { vibrate(10); onDeleteClick(meal); }}
+                        icon={TrashIcon}
+                        label="Eliminar registro"
+                        variant="destructive"
+                        size="small"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <Tag variant="status" tone="accent" size="sm">
+                      {meal.macros.kcal.toFixed(0)} kcal
+                    </Tag>
+                    <Tag variant="status" tone="protein" size="sm">
+                      {meal.macros.protein.toFixed(0)}p
+                    </Tag>
+                    <Tag variant="status" tone="carbs" size="sm">
+                      {meal.macros.carbs.toFixed(0)}c
+                    </Tag>
+                    <Tag variant="status" tone="neutral" size="sm">
+                      {meal.macros.fat.toFixed(0)}g
+                    </Tag>
+
+                    <Button
+                      onClick={() => { vibrate(5); onToggleExpand(meal.id); }}
+                      variant="ghost"
+                      size="small"
+                      icon={ArrowDownIcon}
+                      iconPosition="right"
+                      className={`ml-auto text-[11px] uppercase ${isExpanded ? '[&_svg]:rotate-180 text-brand-accent' : ''}`}
+                    >
+                      {isExpanded ? 'Ocultar' : 'Detalle'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {isExpanded ? (
+                <div className="border-t border-surface-border/80 bg-surface-hover/30 px-4 py-4 sm:px-5">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {meal.foods.map((food, foodIndex) => {
+                      const { foodItem, portions } = food;
+                      const cleanPortion = foodItem.standardPortion.split('(')[0].trim();
+                      const totalRaw = foodItem.rawWeightG ? foodItem.rawWeightG * portions : null;
+                      const totalCooked = foodItem.cookedWeightG ? foodItem.cookedWeightG * portions : null;
+
+                      return (
+                        <Card key={`${meal.id}-${foodIndex}`} variant="default" className="p-3.5">
+                          <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-bold uppercase tracking-[-0.02em] text-text-primary">
+                                  {foodItem.name}
+                                </p>
+                                <p className="mt-1 text-xs leading-5 text-text-secondary">{cleanPortion}</p>
+                              </div>
+                              <Tag variant="status" tone="accent" size="sm">
+                                {portions.toLocaleString(undefined, { maximumFractionDigits: 1 })}x
+                              </Tag>
+                            </div>
+
+                            {(totalRaw || totalCooked) ? (
+                              <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium text-text-secondary">
+                                {totalRaw ? <span>{totalRaw.toFixed(0)}g crudo</span> : null}
+                                {totalRaw && totalCooked ? <span className="text-brand-accent/50">→</span> : null}
+                                {totalCooked ? <span>{totalCooked.toFixed(0)}g cocido</span> : null}
+                              </div>
+                            ) : null}
+                          </div>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </Card>
+        );
+      })}
+
+      {hiddenMeals > 0 ? (
+        <Card variant="inset" className="px-4 py-4 text-center">
+          <p className="text-sm leading-6 text-text-secondary">
+            Hay {hiddenMeals} registro{hiddenMeals === 1 ? '' : 's'} más en este día. Cambia a la vista de bitácora para ver el timeline completo.
+          </p>
+        </Card>
+      ) : null}
+    </div>
+  );
+};
+
+export default MealLog;
