@@ -1,174 +1,179 @@
 import React from 'react';
 import Button from '../../../components/Button';
+import Card from '../../../components/Card';
 import CircularTimer from '../../../components/CircularTimer';
 import Tag from '../../../components/Tag';
 import { ChevronRightIcon, FireIcon, InformationCircleIcon, StrengthIcon, YogaIcon } from '../../../components/icons';
-import { Exercise } from '../../../types';
+import type { Exercise } from '../../../types';
 import { vibrate } from '../../../utils/helpers';
 import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
 
 interface PotentiationScreenProps {
-    exerciseName: string;
-    onStartWorkout: () => void;
+  exerciseName: string;
+  onStartWorkout: () => void;
 }
 
 export const PotentiationScreen: React.FC<PotentiationScreenProps> = ({ exerciseName, onStartWorkout }) => (
-    <div className="flex flex-col relative h-full overflow-y-auto hide-scrollbar px-6 py-12 text-center animate-fade-in-up">
-        <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-accent/20 blur-[80px] pointer-events-none" />
+  <div className="relative flex h-full flex-col overflow-y-auto px-6 py-10 text-center hide-scrollbar">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-accent/12 to-transparent" />
 
-        <div className="flex grow flex-col items-center justify-center z-10">
-            <div className="mb-8 flex-shrink-0 rounded-3xl border border-surface-border bg-surface-bg/50 p-6 shadow-lg shadow-black/50 ring-1 ring-brand-accent/20 backdrop-blur-md">
-                <StrengthIcon className="h-16 w-16 text-brand-accent drop-shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.5)]" />
-            </div>
+    <div className="relative z-10 mx-auto flex h-full w-full max-w-md flex-col items-center justify-center">
+      <Tag variant="status" tone="accent" size="sm">
+        Potentiation
+      </Tag>
 
-            <Tag variant="status" tone="accent" size="sm" className="mb-4">
-                Series de aproximacion
-            </Tag>
+      <div className="mt-8 rounded-[2rem] border border-brand-accent/20 bg-brand-accent/10 p-6 text-brand-accent shadow-xl">
+        <StrengthIcon className="h-16 w-16" />
+      </div>
 
-            <h1 className="mb-8 text-4xl font-display font-black uppercase leading-none tracking-tighter text-text-primary drop-shadow-md sm:text-5xl">
-                Preparar
-            </h1>
+      <h1 className="mt-8 text-4xl font-black uppercase tracking-[-0.06em] text-text-primary">Preparar</h1>
+      <p className="mt-4 text-xl font-black uppercase tracking-[-0.03em] text-text-primary">{exerciseName}</p>
+      <p className="mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
+        Realiza 2-3 series con carga ligera para activar el patron antes de tu primera serie de trabajo.
+      </p>
 
-            <div className="w-full max-w-sm">
-                <p className="mb-4 break-words text-xl font-bold uppercase tracking-tight text-text-primary">{exerciseName}</p>
-                <div className="mx-auto mb-4 h-px w-16 bg-brand-accent/30" />
-                <p className="px-4 text-sm font-medium text-text-secondary">
-                    Realiza 2-3 series con peso ligero para activar el sistema nervioso antes de tu primera serie de trabajo.
-                </p>
-            </div>
-        </div>
-
-        <div className="mt-8 w-full max-w-sm pb-safe z-10 flex-shrink-0">
-            <Button
-                variant="primary"
-                size="large"
-                onClick={() => { vibrate(15); onStartWorkout(); }}
-                className="w-full py-5 text-sm font-extrabold uppercase tracking-widest shadow-[0_0_30px_rgba(var(--color-brand-accent-rgb),0.3)] transition-all hover:scale-[1.02] active:scale-95"
-            >
-                Comenzar set
-            </Button>
-        </div>
+      <div className="mt-10 w-full">
+        <Button
+          variant="high-contrast"
+          size="large"
+          onClick={() => { vibrate(15); onStartWorkout(); }}
+          className="w-full"
+        >
+          Comenzar set
+        </Button>
+      </div>
     </div>
+  </div>
 );
 
 interface InfoStepScreenViewProps {
-    currentItemIndex: number;
-    currentItemReps?: string;
-    currentExercise: Exercise;
-    isWarmup: boolean;
-    onAdvance: () => void;
-    onShowExerciseDetails: () => void;
-    onSkipAll: () => void;
-    showPotentiationInfo: boolean;
-    timeLeft: number;
-    totalItems: number;
-    onTimerTick: (remaining: number) => void;
-    potentiateExerciseName?: string;
+  currentItemIndex: number;
+  currentItemReps?: string;
+  currentExercise: Exercise;
+  isWarmup: boolean;
+  onAdvance: () => void;
+  onShowExerciseDetails: () => void;
+  onSkipAll: () => void;
+  showPotentiationInfo: boolean;
+  timeLeft: number;
+  totalItems: number;
+  onTimerTick: (remaining: number) => void;
+  potentiateExerciseName?: string;
 }
 
 const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
-    currentItemIndex,
-    currentItemReps,
-    currentExercise,
-    isWarmup,
-    onAdvance,
-    onShowExerciseDetails,
-    onSkipAll,
-    showPotentiationInfo,
-    timeLeft,
-    totalItems,
-    onTimerTick,
-    potentiateExerciseName,
+  currentItemIndex,
+  currentItemReps,
+  currentExercise,
+  isWarmup,
+  onAdvance,
+  onShowExerciseDetails,
+  onSkipAll,
+  showPotentiationInfo,
+  timeLeft,
+  totalItems,
+  onTimerTick,
+  potentiateExerciseName,
 }) => {
-    if (showPotentiationInfo && potentiateExerciseName) {
-        return <PotentiationScreen exerciseName={potentiateExerciseName} onStartWorkout={onAdvance} />;
-    }
+  if (showPotentiationInfo && potentiateExerciseName) {
+    return <PotentiationScreen exerciseName={potentiateExerciseName} onStartWorkout={onAdvance} />;
+  }
 
-    const Icon = isWarmup ? FireIcon : YogaIcon;
-    const accentClass = isWarmup ? 'text-brand-fat' : 'text-brand-accent';
-    const progressTone = isWarmup ? 'bg-brand-fat' : 'bg-brand-accent';
-    const label = isWarmup ? 'Calentamiento' : 'Enfriamiento';
+  const Icon = isWarmup ? FireIcon : YogaIcon;
+  const accentClass = isWarmup ? 'text-brand-fat' : 'text-brand-accent';
+  const progressTone = isWarmup ? 'bg-brand-fat' : 'bg-brand-accent';
+  const label = isWarmup ? 'Calentamiento' : 'Enfriamiento';
+  const tagTone = isWarmup ? 'protein' : 'accent';
 
-    return (
-        <div className="relative flex h-full flex-col overflow-hidden bg-bg-base/50">
-            <header className="z-10 flex-shrink-0 px-6 pt-8 text-center animate-fade-in-down">
-                <Tag variant="status" tone={isWarmup ? 'protein' : 'accent'} size="sm" className="mx-auto" icon={Icon} count={`${currentItemIndex + 1}/${totalItems}`}>
-                    {label}
-                </Tag>
-            </header>
+  return (
+    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
 
-            <div className="relative z-10 flex w-full flex-grow flex-col items-center justify-center">
-                <div className="relative mb-8 flex items-center justify-center scale-110 transform sm:scale-125">
-                    <div className={`pointer-events-none absolute inset-0 rounded-full blur-[60px] opacity-20 transition-colors duration-1000 ${progressTone}`} />
-                    <CircularTimer
-                        initialDuration={INFO_STEP_DURATION}
-                        timeLeft={timeLeft}
-                        strokeColor={accentClass}
-                        size={220}
-                        strokeWidth={8}
-                        onTick={onTimerTick}
-                    />
+      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 hide-scrollbar">
+        <div className="mx-auto flex h-full max-w-md flex-col">
+          <div className="text-center">
+            <Tag variant="status" tone={tagTone} size="sm" count={`${currentItemIndex + 1}/${totalItems}`}>
+              {label}
+            </Tag>
+          </div>
+
+          <div className="my-auto py-8">
+            <Card variant="glass" className="space-y-6 p-6 text-center shadow-xl">
+              <div className="flex justify-center">
+                <div className="rounded-[1.4rem] border border-surface-border bg-surface-bg/80 p-4">
+                  <Icon className={`h-8 w-8 ${accentClass}`} />
                 </div>
+              </div>
 
-                <div className="w-full max-w-sm px-6 text-center animate-fade-in-up">
-                    <h2 className="mb-2 text-3xl font-display font-black uppercase leading-tight tracking-tight text-text-primary drop-shadow-md">
-                        {currentExercise.name}
-                    </h2>
+              <div className="flex justify-center">
+                <CircularTimer
+                  initialDuration={INFO_STEP_DURATION}
+                  timeLeft={timeLeft}
+                  strokeColor={accentClass}
+                  size={220}
+                  strokeWidth={8}
+                  onTick={onTimerTick}
+                />
+              </div>
 
-                    <div className="flex items-center justify-center gap-3">
-                        {currentItemReps && (
-                            <Tag variant="status" tone="neutral" size="sm">
-                                {currentItemReps}
-                            </Tag>
-                        )}
-                        <Button
-                            variant="ghost"
-                            size="small"
-                            onClick={() => { vibrate(5); onShowExerciseDetails(); }}
-                            icon={InformationCircleIcon}
-                            className="text-xs uppercase"
-                        >
-                            Tecnica
-                        </Button>
-                    </div>
-                </div>
-            </div>
+              <div>
+                <h2 className="text-3xl font-black uppercase tracking-[-0.05em] text-text-primary">{currentExercise.name}</h2>
+                {currentItemReps ? (
+                  <div className="mt-3 flex justify-center">
+                    <Tag variant="status" tone="neutral" size="sm">
+                      {currentItemReps}
+                    </Tag>
+                  </div>
+                ) : null}
+              </div>
 
-            <footer className="z-20 flex-shrink-0 space-y-4 border-t border-surface-border bg-bg-base px-6 pb-6 pt-6 pb-safe">
-                <div className="flex h-1.5 w-full items-center gap-1 rounded-full border border-surface-border bg-surface-bg p-0.5">
-                    {Array.from({ length: totalItems }).map((_, index) => (
-                            <div key={index} className="relative h-full flex-1 overflow-hidden rounded-full bg-white/5">
-                            {index <= currentItemIndex && (
-                                <div
-                                    className={`absolute inset-0 ${progressTone} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`}
-                                    style={index === currentItemIndex ? { width: `${((INFO_STEP_DURATION - timeLeft) / INFO_STEP_DURATION) * 100}%` } : {}}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex gap-3">
-                    <Button
-                        variant="secondary"
-                        onClick={() => { vibrate(5); onSkipAll(); }}
-                        className="flex-1 text-[10px] uppercase"
-                    >
-                        Saltar
-                    </Button>
-                    <Button
-                        variant="high-contrast"
-                        onClick={() => { vibrate(10); onAdvance(); }}
-                        icon={ChevronRightIcon}
-                        iconPosition="right"
-                        className="flex-[2] text-xs"
-                    >
-                        Siguiente
-                    </Button>
-                </div>
-            </footer>
+              <Button
+                variant="secondary"
+                size="medium"
+                onClick={() => { vibrate(5); onShowExerciseDetails(); }}
+                icon={InformationCircleIcon}
+                className="w-full"
+              >
+                Ver tecnica
+              </Button>
+            </Card>
+          </div>
         </div>
-    );
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 border-t border-surface-border bg-bg-base px-6 pb-safe pt-5 shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+          <div className="flex h-2 w-full items-center gap-1 rounded-full border border-surface-border bg-surface-bg p-0.5">
+            {Array.from({ length: totalItems }).map((_, index) => (
+              <div key={index} className="relative h-full flex-1 overflow-hidden rounded-full bg-bg-base">
+                {index <= currentItemIndex ? (
+                  <div
+                    className={`absolute inset-y-0 left-0 ${progressTone} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`}
+                    style={index === currentItemIndex ? { width: `${((INFO_STEP_DURATION - timeLeft) / INFO_STEP_DURATION) * 100}%` } : { width: '100%' }}
+                  />
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => { vibrate(5); onSkipAll(); }} className="flex-1">
+              Saltar
+            </Button>
+            <Button
+              variant="high-contrast"
+              onClick={() => { vibrate(10); onAdvance(); }}
+              icon={ChevronRightIcon}
+              iconPosition="right"
+              className="flex-[1.4]"
+            >
+              Siguiente
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default InfoStepScreenView;
