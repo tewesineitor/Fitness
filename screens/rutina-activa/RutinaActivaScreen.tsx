@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { AppContext } from '../../contexts';
-import { RoutineTask, WorkoutStats, RoutineStep, StrengthStep, LoggedSet, Exercise, YogaStep, MeditationStep, InfoStep } from '../../types';
+import { RoutineTask, WorkoutStats, RoutineStep, StrengthStep, LoggedSet, Exercise, InfoStep } from '../../types';
 import * as thunks from '../../thunks';
 import * as actions from '../../actions';
 import { selectAllExercises, selectCardioWeek } from '../../selectors/workoutSelectors';
@@ -8,6 +8,7 @@ import { useWakeLock } from '../../hooks/useWakeLock';
 
 import ImmersiveBackground from '../../components/ImmersiveBackground';
 import Modal from '../../components/Modal';
+import DialogSectionCard from '../../components/DialogSectionCard';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
 import AddExerciseModal from './AddExerciseModal';
 import ExerciseDetailSheet from './ExerciseDetailSheet';
@@ -234,7 +235,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
 
             {showConfirmExit && (
                 <Modal onClose={() => setShowConfirmExit(false)}>
-                    <div className="p-6 text-center">
+                    <DialogSectionCard className="m-4 p-6 text-center">
                         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-accent/10">
                             <svg className="h-8 w-8 text-brand-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M12 8v4l3 3" />
@@ -270,7 +271,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
                                 Cancelar
                             </button>
                         </div>
-                    </div>
+                    </DialogSectionCard>
                 </Modal>
             )}
 

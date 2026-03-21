@@ -2,7 +2,7 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { AppContext } from '../contexts';
 import { NutritionMainView } from './nutricion/NutritionMainView';
-import { AddFoodView } from './nutricion/AddFoodView';
+import AddFoodView from './nutricion/AddFoodView';
 import { selectCustomFoodItems } from '../selectors/nutritionSelectors';
 import { selectMealBuilderInitialState } from '../selectors/uiSelectors';
 import * as actions from '../actions';

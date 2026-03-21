@@ -4,8 +4,9 @@ import Button from '../Button';
 import ChipButton from '../ChipButton';
 import Input from '../Input';
 import IconButton from '../IconButton';
+import StepperControl from '../StepperControl';
 import Tag from '../Tag';
-import { TrashIcon, PlusIcon, XIcon, MinusIcon, ChevronRightIcon, CheckCircleIcon, ChartBarIcon, FireIcon, PlateIcon } from '../icons';
+import { TrashIcon, XIcon, ChevronRightIcon, CheckCircleIcon, ChartBarIcon, FireIcon, PlateIcon } from '../icons';
 import { CompactMacroCard, UnifiedMacroRow } from './plate-summary/MacroBlocks';
 import { DEFAULT_CARB_ABS_MAX, DEFAULT_CARB_MIN, DEFAULT_FAT_ABS_MAX, DEFAULT_FAT_MIN, getMacroStatus } from './plate-summary/macroStatus';
 
@@ -363,30 +364,17 @@ const PlateSummary: React.FC<PlateSummaryProps> = ({
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 overflow-hidden rounded-xl border border-surface-border bg-surface-hover p-1">
-                        <IconButton
-                          onClick={() => onUpdateItemPortion(item.foodItem.id, item.portions - 0.5)}
-                          icon={MinusIcon}
-                          label={`Reducir porcion de ${item.foodItem.name}`}
-                          variant="ghost"
-                          size="small"
-                        />
-                        <Button
-                          onClick={() => onEditItemPortion(item)}
-                          variant="ghost"
-                          size="small"
-                          className="min-w-[2.5rem] px-2 font-mono text-xs text-text-primary hover:text-brand-accent"
-                        >
-                          {item.portions.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                        </Button>
-                        <IconButton
-                          onClick={() => onUpdateItemPortion(item.foodItem.id, item.portions + 0.5)}
-                          icon={PlusIcon}
-                          label={`Aumentar porcion de ${item.foodItem.name}`}
-                          variant="ghost"
-                          size="small"
-                        />
-                      </div>
+                      <StepperControl
+                        value={item.portions.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                        onValueClick={() => onEditItemPortion(item)}
+                        onDecrement={() => onUpdateItemPortion(item.foodItem.id, item.portions - 0.5)}
+                        onIncrement={() => onUpdateItemPortion(item.foodItem.id, item.portions + 0.5)}
+                        decrementLabel={`Reducir porcion de ${item.foodItem.name}`}
+                        incrementLabel={`Aumentar porcion de ${item.foodItem.name}`}
+                        className="rounded-xl"
+                        valueClassName="min-w-[2.5rem] text-xs"
+                        size="small"
+                      />
                     </div>
                   </div>
                 );

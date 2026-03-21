@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import Tag from '../../components/Tag';
+import DialogSectionCard from '../../components/DialogSectionCard';
 import { BarcodeIcon, XIcon } from '../../components/icons';
 
 interface BarcodeScannerViewProps {
@@ -77,16 +80,17 @@ const BarcodeScannerView: React.FC<BarcodeScannerViewProps> = ({ onScanSuccess, 
 
             <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between p-6">
                 <div className="pointer-events-auto flex items-start justify-between">
-                    <div className="flex items-center gap-3 rounded-2xl border border-white/20 bg-zinc-900/90 px-4 py-2.5 shadow-xl backdrop-blur-md">
-                        <div className="h-2 w-2 rounded-full bg-brand-accent shadow-[0_0_8px_rgba(var(--color-brand-accent-rgb),0.5)] animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Escaner activo</span>
-                    </div>
-                    <button
+                    <Tag variant="overlay" tone="accent" size="md" className="bg-bg-base/90 border border-white/20 shadow-xl backdrop-blur-md">
+                        Escaner activo
+                    </Tag>
+                    <IconButton
                         onClick={onClose}
-                        className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/20 bg-zinc-900/90 text-white shadow-xl backdrop-blur-md transition-all hover:bg-zinc-800 active:scale-95"
-                    >
-                        <XIcon className="h-6 w-6" />
-                    </button>
+                        icon={XIcon}
+                        label="Cerrar escaner"
+                        variant="secondary"
+                        size="medium"
+                        className="bg-bg-base/90 border-white/20 text-white"
+                    />
                 </div>
 
                 <div className="absolute left-1/2 top-1/2 h-48 w-72 -translate-x-1/2 -translate-y-1/2 sm:h-56 sm:w-80">
@@ -107,21 +111,25 @@ const BarcodeScannerView: React.FC<BarcodeScannerViewProps> = ({ onScanSuccess, 
 
                 <div className="pointer-events-auto pb-12 text-center">
                     {hasPermission === false && (
-                        <div className="mx-auto mb-6 max-w-xs rounded-3xl border border-red-500/30 bg-red-950/40 p-6 shadow-2xl backdrop-blur-xl">
-                            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-red-400">Error de acceso</p>
-                            <p className="text-xs font-medium leading-relaxed text-white opacity-80">
+                        <DialogSectionCard className="mx-auto mb-6 max-w-xs border-red-500/30 bg-red-950/40 p-6 text-left">
+                            <div className="mb-3">
+                                <Tag variant="status" tone="danger" size="md">
+                                    Error de acceso
+                                </Tag>
+                            </div>
+                            <p className="text-xs font-medium leading-relaxed text-white/80">
                                 {scanError || 'Habilita los permisos de camara en tu navegador para continuar.'}
                             </p>
                             <Button onClick={onClose} variant="secondary" size="small" className="mt-4 w-full rounded-xl">
                                 Cerrar
                             </Button>
-                        </div>
+                        </DialogSectionCard>
                     )}
 
-                    <div className="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-zinc-900/90 px-6 py-4 shadow-2xl backdrop-blur-md">
+                    <DialogSectionCard className="inline-flex items-center gap-3 bg-bg-base/90 px-6 py-4 shadow-2xl backdrop-blur-md">
                         <BarcodeIcon className="h-5 w-5 text-brand-accent" />
                         <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white">Alinea el codigo en el marco</span>
-                    </div>
+                    </DialogSectionCard>
                 </div>
             </div>
         </div>

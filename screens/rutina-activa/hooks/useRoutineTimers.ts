@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { MeditationStep, RoutineStep, StrengthStep, WorkoutStats, YogaStep } from '../../../types';
+import { RoutineStep, WorkoutStats } from '../../../types';
 
 interface UseRoutineTimersArgs {
     isStarted: boolean;
@@ -41,7 +41,7 @@ export const useRoutineTimers = ({
         if (isExerciseActive) {
             timerId = window.setInterval(() => {
                 setWorkoutStats((prev) => {
-                    const stepKey = (currentStep as StrengthStep | YogaStep).exerciseId || (currentStep as MeditationStep).title;
+                    const stepKey = currentStep.type === 'exercise' ? currentStep.exerciseId : currentStep.title;
                     const newDurations = { ...prev.exerciseDurations };
                     newDurations[stepKey] = (newDurations[stepKey] || 0) + 1;
                     return { ...prev, exerciseDurations: newDurations };

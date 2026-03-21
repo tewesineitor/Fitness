@@ -124,14 +124,17 @@ const RoutineStepRenderer: React.FC<RoutineStepRendererProps> = ({
                 />
             );
         case 'pose':
-        case 'meditation':
+        case 'meditation': {
+            const exerciseId = 'exerciseId' in currentStep ? currentStep.exerciseId : undefined;
+
             return (
                 <PoseScreen
                     step={currentStep}
                     onComplete={onHandleStepComplete}
-                    onShowExerciseDetails={() => onShowExerciseDetails((currentStep as any).exerciseId)}
+                    onShowExerciseDetails={() => exerciseId && onShowExerciseDetails(exerciseId)}
                 />
             );
+        }
         default:
             return <p>Paso desconocido.</p>;
     }

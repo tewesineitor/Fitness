@@ -5,6 +5,8 @@ import Tag from '../../../components/Tag';
 import { ChevronRightIcon, FireIcon, InformationCircleIcon, StrengthIcon, YogaIcon } from '../../../components/icons';
 import { Exercise } from '../../../types';
 import { vibrate } from '../../../utils/helpers';
+import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
+import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
 
 interface PotentiationScreenProps {
     exerciseName: string;
@@ -102,7 +104,7 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
                 <div className="relative mb-8 flex items-center justify-center scale-110 transform sm:scale-125">
                     <div className={`pointer-events-none absolute inset-0 rounded-full blur-[60px] opacity-20 transition-colors duration-1000 ${progressTone}`} />
                     <CircularTimer
-                        initialDuration={60}
+                        initialDuration={INFO_STEP_DURATION}
                         timeLeft={timeLeft}
                         strokeColor={accentClass}
                         size={220}
@@ -138,11 +140,11 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
             <footer className="z-20 flex-shrink-0 space-y-4 border-t border-surface-border bg-bg-base px-6 pb-6 pt-6 pb-safe">
                 <div className="flex h-1.5 w-full items-center gap-1 rounded-full border border-surface-border bg-surface-bg p-0.5">
                     {Array.from({ length: totalItems }).map((_, index) => (
-                        <div key={index} className="relative h-full flex-1 overflow-hidden rounded-full bg-white/5">
+                            <div key={index} className="relative h-full flex-1 overflow-hidden rounded-full bg-white/5">
                             {index <= currentItemIndex && (
                                 <div
                                     className={`absolute inset-0 ${progressTone} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`}
-                                    style={index === currentItemIndex ? { width: `${((60 - timeLeft) / 60) * 100}%` } : {}}
+                                    style={index === currentItemIndex ? { width: `${((INFO_STEP_DURATION - timeLeft) / INFO_STEP_DURATION) * 100}%` } : {}}
                                 />
                             )}
                         </div>
