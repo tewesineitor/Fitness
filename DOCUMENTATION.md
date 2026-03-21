@@ -114,3 +114,15 @@ El plan operativo completo para esta siguiente fase vive en:
 - [FRONTEND_REDESIGN_MASTER_PLAN.md](/D:/07.%20Apps/Fitness/FRONTEND_REDESIGN_MASTER_PLAN.md)
 
 Ese documento divide el trabajo por fases, por vertical y por ownership paralelo para subagentes.
+
+## 11. Estado de Sprint 1
+
+Base implementada para el redisenio total:
+
+- foundation premium en `styles/tailwind.css` y `tailwind.config.cjs`
+- shell global con `AppShell`, `BottomNav`, `GlobalOverlays`, `FocusModeLayer`, `ThemeSync` y `PageContainer`
+- primitives nuevas para layout y feedback: `PageHeader`, `PageSection`, `SegmentedControl`, `EmptyState`, `InlineAlert`, `Toast`, `BottomSheet`
+- `AuthGate` y `AppLoadingScreen` para separar bootstrap y auth de la infraestructura
+- adopcion inicial del nuevo contrato en `Hoy`, `Biblioteca`, `Progreso`, `LoginView` y `PillTabs`
+
+La siguiente fase recomendada es empezar el redisenio por vertical completo, comenzando por `Nutricion` y `Rutina Activa`.

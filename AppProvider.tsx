@@ -5,12 +5,11 @@ import * as thunks from './thunks';
 import { AppContext } from './contexts';
 import { rootReducer } from './reducers/rootReducer';
 import { initialState } from './initialState';
-import LoginView from './screens/auth/LoginView';
 import { useSupabaseAuthSession } from './appAuth';
 import { useAppBootstrap } from './appBootstrap';
 import { useAppStateSync } from './appSync';
 import { useDailyProgressReset } from './appDailyReset';
-import AppLoadingScreen from './components/layout/AppLoadingScreen';
+import AuthGate from './components/layout/AuthGate';
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, baseDispatch] = useReducer(rootReducer, initialState);
@@ -80,17 +79,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         showToast,
     }), [state, thunkDispatch, showToast]);
 
-    if (!isInitialized || !authInitialized) {
+    if (!isInitialized || !authInitialized || !session) {
         return (
-            <AppLoadingScreen
-                label="Conectando con Supabase"
-                description="Sincronizando estado inicial"
+            <AuthGate
+                isReady={isInitialized && authInitialized}
+                isAuthenticated={Boolean(session)}
             />
         );
-    }
-
-    if (!session) {
-        return <LoginView />;
     }
 
     return (

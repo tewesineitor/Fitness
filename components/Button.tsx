@@ -25,14 +25,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: [
-    'bg-brand-accent text-brand-accent-foreground border border-transparent',
+    'bg-brand-accent text-brand-accent-foreground border border-brand-accent/20',
     'shadow-md shadow-brand-accent/15',
-    'hover:-translate-y-px hover:brightness-[1.04] hover:shadow-lg hover:shadow-brand-accent/20',
+    'hover:-translate-y-px hover:brightness-[1.02] hover:shadow-lg hover:shadow-brand-accent/20',
   ].join(' '),
   solid: [
-    'bg-brand-accent text-brand-accent-foreground border border-transparent',
-    'shadow-sm shadow-brand-accent/10',
-    'hover:-translate-y-px hover:brightness-[1.04] hover:shadow-md hover:shadow-brand-accent/15',
+    'bg-text-primary text-bg-base border border-transparent',
+    'shadow-md shadow-black/10 dark:shadow-black/30',
+    'hover:-translate-y-px hover:shadow-lg',
   ].join(' '),
   'high-contrast': [
     'bg-text-primary text-bg-base border border-transparent',
@@ -42,19 +42,19 @@ const variantStyles: Record<ButtonVariant, string> = {
   secondary: [
     'bg-surface-bg text-text-primary border border-surface-border',
     'shadow-sm',
-    'hover:-translate-y-px hover:border-brand-accent/20 hover:bg-surface-hover hover:shadow-md',
+    'hover:-translate-y-px hover:border-brand-accent/25 hover:bg-surface-hover hover:shadow-md',
   ].join(' '),
   ghost: [
     'bg-transparent text-text-secondary border border-transparent',
-    'hover:bg-surface-hover/80 hover:text-text-primary',
+    'hover:bg-surface-hover hover:text-text-primary',
   ].join(' '),
   tertiary: [
     'bg-transparent text-text-secondary border border-transparent',
-    'hover:bg-surface-hover/80 hover:text-text-primary',
+    'hover:bg-surface-hover hover:text-text-primary',
   ].join(' '),
   outline: [
     'bg-transparent text-brand-accent border border-brand-accent/30',
-    'hover:-translate-y-px hover:bg-brand-accent/8 hover:border-brand-accent/50',
+    'hover:-translate-y-px hover:bg-brand-accent/10 hover:border-brand-accent/50',
   ].join(' '),
   destructive: [
     'bg-danger/10 text-danger border border-danger/20',
@@ -68,15 +68,15 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  small: 'h-8 px-3 text-[11px] tracking-[0.14em] rounded-lg gap-1.5',
-  medium: 'h-10 px-4 text-[12px] tracking-[0.14em] rounded-xl gap-2',
-  large: 'h-12 px-6 text-sm tracking-[0.16em] rounded-2xl gap-2.5',
+  small: 'h-8 px-3 text-[11px] tracking-[0.14em] rounded-xl gap-1.5',
+  medium: 'h-11 px-[1.125rem] text-[12px] tracking-[0.14em] rounded-[1rem] gap-2',
+  large: 'h-12 px-6 text-sm tracking-[0.16em] rounded-[1.15rem] gap-2.5',
 };
 
 const iconButtonSizeStyles: Record<ButtonSize, string> = {
-  small: 'h-8 w-8 rounded-lg',
-  medium: 'h-10 w-10 rounded-xl',
-  large: 'h-12 w-12 rounded-2xl',
+  small: 'h-8 w-8 rounded-xl',
+  medium: 'h-11 w-11 rounded-[1rem]',
+  large: 'h-12 w-12 rounded-[1.15rem]',
 };
 
 const iconSizeStyles: Record<ButtonSize, string> = {

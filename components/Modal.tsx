@@ -4,21 +4,17 @@ import ReactDOM from 'react-dom';
 interface ModalProps {
   children: React.ReactNode;
   onClose: () => void;
-  className?: string; // Allows customizing the modal card, e.g., for width
+  className?: string;
 }
 
-const modalRoot = document.getElementById('modal-root');
-
-if (!modalRoot) {
-  throw new Error("The element with id 'modal-root' was not found in the DOM.");
-}
+const getPortalRoot = () => document.getElementById('modal-root') ?? document.body;
 
 const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Prevent body scrolling when modal is open
   useEffect(() => {
     const previousActiveElement = document.activeElement as HTMLElement | null;
+    const bodyOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -30,57 +26,45 @@ const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
 
     document.addEventListener('keydown', handleKeyDown);
 
-    const focusableSelector = [
-      'button:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
-      'a[href]',
-      '[tabindex]:not([tabindex="-1"])'
-    ].join(',');
-
-    const focusFirstElement = () => {
+    const animationFrame = window.requestAnimationFrame(() => {
       const panel = panelRef.current;
       if (!panel) return;
 
-      const focusable = panel.querySelector<HTMLElement>(focusableSelector);
+      const focusable = panel.querySelector<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      );
       (focusable ?? panel).focus();
-    };
-
-    const animationFrame = window.requestAnimationFrame(focusFirstElement);
+    });
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = bodyOverflow;
       document.removeEventListener('keydown', handleKeyDown);
       window.cancelAnimationFrame(animationFrame);
-
-      if (previousActiveElement && typeof previousActiveElement.focus === 'function') {
-        previousActiveElement.focus();
-      }
+      previousActiveElement?.focus?.();
     };
   }, [onClose]);
 
-  const modalContent = (
-    <div 
-      className="fixed inset-0 bg-black/80 backdrop-blur-md flex justify-center items-center z-[200] p-4 transition-opacity duration-300" 
+  return ReactDOM.createPortal(
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-md"
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
+      role="presentation"
     >
-      <div 
+      <div
         ref={panelRef}
         tabIndex={-1}
-        className={`bg-surface-bg bg-opacity-100 rounded-xl w-full max-w-sm border border-surface-border shadow-sm animate-scale-in ${className}`} 
-        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        onClick={(event) => event.stopPropagation()}
+        className={[
+          'w-full max-w-lg rounded-[1.75rem] border border-surface-border bg-surface-bg shadow-lg animate-sheet-in',
+          className,
+        ].join(' ')}
       >
         {children}
       </div>
-    </div>
-  );
-
-  return ReactDOM.createPortal(
-    modalContent,
-    modalRoot
+    </div>,
+    getPortalRoot()
   );
 };
 

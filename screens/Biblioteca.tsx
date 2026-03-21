@@ -24,6 +24,7 @@ import PillTabs from '../components/PillTabs';
 import ConfirmationDialog from '../components/dialogs/ConfirmationDialog';
 import RecipePreviewCard from '../components/cards/RecipePreviewCard';
 import RoutineCard from '../components/cards/RoutineCard';
+import { PageHeader } from '../components/layout';
 import RecipeFlow from './biblioteca/RecipeViews';
 import RoutineFlow from './biblioteca/RoutineViews';
 import ExerciseFlow from './biblioteca/ExerciseViews';
@@ -315,7 +316,12 @@ const BibliotecaScreen: React.FC = () => {
             default:
                 return (
                     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-5">
-                        <SectionHeader title="Biblioteca" />
+                        <PageHeader
+                            size="compact"
+                            title="Biblioteca"
+                            subtitle="Recetas, rutinas y ejercicios en un solo sistema."
+                            className="animate-fade-in-up"
+                        />
 
                         <div className="animate-fade-in-up" style={{ animationDelay:'60ms' }}>
                             <PillTabs

@@ -1,6 +1,5 @@
 import React from 'react';
-import Button from './Button';
-import { ChevronRightIcon } from './icons';
+import PageHeader from './layout/PageHeader';
 
 interface FlowHeaderProps {
   title: string;
@@ -10,17 +9,12 @@ interface FlowHeaderProps {
 
 const FlowHeader: React.FC<FlowHeaderProps> = ({ title, onBack, className = '' }) => {
   return (
-    <header className={`flex flex-col flex-shrink-0 p-4 sm:p-6 ${className}`}>
-        <Button 
-            variant="tertiary" 
-            onClick={onBack} 
-            icon={ChevronRightIcon} 
-            className="!p-0 [&_svg]:rotate-180 self-start mb-4"
-        >
-            Volver
-        </Button>
-        <h1 className="text-3xl font-bold text-text-primary">{title}</h1>
-    </header>
+    <PageHeader
+      title={title}
+      backLabel="Volver"
+      onBack={onBack}
+      className={className}
+    />
   );
 };
 

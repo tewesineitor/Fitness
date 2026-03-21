@@ -1,6 +1,6 @@
 import React from 'react';
-import { CheckCircleIcon } from '../icons';
 import Button from '../Button';
+import Toast from '../feedback/Toast';
 import Modal from '../Modal';
 import type { SyncStatus } from '../../types';
 
@@ -18,7 +18,7 @@ const SyncIndicator: React.FC<{ status: SyncStatus }> = ({ status }) => {
     status === 'syncing'
       ? 'Sincronizando'
       : status === 'offline'
-        ? 'Sin conexiÃ³n'
+        ? 'Sin conexion'
         : 'Error de red';
 
   const dotClass =
@@ -38,28 +38,19 @@ const SyncIndicator: React.FC<{ status: SyncStatus }> = ({ status }) => {
   );
 };
 
-const Toast: React.FC<{ message: string }> = ({ message }) => (
-  <div className="fixed left-1/2 top-5 z-[250] -translate-x-1/2 animate-fade-in-up">
-    <div className="flex items-center gap-3 rounded-full border border-surface-border bg-surface-bg px-5 py-3 shadow-2xl backdrop-blur-xl">
-      <CheckCircleIcon className="h-5 w-5 text-brand-accent" />
-      <span className="text-sm font-medium text-text-primary">{message}</span>
-    </div>
-  </div>
-);
-
 const PhaseChangeModal: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => (
   <Modal onClose={onDismiss} className="max-w-sm">
     <div className="p-8 text-center" role="document" aria-labelledby="phase-title">
       <h2 id="phase-title" className="text-2xl font-bold text-text-primary">
-        Â¡Nueva Fase Desbloqueada: IntensificaciÃ³n!
+        Nueva Fase Desbloqueada: Intensificacion
       </h2>
       <p className="my-4 text-text-secondary">
-        Has completado las primeras 4 semanas de acumulaciÃ³n. Â¡Excelente trabajo!
-        A partir de hoy, tus rutinas de fuerza se ajustarÃ¡n para enfocarse en la ganancia
-        de fuerza, con menos repeticiones y mÃ¡s descanso. PrepÃ¡rate para un nuevo desafÃ­o.
+        Has completado las primeras 4 semanas de acumulacion. Excelente trabajo.
+        A partir de hoy, tus rutinas de fuerza se ajustaran para enfocarse en la ganancia
+        de fuerza, con menos repeticiones y mas descanso. Preparate para un nuevo desafio.
       </p>
       <Button onClick={onDismiss} className="mt-8 w-full" size="large">
-        Â¡Entendido, vamos por ello!
+        Entendido, vamos por ello
       </Button>
     </div>
   </Modal>
@@ -74,8 +65,12 @@ const GlobalOverlays: React.FC<GlobalOverlaysProps> = ({
   return (
     <>
       <SyncIndicator status={syncStatus} />
-      {toastMessage && <Toast message={toastMessage} />}
-      {showPhaseChangeModal && <PhaseChangeModal onDismiss={onDismissPhaseChangeModal} />}
+      {toastMessage ? (
+        <div className="fixed left-1/2 top-5 z-[250] -translate-x-1/2 animate-toast-in">
+          <Toast tone="success" message={toastMessage} />
+        </div>
+      ) : null}
+      {showPhaseChangeModal ? <PhaseChangeModal onDismiss={onDismissPhaseChangeModal} /> : null}
     </>
   );
 };

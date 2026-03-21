@@ -39,6 +39,7 @@ module.exports = {
         'text-secondary': 'rgb(var(--color-text-secondary-rgb) / <alpha-value>)',
         'text-muted': 'rgb(var(--color-text-muted-rgb) / <alpha-value>)',
         'surface-bg': 'rgb(var(--color-surface-bg-rgb) / <alpha-value>)',
+        'surface-raised': 'rgb(var(--color-surface-raised-rgb) / <alpha-value>)',
         'surface-border': 'rgba(var(--color-surface-border-rgb), var(--color-surface-border-opacity))',
         'surface-hover': 'rgb(var(--color-surface-hover-rgb) / <alpha-value>)',
         'bg-base': 'var(--color-bg-base)',
@@ -62,14 +63,21 @@ module.exports = {
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.35s var(--ease-smooth) forwards',
+        'fade-in': 'fadeIn 0.2s var(--ease-smooth) forwards',
         'pop-in': 'popIn 0.3s var(--ease-spring) forwards',
         'scale-in': 'scaleIn 0.35s var(--ease-smooth) forwards',
         'slide-in-up': 'slideInUp 0.4s var(--ease-smooth) forwards',
+        'sheet-in': 'sheetIn 0.32s var(--ease-snap) forwards',
+        'toast-in': 'toastIn 0.24s var(--ease-smooth) forwards',
         'glow-pulse': 'glowPulse 2.5s ease-in-out infinite',
         scan: 'scan 2s linear infinite',
         'scan-vertical': 'scanVertical 2s linear infinite',
       },
       keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(12px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -85,6 +93,14 @@ module.exports = {
         slideInUp: {
           '0%': { opacity: '0', transform: 'translateY(24px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        sheetIn: {
+          '0%': { opacity: '0', transform: 'translateY(24px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        toastIn: {
+          '0%': { opacity: '0', transform: 'translateY(8px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
         glowPulse: {
           '0%, 100%': { boxShadow: '0 0 0px transparent' },

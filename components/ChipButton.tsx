@@ -10,11 +10,11 @@ interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const activeTones: Record<NonNullable<ChipButtonProps['tone']>, string> = {
   neutral: 'bg-text-primary text-bg-base border-text-primary shadow-md',
-  accent: 'bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/30',
-  protein: 'bg-brand-protein text-black border-brand-protein shadow-md shadow-brand-protein/30',
-  carbs: 'bg-brand-carbs text-black border-brand-carbs shadow-md shadow-brand-carbs/30',
-  success: 'bg-success text-black border-success shadow-md shadow-success/30',
-  danger: 'bg-danger text-white border-danger shadow-md shadow-danger/30',
+  accent: 'bg-brand-accent text-brand-accent-foreground border-brand-accent shadow-md shadow-brand-accent/30',
+  protein: 'bg-brand-protein text-slate-950 border-brand-protein shadow-md shadow-brand-protein/20',
+  carbs: 'bg-brand-carbs text-slate-950 border-brand-carbs shadow-md shadow-brand-carbs/20',
+  success: 'bg-success text-slate-950 border-success shadow-md shadow-success/20',
+  danger: 'bg-danger text-white border-danger shadow-md shadow-danger/25',
 };
 
 const sizes: Record<NonNullable<ChipButtonProps['size']>, string> = {
@@ -48,6 +48,7 @@ const ChipButton: React.FC<ChipButtonProps> = ({
         stateClass,
         className,
       ].join(' ')}
+      aria-pressed={active}
       {...props}
     >
       {Icon && <Icon className={size === 'small' ? 'w-3.5 h-3.5' : 'w-4 h-4'} />}

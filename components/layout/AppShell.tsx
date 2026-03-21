@@ -32,7 +32,7 @@ const AppShell: React.FC<AppShellProps> = ({
   return (
     <>
       <ThemeSync theme={theme} />
-      <div className="relative flex min-h-screen flex-col overflow-hidden bg-bg-base text-text-primary antialiased">
+      <div className="ui-shell relative flex min-h-screen flex-col overflow-hidden bg-bg-base antialiased">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_42%)] opacity-80"
@@ -44,6 +44,7 @@ const AppShell: React.FC<AppShellProps> = ({
 
         <main className="relative flex-1 overflow-y-auto hide-scrollbar">
           <PageContainer
+            size="full"
             className={[
               'relative min-h-full',
               isBottomNavVisible ? 'pb-32' : 'pb-8',

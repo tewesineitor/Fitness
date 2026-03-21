@@ -452,3 +452,18 @@ El sprint 1 se considera completo cuando:
 - no pulir botones sueltos de la UI vieja
 - no mezclar cambios de negocio con cambios visuales
 - no permitir nuevas excepciones visuales fuera del foundation
+
+## Estado de Sprint 1
+
+Ya implementado:
+
+- foundation premium en `styles/tailwind.css` y `tailwind.config.cjs`
+- shell global con `AppShell`, `BottomNav`, `GlobalOverlays`, `FocusModeLayer`, `ThemeSync`, `PageContainer`, `AuthGate` y `AppLoadingScreen`
+- primitives nuevas de layout y feedback
+- adopcion inicial del contrato nuevo en `Hoy`, `Biblioteca`, `Progreso`, `LoginView` y `PillTabs`
+
+Siguiente paso:
+
+1. Redisenar `Nutricion` por vertical completo.
+2. Redisenar `Rutina Activa` y `WorkoutSummary`.
+3. Continuar con `Biblioteca`, luego `Hoy`, `Progreso` y `Perfil/Auth`.

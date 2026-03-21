@@ -7,7 +7,12 @@ interface FloatingDockProps {
 
 const FloatingDock: React.FC<FloatingDockProps> = ({ children, className = '' }) => {
     return (
-        <div className={`fixed bottom-24 left-4 right-4 sm:left-6 sm:right-6 z-[60] bg-surface-bg/90 backdrop-blur-xl border border-surface-border rounded-2xl shadow-2xl p-4 animate-slide-up-fade-in ${className}`}>
+        <div className={[
+          'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-[60] w-[calc(100%-1rem)] max-w-[42rem] -translate-x-1/2',
+          'rounded-[1.5rem] border border-surface-border bg-surface-bg/92 p-4 shadow-lg backdrop-blur-2xl',
+          'animate-sheet-in',
+          className,
+        ].join(' ')}>
             {children}
         </div>
     );

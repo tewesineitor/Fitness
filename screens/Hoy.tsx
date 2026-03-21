@@ -37,6 +37,7 @@ import SectionHeader from '../components/SectionHeader';
 import MacroArcGauge from '../components/MacroArcGauge';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
+import { PageHeader } from '../components/layout';
 import { vibrate } from '../utils/helpers';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -183,24 +184,22 @@ const HoyScreen: React.FC = () => {
             )}
 
             {/* ── HEADER ─────────────────────────────────────────────── */}
-            <header className="flex justify-between items-end animate-fade-in-up pt-6 pb-5">
-                <div>
-                    <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight leading-none">
-                        {capitalizedDate}
-                    </h1>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2 mt-2">
-                        <span className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse" />
-                        {customMantra || `Hola, ${userName}`}
-                    </p>
-                </div>
-                <IconButton
-                    onClick={() => dispatch(actions.openProfile())}
-                    icon={UserCircleIcon}
-                    label="Abrir perfil"
-                    variant="secondary"
-                    size="large"
-                />
-            </header>
+            <PageHeader
+                size="compact"
+                className="animate-fade-in-up pb-5"
+                eyebrow="Panel diario"
+                title={capitalizedDate}
+                subtitle={customMantra || `Hola, ${userName}`}
+                actions={(
+                    <IconButton
+                        onClick={() => dispatch(actions.openProfile())}
+                        icon={UserCircleIcon}
+                        label="Abrir perfil"
+                        variant="secondary"
+                        size="large"
+                    />
+                )}
+            />
 
             {/* ── ROW 1: WEEK STRIP + INNEGOCIABLES (bento 2-col) ───── */}
             <div className="grid grid-cols-2 gap-3 animate-fade-in-up mb-3" style={{ animationDelay: '60ms' }}>
