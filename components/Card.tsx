@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({
   className = '',
   ...rest
 }) => {
-  const base = 'rounded-2xl transition-all duration-200';
+  const base = 'rounded-card transition-all duration-200';
 
   const variants: Record<NonNullable<CardProps['variant']>, string> = {
     default: [

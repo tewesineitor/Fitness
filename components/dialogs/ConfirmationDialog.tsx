@@ -18,7 +18,7 @@ const ConfirmationDialog: React.FC<{
                 <p className="text-text-secondary my-4">{message}</p>
                 <div className="flex gap-3">
                     <Button variant="secondary" onClick={() => { vibrate(5); onCancel(); }} className="w-full">{cancelText}</Button>
-                    <Button variant="destructive" onClick={() => { vibrate(10); onConfirm(); }} className="w-full shadow-lg shadow-red-500/10">{confirmText}</Button>
+                    <Button variant="destructive" onClick={() => { vibrate(10); onConfirm(); }} className="w-full shadow-lg shadow-danger/10">{confirmText}</Button>
                 </div>
             </div>
         </Modal>

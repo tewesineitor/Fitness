@@ -18,7 +18,7 @@ const MeasurementInput: React.FC<{
 }> = ({ label, value, onChange, unit = 'cm', step = "0.1" }) => (
     <div className="flex flex-col gap-1">
         <label className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{label}</label>
-        <div className="flex items-center gap-2 bg-surface-bg border border-surface-border rounded-lg px-3 py-2 focus-within:border-brand-accent transition-colors">
+        <div className="flex items-center gap-2 bg-surface-bg border border-surface-border rounded-input px-3 py-2 focus-within:border-brand-accent transition-colors">
             <input 
                 type="number" 
                 step={step}

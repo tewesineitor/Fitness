@@ -68,15 +68,15 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  small: 'h-8 px-3 text-[11px] tracking-[0.14em] rounded-xl gap-1.5',
-  medium: 'h-11 px-[1.125rem] text-[12px] tracking-[0.14em] rounded-[1rem] gap-2',
-  large: 'h-12 px-6 text-sm tracking-[0.16em] rounded-[1.15rem] gap-2.5',
+  small: 'h-8 px-3 text-[11px] tracking-[0.14em] rounded-tag gap-1.5',
+  medium: 'h-11 px-4 text-[12px] tracking-[0.14em] rounded-input gap-2',
+  large: 'h-12 px-6 text-sm tracking-[0.16em] rounded-input gap-2.5',
 };
 
 const iconButtonSizeStyles: Record<ButtonSize, string> = {
-  small: 'h-8 w-8 rounded-xl',
-  medium: 'h-11 w-11 rounded-[1rem]',
-  large: 'h-12 w-12 rounded-[1.15rem]',
+  small: 'h-8 w-8 rounded-tag',
+  medium: 'h-11 w-11 rounded-input',
+  large: 'h-12 w-12 rounded-input',
 };
 
 const iconSizeStyles: Record<ButtonSize, string> = {

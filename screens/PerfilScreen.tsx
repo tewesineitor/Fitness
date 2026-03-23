@@ -3,6 +3,7 @@ import { AppContext } from '../contexts';
 import { DailyGoals, Theme } from '../types';
 import { ChevronRightIcon, UserCircleIcon, SparklesIcon, CheckIcon } from '../components/icons';
 import Button from '../components/Button';
+import Card from '../components/Card';
 import Input from '../components/Input';
 import SectionHeader from '../components/SectionHeader';
 import * as actions from '../actions';
@@ -78,7 +79,7 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <div className="flex-grow overflow-y-auto w-full px-4 sm:px-6 py-5 pb-32 space-y-5 hide-scrollbar">
                 <section>
                     <SectionHeader title="Identidad" />
-                    <div className="bg-surface-bg p-4 rounded-2xl space-y-4 border border-surface-border shadow-sm">
+                    <Card variant="default" className="p-4 space-y-4">
                         <Input
                             label="Nombre de Usuario"
                             value={name}
@@ -97,10 +98,10 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 onChange={(e) => setCustomMantra(e.target.value)}
                                 placeholder="Escribe una frase que te inspire..."
                                 rows={2}
-                                className="w-full bg-surface-hover/40 border border-surface-border rounded-xl p-4 text-sm text-text-primary font-medium focus:border-brand-accent outline-none transition-all placeholder:text-text-muted/60 resize-none font-mono leading-relaxed"
+                                className="w-full bg-surface-hover/40 border border-surface-border rounded-input p-4 text-sm text-text-primary font-medium focus:border-brand-accent outline-none transition-all placeholder:text-text-muted/60 resize-none font-mono leading-relaxed"
                             />
                         </div>
-                    </div>
+                    </Card>
                 </section>
 
                 <MacroSettings goals={goals} setGoals={setGoals} showToast={showToast} />

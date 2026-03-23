@@ -86,9 +86,9 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
             <section>
                 <SectionHeader title="Metas Nutricionales" dotClass="bg-brand-fat" />
                 
-                <div className="bg-surface-bg p-4 rounded-2xl border-l-2 border-l-brand-accent border-y border-r border-surface-border space-y-5 hover:bg-surface-hover/50 transition-colors shadow-sm">
+                <div className="bg-surface-bg p-4 rounded-card border-l-2 border-l-brand-accent border-y border-r border-surface-border space-y-5 hover:bg-surface-hover/50 transition-colors shadow-sm">
                     {/* Calories (Big) */}
-                    <div className="bg-surface-bg rounded-xl p-4 border border-surface-border relative overflow-hidden group focus-within:border-brand-accent transition-colors">
+                    <div className="bg-surface-bg rounded-input p-4 border border-surface-border relative overflow-hidden group focus-within:border-brand-accent transition-colors">
                         <label className="text-[9px] font-bold text-brand-accent uppercase tracking-[0.15em] mb-1 flex items-center gap-2 relative z-10">
                             <FireIcon className="w-3 h-3" />
                             Objetivo Calórico (Auto)
@@ -110,7 +110,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                             value={goals.protein} 
                             onChange={e => handleGoalChange('protein', e.target.value)} 
                             type="number"
-                            focusClassName="focus-within:border-brand-protein focus-within:ring-1 focus-within:ring-brand-protein/50 focus-within:shadow-[0_0_10px_rgba(var(--color-brand-protein-rgb),0.2)]"
+                            focusClassName="focus-within:border-brand-protein focus-within:ring-1 focus-within:ring-brand-protein/50"
                             suffix="g"
                         />
                         <Input 
@@ -118,7 +118,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                             value={goals.carbs} 
                             onChange={e => handleGoalChange('carbs', e.target.value)} 
                             type="number"
-                            focusClassName="focus-within:border-brand-carbs focus-within:ring-1 focus-within:ring-brand-carbs/50 focus-within:shadow-[0_0_10px_rgba(var(--color-brand-carbs-rgb),0.2)]"
+                            focusClassName="focus-within:border-brand-carbs focus-within:ring-1 focus-within:ring-brand-carbs/50"
                             suffix="g"
                         />
                         <Input 
@@ -126,7 +126,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                             value={goals.fat} 
                             onChange={e => handleGoalChange('fat', e.target.value)} 
                             type="number"
-                            focusClassName="focus-within:border-brand-fat focus-within:ring-1 focus-within:ring-brand-fat/50 focus-within:shadow-[0_0_10px_rgba(var(--color-brand-fat-rgb),0.2)]"
+                            focusClassName="focus-within:border-brand-fat focus-within:ring-1 focus-within:ring-brand-fat/50"
                             suffix="g"
                         />
                     </div>
@@ -144,7 +144,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                 </button>
 
                 <div className={`transition-all duration-500 overflow-hidden ${showAdvanced ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="bg-surface-bg p-4 rounded-2xl border border-surface-border hover:bg-surface-hover/50 space-y-4 shadow-sm">
+                    <div className="bg-surface-bg p-4 rounded-card border border-surface-border hover:bg-surface-hover/50 space-y-4 shadow-sm">
                         
                         <div className="flex flex-col gap-3">
                             <div className="flex justify-between items-center">
@@ -172,7 +172,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-white/5">
-                            <div className="space-y-3 p-3 bg-surface-hover/30 rounded-xl border border-surface-border relative group focus-within:border-brand-carbs/30 transition-colors">
+                            <div className="space-y-3 p-3 bg-surface-hover/30 rounded-input border border-surface-border relative group focus-within:border-brand-carbs/30 transition-colors">
                                 <div className="flex justify-between items-end mb-1">
                                     <span className="text-[10px] font-bold text-brand-carbs uppercase tracking-widest">Carbohidratos</span>
                                     <span className="text-[8px] font-mono text-text-secondary bg-surface-hover px-1.5 py-0.5 rounded border border-surface-border">Meta: {goals.carbs}g</span>
@@ -197,7 +197,7 @@ export const MacroSettings: React.FC<MacroSettingsProps> = ({ goals, setGoals, s
                                 </div>
                             </div>
 
-                            <div className="space-y-3 p-3 bg-surface-hover/30 rounded-xl border border-surface-border relative group focus-within:border-brand-fat/30 transition-colors">
+                            <div className="space-y-3 p-3 bg-surface-hover/30 rounded-input border border-surface-border relative group focus-within:border-brand-fat/30 transition-colors">
                                 <div className="flex justify-between items-end mb-1">
                                     <span className="text-[10px] font-bold text-brand-fat uppercase tracking-widest">Grasas</span>
                                     <span className="text-[8px] font-mono text-text-secondary bg-surface-hover px-1.5 py-0.5 rounded border border-surface-border">Meta: {goals.fat}g</span>

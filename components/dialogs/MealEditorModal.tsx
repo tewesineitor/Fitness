@@ -60,15 +60,13 @@ const MealEditorModal: React.FC<MealEditorModalProps> = ({ meal, onSave, onClose
         </div>
 
         {editingItem ? (
-          <div className="fixed inset-0 z-[240] flex items-center justify-center bg-black/55 p-4 backdrop-blur-sm">
-            <div onClick={(event) => event.stopPropagation()}>
-              <PortionEditorModal
-                food={editingItem}
-                onSave={(portions) => handleUpdatePortion(editingItem.foodItem.id, portions)}
-                onClose={() => setEditingItem(null)}
-              />
-            </div>
-          </div>
+          <Modal onClose={() => setEditingItem(null)} className="max-w-xs">
+            <PortionEditorModal
+              food={editingItem}
+              onSave={(portions) => handleUpdatePortion(editingItem.foodItem.id, portions)}
+              onClose={() => setEditingItem(null)}
+            />
+          </Modal>
         ) : null}
 
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 py-5 sm:px-6">
@@ -112,7 +110,7 @@ const MealEditorModal: React.FC<MealEditorModalProps> = ({ meal, onSave, onClose
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 rounded-[1rem] border border-surface-border bg-surface-hover/70 p-1">
+                      <div className="flex items-center gap-1 rounded-input border border-surface-border bg-surface-hover/70 p-1">
                         <IconButton
                           onClick={() => { vibrate(5); handleUpdatePortion(item.foodItem.id, item.portions - 0.5); }}
                           variant="ghost"

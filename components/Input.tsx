@@ -40,7 +40,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const wrapperClasses = [
       'flex items-center h-11',
-      'bg-surface-hover/40 border border-surface-border rounded-xl',
+      'bg-surface-hover/40 border border-surface-border rounded-input',
       'transition-all duration-200',
       focusClassName ?? defaultFocusClasses,
       error ? 'border-danger/50 focus-within:border-danger focus-within:ring-danger/20' : '',

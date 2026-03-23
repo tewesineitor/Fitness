@@ -154,7 +154,7 @@ const CardioLibreLogModal: React.FC<CardioLibreLogModalProps> = ({ activityType,
               </Button>
 
               {error ? (
-                <div className="rounded-[1rem] border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-danger">
+                <div className="rounded-input border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-danger">
                   {error}
                 </div>
               ) : null}
@@ -164,7 +164,7 @@ const CardioLibreLogModal: React.FC<CardioLibreLogModalProps> = ({ activityType,
                 <Input id="free-cardio-duration" type="number" step="1" value={duration} onChange={(event) => setDuration(event.target.value)} label="Duracion (min)" placeholder="0" className="font-mono" />
               </div>
 
-              <div className="rounded-[1.25rem] border border-brand-accent/20 bg-brand-accent/6 px-4 py-4 text-center">
+              <div className="rounded-input border border-brand-accent/20 bg-brand-accent/6 px-4 py-4 text-center">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-accent">Ritmo promedio</p>
                 <p className="mt-2 text-3xl font-black tracking-[-0.05em] text-text-primary">{pace} <span className="text-sm text-text-secondary">/km</span></p>
               </div>

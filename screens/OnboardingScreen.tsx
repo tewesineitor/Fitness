@@ -47,12 +47,12 @@ const OnboardingScreen: React.FC = () => {
 
     return (
         <div className="fixed inset-0 z-[200] bg-surface-bg flex flex-col items-center justify-center p-6 animate-fade-in-up">
-            <div className="w-full max-w-md bg-surface-hover/20 border border-surface-border rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div className="w-full max-w-md bg-surface-hover/20 border border-surface-border rounded-sheet p-8 shadow-lg relative overflow-hidden">
                 {/* Decorative background element */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
                 <div className="flex items-center gap-3 mb-8 relative z-10">
-                    <div className="w-12 h-12 rounded-full bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30 shadow-[0_0_15px_rgba(var(--color-brand-accent-rgb),0.2)]">
+                    <div className="w-12 h-12 rounded-full bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30 shadow-glow">
                         <SparklesIcon className="w-6 h-6 text-brand-accent" />
                     </div>
                     <div>
@@ -165,7 +165,7 @@ const OnboardingScreen: React.FC = () => {
                         <div 
                             key={i} 
                             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                step === i ? 'bg-brand-accent w-6 shadow-[0_0_5px_rgba(var(--color-brand-accent-rgb),0.5)]' : 'bg-surface-border'
+                                step === i ? 'bg-brand-accent w-6 shadow-glow' : 'bg-surface-border'
                             }`}
                         />
                     ))}

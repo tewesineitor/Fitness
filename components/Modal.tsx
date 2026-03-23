@@ -46,7 +46,7 @@ const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-md"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-neutral-950/65 px-4 py-6 backdrop-blur-md animate-fade-in"
       onClick={onClose}
       role="presentation"
     >
@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
         className={[
-          'w-full max-w-lg rounded-[1.75rem] border border-surface-border bg-surface-bg shadow-lg animate-sheet-in',
+          'w-full max-w-lg rounded-sheet border border-surface-border bg-surface-bg shadow-lg animate-sheet-in',
           className,
         ].join(' ')}
       >

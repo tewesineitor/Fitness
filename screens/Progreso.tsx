@@ -9,6 +9,7 @@ import ProgressChart from '../components/charts/ProgressChart';
 import StrengthChart from '../components/charts/StrengthChart';
 import CarreraChart from '../components/charts/CarreraChart';
 import AnatomicalEvolutionCard from '../components/progreso/AnatomicalEvolutionCard';
+import Card from '../components/Card';
 import StatChip from '../components/StatChip';
 import PillTabs from '../components/PillTabs';
 import { selectProgressState } from '../selectors/progressSelectors';
@@ -139,8 +140,10 @@ const Progreso: React.FC = () => {
         />
       </div>
 
-      <section
-        className="bg-surface-bg rounded-2xl border border-surface-border shadow-sm overflow-hidden mb-3 animate-fade-in-up"
+      <Card
+        as="section"
+        variant="default"
+        className="overflow-hidden mb-3 animate-fade-in-up"
         style={{ animationDelay: '120ms' }}
       >
         <div className="px-4 pt-4 pb-3 border-b border-surface-border/50 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -155,13 +158,13 @@ const Progreso: React.FC = () => {
             className="sm:max-w-[280px]"
           />
 
-          <div className="flex gap-1 bg-surface-hover/40 border border-surface-border rounded-xl p-1 self-start sm:self-auto">
+          <div className="flex gap-1 bg-surface-hover/40 border border-surface-border rounded-input p-1 self-start sm:self-auto">
             {(['1M', '3M', 'ALL'] as TimeRange[]).map((opt) => (
               <button
                 key={opt}
                 onClick={() => setChartTimeRange(opt)}
                 className={[
-                  'px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 active:scale-95',
+                  'px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-tag transition-all duration-200 active:scale-95',
                   chartTimeRange === opt
                     ? 'bg-text-primary text-bg-base shadow-sm'
                     : 'text-text-secondary hover:text-text-primary',
@@ -182,7 +185,7 @@ const Progreso: React.FC = () => {
             {activeChart === 'cardio' && <CarreraChart timeRange={chartTimeRange} />}
           </div>
         </div>
-      </section>
+      </Card>
 
       <div
         className="grid grid-cols-2 gap-3 mb-3 animate-fade-in-up"

@@ -20,7 +20,7 @@ const MetricInput: React.FC<{
     type?: string;
     unit?: string;
 }> = ({ label, value, onChange, type = 'text', unit }) => (
-    <div className="flex flex-col p-2.5 bg-surface-bg border border-surface-border rounded-xl focus-within:border-brand-accent focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all relative overflow-hidden group shadow-sm">
+    <div className="flex flex-col p-2.5 bg-surface-bg border border-surface-border rounded-input focus-within:border-brand-accent focus-within:ring-1 focus-within:ring-brand-accent/50 transition-all relative overflow-hidden group shadow-sm">
         <label className="text-[9px] font-bold text-text-secondary uppercase tracking-widest mb-1 group-focus-within:text-brand-accent transition-colors">{label}</label>
         <div className="flex items-baseline gap-1">
             <input
