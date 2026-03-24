@@ -18,7 +18,6 @@ import {
 import RuckingSession from './rutina-activa/RuckingSession';
 import CardioLibreLogModal from '../components/dialogs/CardioLibreLogModal';
 import MacroArcGauge from '../components/MacroArcGauge';
-import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -75,23 +74,57 @@ const HoyScreen: React.FC = () => {
     const primaryTask    = hoy.tasksToDisplay[0] ?? null;
     const secondaryTasks = hoy.tasksToDisplay.slice(1);
 
-    // Console chip data for Innegociables
-    const chips: Array<{
-        key:     string;
-        status:  HabitStatus;
-        value:   string;
-        goal:    string;
-        label:   string;
-        onClick?: () => void;
+    // ── Innegociable arc chips ────────────────────────────────────────────────
+    const sleepPct = Math.min((hoy.session.dailyHabits.sleepHours / 7) * 100, 100);
+    const stepsPct = (hoy.session.dailyHabits.stepsGoalMet || hoy.session.dailyHabits.ruckingSessionMet) ? 100 : 0;
+
+    const arcChips: Array<{
+        key: string; label: string; pct: number;
+        value: number | string; unit: string;
+        stroke: string; isOver: boolean; onClick?: () => void;
     }> = [
-        { key: 'protein',  status: hoy.habitStatuses.protein,  value: `${Math.round(hoy.consumed.protein)}`, goal: `${hoy.dailyGoals.protein}g`, label: 'PROTEÍNA' },
-        { key: 'kcal',     status: hoy.habitStatuses.calories, value: `${Math.round(hoy.consumed.kcal)}`,    goal: `${hoy.dailyGoals.kcal}`,     label: 'KCAL'     },
-        { key: 'sleep',    status: hoy.habitStatuses.sleep,    value: '—',                                    goal: '7 h',                         label: 'SUEÑO',    onClick: hoy.onToggleSleep },
-        { key: 'steps',    status: hoy.habitStatuses.steps,    value: '—',                                    goal: '10 k',                        label: 'PASOS',    onClick: hoy.onToggleSteps },
+        { key: 'protein', label: 'PROT',  pct: pPct,        value: Math.round(hoy.consumed.protein),        unit: 'g', stroke: 'stroke-brand-accent', isOver: false },
+        { key: 'kcal',    label: 'KCAL',  pct: hoy.kcalPct, value: Math.round(hoy.consumed.kcal),           unit: 'k', stroke: 'stroke-brand-accent', isOver: hoy.isKcalOver },
+        { key: 'sleep',   label: 'SUEÑO', pct: sleepPct,    value: hoy.session.dailyHabits.sleepHours || 0, unit: 'h', stroke: 'stroke-brand-carbs',  isOver: false, onClick: hoy.onToggleSleep },
+        { key: 'steps',   label: 'PASOS', pct: stepsPct,    value: stepsPct > 0 ? '✓' : '—',               unit: '',  stroke: 'stroke-brand-fat',    isOver: false, onClick: hoy.onToggleSteps },
     ];
 
+    // ── Weekly habit tracker ──────────────────────────────────────────────────
+    const toLocalDateStr = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const trackerToday = new Date();
+    const trackerStart = new Date(trackerToday);
+    trackerStart.setDate(trackerToday.getDate() - ((trackerToday.getDay() + 6) % 7));
+    const weekDays   = Array.from({ length: 7 }, (_, i) => { const d = new Date(trackerStart); d.setDate(trackerStart.getDate() + i); return d; });
+    const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const todayStr   = toLocalDateStr(trackerToday);
+
+    const metToday = [
+        hoy.habitStatuses.protein  === 'success',
+        hoy.habitStatuses.calories !== 'danger',
+        hoy.habitStatuses.sleep    === 'success',
+        hoy.habitStatuses.steps    === 'success',
+    ].filter(Boolean).length;
+
+    const activityDatesRaw = hoy.progress.progressTracker.activityDates;
+    const activitySet = new Set(
+        activityDatesRaw instanceof Set ? [...activityDatesRaw] : (activityDatesRaw as string[])
+    );
+
+    const getDayPillClass = (d: Date): string => {
+        const ds = toLocalDateStr(d);
+        if (ds > todayStr)    return 'bg-zinc-800/60';
+        if (ds === todayStr) {
+            if (metToday >= 4) return 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]';
+            if (metToday === 3) return 'bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.4)]';
+            return 'bg-zinc-700';
+        }
+        return activitySet.has(ds) ? 'bg-cyan-400/50' : 'bg-zinc-800';
+    };
+
     return (
-        <div className="grid grid-cols-12 gap-bento px-4 sm:px-6 pb-section mx-auto max-w-2xl w-full">
+        <div className="flex flex-col gap-4 px-4 pb-36 mx-auto max-w-2xl w-full">
 
             {/* Modal */}
             {hoy.isLoggingActivity && (
@@ -106,14 +139,19 @@ const HoyScreen: React.FC = () => {
                 />
             )}
 
-            {/* ── ROW 1 · CABECERA ──────────────────────────────── col-12 */}
-            <header className="col-span-12 flex items-start justify-between pt-4 pb-1 animate-fade-in-up">
-                <div className="flex flex-col gap-0.5">
-                    <span className="ui-page-eyebrow">Panel diario</span>
-                    <h1 className="font-heading text-2xl font-black text-text-primary leading-tight tracking-tight">
+            {/* ── HEADER ──────────────────────────────────────────────── */}
+            <header className="flex items-start justify-between pt-6 pb-1 animate-fade-in-up">
+                <div className="flex flex-col gap-1">
+                    <span
+                        className="text-[10px] font-black uppercase text-zinc-500"
+                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                    >
+                        Panel diario
+                    </span>
+                    <h1 className="font-heading text-3xl font-black text-white leading-tight tracking-tight">
                         {hoy.capitalizedDate}
                     </h1>
-                    <p className="text-sm text-text-secondary">
+                    <p className="text-sm text-zinc-400">
                         {hoy.customMantra || `Hola, ${hoy.userName}`}
                     </p>
                 </div>
@@ -126,56 +164,67 @@ const HoyScreen: React.FC = () => {
                 />
             </header>
 
-            {/* ── ROW 2 · INNEGOCIABLES chip-line ──────────────── col-12 */}
+            {/* ── WEEKLY HABIT TRACKER ─────────────────────────────────── */}
             <div
-                className="col-span-12 ui-surface p-bento-pad animate-fade-in-up"
-                style={{ animationDelay: '40ms' }}
+                className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] px-5 py-4 animate-fade-in-up"
+                style={{ animationDelay: '30ms' }}
             >
-                <div className="flex divide-x divide-surface-border/50">
-                    {chips.map(({ key, status, value, goal, label, onClick }) => {
-                        const Tag = onClick ? 'button' : ('div' as React.ElementType);
+                <div className="flex items-center justify-between mb-3">
+                    <span
+                        className="text-[9px] font-black uppercase text-zinc-500"
+                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                    >
+                        Esta semana
+                    </span>
+                    <span className="text-[9px] font-bold text-zinc-400">
+                        {metToday}/4 hoy
+                    </span>
+                </div>
+                <div className="grid grid-cols-7 gap-2">
+                    {weekDays.map((d, i) => {
+                        const isToday = toLocalDateStr(d) === todayStr;
                         return (
-                            <Tag
-                                key={key}
-                                onClick={onClick}
-                                className={[
-                                    'flex-1 flex flex-col gap-1.5 px-3 first:pl-0 last:pr-0 text-left min-w-0',
-                                    onClick ? 'cursor-pointer transition-opacity duration-150 active:opacity-60' : '',
-                                ].join(' ')}
-                            >
-                                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[status]}`} />
-                                <div className="flex items-baseline gap-0.5 leading-none min-w-0">
-                                    <span className="text-lg font-black font-mono text-text-primary leading-none tabular-nums truncate">
-                                        {value}
-                                    </span>
-                                    <span className="text-[9px] font-mono text-text-muted leading-none flex-shrink-0">
-                                        /{goal}
-                                    </span>
-                                </div>
+                            <div key={i} className="flex flex-col items-center gap-1.5">
                                 <span
-                                    className="text-[8px] font-black uppercase text-text-secondary leading-none truncate"
+                                    className={`text-[8px] font-black uppercase ${isToday ? 'text-white' : 'text-zinc-600'}`}
                                     style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
                                 >
-                                    {label}
+                                    {DAY_LABELS[i]}
                                 </span>
-                            </Tag>
+                                <div className={`w-full h-2 rounded-full transition-all duration-300 ${getDayPillClass(d)}`} />
+                            </div>
                         );
                     })}
                 </div>
             </div>
 
-            {/* ── ROW 3 · MISIÓN (8) + EXPLORAR (4) ───────────────────── */}
-
-            {/* Mission */}
+            {/* ── MISIÓN DEL DÍA ───────────────────────────────────────── */}
             <section
-                className="col-span-12 sm:col-span-8 ui-surface p-bento-pad flex flex-col animate-fade-in-up"
-                style={{ animationDelay: '80ms' }}
+                className="relative overflow-hidden bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-5 flex flex-col gap-4 animate-fade-in-up"
+                style={{ animationDelay: '60ms' }}
             >
-                <div className="flex items-center justify-between mb-3">
-                    <span className="ui-section__eyebrow">Misión de Hoy</span>
+                {/* Atmospheric texture layer */}
+                <div
+                    className="absolute inset-0 rounded-[2rem] pointer-events-none"
+                    style={{
+                        background: [
+                            'radial-gradient(ellipse 130% 90% at 10% 15%, rgba(52,211,153,0.07) 0%, transparent 55%)',
+                            'radial-gradient(ellipse 90% 110% at 90% 85%, rgba(56,189,248,0.05) 0%, transparent 50%)',
+                            'radial-gradient(ellipse 60% 60% at 50% 50%, rgba(39,39,42,0.3) 0%, transparent 100%)',
+                        ].join(', '),
+                    }}
+                />
+
+                <div className="relative z-10 flex items-center justify-between">
+                    <span
+                        className="text-[9px] font-black uppercase text-zinc-500"
+                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                    >
+                        Misión de Hoy
+                    </span>
                     <button
                         onClick={hoy.openPlanner}
-                        className="text-[9px] font-bold text-brand-accent hover:underline transition-colors"
+                        className="text-[9px] font-bold text-zinc-400 hover:text-emerald-400 transition-colors"
                     >
                         Gestionar →
                     </button>
@@ -190,51 +239,60 @@ const HoyScreen: React.FC = () => {
 
                     return (
                         <>
-                            {/* Hero task — typographic aggression */}
                             <button
                                 onClick={() => hoy.onSelectRoutine(primaryTask)}
                                 disabled={isDone}
                                 className={[
-                                    'w-full text-left group mb-3',
+                                    'relative z-10 w-full text-left group',
                                     isDone ? 'opacity-40 cursor-default' : '',
                                 ].join(' ')}
                             >
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-[9px] font-black uppercase text-text-muted bg-surface-hover border border-surface-border rounded-pill px-2 py-0.5" style={{ letterSpacing: 'var(--letter-spacing-caps)' }}>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span
+                                        className="text-[9px] font-black uppercase text-zinc-400 bg-zinc-800/60 border border-zinc-700/50 rounded-full px-3 py-1"
+                                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                                    >
                                         {primaryTask.timeOfDay}
                                     </span>
                                     {!isDone && (
-                                        <TaskIcon type={primaryTask.type} className="w-3.5 h-3.5 text-brand-accent" />
+                                        <TaskIcon type={primaryTask.type} className="w-4 h-4 text-emerald-400" />
                                     )}
                                 </div>
 
                                 <h2 className={[
-                                    'font-heading font-black leading-none tracking-tight mb-1.5',
-                                    'text-3xl sm:text-4xl',
+                                    'font-heading font-black leading-none tracking-tight mb-2 text-4xl sm:text-5xl',
                                     isDone
-                                        ? 'line-through text-text-muted'
-                                        : 'text-text-primary group-hover:text-brand-accent transition-colors duration-200',
+                                        ? 'line-through text-zinc-600'
+                                        : 'text-white group-hover:text-emerald-400 transition-colors duration-200',
                                 ].join(' ')}>
                                     {primaryTask.name}
                                 </h2>
 
-                                <p className="text-[10px] text-text-secondary font-medium">
+                                <p className="text-sm text-zinc-400 font-medium">
                                     {getTaskDetails(primaryTask, hoy.cardioWeek)}
                                 </p>
 
                                 {!isDone && pct > 0 && (
-                                    <div className="mt-2.5 h-[2px] w-full bg-surface-hover rounded-pill overflow-hidden">
+                                    <div className="mt-3 h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-brand-accent rounded-pill transition-all duration-500"
+                                            className="h-full bg-emerald-400 rounded-full transition-all duration-500"
                                             style={{ width: `${pct * 100}%` }}
                                         />
                                     </div>
                                 )}
                             </button>
 
-                            {/* Secondary tasks */}
+                            {!isDone && (
+                                <button
+                                    onClick={() => hoy.onSelectRoutine(primaryTask)}
+                                    className="relative z-10 w-full bg-emerald-400 text-zinc-950 font-black text-sm rounded-full py-3.5 shadow-[0_0_30px_rgba(52,211,153,0.25)] active:scale-[0.97] transition-all duration-150 select-none"
+                                >
+                                    Empezar Rutina
+                                </button>
+                            )}
+
                             {secondaryTasks.length > 0 && (
-                                <div className="flex flex-col gap-1.5 mt-auto pt-2 border-t border-surface-border/50">
+                                <div className="relative z-10 flex flex-col gap-2 pt-2 border-t border-zinc-800/50">
                                     {secondaryTasks.map(task => {
                                         const sid   = `${task.id}-${task.timeOfDay}`;
                                         const sDone = hoy.session.dailyProgress.completedTasks.includes(sid);
@@ -244,29 +302,32 @@ const HoyScreen: React.FC = () => {
                                                 onClick={() => hoy.onSelectRoutine(task)}
                                                 disabled={sDone}
                                                 className={[
-                                                    'flex items-center gap-2.5 text-left rounded-input px-3 py-2',
-                                                    'border border-surface-border/60 transition-all duration-200',
+                                                    'flex items-center gap-3 text-left rounded-[1.5rem] px-4 py-3',
+                                                    'border border-zinc-800/50 transition-all duration-200',
                                                     sDone
-                                                        ? 'opacity-40 cursor-default bg-surface-hover/20'
-                                                        : 'bg-surface-hover/20 hover:border-brand-accent/30 hover:bg-surface-hover group',
+                                                        ? 'opacity-40 cursor-default bg-zinc-900/30'
+                                                        : 'bg-zinc-800/30 hover:border-emerald-400/30 active:bg-zinc-800/40 cursor-pointer select-none group',
                                                 ].join(' ')}
                                             >
-                                                <div className="w-7 h-7 flex items-center justify-center rounded-input bg-surface-hover flex-shrink-0">
+                                                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-800 flex-shrink-0">
                                                     {sDone
-                                                        ? <CheckCircleIcon className="w-3.5 h-3.5 text-success" />
-                                                        : <TaskIcon type={task.type} className="w-3.5 h-3.5 text-text-secondary group-hover:text-brand-accent transition-colors" />
+                                                        ? <CheckCircleIcon className="w-4 h-4 text-emerald-400" />
+                                                        : <TaskIcon type={task.type} className="w-4 h-4 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
                                                     }
                                                 </div>
                                                 <div className="min-w-0 flex-grow">
-                                                    <p className={`text-[11px] font-bold truncate ${sDone ? 'line-through text-text-muted' : 'text-text-primary'}`}>
+                                                    <p className={`text-sm font-bold truncate ${sDone ? 'line-through text-zinc-600' : 'text-zinc-100'}`}>
                                                         {task.name}
                                                     </p>
-                                                    <p className="text-[8px] text-text-muted font-black uppercase" style={{ letterSpacing: 'var(--letter-spacing-caps)' }}>
+                                                    <p
+                                                        className="text-[9px] text-zinc-500 font-black uppercase"
+                                                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                                                    >
                                                         {task.timeOfDay}
                                                     </p>
                                                 </div>
                                                 {!sDone && (
-                                                    <ChevronRightIcon className="w-3.5 h-3.5 text-text-muted flex-shrink-0 group-hover:text-brand-accent transition-colors" />
+                                                    <ChevronRightIcon className="w-4 h-4 text-zinc-500 flex-shrink-0 group-hover:text-emerald-400 transition-colors" />
                                                 )}
                                             </button>
                                         );
@@ -276,35 +337,87 @@ const HoyScreen: React.FC = () => {
                         </>
                     );
                 })() : (
-                    <div className="ui-surface--inset flex flex-col items-center gap-2 px-5 py-6">
-                        <div className="w-9 h-9 rounded-pill bg-surface-hover flex items-center justify-center">
-                            <MoonIcon className="w-4 h-4 text-text-muted" />
+                    /* ── REST DAY with atmospheric texture ── */
+                    <div className="relative z-10 flex flex-col items-center gap-4 py-6">
+                        <div className="w-14 h-14 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center shadow-[0_0_24px_rgba(56,189,248,0.12)]">
+                            <MoonIcon className="w-6 h-6 text-zinc-300" />
                         </div>
-                        <p className="text-[11px] font-black text-text-primary uppercase tracking-widest text-center">
-                            Descanso Programado
-                        </p>
-                        <p className="text-[10px] text-text-secondary text-center leading-relaxed">
-                            La recuperación es parte esencial del proceso.
-                        </p>
-                        <Button
+                        <div className="text-center">
+                            <p className="font-heading text-xl font-black text-white uppercase tracking-wide mb-1.5">
+                                Hoy toca descanso
+                            </p>
+                            <p className="text-sm text-zinc-400 leading-relaxed max-w-[220px] mx-auto">
+                                La recuperación es parte esencial del proceso.
+                            </p>
+                        </div>
+                        <button
                             onClick={() => hoy.openActivityLog('run')}
-                            variant="secondary"
-                            size="small"
-                            className="mt-1"
+                            className="bg-emerald-400 text-zinc-950 font-black text-sm rounded-full px-8 py-3.5 shadow-[0_0_30px_rgba(52,211,153,0.25)] active:scale-[0.97] transition-all duration-150 select-none"
                         >
                             Registrar actividad libre
-                        </Button>
+                        </button>
                     </div>
                 )}
             </section>
 
-            {/* Explore */}
-            <section
-                className="col-span-12 sm:col-span-4 ui-surface p-bento-pad flex flex-col gap-bento animate-fade-in-up"
-                style={{ animationDelay: '100ms' }}
+            {/* ── INNEGOCIABLES ────────────────────────────────────────── */}
+            <div
+                className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-5 animate-fade-in-up"
+                style={{ animationDelay: '90ms' }}
             >
-                <span className="ui-section__eyebrow">Explorar</span>
-                <div className="flex flex-col gap-2 flex-grow justify-center">
+                <span
+                    className="text-[9px] font-black uppercase text-zinc-500 mb-4 block"
+                    style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                >
+                    Innegociables
+                </span>
+                <div className="grid grid-cols-4 gap-2">
+                    {arcChips.map(({ key, label, pct, value, unit, stroke, isOver, onClick }) => {
+                        const Tag = onClick ? 'button' : ('div' as React.ElementType);
+                        return (
+                            <Tag
+                                key={key}
+                                onClick={onClick}
+                                className={[
+                                    'flex flex-col items-center gap-1 min-w-0',
+                                    onClick ? 'cursor-pointer active:opacity-60 transition-opacity duration-150 select-none' : '',
+                                ].join(' ')}
+                            >
+                                <MacroArcGauge
+                                    pct={pct}
+                                    value={value}
+                                    unit={unit}
+                                    isOver={isOver}
+                                    strokeClass={stroke}
+                                    textClass="text-zinc-100"
+                                    size={58}
+                                    strokeWidth={4}
+                                />
+                                <span
+                                    className="text-[8px] font-black uppercase text-zinc-400 leading-none"
+                                    style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                                >
+                                    {label}
+                                </span>
+                            </Tag>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* ── EXPLORAR + NUTRICIÓN ─────────────────────────────────── */}
+            <div
+                className="grid grid-cols-2 gap-4 animate-fade-in-up"
+                style={{ animationDelay: '120ms' }}
+            >
+                {/* Explorar */}
+                <section className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-4 flex flex-col gap-2">
+                    <span
+                        className="text-[9px] font-black uppercase text-zinc-500 mb-1 block"
+                        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                    >
+                        Explorar
+                    </span>
                     {([
                         { icon: CardioIcon,   label: 'Carrera',    type: 'run'     as const },
                         { icon: MountainIcon, label: 'Senderismo', type: 'hike'    as const },
@@ -313,85 +426,88 @@ const HoyScreen: React.FC = () => {
                         <button
                             key={type}
                             onClick={() => hoy.openActivityLog(type)}
-                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-card border border-surface-border bg-surface-hover/20 hover:bg-surface-hover hover:border-brand-accent/30 transition-all duration-200 active:scale-[0.95] group"
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-[1.5rem] border border-zinc-800/50 bg-zinc-800/30 active:bg-zinc-800/40 cursor-pointer select-none group transition-all duration-200"
                         >
-                            <div className="w-7 h-7 flex items-center justify-center rounded-input bg-surface-hover group-hover:bg-brand-accent/10 transition-colors flex-shrink-0">
-                                <Icon className="w-3.5 h-3.5 text-text-secondary group-hover:text-brand-accent transition-colors" />
+                            <div className="w-7 h-7 flex items-center justify-center rounded-full bg-zinc-800 flex-shrink-0 group-hover:bg-emerald-400/10 transition-colors">
+                                <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
                             </div>
-                            <span className="text-[10px] font-black uppercase text-text-secondary group-hover:text-text-primary transition-colors flex-grow" style={{ letterSpacing: 'var(--letter-spacing-caps)' }}>
-                                {label}
-                            </span>
-                            <ChevronRightIcon className="w-3.5 h-3.5 text-text-muted opacity-0 group-hover:opacity-100 group-hover:text-brand-accent transition-all" />
-                        </button>
-                    ))}
-                </div>
-            </section>
-
-            {/* ── ROW 4 · NUTRICIÓN ─────────────────────────────── col-6 */}
-            <section
-                className="col-span-12 sm:col-span-6 ui-surface--glass shadow-glow-lg p-bento-pad flex flex-col gap-3 animate-fade-in-up"
-                style={{ animationDelay: '130ms' }}
-            >
-                <div className="flex items-center justify-between">
-                    <span className="ui-section__eyebrow">Nutrición</span>
-                    <button
-                        onClick={hoy.openNutrition}
-                        className="text-[9px] font-bold text-brand-accent hover:underline transition-colors"
-                    >
-                        Ver →
-                    </button>
-                </div>
-
-                {/* Kcal — main arc */}
-                <div className="flex items-center gap-3">
-                    <MacroArcGauge
-                        pct={hoy.kcalPct}
-                        value={Math.round(hoy.consumed.kcal)}
-                        unit="kcal"
-                        isOver={hoy.isKcalOver}
-                        strokeClass="stroke-brand-accent"
-                        textClass="text-text-primary"
-                        size={80}
-                        strokeWidth={6}
-                    />
-                    <div>
-                        <p className={`text-sm font-black leading-tight ${hoy.isKcalOver ? 'text-danger' : 'text-text-primary'}`}>
-                            {hoy.isKcalOver ? 'Excedido' : `${Math.round(hoy.kcalRemaining)} rest.`}
-                        </p>
-                        <p className="text-[9px] font-mono font-bold text-text-muted uppercase" style={{ letterSpacing: 'var(--letter-spacing-caps)' }}>
-                            / {hoy.dailyGoals.kcal} kcal
-                        </p>
-                    </div>
-                </div>
-
-                {/* P · C · G — three semicircle arcs */}
-                <div className="flex items-end justify-around mt-auto gap-1">
-                    {([
-                        { pct: pPct, val: Math.round(hoy.consumed.protein), unit: 'g', stroke: 'stroke-brand-accent', label: 'PROT' },
-                        { pct: cPct, val: Math.round(hoy.consumed.carbs),   unit: 'g', stroke: 'stroke-brand-carbs',  label: 'CARB' },
-                        { pct: fPct, val: Math.round(hoy.consumed.fat),     unit: 'g', stroke: 'stroke-brand-fat',    label: 'GRAS' },
-                    ] as const).map(({ pct, val, unit, stroke, label }) => (
-                        <div key={label} className="flex flex-col items-center gap-0.5">
-                            <MacroArcGauge
-                                pct={pct}
-                                value={val}
-                                unit={unit}
-                                isOver={false}
-                                strokeClass={stroke}
-                                textClass="text-text-primary"
-                                size={52}
-                                strokeWidth={4}
-                            />
                             <span
-                                className="text-[7px] font-black uppercase text-text-muted"
+                                className="text-[9px] font-black uppercase text-zinc-400 group-hover:text-zinc-100 transition-colors flex-grow"
                                 style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
                             >
                                 {label}
                             </span>
-                        </div>
+                        </button>
                     ))}
-                </div>
-            </section>
+                </section>
+
+                {/* Nutrición */}
+                <section className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-4 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                        <span
+                            className="text-[9px] font-black uppercase text-zinc-500"
+                            style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                        >
+                            Nutrición
+                        </span>
+                        <button
+                            onClick={hoy.openNutrition}
+                            className="text-[9px] font-bold text-zinc-400 hover:text-emerald-400 transition-colors"
+                        >
+                            Ver →
+                        </button>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <MacroArcGauge
+                            pct={hoy.kcalPct}
+                            value={Math.round(hoy.consumed.kcal)}
+                            unit="kcal"
+                            isOver={hoy.isKcalOver}
+                            strokeClass="stroke-brand-accent"
+                            textClass="text-zinc-100"
+                            size={72}
+                            strokeWidth={5}
+                        />
+                        <p className={`text-xs font-black leading-tight ${hoy.isKcalOver ? 'text-danger' : 'text-zinc-100'}`}>
+                            {hoy.isKcalOver ? 'Excedido' : `${Math.round(hoy.kcalRemaining)} rest.`}
+                        </p>
+                        <p
+                            className="text-[8px] font-mono font-bold text-zinc-500 uppercase"
+                            style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                        >
+                            / {hoy.dailyGoals.kcal} kcal
+                        </p>
+                    </div>
+
+                    <div className="flex items-end justify-around mt-auto gap-1">
+                        {([
+                            { pct: pPct, val: Math.round(hoy.consumed.protein), unit: 'g', stroke: 'stroke-brand-accent', label: 'PROT' },
+                            { pct: cPct, val: Math.round(hoy.consumed.carbs),   unit: 'g', stroke: 'stroke-brand-carbs',  label: 'CARB' },
+                            { pct: fPct, val: Math.round(hoy.consumed.fat),     unit: 'g', stroke: 'stroke-brand-fat',    label: 'GRAS' },
+                        ] as const).map(({ pct, val, unit, stroke, label }) => (
+                            <div key={label} className="flex flex-col items-center gap-0.5">
+                                <MacroArcGauge
+                                    pct={pct}
+                                    value={val}
+                                    unit={unit}
+                                    isOver={false}
+                                    strokeClass={stroke}
+                                    textClass="text-zinc-100"
+                                    size={44}
+                                    strokeWidth={3}
+                                />
+                                <span
+                                    className="text-[7px] font-black uppercase text-zinc-500"
+                                    style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                                >
+                                    {label}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            </div>
 
         </div>
     );
