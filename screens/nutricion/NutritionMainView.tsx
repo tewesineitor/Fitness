@@ -15,24 +15,6 @@ const ChevronDown: React.FC<{ className?: string }> = ({ className }) => (
 // ── Arc math ─────────────────────────────────────────────────────────────────
 const CIRC = 2 * Math.PI * 40; // ≈ 251.33
 
-// ── QA Visual: mock meals para evaluación del diseño ─────────────────────────
-const MOCK_MEALS: LoggedMeal[] = [
-    {
-        id: 'mock-1',
-        name: 'Classic Poached Eggs',
-        timestamp: new Date(),
-        macros: { kcal: 420, protein: 24, carbs: 32, fat: 18 },
-        foods: [],
-    },
-    {
-        id: 'mock-2',
-        name: 'Vitality Green Juice',
-        timestamp: new Date(),
-        macros: { kcal: 115, protein: 4, carbs: 22, fat: 1 },
-        foods: [],
-    },
-];
-
 // ── Sub: barra de macro simple (Proteína) ───────────────────────────────────
 const MacroBar: React.FC<{
     label: string; value: number; goalG: number; pct: number;
@@ -172,10 +154,7 @@ interface NutritionMainViewProps {
 export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddFood }) => {
     const n = useNutritionLogic(onGoToAddFood);
 
-    // QA override: sustituye mealsForDay con datos hardcoded
-    const displayMeals: LoggedMeal[] = MOCK_MEALS;
-
-    const [expandedId, setExpandedId] = React.useState<string | null>('mock-1');
+    const [expandedId, setExpandedId] = React.useState<string | null>(null);
 
     const arcOffset = CIRC * (1 - n.kcalPct / 100);
 
@@ -197,7 +176,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
             ) : null}
 
             {/* ── Canvas principal ─────────────────────────────────────────── */}
-            <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-40 space-y-8">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-52 space-y-8">
 
                 {/* ══ SECCIÓN 1: Fecha + Anillo Calórico ══════════════════════ */}
                 <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center animate-fade-in-up">
@@ -404,24 +383,34 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             Registro del día
                         </h2>
                         <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                            {displayMeals.length} {displayMeals.length === 1 ? 'comida' : 'comidas'}
+                            {n.mealsForDay.length} {n.mealsForDay.length === 1 ? 'comida' : 'comidas'}
                         </span>
                     </div>
 
+                    {n.mealsForDay.length === 0 ? (
+                        <div className="bg-zinc-900/40 border border-zinc-800/40 rounded-[1.5rem] p-10 flex flex-col items-center gap-3">
+                            <span className="text-3xl">🍽️</span>
+                            <p className="text-zinc-400 text-sm font-medium">Sin comidas registradas hoy</p>
+                        </div>
+                    ) : (
                     <div className="space-y-4">
-                        {displayMeals.map((meal: LoggedMeal) => {
+                        {n.mealsForDay.map((meal: LoggedMeal) => {
                             const mealTime = new Date(meal.timestamp).toLocaleTimeString('es-ES', {
                                 hour: '2-digit', minute: '2-digit',
                             });
                             const isOpen = expandedId === meal.id;
+                            const hasIngredients = meal.foods && meal.foods.length > 0;
                             return (
                                 <div
                                     key={meal.id}
-                                    className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] overflow-hidden transition-colors hover:bg-zinc-800/40"
+                                    className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] overflow-hidden"
                                 >
-                                    {/* ── Header del acordeón ── */}
-                                    <div className="p-4 flex gap-4 items-center">
-                                        {/* Placeholder visual */}
+                                    {/* ── Header táctil (zona de toggle) ── */}
+                                    <div
+                                        className="p-4 flex gap-4 items-center cursor-pointer active:bg-zinc-800/40 transition-colors select-none"
+                                        onClick={() => { vibrate(3); setExpandedId(isOpen ? null : meal.id); }}
+                                    >
+                                        {/* Thumbnail */}
                                         <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gradient-to-br from-emerald-900/50 to-cyan-900/40 border border-emerald-800/20" />
 
                                         {/* Info central */}
@@ -443,9 +432,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                             </div>
                                         </div>
 
-                                        {/* Kcal + acciones + chevron */}
-                                        <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                                            <div className="text-right">
+                                        {/* Kcal + Chevron (derecha, alineados verticalmente) */}
+                                        <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                                            <div className="text-center">
                                                 <p className="text-xl font-heading font-black text-white leading-none">
                                                     {Math.round(meal.macros.kcal)}
                                                 </p>
@@ -453,60 +442,65 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                                     kcal
                                                 </p>
                                             </div>
-                                            <div className="flex gap-1.5">
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); vibrate(5); n.onRequestEdit(meal); }}
-                                                    className="w-8 h-8 rounded-xl bg-zinc-800/80 flex items-center justify-center text-zinc-400 hover:text-emerald-400 transition-colors"
-                                                    aria-label="Editar"
-                                                >
-                                                    <PencilIcon className="w-3.5 h-3.5" />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); vibrate(10); n.onRequestDelete(meal); }}
-                                                    className="w-8 h-8 rounded-xl bg-zinc-800/80 flex items-center justify-center text-zinc-400 hover:text-red-400 transition-colors"
-                                                    aria-label="Eliminar"
-                                                >
-                                                    <TrashIcon className="w-3.5 h-3.5" />
-                                                </button>
-                                            </div>
-                                            {/* Affordance acordeón */}
-                                            <button
-                                                onClick={() => { vibrate(3); setExpandedId(isOpen ? null : meal.id); }}
-                                                className="w-8 h-8 rounded-xl bg-zinc-800/60 flex items-center justify-center text-zinc-400 hover:text-zinc-200 transition-colors"
-                                                aria-label={isOpen ? 'Colapsar' : 'Ver ingredientes'}
-                                            >
-                                                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-                                            </button>
+                                            <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                                         </div>
                                     </div>
 
-                                    {/* ── Panel expandido (acordeón) ── */}
+                                    {/* ── Acciones (Editar / Eliminar) ── */}
+                                    <div className="flex justify-end gap-2 px-4 pb-3 -mt-1">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); vibrate(5); n.onRequestEdit(meal); }}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-emerald-400 text-xs font-semibold transition-colors"
+                                            aria-label="Editar"
+                                        >
+                                            <PencilIcon className="w-3 h-3" /> Editar
+                                        </button>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); vibrate(10); n.onRequestDelete(meal); }}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-red-400 text-xs font-semibold transition-colors"
+                                            aria-label="Eliminar"
+                                        >
+                                            <TrashIcon className="w-3 h-3" /> Eliminar
+                                        </button>
+                                    </div>
+
+                                    {/* ── Panel expandido ── */}
                                     {isOpen && (
                                         <div className="border-t border-zinc-800/50 px-5 pt-4 pb-5 space-y-3">
                                             <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-3">Ingredientes</p>
-                                            {[
-                                                { name: '2 Huevos escalfados',       kcal: 140, p: 12, c: 1,  f: 10 },
-                                                { name: '1 Rebanada de pan integral', kcal: 80,  p: 3,  c: 15, f: 1  },
-                                                { name: '1 cdta. Aceite de oliva',    kcal: 45,  p: 0,  c: 0,  f: 5  },
-                                            ].map((ing, i) => (
-                                                <div key={i} className="flex items-center justify-between gap-3">
-                                                    <span className="text-sm text-zinc-200 font-medium flex-1 truncate">{ing.name}</span>
-                                                    <div className="flex items-center gap-3 flex-shrink-0">
-                                                        <span className="text-xs text-zinc-400 tabular-nums w-14 text-right">{ing.kcal} kcal</span>
-                                                        <div className="flex gap-2">
-                                                            <span className="text-xs text-emerald-400/80 tabular-nums">P:{ing.p}g</span>
-                                                            <span className="text-xs text-cyan-400/80 tabular-nums">C:{ing.c}g</span>
-                                                            <span className="text-xs text-purple-400/80 tabular-nums">G:{ing.f}g</span>
+                                            {hasIngredients ? (
+                                                meal.foods.map((food, i) => {
+                                                    const m = food.foodItem.macrosPerPortion;
+                                                    const p = food.portions;
+                                                    return (
+                                                        <div key={i} className="flex items-center justify-between gap-3">
+                                                            <span className="text-sm text-zinc-200 font-medium flex-1 truncate">
+                                                                {food.portions !== 1 && <span className="text-zinc-500">{p}× </span>}
+                                                                {food.foodItem.name}
+                                                            </span>
+                                                            <div className="flex items-center gap-3 flex-shrink-0">
+                                                                <span className="text-xs text-zinc-400 tabular-nums w-14 text-right">
+                                                                    {Math.round(m.kcal * p)} kcal
+                                                                </span>
+                                                                <div className="flex gap-2">
+                                                                    <span className="text-xs text-emerald-400/80 tabular-nums">P:{Math.round(m.protein * p)}g</span>
+                                                                    <span className="text-xs text-cyan-400/80 tabular-nums">C:{Math.round(m.carbs * p)}g</span>
+                                                                    <span className="text-xs text-purple-400/80 tabular-nums">G:{Math.round(m.fat * p)}g</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                    );
+                                                })
+                                            ) : (
+                                                <p className="text-xs text-zinc-500 italic">Sin ingredientes registrados</p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             );
                         })}
                     </div>
+                    )}
                 </section>
             </div>
 
