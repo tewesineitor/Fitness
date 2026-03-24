@@ -472,17 +472,26 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                                 meal.foods.map((food, i) => {
                                                     const m = food.foodItem.macrosPerPortion;
                                                     const p = food.portions;
+                                                    const fi = food.foodItem;
+                                                    const amount = fi.rawWeightG
+                                                        ? `${Math.round(fi.rawWeightG * p)}g`
+                                                        : fi.cookedWeightG
+                                                            ? `${Math.round(fi.cookedWeightG * p)}g`
+                                                            : p === 1
+                                                                ? fi.standardPortion
+                                                                : `${p} pza`;
                                                     return (
-                                                        <div key={i} className="flex items-center justify-between gap-3">
-                                                            <span className="text-sm text-zinc-200 font-medium flex-1 truncate">
-                                                                {food.portions !== 1 && <span className="text-zinc-500">{p}× </span>}
-                                                                {food.foodItem.name}
-                                                            </span>
-                                                            <div className="flex items-center gap-3 flex-shrink-0">
+                                                        <div key={i} className="flex items-center justify-between gap-2">
+                                                            {/* Cantidad */}
+                                                            <span className="text-xs text-zinc-500 tabular-nums w-12 text-right flex-shrink-0 mr-1">{amount}</span>
+                                                            {/* Nombre */}
+                                                            <span className="text-sm text-zinc-200 font-medium flex-1 truncate">{fi.name}</span>
+                                                            {/* Kcal + macros */}
+                                                            <div className="flex items-center gap-2 flex-shrink-0">
                                                                 <span className="text-xs text-zinc-400 tabular-nums w-14 text-right">
                                                                     {Math.round(m.kcal * p)} kcal
                                                                 </span>
-                                                                <div className="flex gap-2">
+                                                                <div className="flex gap-1.5">
                                                                     <span className="text-xs text-emerald-400/80 tabular-nums">P:{Math.round(m.protein * p)}g</span>
                                                                     <span className="text-xs text-cyan-400/80 tabular-nums">C:{Math.round(m.carbs * p)}g</span>
                                                                     <span className="text-xs text-purple-400/80 tabular-nums">G:{Math.round(m.fat * p)}g</span>
@@ -503,6 +512,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                     )}
                 </section>
             </div>
+
+            {/* ── Fade mask: desvanecimiento inferior premium ─────────────── */}
+            <div className="fixed bottom-0 left-0 w-full h-52 bg-gradient-to-t from-zinc-950 to-transparent pointer-events-none z-40" />
 
             {/* ── FAB premium ──────────────────────────────────────────────── */}
             <div className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50">
