@@ -371,7 +371,7 @@ const HoyScreen: React.FC = () => {
                 >
                     Innegociables
                 </span>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="flex flex-row justify-around items-start">
                     {arcChips.map(({ key, label, pct, value, unit, stroke, isOver, onClick }) => {
                         const Tag = onClick ? 'button' : ('div' as React.ElementType);
                         return (
@@ -379,7 +379,7 @@ const HoyScreen: React.FC = () => {
                                 key={key}
                                 onClick={onClick}
                                 className={[
-                                    'flex flex-col items-center gap-1 min-w-0',
+                                    'flex flex-col items-center gap-1.5',
                                     onClick ? 'cursor-pointer active:opacity-60 transition-opacity duration-150 select-none' : '',
                                 ].join(' ')}
                             >
@@ -390,11 +390,11 @@ const HoyScreen: React.FC = () => {
                                     isOver={isOver}
                                     strokeClass={stroke}
                                     textClass="text-zinc-100"
-                                    size={58}
-                                    strokeWidth={4}
+                                    size={72}
+                                    strokeWidth={5}
                                 />
                                 <span
-                                    className="text-[8px] font-black uppercase text-zinc-400 leading-none"
+                                    className="text-xs font-bold uppercase text-zinc-400 leading-none"
                                     style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
                                 >
                                     {label}
@@ -458,35 +458,31 @@ const HoyScreen: React.FC = () => {
                         </button>
                     </div>
 
-                    <div className="flex flex-col items-center gap-1">
-                        <MacroArcGauge
-                            pct={hoy.kcalPct}
-                            value={Math.round(hoy.consumed.kcal)}
-                            unit="kcal"
-                            isOver={hoy.isKcalOver}
-                            strokeClass="stroke-brand-accent"
-                            textClass="text-zinc-100"
-                            size={72}
-                            strokeWidth={5}
-                        />
-                        <p className={`text-xs font-black leading-tight ${hoy.isKcalOver ? 'text-danger' : 'text-zinc-100'}`}>
-                            {hoy.isKcalOver ? 'Excedido' : `${Math.round(hoy.kcalRemaining)} rest.`}
+                    {/* Kcal hero */}
+                    <div className="flex flex-col items-center gap-0.5 py-2">
+                        <p className={`text-3xl font-black font-heading leading-none ${hoy.isKcalOver ? 'text-danger' : 'text-white'}`}>
+                            {hoy.isKcalOver ? Math.round(hoy.consumed.kcal) : Math.round(hoy.kcalRemaining)}
+                        </p>
+                        <p className={`text-[10px] font-bold uppercase leading-none mt-1 ${hoy.isKcalOver ? 'text-danger' : 'text-zinc-400'}`}
+                            style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                        >
+                            {hoy.isKcalOver ? 'excedido' : 'kcal rest.'}
                         </p>
                         <p
-                            className="text-[8px] font-mono font-bold text-zinc-500 uppercase"
-                            style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                            className="text-[9px] font-mono text-zinc-600 mt-0.5"
                         >
                             / {hoy.dailyGoals.kcal} kcal
                         </p>
                     </div>
 
-                    <div className="flex items-end justify-around mt-auto gap-1">
+                    {/* Macro arcs row */}
+                    <div className="flex flex-row justify-around items-start mt-auto pt-1 border-t border-zinc-800/50">
                         {([
                             { pct: pPct, val: Math.round(hoy.consumed.protein), unit: 'g', stroke: 'stroke-brand-accent', label: 'PROT' },
                             { pct: cPct, val: Math.round(hoy.consumed.carbs),   unit: 'g', stroke: 'stroke-brand-carbs',  label: 'CARB' },
                             { pct: fPct, val: Math.round(hoy.consumed.fat),     unit: 'g', stroke: 'stroke-brand-fat',    label: 'GRAS' },
                         ] as const).map(({ pct, val, unit, stroke, label }) => (
-                            <div key={label} className="flex flex-col items-center gap-0.5">
+                            <div key={label} className="flex flex-col items-center gap-1">
                                 <MacroArcGauge
                                     pct={pct}
                                     value={val}
@@ -494,11 +490,11 @@ const HoyScreen: React.FC = () => {
                                     isOver={false}
                                     strokeClass={stroke}
                                     textClass="text-zinc-100"
-                                    size={44}
-                                    strokeWidth={3}
+                                    size={56}
+                                    strokeWidth={4}
                                 />
                                 <span
-                                    className="text-[7px] font-black uppercase text-zinc-500"
+                                    className="text-xs font-bold uppercase text-zinc-400"
                                     style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
                                 >
                                     {label}
