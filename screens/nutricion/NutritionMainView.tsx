@@ -27,7 +27,7 @@ const MOCK_MEALS: LoggedMeal[] = [
     },
 ];
 
-// ── Sub: barra de macro ───────────────────────────────────────────────────────
+// ── Sub: barra de macro simple (Proteína) ───────────────────────────────────
 const MacroBar: React.FC<{
     label: string; value: number; goal: number; pct: number;
     trackClass: string; fillClass: string; labelClass: string;
@@ -35,7 +35,7 @@ const MacroBar: React.FC<{
     <div className="space-y-2">
         <div className="flex justify-between text-xs font-black uppercase tracking-widest">
             <span className={labelClass}>{label}</span>
-            <span className="text-white">
+            <span className="text-zinc-100">
                 {Math.round(value)}g
                 <span className="text-zinc-600"> / {goal}g</span>
             </span>
@@ -48,6 +48,53 @@ const MacroBar: React.FC<{
         </div>
     </div>
 );
+
+// ── Sub: barra de macro inteligente con notch de mínimo ──────────────────────
+const SmartMacroBar: React.FC<{
+    label: string;
+    value: number;      // consumido actualmente (g)
+    idealG: number;     // meta ideal = dailyGoals.carbs / fat
+    minG: number;       // mínimo innegociable (carbFloorG / fatFloorG)
+    fillClass: string;
+    glowClass: string;  // clase de sombra cuando supera el mínimo
+    labelClass: string;
+}> = ({ label, value, idealG, minG, fillClass, glowClass, labelClass }) => {
+    // El track total representa idealG (techo visual razonable)
+    const maxTrack = Math.max(idealG, value, 1);
+    const valuePct = Math.min((value  / maxTrack) * 100, 100);
+    const minPct   = Math.min((minG   / maxTrack) * 100, 100);
+    const metMin   = value >= minG;
+
+    return (
+        <div className="space-y-2">
+            {/* Cabecera */}
+            <div className="flex items-baseline justify-between">
+                <span className={`text-xs font-black uppercase tracking-widest ${labelClass}`}>{label}</span>
+                <span className="text-xs text-zinc-100 font-semibold tabular-nums">
+                    {Math.round(value)}g
+                    <span className="text-zinc-500 font-normal"> / {idealG}g</span>
+                    <span className="text-zinc-600 text-[10px] font-normal"> (Mín: {minG}g)</span>
+                </span>
+            </div>
+            {/* Track con notch */}
+            <div className="relative h-3 bg-zinc-800 rounded-full overflow-visible">
+                {/* Barra de progreso */}
+                <div
+                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
+                        metMin ? `${fillClass} ${glowClass}` : `${fillClass} opacity-50`
+                    }`}
+                    style={{ width: `${valuePct}%` }}
+                />
+                {/* Notch: mínimo innegociable */}
+                <div
+                    className="absolute top-0 bottom-0 w-[2px] bg-white/50 z-10 rounded-full"
+                    style={{ left: `${minPct}%` }}
+                    title={`Mínimo: ${minG}g`}
+                />
+            </div>
+        </div>
+    );
+};
 
 // ── Componente principal ──────────────────────────────────────────────────────
 
@@ -81,7 +128,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
             ) : null}
 
             {/* ── Canvas principal ─────────────────────────────────────────── */}
-            <div className="px-4 sm:px-6 lg:px-10 pt-6 pb-40 space-y-8">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-40 space-y-8">
 
                 {/* ══ SECCIÓN 1: Fecha + Anillo Calórico ══════════════════════ */}
                 <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center animate-fade-in-up">
@@ -179,22 +226,22 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 fillClass="bg-emerald-400"
                                 labelClass="text-emerald-400"
                             />
-                            <MacroBar
+                            <SmartMacroBar
                                 label="Carbos"
                                 value={n.macrosForDay.carbs}
-                                goal={n.dailyGoals.carbs}
-                                pct={n.carbsPct}
-                                trackClass="bg-zinc-800"
+                                idealG={n.dailyGoals.carbs}
+                                minG={n.carbFloorG}
                                 fillClass="bg-cyan-400"
+                                glowClass="shadow-[0_0_8px_rgba(34,211,238,0.5)]"
                                 labelClass="text-cyan-400"
                             />
-                            <MacroBar
+                            <SmartMacroBar
                                 label="Grasas"
                                 value={n.macrosForDay.fat}
-                                goal={n.dailyGoals.fat}
-                                pct={n.fatPct}
-                                trackClass="bg-zinc-800"
+                                idealG={n.dailyGoals.fat}
+                                minG={n.fatFloorG}
                                 fillClass="bg-purple-400"
+                                glowClass="shadow-[0_0_8px_rgba(192,132,252,0.5)]"
                                 labelClass="text-purple-400"
                             />
                         </div>
@@ -301,19 +348,19 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
 
                                     {/* Info central */}
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-heading font-bold text-white text-sm leading-tight truncate mb-1">
+                                        <h4 className="font-heading font-bold text-zinc-100 text-lg leading-tight truncate mb-1">
                                             {meal.name ?? 'Comida'}
                                         </h4>
-                                        <p className="text-[10px] text-zinc-600 font-mono mb-2">{mealTime}</p>
-                                        <div className="flex gap-3 flex-wrap">
-                                            <span className="text-[10px] text-zinc-500 font-black uppercase">
-                                                P: <span className="text-emerald-400">{Math.round(meal.macros.protein)}g</span>
+                                        <p className="text-xs text-zinc-600 font-mono mb-2">{mealTime}</p>
+                                        <div className="flex gap-4 flex-wrap">
+                                            <span className="text-sm font-semibold text-emerald-400 tabular-nums">
+                                                P: {Math.round(meal.macros.protein)}g
                                             </span>
-                                            <span className="text-[10px] text-zinc-500 font-black uppercase">
-                                                C: <span className="text-cyan-400">{Math.round(meal.macros.carbs)}g</span>
+                                            <span className="text-sm font-semibold text-cyan-400 tabular-nums">
+                                                C: {Math.round(meal.macros.carbs)}g
                                             </span>
-                                            <span className="text-[10px] text-zinc-500 font-black uppercase">
-                                                G: <span className="text-purple-400">{Math.round(meal.macros.fat)}g</span>
+                                            <span className="text-sm font-semibold text-purple-400 tabular-nums">
+                                                G: {Math.round(meal.macros.fat)}g
                                             </span>
                                         </div>
                                     </div>
