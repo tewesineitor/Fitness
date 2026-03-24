@@ -29,15 +29,15 @@ const MOCK_MEALS: LoggedMeal[] = [
 
 // ── Sub: barra de macro simple (Proteína) ───────────────────────────────────
 const MacroBar: React.FC<{
-    label: string; value: number; goal: number; pct: number;
+    label: string; value: number; goalG: number; pct: number;
     trackClass: string; fillClass: string; labelClass: string;
-}> = ({ label, value, goal, pct, trackClass, fillClass, labelClass }) => (
+}> = ({ label, value, goalG, pct, trackClass, fillClass, labelClass }) => (
     <div className="space-y-2">
         <div className="flex justify-between text-xs font-black uppercase tracking-widest">
             <span className={labelClass}>{label}</span>
-            <span className="text-zinc-100">
+            <span className="text-zinc-100 font-semibold tabular-nums">
                 {Math.round(value)}g
-                <span className="text-zinc-600"> / {goal}g</span>
+                <span className="text-zinc-600 font-normal"> / {goalG}g</span>
             </span>
         </div>
         <div className={`h-3 rounded-full overflow-hidden ${trackClass}`}>
@@ -52,45 +52,106 @@ const MacroBar: React.FC<{
 // ── Sub: barra de macro inteligente con notch de mínimo ──────────────────────
 const SmartMacroBar: React.FC<{
     label: string;
-    value: number;      // consumido actualmente (g)
-    idealG: number;     // meta ideal = dailyGoals.carbs / fat
-    minG: number;       // mínimo innegociable (carbFloorG / fatFloorG)
+    spentG: number;    // consumido actualmente
+    targetG: number;   // meta ideal
+    floorG: number;    // mínimo innegociable
+    maxG: number;      // límite absoluto (track base)
+    minMet: boolean;   // bandera del hook
     fillClass: string;
-    glowClass: string;  // clase de sombra cuando supera el mínimo
+    glowClass: string;
     labelClass: string;
-}> = ({ label, value, idealG, minG, fillClass, glowClass, labelClass }) => {
-    // El track total representa idealG (techo visual razonable)
-    const maxTrack = Math.max(idealG, value, 1);
-    const valuePct = Math.min((value  / maxTrack) * 100, 100);
-    const minPct   = Math.min((minG   / maxTrack) * 100, 100);
-    const metMin   = value >= minG;
+}> = ({ label, spentG, targetG, floorG, maxG, minMet, fillClass, glowClass, labelClass }) => {
+    const safeMax  = Math.max(maxG, spentG, 1);
+    const fillPct  = Math.min((spentG / safeMax) * 100, 100);
+    const notchPct = Math.min((floorG / safeMax) * 100, 100);
 
     return (
         <div className="space-y-2">
-            {/* Cabecera */}
             <div className="flex items-baseline justify-between">
                 <span className={`text-xs font-black uppercase tracking-widest ${labelClass}`}>{label}</span>
                 <span className="text-xs text-zinc-100 font-semibold tabular-nums">
-                    {Math.round(value)}g
-                    <span className="text-zinc-500 font-normal"> / {idealG}g</span>
-                    <span className="text-zinc-600 text-[10px] font-normal"> (Mín: {minG}g)</span>
+                    {Math.round(spentG)}g
+                    <span className="text-zinc-500 font-normal"> / {targetG}g</span>
                 </span>
             </div>
-            {/* Track con notch */}
             <div className="relative h-3 bg-zinc-800 rounded-full overflow-visible">
-                {/* Barra de progreso */}
                 <div
                     className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
-                        metMin ? `${fillClass} ${glowClass}` : `${fillClass} opacity-50`
+                        minMet ? `${fillClass} ${glowClass}` : `${fillClass} opacity-50`
                     }`}
-                    style={{ width: `${valuePct}%` }}
+                    style={{ width: `${fillPct}%` }}
                 />
-                {/* Notch: mínimo innegociable */}
                 <div
-                    className="absolute top-0 bottom-0 w-[2px] bg-white/50 z-10 rounded-full"
-                    style={{ left: `${minPct}%` }}
-                    title={`Mínimo: ${minG}g`}
+                    className="absolute top-0 bottom-0 w-[2px] bg-white/70 z-10 rounded-full"
+                    style={{ left: `${notchPct}%` }}
+                    title={`Mínimo: ${floorG}g`}
                 />
+            </div>
+        </div>
+    );
+};
+
+// ── Sub: tarjeta mutable de macro (3 estados) ─────────────────────────────────
+const SmartMacroCard: React.FC<{
+    label: string;
+    spentG: number;
+    floorG: number;
+    maxG: number;
+    availableG: number;
+    minMet: boolean;
+    overMax: boolean;
+    accentClass: string;     // color del icono/número en zona flexible
+    iconBgClass: string;     // bg del icono
+    iconChar: string;
+}> = ({ label, spentG, floorG, maxG, availableG, minMet, overMax, accentClass, iconBgClass, iconChar }) => {
+    const missingG  = Math.max(0, floorG - spentG);
+    const overageG  = Math.max(0, spentG - maxG);
+
+    if (overMax) {
+        return (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-[1.25rem] p-5 flex items-center justify-between">
+                <div>
+                    <p className="text-[9px] font-black uppercase text-red-400 tracking-widest mb-1">{label}</p>
+                    <p className="text-3xl font-heading font-black text-red-400 leading-none">
+                        0<span className="text-sm font-normal text-red-500/70 ml-1">g</span>
+                    </p>
+                    <p className="text-[10px] text-red-400/80 mt-1">Límite excedido por {overageG}g</p>
+                </div>
+                <div className="w-11 h-11 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-red-400 font-black text-lg leading-none">!</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (minMet) {
+        return (
+            <div className={`bg-zinc-900/60 border border-zinc-800/60 rounded-[1.25rem] p-5 flex items-center justify-between` + ` border-l-2 border-l-${accentClass.replace('text-', '')}`} style={{ borderLeftColor: 'currentColor' }}>
+                <div>
+                    <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${accentClass}`}>{label}</p>
+                    <p className="text-3xl font-heading font-black text-white leading-none">
+                        {availableG}<span className="text-sm font-normal text-zinc-500 ml-1">g</span>
+                    </p>
+                    <p className="text-[10px] text-zinc-500 mt-1">Disp. hasta el máx ({maxG}g)</p>
+                </div>
+                <div className={`w-11 h-11 ${iconBgClass} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <span className={`${accentClass} font-black text-lg leading-none`}>{iconChar}</span>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="bg-zinc-900/60 border border-zinc-800/60 rounded-[1.25rem] p-5 flex items-center justify-between">
+            <div>
+                <p className="text-[9px] font-black uppercase text-zinc-500 tracking-widest mb-1">{label}</p>
+                <p className="text-3xl font-heading font-black text-white leading-none">
+                    {missingG}<span className="text-sm font-normal text-zinc-500 ml-1">g</span>
+                </p>
+                <p className="text-[10px] text-zinc-600 mt-1">Faltan para el mínimo ({floorG}g)</p>
+            </div>
+            <div className="w-11 h-11 bg-zinc-800/80 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-zinc-500 font-black text-lg leading-none">{iconChar}</span>
             </div>
         </div>
     );
@@ -220,7 +281,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             <MacroBar
                                 label="Proteína"
                                 value={n.macrosForDay.protein}
-                                goal={n.dailyGoals.protein}
+                                goalG={n.dailyGoals.protein}
                                 pct={n.proteinPct}
                                 trackClass="bg-zinc-800"
                                 fillClass="bg-emerald-400"
@@ -228,18 +289,22 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             />
                             <SmartMacroBar
                                 label="Carbos"
-                                value={n.macrosForDay.carbs}
-                                idealG={n.dailyGoals.carbs}
-                                minG={n.carbFloorG}
+                                spentG={n.macrosForDay.carbs}
+                                targetG={n.carbTargetG}
+                                floorG={n.carbFloorG}
+                                maxG={n.carbMaxG}
+                                minMet={n.isCarbMinMet}
                                 fillClass="bg-cyan-400"
                                 glowClass="shadow-[0_0_8px_rgba(34,211,238,0.5)]"
                                 labelClass="text-cyan-400"
                             />
                             <SmartMacroBar
                                 label="Grasas"
-                                value={n.macrosForDay.fat}
-                                idealG={n.dailyGoals.fat}
-                                minG={n.fatFloorG}
+                                spentG={n.macrosForDay.fat}
+                                targetG={n.fatTargetG}
+                                floorG={n.fatFloorG}
+                                maxG={n.fatMaxG}
+                                minMet={n.isFatMinMet}
                                 fillClass="bg-purple-400"
                                 glowClass="shadow-[0_0_8px_rgba(192,132,252,0.5)]"
                                 labelClass="text-purple-400"
@@ -285,36 +350,32 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             </div>
                         </div>
 
-                        {/* Pisos disponibles */}
+                        {/* Tarjetas mutables: 3 estados por macro */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-zinc-900/60 border border-zinc-800/60 rounded-[1.25rem] p-5 flex items-center justify-between">
-                                <div>
-                                    <p className="text-[9px] font-black uppercase text-zinc-500 tracking-widest mb-1">
-                                        Carbs disp.
-                                    </p>
-                                    <p className="text-3xl font-heading font-black text-white leading-none">
-                                        {n.carbFloorG}
-                                        <span className="text-sm font-normal text-zinc-500 ml-1">g</span>
-                                    </p>
-                                </div>
-                                <div className="w-11 h-11 bg-cyan-400/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <span className="text-cyan-400 font-black text-lg leading-none">↑</span>
-                                </div>
-                            </div>
-                            <div className="bg-zinc-900/60 border border-zinc-800/60 rounded-[1.25rem] p-5 flex items-center justify-between">
-                                <div>
-                                    <p className="text-[9px] font-black uppercase text-zinc-500 tracking-widest mb-1">
-                                        Grasas disp.
-                                    </p>
-                                    <p className="text-3xl font-heading font-black text-white leading-none">
-                                        {n.fatFloorG}
-                                        <span className="text-sm font-normal text-zinc-500 ml-1">g</span>
-                                    </p>
-                                </div>
-                                <div className="w-11 h-11 bg-purple-400/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <span className="text-purple-400 font-black text-base leading-none">◆</span>
-                                </div>
-                            </div>
+                            <SmartMacroCard
+                                label="Carbos"
+                                spentG={n.macrosForDay.carbs}
+                                floorG={n.carbFloorG}
+                                maxG={n.carbMaxG}
+                                availableG={n.carbAvailableG}
+                                minMet={n.isCarbMinMet}
+                                overMax={n.isCarbOverMax}
+                                accentClass="text-cyan-400"
+                                iconBgClass="bg-cyan-400/10"
+                                iconChar="↑"
+                            />
+                            <SmartMacroCard
+                                label="Grasas"
+                                spentG={n.macrosForDay.fat}
+                                floorG={n.fatFloorG}
+                                maxG={n.fatMaxG}
+                                availableG={n.fatAvailableG}
+                                minMet={n.isFatMinMet}
+                                overMax={n.isFatOverMax}
+                                accentClass="text-purple-400"
+                                iconBgClass="bg-purple-400/10"
+                                iconChar="◆"
+                            />
                         </div>
                     </div>
                 </section>

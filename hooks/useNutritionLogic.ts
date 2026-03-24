@@ -62,14 +62,31 @@ export const useNutritionLogic = (onGoToAddFood: () => void) => {
     const kcalRemaining = Math.max(0, dailyGoals.kcal - macrosForDay.kcal);
 
     // ── Bolsa Compartida (dynamic C+G shared budget after protein) ──────────
+    const carbFloorG   = dailyGoals.carbMin ?? 0;
+    const carbTargetG  = dailyGoals.carbs   ?? 0;
+    const carbMaxG     = dailyGoals.carbMax ?? 0;
+
+    const fatFloorG    = dailyGoals.fatMin ?? 0;
+    const fatTargetG   = dailyGoals.fat    ?? 0;
+    const fatMaxG      = dailyGoals.fatMax ?? 0;
+
+    const carbSpentG   = macrosForDay.carbs;
+    const fatSpentG    = macrosForDay.fat;
+
+    const carbAvailableG = Math.max(0, carbMaxG - carbSpentG);
+    const fatAvailableG  = Math.max(0, fatMaxG - fatSpentG);
+
+    const isCarbOverMax = carbSpentG > carbMaxG;
+    const isFatOverMax  = fatSpentG > fatMaxG;
+    const isCarbMinMet  = carbSpentG >= carbFloorG;
+    const isFatMinMet   = fatSpentG >= fatFloorG;
+
     const carbFatBudgetKcal    = Math.max(0, dailyGoals.kcal - dailyGoals.protein * 4);
-    const carbFatSpentKcal     = Math.round(macrosForDay.carbs * 4 + macrosForDay.fat * 9);
+    const carbFatSpentKcal     = Math.round(carbSpentG * 4 + fatSpentG * 9);
     const carbFatRemainingKcal = Math.max(0, carbFatBudgetKcal - carbFatSpentKcal);
     const carbFatBudgetPct     = carbFatBudgetKcal > 0
         ? Math.min((carbFatSpentKcal / carbFatBudgetKcal) * 100, 100)
         : 0;
-    const carbFloorG = Math.round(carbFatRemainingKcal / 4);
-    const fatFloorG  = Math.round(carbFatRemainingKcal / 9);
 
     // ── Handlers ────────────────────────────────────────────────────────────
     const onPreviousDay = useCallback(
@@ -115,7 +132,10 @@ export const useNutritionLogic = (onGoToAddFood: () => void) => {
         isKcalOver, kcalRemaining,
         // Bolsa Compartida
         carbFatBudgetKcal, carbFatSpentKcal, carbFatRemainingKcal,
-        carbFatBudgetPct, carbFloorG, fatFloorG,
+        carbFatBudgetPct,
+        carbFloorG, carbTargetG, carbMaxG, carbAvailableG,
+        fatFloorG, fatTargetG, fatMaxG, fatAvailableG,
+        isCarbOverMax, isFatOverMax, isCarbMinMet, isFatMinMet,
         // Actions
         onGoToAddFood,
     };
