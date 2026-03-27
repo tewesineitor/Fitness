@@ -12,10 +12,10 @@ interface MacroArcGaugeProps {
     label?: string;
     /** Whether the goal has been exceeded */
     isOver?: boolean;
-    /** Tailwind stroke color class (e.g. 'stroke-brand-protein') */
-    strokeClass: string;
-    /** Tailwind text color class for the value */
-    textClass: string;
+    /** Inline stroke color (hex or rgb string, e.g. '#4ade80') — replaces Tailwind class to avoid purge */
+    strokeColor: string;
+    /** Inline text color (hex or rgb string) */
+    textColor?: string;
     /** Size in px */
     size?: number;
     /** Stroke width in px (default 5) */
@@ -38,8 +38,8 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
     unit = 'g',
     label,
     isOver = false,
-    strokeClass,
-    textClass,
+    strokeColor,
+    textColor = '#f4f4f5',
     size = 80,
     strokeWidth = 6,
 }) => {
@@ -56,57 +56,66 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
     const toRad = (deg: number) => (deg * Math.PI) / 180;
 
     const describeArc = (fraction: number) => {
-        const angle = startAngle + sweepAngle * fraction;
+        // Clamp to a tiny minimum so the arc path is never degenerate (start === end)
+        const safeFraction = Math.max(fraction, 0.001);
+        const angle = startAngle + sweepAngle * safeFraction;
         const startX = cx + r * Math.cos(toRad(startAngle));
         const startY = cy + r * Math.sin(toRad(startAngle));
         const endX   = cx + r * Math.cos(toRad(angle));
         const endY   = cy + r * Math.sin(toRad(angle));
-        const largeArc = sweepAngle * fraction > 180 ? 1 : 0;
+        const largeArc = sweepAngle * safeFraction > 180 ? 1 : 0;
         return `M ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY}`;
     };
 
     const trackPath = describeArc(1);
     const fillPath  = describeArc(animatedPct / 100);
 
-    const dangerClass = isOver ? 'stroke-danger' : strokeClass;
-    const dangerText  = isOver ? 'text-danger'   : textClass;
+    const activeStroke = isOver ? '#ef4444' : strokeColor;
+    const activeText   = isOver ? '#ef4444' : textColor;
 
     return (
         <div className="flex flex-col items-center gap-1" style={{ width: size }}>
             <div className="relative" style={{ width: size, height: size }}>
-                <svg width={size} height={size} className="-rotate-[0deg]">
+                <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} overflow="visible">
                     {/* Track */}
                     <path
                         d={trackPath}
                         fill="none"
+                        stroke="rgba(63,63,70,0.8)"
                         strokeWidth={strokeWidth}
                         strokeLinecap="round"
-                        className="stroke-surface-hover"
                     />
                     {/* Fill */}
                     <path
                         d={fillPath}
                         fill="none"
+                        stroke={activeStroke}
                         strokeWidth={strokeWidth}
                         strokeLinecap="round"
-                        className={`transition-all duration-700 ${dangerClass}`}
+                        style={{ transition: 'stroke-dashoffset 0.7s ease, stroke 0.3s ease' }}
                     />
                 </svg>
 
                 {/* Center text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className={`font-mono font-black leading-none ${dangerText}`} style={{ fontSize: size * 0.18 }}>
+                    <span
+                        className="font-mono font-black leading-none"
+                        style={{ fontSize: size * 0.22, color: activeText }}
+                    >
                         {typeof value === 'number' ? Math.round(value) : value}
                     </span>
                     {unit && (
-                        <span className="text-text-muted font-bold uppercase leading-none" style={{ fontSize: size * 0.1 }}>
+                        <span
+                            className="font-bold uppercase leading-none"
+                            style={{ fontSize: size * 0.12, color: 'rgba(161,161,170,0.9)' }}
+                        >
                             {unit}
                         </span>
                     )}
                 </div>
             </div>
             {label && (
-                <span className="text-[9px] font-black uppercase tracking-widest text-text-secondary text-center leading-none">
+                <span className="text-[9px] font-black uppercase tracking-widest text-center leading-none" style={{ color: 'rgba(161,161,170,0.9)' }}>
                     {label}
                 </span>
             )}

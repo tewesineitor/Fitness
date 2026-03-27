@@ -81,12 +81,12 @@ const HoyScreen: React.FC = () => {
     const arcChips: Array<{
         key: string; label: string; pct: number;
         value: number | string; unit: string;
-        stroke: string; isOver: boolean; onClick?: () => void;
+        strokeColor: string; isOver: boolean; onClick?: () => void;
     }> = [
-        { key: 'protein', label: 'PROT',  pct: pPct,        value: Math.round(hoy.consumed.protein),        unit: 'g', stroke: 'stroke-brand-accent', isOver: false },
-        { key: 'kcal',    label: 'KCAL',  pct: hoy.kcalPct, value: Math.round(hoy.consumed.kcal),           unit: 'k', stroke: 'stroke-brand-accent', isOver: hoy.isKcalOver },
-        { key: 'sleep',   label: 'SUEÑO', pct: sleepPct,    value: hoy.session.dailyHabits.sleepHours || 0, unit: 'h', stroke: 'stroke-brand-carbs',  isOver: false, onClick: hoy.onToggleSleep },
-        { key: 'steps',   label: 'PASOS', pct: stepsPct,    value: stepsPct > 0 ? '✓' : '—',               unit: '',  stroke: 'stroke-brand-fat',    isOver: false, onClick: hoy.onToggleSteps },
+        { key: 'protein', label: 'PROT',  pct: pPct,        value: Math.round(hoy.consumed.protein),        unit: 'g', strokeColor: '#4ade80', isOver: false },
+        { key: 'kcal',    label: 'KCAL',  pct: hoy.kcalPct, value: Math.round(hoy.consumed.kcal),           unit: 'k', strokeColor: '#4ade80', isOver: hoy.isKcalOver },
+        { key: 'sleep',   label: 'SUEÑO', pct: sleepPct,    value: hoy.session.dailyHabits.sleepHours || 0, unit: 'h', strokeColor: '#22d3ee', isOver: false, onClick: hoy.onToggleSleep },
+        { key: 'steps',   label: 'PASOS', pct: stepsPct,    value: stepsPct > 0 ? '✓' : '—',               unit: '',  strokeColor: '#a78bfa', isOver: false, onClick: hoy.onToggleSteps },
     ];
 
     // ── Weekly habit tracker ──────────────────────────────────────────────────
@@ -102,7 +102,7 @@ const HoyScreen: React.FC = () => {
 
     const metToday = [
         hoy.habitStatuses.protein  === 'success',
-        hoy.habitStatuses.calories === 'success' || hoy.habitStatuses.calories === 'warning',
+        hoy.habitStatuses.calories === 'success',
         hoy.habitStatuses.sleep    === 'success',
         hoy.habitStatuses.steps    === 'success',
     ].filter(Boolean).length;
@@ -373,8 +373,8 @@ const HoyScreen: React.FC = () => {
                 >
                     Innegociables
                 </span>
-                <div className="flex flex-wrap justify-around gap-4 items-start">
-                    {arcChips.map(({ key, label, pct, value, unit, stroke, isOver, onClick }) => {
+                <div className="flex flex-wrap justify-around gap-4 items-start min-h-[120px]">
+                    {arcChips.map(({ key, label, pct, value, unit, strokeColor, isOver, onClick }) => {
                         const Tag = onClick ? 'button' : ('div' as React.ElementType);
                         return (
                             <Tag
@@ -390,8 +390,7 @@ const HoyScreen: React.FC = () => {
                                     value={value}
                                     unit={unit}
                                     isOver={isOver}
-                                    strokeClass={stroke}
-                                    textClass="text-zinc-100"
+                                    strokeColor={strokeColor}
                                     size={88}
                                     strokeWidth={6}
                                 />
@@ -478,11 +477,11 @@ const HoyScreen: React.FC = () => {
                     </div>
 
                     {/* Macro arcs row */}
-                    <div className="flex flex-row justify-around items-start mt-auto pt-1 border-t border-zinc-800/50">
+                    <div className="flex flex-row justify-around items-start mt-auto pt-1 border-t border-zinc-800/50 min-h-[100px]">
                         {([
-                            { pct: pPct, val: Math.round(hoy.consumed.protein), unit: 'g', stroke: 'stroke-brand-accent', label: 'PROT' },
-                            { pct: cPct, val: Math.round(hoy.consumed.carbs),   unit: 'g', stroke: 'stroke-brand-carbs',  label: 'CARB' },
-                            { pct: fPct, val: Math.round(hoy.consumed.fat),     unit: 'g', stroke: 'stroke-brand-fat',    label: 'GRAS' },
+                            { pct: pPct, val: Math.round(hoy.consumed.protein), unit: 'g', stroke: '#4ade80', label: 'PROT' },
+                            { pct: cPct, val: Math.round(hoy.consumed.carbs),   unit: 'g', stroke: '#22d3ee', label: 'CARB' },
+                            { pct: fPct, val: Math.round(hoy.consumed.fat),     unit: 'g', stroke: '#a78bfa', label: 'GRAS' },
                         ] as const).map(({ pct, val, unit, stroke, label }) => (
                             <div key={label} className="flex flex-col items-center gap-1">
                                 <MacroArcGauge
@@ -490,8 +489,7 @@ const HoyScreen: React.FC = () => {
                                     value={val}
                                     unit={unit}
                                     isOver={false}
-                                    strokeClass={stroke}
-                                    textClass="text-zinc-100"
+                                    strokeColor={stroke}
                                     size={72}
                                     strokeWidth={5}
                                 />

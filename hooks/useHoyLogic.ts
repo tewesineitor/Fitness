@@ -128,8 +128,16 @@ export const useHoyLogic = (): HoyLogic => {
         }
 
         const order: Record<TimeOfDay, number> = { 'Mañana': 1, 'Mediodía': 2, 'Noche': 3 };
-        return scheduled.sort((a, b) => order[a.timeOfDay] - order[b.timeOfDay]);
-    }, [weeklySchedule, userRoutines, todaysDate]);
+        const completedTasks = session.dailyProgress.completedTasks;
+        return scheduled.sort((a, b) => {
+            const aId = `${a.id}-${a.timeOfDay}`;
+            const bId = `${b.id}-${b.timeOfDay}`;
+            const aDone = completedTasks.includes(aId) ? 1 : 0;
+            const bDone = completedTasks.includes(bId) ? 1 : 0;
+            if (aDone !== bDone) return aDone - bDone;
+            return order[a.timeOfDay] - order[b.timeOfDay];
+        });
+    }, [weeklySchedule, userRoutines, todaysDate, session]);
 
     // ── Nutrition calculations ─────────────────────────────────────────────────
     const kcalPct       = dailyGoals.kcal > 0 ? Math.min((consumed.kcal / dailyGoals.kcal) * 100, 100) : 0;
@@ -143,15 +151,15 @@ export const useHoyLogic = (): HoyLogic => {
         const proteinGoal  = dailyGoals.protein || 150;
         const calorieLimit = dailyGoals.kcal    || 2000;
 
-        const protein:  HabitStatus = consumed.protein >= proteinGoal ? 'success' : 'neutral';
+        const protein:  HabitStatus = consumed.protein >= proteinGoal * 0.9 ? 'success' : 'neutral';
         const calories: HabitStatus = consumed.kcal === 0
             ? 'neutral'
             : consumed.kcal > calorieLimit
                 ? 'danger'
-                : consumed.kcal >= calorieLimit - 200 ? 'warning' : 'success';
+                : consumed.kcal >= calorieLimit * 0.9 ? 'success' : 'neutral';
         const sleep:    HabitStatus = habits.sleepHours >= 7 ? 'success' : 'neutral';
         const steps:    HabitStatus = (habits.stepsGoalMet || habits.ruckingSessionMet) ? 'success' : 'neutral';
-        const allMet = protein === 'success' && (calories === 'success' || calories === 'warning') && sleep === 'success' && steps === 'success';
+        const allMet = protein === 'success' && calories === 'success' && sleep === 'success' && steps === 'success';
 
         return { protein, calories, sleep, steps, allMet };
     }, [consumed, dailyGoals, habits]);
