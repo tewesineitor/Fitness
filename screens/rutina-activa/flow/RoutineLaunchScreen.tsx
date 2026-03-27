@@ -78,14 +78,11 @@ const getStepPresentation = (step: RoutineStep, allExercises: Record<string, Exe
 
 // ── Bento stat card ───────────────────────────────────────────────────────────
 const BentoStat: React.FC<{ label: string; value: React.ReactNode; sub: string }> = ({ label, value, sub }) => (
-  <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-5 flex flex-col gap-2 animate-fade-in-up">
-    <span
-      className="text-[9px] font-black uppercase text-zinc-500"
-      style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-    >
+  <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-5 flex flex-col items-center text-center gap-2 animate-fade-in-up">
+    <span className="text-sm font-bold uppercase text-zinc-400">
       {label}
     </span>
-    <span className="font-heading text-4xl font-black text-white leading-none tracking-tight">
+    <span className="font-heading text-5xl font-black text-white leading-none tracking-tight">
       {value}
     </span>
     <span className="text-xs text-zinc-400 leading-snug">{sub}</span>
@@ -125,7 +122,7 @@ const StepPill: React.FC<{
       {/* Text */}
       <div className="min-w-0 flex-1">
         <p className="text-sm font-bold text-zinc-100 leading-tight truncate">{p.title}</p>
-        <p className="text-xs text-zinc-500 mt-0.5 truncate">{p.detail}</p>
+        <p className="text-xs text-zinc-400 mt-0.5 truncate">{p.detail}</p>
       </div>
 
       {/* Badge */}
@@ -171,7 +168,7 @@ const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
 
       {/* ── Scrollable content ───────────────────────────────────────────── */}
       <div className="relative z-10 flex-1 overflow-y-auto hide-scrollbar">
-        <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 px-4 pb-40 pt-6">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-16 px-4 pb-40 pt-8">
 
           {/* ── HEADER ──────────────────────────────────────────────────── */}
           <header className="flex items-start justify-between animate-fade-in-up">
@@ -241,12 +238,12 @@ const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span
-                className="text-[9px] font-black uppercase text-zinc-500"
+                className="text-[9px] font-black uppercase text-zinc-400"
                 style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
               >
                 Run of show
               </span>
-              <span className="text-[9px] font-bold text-zinc-600">
+              <span className="text-[9px] font-bold text-zinc-400">
                 {activeRoutine.flow.length} bloques
               </span>
             </div>
