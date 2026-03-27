@@ -1,14 +1,8 @@
 import React, { useMemo } from 'react';
-import Button from '../../../components/Button';
-import Card from '../../../components/Card';
-import PageHeader from '../../../components/layout/PageHeader';
-import PageSection from '../../../components/layout/PageSection';
-import Tag from '../../../components/Tag';
 import {
   ClockIcon,
   FireIcon,
   MeditationIcon,
-  SparklesIcon,
   StrengthIcon,
   YogaIcon,
 } from '../../../components/icons';
@@ -22,78 +16,134 @@ interface RoutineLaunchScreenProps {
   onBack: () => void;
 }
 
-interface LaunchStatProps {
-  label: string;
-  value: React.ReactNode;
-  detail: React.ReactNode;
-}
-
 const routineTypeLabelMap: Record<RoutineTask['type'], string> = {
   strength: 'Fuerza',
   cardio: 'Cardio',
   yoga: 'Yoga',
-  meditation: 'Meditacion',
+  meditation: 'Meditación',
   cardioLibre: 'Cardio libre',
   senderismo: 'Senderismo',
   rucking: 'Rucking',
   posture: 'Postura',
 };
 
-const LaunchStat: React.FC<LaunchStatProps> = ({ label, value, detail }) => (
-  <Card variant="inset" className="p-4">
-    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">{label}</p>
-    <div className="mt-2 text-3xl font-black tracking-[-0.05em] text-text-primary">{value}</div>
-    <p className="mt-1 text-sm leading-6 text-text-secondary">{detail}</p>
-  </Card>
-);
-
+// ── Step icon + tone resolution ───────────────────────────────────────────────
 const getStepPresentation = (step: RoutineStep, allExercises: Record<string, Exercise>) => {
   if (step.type === 'exercise') {
     const exercise = allExercises[step.exerciseId];
     return {
       title: exercise?.name ?? step.title,
-      detail: `${step.sets} series - ${step.reps} - RIR ${step.rir}`,
+      detail: `${step.sets} series · ${step.reps} · RIR ${step.rir}`,
       icon: StrengthIcon,
-      tone: 'accent' as const,
+      accentColor: '#4ade80',
+      badgeLabel: 'Trabajo',
     };
   }
-
   if (step.type === 'warmup') {
     return {
       title: step.title,
-      detail: `${step.items.length} movimientos de activacion`,
+      detail: `${step.items.length} movimientos de activación`,
       icon: FireIcon,
-      tone: 'success' as const,
+      accentColor: '#fb923c',
+      badgeLabel: 'Calentamiento',
     };
   }
-
   if (step.type === 'cooldown') {
     return {
       title: step.title,
       detail: `${step.items.length} bloques de enfriamiento`,
       icon: YogaIcon,
-      tone: 'neutral' as const,
+      accentColor: '#22d3ee',
+      badgeLabel: 'Enfriamiento',
     };
   }
-
   if (step.type === 'pose') {
     const exercise = allExercises[step.exerciseId];
     return {
       title: exercise?.name ?? step.title,
       detail: `${step.duration}s de trabajo guiado`,
       icon: YogaIcon,
-      tone: 'accent' as const,
+      accentColor: '#a78bfa',
+      badgeLabel: 'Postura',
     };
   }
-
   return {
     title: step.title,
     detail: `${'duration' in step ? step.duration : 0}s de enfoque`,
     icon: MeditationIcon,
-    tone: 'neutral' as const,
+    accentColor: '#94a3b8',
+    badgeLabel: 'Meditación',
   };
 };
 
+// ── Bento stat card ───────────────────────────────────────────────────────────
+const BentoStat: React.FC<{ label: string; value: React.ReactNode; sub: string }> = ({ label, value, sub }) => (
+  <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-5 flex flex-col gap-2 animate-fade-in-up">
+    <span
+      className="text-[9px] font-black uppercase text-zinc-500"
+      style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+    >
+      {label}
+    </span>
+    <span className="font-heading text-4xl font-black text-white leading-none tracking-tight">
+      {value}
+    </span>
+    <span className="text-xs text-zinc-400 leading-snug">{sub}</span>
+  </div>
+);
+
+// ── Exercise pill row ─────────────────────────────────────────────────────────
+const StepPill: React.FC<{
+  step: RoutineStep;
+  index: number;
+  allExercises: Record<string, Exercise>;
+}> = ({ step, index, allExercises }) => {
+  const p = getStepPresentation(step, allExercises);
+  const Icon = p.icon;
+
+  return (
+    <div
+      className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] px-4 py-3.5 flex items-center gap-4 animate-fade-in-up"
+      style={{ animationDelay: `${index * 45}ms`, animationFillMode: 'both' }}
+    >
+      {/* Step number */}
+      <span
+        className="text-[9px] font-black text-zinc-600 w-5 text-right flex-shrink-0"
+        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+      >
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      {/* Icon bubble — color inherited via CSS currentColor on parent */}
+      <div
+        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{ backgroundColor: `${p.accentColor}18`, color: p.accentColor }}
+      >
+        <Icon className="w-4 h-4" />
+      </div>
+
+      {/* Text */}
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-bold text-zinc-100 leading-tight truncate">{p.title}</p>
+        <p className="text-xs text-zinc-500 mt-0.5 truncate">{p.detail}</p>
+      </div>
+
+      {/* Badge */}
+      <span
+        className="text-[9px] font-black uppercase px-2.5 py-1 rounded-full flex-shrink-0"
+        style={{
+          color: p.accentColor,
+          backgroundColor: `${p.accentColor}15`,
+          letterSpacing: 'var(--letter-spacing-caps)',
+        }}
+      >
+        {p.badgeLabel}
+      </span>
+    </div>
+  );
+};
+
+// ── Main component ────────────────────────────────────────────────────────────
 const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
   activeRoutine,
   allExercises,
@@ -104,11 +154,9 @@ const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
     return activeRoutine.flow.reduce(
       (acc, step) => {
         acc.total += 1;
-
         if (step.type === 'exercise') acc.workSets += step.sets;
         if (step.type === 'warmup' || step.type === 'cooldown') acc.supportBlocks += 1;
         if (step.type === 'pose' || step.type === 'meditation') acc.focusBlocks += 1;
-
         return acc;
       },
       { total: 0, workSets: 0, supportBlocks: 0, focusBlocks: 0 }
@@ -116,150 +164,127 @@ const RoutineLaunchScreen: React.FC<RoutineLaunchScreenProps> = ({
   }, [activeRoutine.flow]);
 
   return (
-    <div className="relative flex h-full w-full flex-col">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,rgba(var(--color-brand-accent-rgb),0.22),transparent_60%)]" />
+    <div className="relative w-full min-h-screen flex flex-col">
 
-      <div className="relative z-10 flex-1 overflow-y-auto pb-40">
-        <PageHeader
-          size="wide"
-          backLabel="Salir"
-          onBack={() => {
-            vibrate(5);
-            onBack();
-          }}
-          eyebrow={
-            <Tag variant="overlay" tone="accent" size="sm" icon={SparklesIcon}>
-              Session launch
-            </Tag>
-          }
-          title={activeRoutine.name}
-          subtitle={
-            activeRoutine.technicalFocus
-              ? activeRoutine.technicalFocus
-              : 'Entrada premium de la sesion, con lectura clara del bloque de trabajo antes de comenzar.'
-          }
-          actions={
-            <div className="flex flex-wrap items-center gap-2">
-              <Tag variant="status" tone="accent" size="sm">
-                {routineTypeLabelMap[activeRoutine.type]}
-              </Tag>
-              <Tag variant="status" tone="neutral" size="sm" icon={ClockIcon}>
-                {activeRoutine.timeOfDay}
-              </Tag>
-            </div>
-          }
-        />
+      {/* Atmospheric glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(74,222,128,0.12),transparent_70%)]" />
 
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 sm:px-6">
-          <Card variant="glass" className="relative overflow-hidden p-5 sm:p-6">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--color-brand-accent-rgb),0.18),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.05),transparent_56%)]" />
-            <div className="relative grid gap-4 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
-              <div className="space-y-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-text-secondary">
-                  Editorial warm start
-                </p>
-                <h2 className="text-3xl font-black tracking-[-0.05em] text-text-primary sm:text-4xl">
-                  Todo listo para entrar al bloque principal.
-                </h2>
-                <p className="max-w-2xl text-sm leading-6 text-text-secondary">
-                  La vista previa organiza calentamiento, trabajo principal y cierre para que arranques con contexto
-                  y sin ruido visual.
-                </p>
+      {/* ── Scrollable content ───────────────────────────────────────────── */}
+      <div className="relative z-10 flex-1 overflow-y-auto hide-scrollbar">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 px-4 pb-40 pt-6">
+
+          {/* ── HEADER ──────────────────────────────────────────────────── */}
+          <header className="flex items-start justify-between animate-fade-in-up">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[9px] font-black uppercase text-emerald-400"
+                  style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                >
+                  Session Launch
+                </span>
+                <span className="text-zinc-700">·</span>
+                <span
+                  className="text-[9px] font-black uppercase text-zinc-500 flex items-center gap-1"
+                  style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                >
+                  <ClockIcon className="w-3 h-3" />
+                  {activeRoutine.timeOfDay}
+                </span>
+                <span className="text-zinc-700">·</span>
+                <span
+                  className="text-[9px] font-black uppercase text-zinc-500"
+                  style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+                >
+                  {routineTypeLabelMap[activeRoutine.type]}
+                </span>
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                <LaunchStat
-                  label="Bloques"
-                  value={stepMetrics.total}
-                  detail="Pasos programados en la sesion."
-                />
-                <LaunchStat
-                  label="Series"
-                  value={stepMetrics.workSets}
-                  detail="Volumen planificado de trabajo."
-                />
-                <LaunchStat
-                  label="Soporte"
-                  value={stepMetrics.supportBlocks + stepMetrics.focusBlocks}
-                  detail="Activacion, enfriamiento o enfoque guiado."
-                />
-              </div>
+              <h1 className="font-heading text-4xl font-black text-white leading-tight tracking-tight">
+                {activeRoutine.name}
+              </h1>
+              {activeRoutine.technicalFocus && (
+                <p className="text-sm text-zinc-400 leading-relaxed max-w-lg">
+                  {activeRoutine.technicalFocus}
+                </p>
+              )}
             </div>
-          </Card>
 
-          <PageSection
-            eyebrow="Run of show"
-            title="Bloques de la sesion"
-            subtitle="Orden completo del flujo para anticipar ritmo, volumen y transiciones."
-          >
-            <div className="space-y-3">
-              {activeRoutine.flow.map((step, index) => {
-                const presentation = getStepPresentation(step, allExercises);
-                const StepIcon = presentation.icon;
+            <button
+              onClick={() => { vibrate(5); onBack(); }}
+              className="flex-shrink-0 ml-4 mt-1 text-[9px] font-black uppercase text-zinc-500 hover:text-zinc-300 transition-colors"
+              style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+            >
+              ← Salir
+            </button>
+          </header>
 
-                return (
-                  <Card
-                    key={`${step.type}-${index}`}
-                    variant={index === 0 ? 'glass' : 'default'}
-                    className="overflow-hidden p-4 sm:p-5"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-surface-border bg-surface-hover text-brand-accent">
-                        <StepIcon className="h-5 w-5" />
-                      </div>
+          {/* ── BENTO STATS 3-col ────────────────────────────────────────── */}
+          <div className="grid grid-cols-3 gap-4">
+            <BentoStat
+              label="Bloques"
+              value={stepMetrics.total}
+              sub="Pasos en la sesión"
+            />
+            <BentoStat
+              label="Series"
+              value={stepMetrics.workSets}
+              sub="Volumen planificado"
+            />
+            <BentoStat
+              label="Soporte"
+              value={stepMetrics.supportBlocks + stepMetrics.focusBlocks}
+              sub="Activación y cierre"
+            />
+          </div>
 
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Tag variant="status" tone={presentation.tone} size="sm">
-                            Paso {index + 1}
-                          </Tag>
-                          <Tag variant="status" tone="neutral" size="sm">
-                            {step.type}
-                          </Tag>
-                        </div>
-
-                        <h3 className="mt-3 text-lg font-black tracking-[-0.03em] text-text-primary">
-                          {presentation.title}
-                        </h3>
-                        <p className="mt-1 text-sm leading-6 text-text-secondary">{presentation.detail}</p>
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
+          {/* ── RUN OF SHOW ─────────────────────────────────────────────── */}
+          <section className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span
+                className="text-[9px] font-black uppercase text-zinc-500"
+                style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+              >
+                Run of show
+              </span>
+              <span className="text-[9px] font-bold text-zinc-600">
+                {activeRoutine.flow.length} bloques
+              </span>
             </div>
-          </PageSection>
+
+            {activeRoutine.flow.map((step, index) => (
+              <StepPill
+                key={`${step.type}-${index}`}
+                step={step}
+                index={index}
+                allExercises={allExercises}
+              />
+            ))}
+          </section>
+
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-bg-base via-bg-base/96 to-transparent" />
+      {/* ── FADE MASK ───────────────────────────────────────────────────── */}
+      <div className="pointer-events-none fixed bottom-0 left-0 w-full h-44 bg-gradient-to-t from-zinc-950 to-transparent z-20" />
 
-      <div className="absolute inset-x-0 bottom-0 z-20 p-4 pb-safe sm:p-6">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:flex-row sm:items-center">
-          <Button
-            variant="high-contrast"
-            size="large"
-            onClick={() => {
-              vibrate(15);
-              onStart();
-            }}
-            className="w-full sm:flex-1"
-          >
-            Comenzar rutina
-          </Button>
-          <Button
-            variant="secondary"
-            size="large"
-            onClick={() => {
-              vibrate(5);
-              onBack();
-            }}
-            className="w-full sm:w-auto"
-          >
-            Volver
-          </Button>
-        </div>
+      {/* ── FAB PRIMARIO ────────────────────────────────────────────────── */}
+      <div className="fixed bottom-8 left-0 right-0 z-30 flex flex-col items-center gap-3 px-4">
+        <button
+          onClick={() => { vibrate(15); onStart(); }}
+          className="w-full max-w-sm bg-emerald-400 text-zinc-950 font-black text-sm uppercase rounded-full py-5 shadow-[0_0_40px_rgba(52,211,153,0.35)] active:scale-[0.97] transition-all duration-150 select-none"
+          style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+        >
+          Comenzar Entrenamiento
+        </button>
+        <button
+          onClick={() => { vibrate(5); onBack(); }}
+          className="text-[10px] font-bold uppercase text-zinc-500 hover:text-zinc-300 transition-colors select-none"
+          style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+        >
+          Volver
+        </button>
       </div>
+
     </div>
   );
 };
