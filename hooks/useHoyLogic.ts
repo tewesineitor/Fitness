@@ -144,12 +144,14 @@ export const useHoyLogic = (): HoyLogic => {
         const calorieLimit = dailyGoals.kcal    || 2000;
 
         const protein:  HabitStatus = consumed.protein >= proteinGoal ? 'success' : 'neutral';
-        const calories: HabitStatus = consumed.kcal > calorieLimit
-            ? 'danger'
-            : consumed.kcal >= calorieLimit - 200 ? 'warning' : 'success';
+        const calories: HabitStatus = consumed.kcal === 0
+            ? 'neutral'
+            : consumed.kcal > calorieLimit
+                ? 'danger'
+                : consumed.kcal >= calorieLimit - 200 ? 'warning' : 'success';
         const sleep:    HabitStatus = habits.sleepHours >= 7 ? 'success' : 'neutral';
         const steps:    HabitStatus = (habits.stepsGoalMet || habits.ruckingSessionMet) ? 'success' : 'neutral';
-        const allMet = protein === 'success' && calories !== 'danger' && sleep === 'success' && steps === 'success';
+        const allMet = protein === 'success' && (calories === 'success' || calories === 'warning') && sleep === 'success' && steps === 'success';
 
         return { protein, calories, sleep, steps, allMet };
     }, [consumed, dailyGoals, habits]);
@@ -167,12 +169,22 @@ export const useHoyLogic = (): HoyLogic => {
 
     const onToggleSleep = () => {
         vibrate(10);
-        dispatch(actions.updateDailyHabit({ sleepHours: habits.sleepHours >= 7 ? 0 : 8 }));
+        const raw = window.prompt('¿Cuántas horas dormiste?', String(habits.sleepHours || 8));
+        if (raw === null) return;
+        const hours = parseFloat(raw.replace(',', '.'));
+        if (!isNaN(hours) && hours >= 0) {
+            dispatch(actions.updateDailyHabit({ sleepHours: Math.min(hours, 24) }));
+        }
     };
 
     const onToggleSteps = () => {
         vibrate(10);
-        dispatch(actions.updateDailyHabit({ stepsGoalMet: !habits.stepsGoalMet }));
+        const raw = window.prompt('¿Cuántos pasos diste hoy?', habits.stepsGoalMet ? '10000' : '0');
+        if (raw === null) return;
+        const steps = parseInt(raw, 10);
+        if (!isNaN(steps) && steps >= 0) {
+            dispatch(actions.updateDailyHabit({ stepsGoalMet: steps >= 8000 }));
+        }
     };
 
     return {

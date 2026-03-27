@@ -102,7 +102,7 @@ const HoyScreen: React.FC = () => {
 
     const metToday = [
         hoy.habitStatuses.protein  === 'success',
-        hoy.habitStatuses.calories !== 'danger',
+        hoy.habitStatuses.calories === 'success' || hoy.habitStatuses.calories === 'warning',
         hoy.habitStatuses.sleep    === 'success',
         hoy.habitStatuses.steps    === 'success',
     ].filter(Boolean).length;
@@ -124,7 +124,7 @@ const HoyScreen: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col gap-4 px-4 pb-36 mx-auto max-w-2xl w-full">
+        <div className="relative w-full min-h-screen">
 
             {/* Modal */}
             {hoy.isLoggingActivity && (
@@ -138,6 +138,8 @@ const HoyScreen: React.FC = () => {
                     onClose={hoy.closeActivityLog}
                 />
             )}
+
+            <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 px-4 pb-40">
 
             {/* ── HEADER ──────────────────────────────────────────────── */}
             <header className="flex items-start justify-between pt-6 pb-1 animate-fade-in-up">
@@ -371,7 +373,7 @@ const HoyScreen: React.FC = () => {
                 >
                     Innegociables
                 </span>
-                <div className="flex flex-row justify-around items-start">
+                <div className="flex flex-wrap justify-around gap-4 items-start">
                     {arcChips.map(({ key, label, pct, value, unit, stroke, isOver, onClick }) => {
                         const Tag = onClick ? 'button' : ('div' as React.ElementType);
                         return (
@@ -390,8 +392,8 @@ const HoyScreen: React.FC = () => {
                                     isOver={isOver}
                                     strokeClass={stroke}
                                     textClass="text-zinc-100"
-                                    size={72}
-                                    strokeWidth={5}
+                                    size={88}
+                                    strokeWidth={6}
                                 />
                                 <span
                                     className="text-xs font-bold uppercase text-zinc-400 leading-none"
@@ -405,18 +407,18 @@ const HoyScreen: React.FC = () => {
                 </div>
             </div>
 
-            {/* ── EXPLORAR + NUTRICIÓN ─────────────────────────────────── */}
+            {/* ── ACTIVIDAD LIBRE + NUTRICIÓN ─────────────────────────────────── */}
             <div
-                className="grid grid-cols-2 gap-4 animate-fade-in-up"
+                className="flex flex-col gap-4 animate-fade-in-up md:grid md:grid-cols-2"
                 style={{ animationDelay: '120ms' }}
             >
-                {/* Explorar */}
+                {/* Actividad Libre */}
                 <section className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] p-4 flex flex-col gap-2">
                     <span
                         className="text-[9px] font-black uppercase text-zinc-500 mb-1 block"
                         style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
                     >
-                        Explorar
+                        Actividad Libre
                     </span>
                     {([
                         { icon: CardioIcon,   label: 'Carrera',    type: 'run'     as const },
@@ -490,8 +492,8 @@ const HoyScreen: React.FC = () => {
                                     isOver={false}
                                     strokeClass={stroke}
                                     textClass="text-zinc-100"
-                                    size={56}
-                                    strokeWidth={4}
+                                    size={72}
+                                    strokeWidth={5}
                                 />
                                 <span
                                     className="text-xs font-bold uppercase text-zinc-400"
@@ -505,6 +507,7 @@ const HoyScreen: React.FC = () => {
                 </section>
             </div>
 
+            </div>
         </div>
     );
 };
