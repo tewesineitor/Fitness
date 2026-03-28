@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { BookOpenIcon, PlateIcon, PlayIcon, WaterGlassIcon } from '../components/icons';
+import MacroArcGauge from '../components/ui-premium/MacroArcGauge';
+import NonNegotiableCard from '../components/ui-premium/NonNegotiableCard';
+import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
+import PremiumInput from '../components/ui-premium/PremiumInput';
 import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
+import RecipeCardPremium from '../components/ui-premium/RecipeCardPremium';
+import RoutineCardPremium from '../components/ui-premium/RoutineCardPremium';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
-import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import CircularTimer from '../components/CircularTimer';
 import {
@@ -79,9 +85,10 @@ const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stepperValue, setStepperValue] = useState(80);
   const [selectedSegment, setSelectedSegment] = useState<string | number>(1);
+  const [searchValue, setSearchValue] = useState('Upper strength');
 
   return (
-    <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
+    <div className="min-h-screen bg-zinc-950 text-white p-8 pb-40 overflow-y-auto">
       <div className="max-w-4xl mx-auto flex flex-col gap-16">
         <section className="flex flex-col gap-4">
           <EyebrowText>Playground temporal</EyebrowText>
@@ -260,6 +267,119 @@ const DesignSystemDevScreen: React.FC = () => {
               </PremiumButton>
             </div>
           </SquishyCard>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Tarjetas y Layouts Complejos (Hoy / Biblioteca)</SectionTitle>
+            <MutedText>Bloques estructurales premium para dashboards de hoy, listados y bibliotecas ricas.</MutedText>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <MacroArcGauge
+              eyebrow="Resumen nutricional"
+              title="Macros del día"
+              macros={[
+                { label: 'Carbohidratos', value: 146, target: 180, tone: 'amber' },
+                { label: 'Grasas', value: 52, target: 70, tone: 'sky' },
+                { label: 'Proteínas', value: 138, target: 160, tone: 'emerald' },
+              ]}
+            />
+
+            <RecipeCardPremium
+              title="Bowl de pollo con arroz jazmín"
+              calories="520 kcal"
+              servings="2 porciones"
+              description="Tarjeta premium para biblioteca de recetas con hero visual, metadata y chips de macros reutilizables."
+              macros={[
+                { label: 'P', value: '42 g' },
+                { label: 'C', value: '48 g' },
+                { label: 'F', value: '16 g' },
+              ]}
+              media={
+                <div className="flex h-full w-full items-end justify-between bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950 p-5">
+                  <div className="flex flex-col gap-2">
+                    <EyebrowText>Biblioteca</EyebrowText>
+                    <MutedText>Meal prep premium</MutedText>
+                  </div>
+                  <PlateIcon className="h-12 w-12 text-zinc-700" />
+                </div>
+              }
+            />
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <RoutineCardPremium
+              eyebrow="Intermedio - Fuerza"
+              title="Upper Strength / Semana 4"
+              meta="45 min"
+              description="Tarjeta hero para rutinas activas o sugeridas, con jerarquía editorial fuerte y CTA sutil para entrar al detalle."
+              chips={['4 bloques', 'Push / Pull', 'RPE 8']}
+              ctaLabel="Ver rutina"
+              onCtaClick={() => console.log('Click')}
+            />
+
+            <div className="flex flex-col gap-4">
+              <NonNegotiableCard
+                icon={<WaterGlassIcon className="h-7 w-7" />}
+                title="Bebe Agua"
+                description="Tarjeta horizontal para hábitos no negociables y recordatorios rápidos del dashboard diario."
+                meta="3L"
+                onClick={() => console.log('Click')}
+              />
+
+              <NonNegotiableCard
+                icon={<BookOpenIcon className="h-7 w-7" />}
+                title="Lee 10 min"
+                description="El mismo bloque puede vivir como checklist premium en Hoy o como item destacado dentro de Biblioteca."
+                meta="10m"
+              />
+
+              <PremiumInput
+                label="Buscar receta o rutina"
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.target.value)}
+                placeholder="Ej. upper strength, bowl proteico"
+                hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <RecipeCardPremium
+              title="Overnight oats de cacao"
+              calories="410 kcal"
+              servings="Desayuno"
+              description="Variante compacta para destacar recetas recurrentes, favoritos o sugerencias basadas en objetivos."
+              macros={[
+                { label: 'P', value: '28 g' },
+                { label: 'C', value: '39 g' },
+                { label: 'F', value: '11 g' },
+              ]}
+              media={
+                <div className="flex h-full w-full items-center justify-between bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-800 p-5">
+                  <div className="flex flex-col gap-2">
+                    <EyebrowText>Favorita</EyebrowText>
+                    <MutedText>Alta en proteína</MutedText>
+                  </div>
+                  <PlayIcon className="h-10 w-10 text-zinc-700" />
+                </div>
+              }
+            />
+
+            <SquishyCard padding="lg" className="flex flex-col gap-4">
+              <EyebrowText>Composición</EyebrowText>
+              <CardTitle>Stack de biblioteca</CardTitle>
+              <BodyText>
+                Estos bloques se pueden combinar para formar carruseles, rows editoriales y panels de onboarding sin salir del lenguaje premium del sistema.
+              </BodyText>
+              <div className="flex flex-wrap gap-3">
+                <PremiumBadge>Hoy</PremiumBadge>
+                <PremiumBadge>Biblioteca</PremiumBadge>
+                <PremiumBadge>Reusable</PremiumBadge>
+              </div>
+            </SquishyCard>
+          </div>
         </section>
       </div>
 
