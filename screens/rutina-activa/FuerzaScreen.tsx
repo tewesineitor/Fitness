@@ -4,7 +4,7 @@ import { useFuerzaScreenController } from './hooks/useFuerzaScreenController';
 import NextUpIndicator from '../../components/NextUpIndicator';
 import PlateCalculatorModal from '../../components/dialogs/PlateCalculatorModal';
 import { CalculatorIcon, CheckIcon, InformationCircleIcon } from '../../components/icons';
-import { PremiumButton, SquishyCard } from '../../components/ui-premium';
+import { PremiumButton, PremiumStepper, PremiumBadge, SegmentedTabs } from '../../components/ui-premium';
 
 interface FuerzaScreenProps {
   step: StrengthStep;
@@ -13,53 +13,6 @@ interface FuerzaScreenProps {
   onShowExerciseDetails: () => void;
   nextStep?: RoutineStep;
 }
-
-// ── Stepper ───────────────────────────────────────────────────────────────────
-const Stepper: React.FC<{
-  label: string;
-  value: string;
-  onDecrement: () => void;
-  onIncrement: () => void;
-  prevLabel?: string;
-  accessorySlot?: React.ReactNode;
-}> = ({ label, value, onDecrement, onIncrement, prevLabel, accessorySlot }) => (
-  <SquishyCard padding="lg">
-    <div className="flex items-center justify-between mb-4">
-      <span
-        className="text-[9px] font-black uppercase text-zinc-400"
-        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-      >
-        {label}
-      </span>
-      <div className="flex items-center gap-2">
-        {prevLabel ? (
-          <span className="text-[9px] font-bold text-zinc-400">{prevLabel}</span>
-        ) : null}
-        {accessorySlot}
-      </div>
-    </div>
-
-    <div className="flex items-center justify-between gap-4">
-      <button
-        onPointerDown={onDecrement}
-        className="w-20 h-20 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-3xl font-black text-zinc-300 active:scale-90 active:bg-zinc-700 transition-all duration-100 select-none flex-shrink-0"
-      >
-        −
-      </button>
-
-      <span className="font-mono text-7xl font-black text-white leading-none tracking-tight flex-1 text-center tabular-nums">
-        {value === '' ? '0' : value}
-      </span>
-
-      <button
-        onPointerDown={onIncrement}
-        className="w-20 h-20 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-3xl font-black text-zinc-300 active:scale-90 active:bg-zinc-700 transition-all duration-100 select-none flex-shrink-0"
-      >
-        +
-      </button>
-    </div>
-  </SquishyCard>
-);
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
@@ -161,8 +114,8 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
 
         {/* ── Technical focus ────────────────────────────────────────────── */}
         {state.technicalFocus && (
-          <div className="bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-3 italic animate-fade-in-up">
-            ℹ️ {state.technicalFocus}
+          <div className="animate-fade-in-up">
+            <PremiumBadge icon="ℹ️">{state.technicalFocus}</PremiumBadge>
           </div>
         )}
 
@@ -170,7 +123,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
         {!state.isFinished ? (
           <div className="flex flex-col gap-4 animate-fade-in-up">
 
-            <Stepper
+            <PremiumStepper
               label="Carga (kg)"
               value={state.weight}
               onDecrement={actions.decrementWeight}
@@ -189,7 +142,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
             <div className="text-emerald-400 font-bold text-xl uppercase tracking-widest text-center mb-2">
               Objetivo: {state.targetReps}
             </div>
-            <Stepper
+            <PremiumStepper
               label="Repeticiones"
               value={state.reps}
               onDecrement={actions.decrementReps}
@@ -198,31 +151,12 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
             />
 
             {/* RIR segmented control */}
-            <SquishyCard padding="md">
-              <span
-                className="text-[9px] font-black uppercase text-zinc-400"
-                style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-              >
-                RIR — Reps en reserva
-              </span>
-
-              <div className="flex gap-2 mt-4">
-                {state.rirOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onPointerDown={() => actions.selectRir(option.value)}
-                    className={[
-                      'flex-1 py-4 rounded-[1.25rem] text-base font-black transition-all duration-150 active:scale-95 select-none',
-                      option.isActive
-                        ? 'bg-emerald-400 text-zinc-950'
-                        : 'bg-zinc-800 text-zinc-400 border border-zinc-700/50',
-                    ].join(' ')}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </SquishyCard>
+            <SegmentedTabs
+              label="RIR — Reps en reserva"
+              options={state.rirOptions.map((o) => ({ label: o.label, value: o.value }))}
+              selectedValue={state.rirOptions.find((o) => o.isActive)?.value ?? ''}
+              onChange={(val) => actions.selectRir(val as number)}
+            />
           </div>
         ) : null}
 

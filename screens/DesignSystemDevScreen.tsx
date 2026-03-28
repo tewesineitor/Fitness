@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import PremiumButton from '../components/ui-premium/PremiumButton';
 import PremiumModal from '../components/ui-premium/PremiumModal';
+import PremiumStepper from '../components/ui-premium/PremiumStepper';
+import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
+import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import SquishyCard from '../components/ui-premium/SquishyCard';
+import CircularTimer from '../components/CircularTimer';
 import {
   EyebrowText,
   ModalTitle,
@@ -64,8 +68,17 @@ const buttonVariants: Array<{ variant: 'primary' | 'ghost'; size: 'md' | 'lg' }>
   { variant: 'ghost', size: 'lg' },
 ];
 
+const segmentOptions = [
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 },
+  { label: '3+', value: 3 },
+];
+
 const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stepperValue, setStepperValue] = useState(80);
+  const [selectedSegment, setSelectedSegment] = useState<string | number>(1);
 
   return (
     <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
@@ -171,31 +184,59 @@ const DesignSystemDevScreen: React.FC = () => {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Controles Táctiles (Steppers)</SectionTitle>
-            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+            <MutedText>Botones táctiles [-] y [+] con display numérico central. Extraídos de FuerzaScreen.</MutedText>
           </div>
-          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
-            Pendiente de extracción
-          </div>
+          <PremiumStepper
+            label="Carga (kg)"
+            value={stepperValue}
+            onDecrement={() => setStepperValue((v) => Math.max(0, v - 2.5))}
+            onIncrement={() => setStepperValue((v) => v + 2.5)}
+            prevLabel="Anterior: 77.5 kg"
+          />
         </section>
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Controles de Segmento (Tabs)</SectionTitle>
-            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+            <MutedText>Píldoras segmentadas con acento esmeralda en estado activo. Extraídas de FuerzaScreen (selector RIR).</MutedText>
           </div>
-          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
-            Pendiente de extracción
-          </div>
+          <SegmentedTabs
+            label="RIR — Reps en reserva"
+            options={segmentOptions}
+            selectedValue={selectedSegment}
+            onChange={setSelectedSegment}
+          />
         </section>
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Etiquetas (Badges)</SectionTitle>
-            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+            <MutedText>Alerta contextual con fondo esmeralda traslúcido. Extraída de FuerzaScreen (foco técnico).</MutedText>
           </div>
-          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
-            Pendiente de extracción
+          <div className="flex flex-col gap-3">
+            <PremiumBadge icon="ℹ️">
+              Pausa Isométrica — mantén la tensión en la fase excéntrica.
+            </PremiumBadge>
+            <PremiumBadge>
+              Badge sin icono — solo texto de soporte contextual.
+            </PremiumBadge>
           </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Indicadores de Progreso</SectionTitle>
+            <MutedText>Anillo SVG de cuenta regresiva. Simulado con 45 s de duración.</MutedText>
+          </div>
+          <SquishyCard padding="lg" className="flex items-center justify-center py-10">
+            <CircularTimer
+              initialDuration={90}
+              timeLeft={45}
+              size={220}
+              strokeWidth={14}
+              strokeColor="text-brand-accent"
+            />
+          </SquishyCard>
         </section>
 
         <section className="flex flex-col gap-6">
