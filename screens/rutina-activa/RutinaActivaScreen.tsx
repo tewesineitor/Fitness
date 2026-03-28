@@ -71,8 +71,8 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
         <RoutineSessionHeader
           globalTime={s.globalTime}
           isResting={s.isResting}
-          onSkip={() => s.setShowConfirmSkip(true)}
-          onExit={() => s.setShowConfirmExit(true)}
+          onSkip={s.onRequestSkip}
+          onClose={s.onRequestExit}
         />
       ) : null}
 

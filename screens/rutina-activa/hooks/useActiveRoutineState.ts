@@ -56,6 +56,8 @@ export interface ActiveRoutineState {
   onFinishWorkout: () => void;
   onAdvanceStep: () => void;
   onSkipStep: () => void;
+  onRequestSkip: () => void;
+  onRequestExit: () => void;
   onRestComplete: () => void;
   onSetComplete: (setLog: LoggedSet) => void;
   onProceedToCooldown: () => void;
@@ -249,6 +251,14 @@ export function useActiveRoutineState(activeRoutine: RoutineTask): ActiveRoutine
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const onRequestSkip = useCallback(() => {
+    setShowConfirmSkip(true);
+  }, []);
+
+  const onRequestExit = useCallback(() => {
+    setShowConfirmExit(true);
+  }, []);
+
   const onRestComplete = useCallback(() => {
     setIsResting(false);
     if (advanceAfterRestRef.current) {
@@ -398,6 +408,8 @@ export function useActiveRoutineState(activeRoutine: RoutineTask): ActiveRoutine
     onFinishWorkout,
     onAdvanceStep,
     onSkipStep,
+    onRequestSkip,
+    onRequestExit,
     onRestComplete,
     onSetComplete,
     onProceedToCooldown,

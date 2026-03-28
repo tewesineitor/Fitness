@@ -1,6 +1,6 @@
 import React from 'react';
 import type { LoggedSet, RoutineStep, StrengthStep } from '../../types';
-import { useFuerzaStep } from './hooks/useFuerzaStep';
+import { useFuerzaScreenController } from './hooks/useFuerzaScreenController';
 import NextUpIndicator from '../../components/NextUpIndicator';
 import PlateCalculatorModal from '../../components/dialogs/PlateCalculatorModal';
 import { CalculatorIcon, CheckIcon, InformationCircleIcon } from '../../components/icons';
@@ -69,7 +69,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
   onShowExerciseDetails,
   nextStep,
 }) => {
-  const { state, actions } = useFuerzaStep({
+  const { state, actions } = useFuerzaScreenController({
     step,
     loggedSets,
     onSetComplete,

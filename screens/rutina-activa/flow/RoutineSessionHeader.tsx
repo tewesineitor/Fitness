@@ -7,12 +7,12 @@ interface RoutineSessionHeaderProps {
     globalTime: number;
     isResting: boolean;
     onSkip: () => void;
-    onExit: () => void;
+    onClose: () => void;
 }
 
 const formatClock = (seconds: number) => new Date(seconds * 1000).toISOString().substring(14, 19);
 
-const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime, isResting, onSkip, onExit }) => {
+const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime, isResting, onSkip, onClose }) => {
     return (
         <header className="sticky top-0 z-[200] w-full bg-zinc-950/90 backdrop-blur-xl border-b border-zinc-800/50">
             <div className="max-w-4xl mx-auto w-full flex items-center justify-between px-4 sm:px-6 py-4">
@@ -32,7 +32,7 @@ const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime,
                     <IconButton
                         variant="destructive"
                         size="small"
-                        onClick={onExit}
+                        onClick={onClose}
                         icon={XIcon}
                         label="Salir de la rutina"
                         className="bg-red-500/15 border border-red-500/20"
