@@ -8,17 +8,17 @@ interface ExerciseDetailSheetProps {
 }
 
 const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
-  <div className="flex flex-col gap-6">
+  <div className="flex flex-col">
     {text.split(/(\*\*.*?\*\*)/g).map((part, index) =>
       part.startsWith('**') ? (
         <p
           key={index}
-          className="text-[10px] font-black uppercase tracking-widest text-emerald-400"
+          className="text-2xl font-black text-emerald-400 uppercase mt-6 mb-2"
         >
           {part.slice(2, -2)}
         </p>
       ) : part.trim() ? (
-        <p key={index} className="text-lg font-medium leading-relaxed text-zinc-300">
+        <p key={index} className="text-lg text-zinc-300 mb-4 leading-relaxed">
           {part.trim()}
         </p>
       ) : null
@@ -27,8 +27,8 @@ const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
 );
 
 const headerMediaPlaceholder = (
-  <div className="w-full h-full bg-zinc-950 flex items-center justify-center text-zinc-600 font-bold tracking-widest uppercase">
-    Imagen del ejercicio
+  <div className="w-full h-full bg-zinc-950 flex items-center justify-center text-zinc-600 font-black tracking-widest uppercase">
+    Espacio para imagen/video
   </div>
 );
 

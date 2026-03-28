@@ -91,7 +91,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
         <header className="flex flex-col gap-4 animate-fade-in-up">
 
           {/* Set progress dots */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-4">
             {state.setProgressItems.map((item) => (
               <div
                 key={item.key}
@@ -143,12 +143,6 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
           {/* Meta pills */}
           <div className="flex flex-wrap gap-2">
             <span
-              className="text-[9px] font-black uppercase px-3 py-1.5 rounded-full bg-emerald-400/10 text-emerald-400"
-              style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-            >
-              Target {state.targetReps} reps
-            </span>
-            <span
               className="text-[9px] font-black uppercase px-3 py-1.5 rounded-full bg-zinc-800/50 text-zinc-400"
               style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
             >
@@ -166,17 +160,11 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
         </header>
 
         {/* ── Technical focus ────────────────────────────────────────────── */}
-        {state.technicalFocus ? (
-          <SquishyCard padding="md" className="animate-fade-in-up">
-            <span
-              className="text-[9px] font-black uppercase text-emerald-400"
-              style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-            >
-              Technical focus
-            </span>
-            <p className="mt-2 text-sm text-zinc-300 leading-relaxed">{state.technicalFocus}</p>
-          </SquishyCard>
-        ) : null}
+        {state.technicalFocus && (
+          <div className="bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-3 italic animate-fade-in-up">
+            ℹ️ {state.technicalFocus}
+          </div>
+        )}
 
         {/* ── Steppers + RIR ─────────────────────────────────────────────── */}
         {!state.isFinished ? (
@@ -198,6 +186,9 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
               }
             />
 
+            <div className="text-emerald-400 font-bold text-xl uppercase tracking-widest text-center mb-2">
+              Objetivo: {state.targetReps}
+            </div>
             <Stepper
               label="Repeticiones"
               value={state.reps}
