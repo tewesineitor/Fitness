@@ -1,51 +1,64 @@
 import React from 'react';
-import Button from '../../../components/Button';
-import Card from '../../../components/Card';
 import CircularTimer from '../../../components/CircularTimer';
-import Tag from '../../../components/Tag';
-import { ChevronRightIcon, FireIcon, InformationCircleIcon, StrengthIcon, YogaIcon } from '../../../components/icons';
+import { FireIcon, InformationCircleIcon, StrengthIcon, YogaIcon } from '../../../components/icons';
 import type { Exercise } from '../../../types';
 import { vibrate } from '../../../utils/helpers';
 import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
 
+// ── Potentiation (Preparar) ───────────────────────────────────────────────────
 interface PotentiationScreenProps {
   exerciseName: string;
   onStartWorkout: () => void;
 }
 
 export const PotentiationScreen: React.FC<PotentiationScreenProps> = ({ exerciseName, onStartWorkout }) => (
-  <div className="relative flex h-full flex-col overflow-y-auto px-6 py-10 text-center hide-scrollbar">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-accent/12 to-transparent" />
+  <div className="flex h-full flex-col">
+    {/* Atmospheric glow */}
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(52,211,153,0.15),transparent_70%)]" />
 
-    <div className="relative z-10 mx-auto flex h-full w-full max-w-md flex-col items-center justify-center">
-      <Tag variant="status" tone="accent" size="sm">
+    {/* Centered floating content */}
+    <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
+      <span
+        className="text-[9px] font-black uppercase text-emerald-400"
+        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+      >
         Potentiation
-      </Tag>
+      </span>
 
-      <div className="mt-8 rounded-[2rem] border border-brand-accent/20 bg-brand-accent/10 p-6 text-brand-accent shadow-xl">
-        <StrengthIcon className="h-16 w-16" />
+      {/* Icon — no box, floats */}
+      <div className="text-emerald-400">
+        <StrengthIcon className="h-20 w-20" />
       </div>
 
-      <h1 className="mt-8 text-4xl font-black uppercase tracking-[-0.06em] text-text-primary">Preparar</h1>
-      <p className="mt-4 text-xl font-black uppercase tracking-[-0.03em] text-text-primary">{exerciseName}</p>
-      <p className="mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
-        Realiza 2-3 series con carga ligera para activar el patron antes de tu primera serie de trabajo.
+      <div className="flex flex-col gap-3">
+        <h1 className="font-heading text-4xl font-black text-white leading-tight tracking-tight">
+          Preparar
+        </h1>
+        <p className="text-xl font-black text-emerald-400 leading-tight">{exerciseName}</p>
+      </div>
+
+      <p className="max-w-xs text-sm text-zinc-400 leading-relaxed">
+        Realiza 2–3 series con carga ligera para activar el patrón antes de tu primera serie de trabajo.
       </p>
+    </div>
 
-      <div className="mt-10 w-full">
-        <Button
-          variant="high-contrast"
-          size="large"
-          onClick={() => { vibrate(15); onStartWorkout(); }}
-          className="w-full"
-        >
-          Comenzar set
-        </Button>
-      </div>
+    {/* Fade mask */}
+    <div className="pointer-events-none absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-zinc-950 to-transparent z-10" />
+
+    {/* FAB */}
+    <div className="relative z-20 flex flex-col items-center px-6 pb-10 pt-4">
+      <button
+        onPointerDown={() => { vibrate(15); onStartWorkout(); }}
+        className="bg-emerald-400 text-zinc-950 font-black text-lg rounded-full py-5 w-full max-w-sm mx-auto shadow-[0_0_30px_rgba(52,211,153,0.3)] hover:scale-105 transition-transform active:bg-emerald-500 select-none"
+        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+      >
+        Comenzar
+      </button>
     </div>
   </div>
 );
 
+// ── Warmup / Cooldown step view ───────────────────────────────────────────────
 interface InfoStepScreenViewProps {
   currentItemIndex: number;
   currentItemReps?: string;
@@ -80,97 +93,105 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
   }
 
   const Icon = isWarmup ? FireIcon : YogaIcon;
-  const accentClass = isWarmup ? 'text-orange-400' : 'text-emerald-400';
-  const progressTone = isWarmup ? 'bg-orange-400' : 'bg-emerald-400';
   const label = isWarmup ? 'Calentamiento' : 'Enfriamiento';
-  const tagTone = isWarmup ? 'protein' : 'accent';
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-bg-base">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-brand-accent/10 to-transparent" />
+    <div className="flex h-full flex-col">
+      {/* Atmospheric glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(52,211,153,0.1),transparent_70%)]" />
 
-      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 hide-scrollbar">
-        <div className="mx-auto flex h-full max-w-md flex-col">
-          <div className="text-center">
-            <Tag variant="status" tone={tagTone} size="sm" count={`${currentItemIndex + 1}/${totalItems}`}>
-              {label}
-            </Tag>
-          </div>
+      {/* Progress bar — top, no box wrapper */}
+      <div className="relative z-10 flex flex-col gap-3 px-6 pt-4">
+        <div className="flex items-center justify-between">
+          <span
+            className="text-[9px] font-black uppercase text-emerald-400"
+            style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+          >
+            {label}
+          </span>
+          <span className="text-[9px] font-bold text-zinc-400">
+            {currentItemIndex + 1} / {totalItems}
+          </span>
+        </div>
 
-          <div className="my-auto py-8">
-            <Card variant="glass" className="space-y-6 p-6 text-center shadow-xl">
-              <div className="flex justify-center">
-                <div className="rounded-[1.4rem] border border-surface-border bg-surface-bg/80 p-4">
-                  <Icon className={`h-8 w-8 ${accentClass}`} />
-                </div>
-              </div>
-
-              <div className="flex justify-center">
-                <CircularTimer
-                  initialDuration={INFO_STEP_DURATION}
-                  timeLeft={timeLeft}
-                  strokeColor={accentClass}
-                  size={220}
-                  strokeWidth={8}
-                  onTick={onTimerTick}
+        <div className="flex items-center gap-1.5">
+          {Array.from({ length: totalItems }).map((_, index) => (
+            <div key={index} className="h-1.5 flex-1 rounded-full overflow-hidden bg-zinc-800">
+              {index < currentItemIndex && (
+                <div className="h-full w-full bg-emerald-400" />
+              )}
+              {index === currentItemIndex && (
+                <div
+                  className="h-full bg-emerald-400 transition-all duration-500"
+                  style={{ width: `${((INFO_STEP_DURATION - timeLeft) / INFO_STEP_DURATION) * 100}%` }}
                 />
-              </div>
-
-              <div>
-                <h2 className="text-3xl font-black uppercase tracking-[-0.05em] text-text-primary">{currentExercise.name}</h2>
-                {currentItemReps ? (
-                  <div className="mt-3 flex justify-center">
-                    <Tag variant="status" tone="neutral" size="sm">
-                      {currentItemReps}
-                    </Tag>
-                  </div>
-                ) : null}
-              </div>
-
-              <Button
-                variant="secondary"
-                size="medium"
-                onClick={() => { vibrate(5); onShowExerciseDetails(); }}
-                icon={InformationCircleIcon}
-                className="w-full"
-              >
-                Ver tecnica
-              </Button>
-            </Card>
-          </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-800/50 bg-zinc-950/90 backdrop-blur-xl px-6 pb-safe pt-5">
-        <div className="mx-auto flex w-full max-w-md flex-col gap-4">
-          <div className="flex h-2 w-full items-center gap-1 rounded-full border border-surface-border bg-surface-bg p-0.5">
-            {Array.from({ length: totalItems }).map((_, index) => (
-              <div key={index} className="relative h-full flex-1 overflow-hidden rounded-full bg-bg-base">
-                {index <= currentItemIndex ? (
-                  <div
-                    className={`absolute inset-y-0 left-0 ${progressTone} ${index === currentItemIndex ? 'animate-progress-fill' : ''}`}
-                    style={index === currentItemIndex ? { width: `${((INFO_STEP_DURATION - timeLeft) / INFO_STEP_DURATION) * 100}%` } : { width: '100%' }}
-                  />
-                ) : null}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={() => { vibrate(5); onSkipAll(); }} className="flex-1">
-              Saltar
-            </Button>
-            <Button
-              variant="high-contrast"
-              onClick={() => { vibrate(10); onAdvance(); }}
-              icon={ChevronRightIcon}
-              iconPosition="right"
-              className="flex-[1.4]"
-            >
-              Siguiente
-            </Button>
-          </div>
+      {/* Floating content — no card cage */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
+        {/* Icon — floats directly */}
+        <div className="text-emerald-400">
+          <Icon className="h-10 w-10" />
         </div>
+
+        {/* Timer — massive, no wrapper card */}
+        <CircularTimer
+          initialDuration={INFO_STEP_DURATION}
+          timeLeft={timeLeft}
+          strokeColor="text-emerald-400"
+          size={240}
+          strokeWidth={8}
+          onTick={onTimerTick}
+        />
+
+        {/* Exercise name + reps chip */}
+        <div className="flex flex-col items-center gap-3">
+          <h2 className="font-heading text-4xl font-black text-white leading-tight tracking-tight">
+            {currentExercise.name}
+          </h2>
+          {currentItemReps && (
+            <span
+              className="text-[9px] font-black uppercase px-3 py-1.5 rounded-full text-zinc-400"
+              style={{ letterSpacing: 'var(--letter-spacing-caps)', backgroundColor: 'rgba(63,63,70,0.5)' }}
+            >
+              {currentItemReps}
+            </span>
+          )}
+        </div>
+
+        {/* Info link — subtle */}
+        <button
+          onClick={() => { vibrate(5); onShowExerciseDetails(); }}
+          className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 hover:text-zinc-200 transition-colors select-none"
+        >
+          <InformationCircleIcon className="w-3.5 h-3.5" />
+          Ver técnica
+        </button>
+      </div>
+
+      {/* Fade mask */}
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-zinc-950 to-transparent z-10" />
+
+      {/* FAB + Saltar */}
+      <div className="relative z-20 flex flex-col items-center gap-2 px-6 pb-10 pt-4">
+        <button
+          onPointerDown={() => { vibrate(10); onAdvance(); }}
+          className="bg-emerald-400 text-zinc-950 font-black text-lg rounded-full py-5 w-full max-w-sm mx-auto shadow-[0_0_30px_rgba(52,211,153,0.3)] hover:scale-105 transition-transform active:bg-emerald-500 select-none"
+          style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+        >
+          Siguiente
+        </button>
+        <button
+          onPointerDown={() => { vibrate(5); onSkipAll(); }}
+          className="text-zinc-400 font-bold py-3 text-sm uppercase select-none hover:text-zinc-200 transition-colors"
+          style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
+        >
+          Saltar todo
+        </button>
       </div>
     </div>
   );
