@@ -80,8 +80,8 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
   }
 
   const Icon = isWarmup ? FireIcon : YogaIcon;
-  const accentClass = isWarmup ? 'text-brand-fat' : 'text-brand-accent';
-  const progressTone = isWarmup ? 'bg-brand-fat' : 'bg-brand-accent';
+  const accentClass = isWarmup ? 'text-orange-400' : 'text-emerald-400';
+  const progressTone = isWarmup ? 'bg-orange-400' : 'bg-emerald-400';
   const label = isWarmup ? 'Calentamiento' : 'Enfriamiento';
   const tagTone = isWarmup ? 'protein' : 'accent';
 
@@ -141,7 +141,7 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 border-t border-surface-border bg-bg-base px-6 pb-safe pt-5 shadow-[0_-8px_24px_-8px_rgba(0,0,0,0.08)]">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-800/50 bg-zinc-950/90 backdrop-blur-xl px-6 pb-safe pt-5">
         <div className="mx-auto flex w-full max-w-md flex-col gap-4">
           <div className="flex h-2 w-full items-center gap-1 rounded-full border border-surface-border bg-surface-bg p-0.5">
             {Array.from({ length: totalItems }).map((_, index) => (

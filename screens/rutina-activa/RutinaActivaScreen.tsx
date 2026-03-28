@@ -88,7 +88,6 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
 
       {/* ── Main content area ──────────────────────────────────────────────── */}
       <main className="relative z-20 mx-auto flex h-full w-full max-w-4xl flex-grow flex-col overflow-hidden">
-        <div className="pointer-events-none absolute inset-4 hidden rounded-[2rem] border border-surface-border/50 bg-surface-bg/10 shadow-[0_24px_80px_rgba(0,0,0,0.18)] sm:block" />
 
         {!s.isStarted ? (
           <RoutineLaunchScreen
