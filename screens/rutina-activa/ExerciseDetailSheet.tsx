@@ -14,7 +14,7 @@ const renderTextBlock = (block: string, key: number) => {
 
   if (isNumbered || isBulleted) {
     return (
-      <ol key={key} className="flex flex-col gap-4 mt-2">
+      <ol key={key} className="flex flex-col gap-4 mt-4 mb-6">
         {lines.map((line, i) => {
           const marker = isNumbered
             ? line.match(/^(\d+)\./)?.[1] ?? String(i + 1)

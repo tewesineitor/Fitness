@@ -20,7 +20,7 @@ const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime,
                     {isResting ? 'Descanso' : 'Activo'}
                 </Tag>
 
-                <div className="flex items-center gap-3">
+                <div className="relative z-[210] flex items-center gap-3 pointer-events-auto">
                     <IconButton
                         variant="secondary"
                         size="small"
