@@ -85,6 +85,7 @@ const iconSizeStyles: Record<ButtonSize, string> = {
   large: 'h-5 w-5',
 };
 
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',

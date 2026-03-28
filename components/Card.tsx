@@ -22,6 +22,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
  * - Border radius: use rounded-2xl.
  * - Avoid rounded-3xl or larger on cards.
  */
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const Card: React.FC<CardProps> = ({
   children,
   variant = 'default',

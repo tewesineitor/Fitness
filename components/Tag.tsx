@@ -40,6 +40,7 @@ const sizeClasses: Record<TagSize, string> = {
   lg: 'ui-tag--lg',
 };
 
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const Tag: React.FC<TagProps> = ({
   children,
   variant = 'status',

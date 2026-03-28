@@ -11,6 +11,7 @@ export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'icon' |
   size?: ButtonSize;
 }
 
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const IconButton: React.FC<IconButtonProps> = ({
   icon,
   label,

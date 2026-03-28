@@ -68,7 +68,7 @@ const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8 pb-32 overflow-y-auto">
+    <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
       <div className="max-w-4xl mx-auto flex flex-col gap-16">
         <section className="flex flex-col gap-4">
           <EyebrowText>Playground temporal</EyebrowText>
@@ -165,6 +165,36 @@ const DesignSystemDevScreen: React.FC = () => {
               </BodyText>
               <MutedText>Haz click para probar la interacción.</MutedText>
             </SquishyCard>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Controles Táctiles (Steppers)</SectionTitle>
+            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+          </div>
+          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
+            Pendiente de extracción
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Controles de Segmento (Tabs)</SectionTitle>
+            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+          </div>
+          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
+            Pendiente de extracción
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Etiquetas (Badges)</SectionTitle>
+            <MutedText>Pendiente de extracción al UI Kit.</MutedText>
+          </div>
+          <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-600">
+            Pendiente de extracción
           </div>
         </section>
 

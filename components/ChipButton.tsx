@@ -22,6 +22,7 @@ const sizes: Record<NonNullable<ChipButtonProps['size']>, string> = {
   medium: 'h-9 px-4 text-[11px] tracking-[0.18em]',
 };
 
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const ChipButton: React.FC<ChipButtonProps> = ({
   active = false,
   tone = 'neutral',

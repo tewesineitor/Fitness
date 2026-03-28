@@ -9,6 +9,7 @@ interface ModalProps {
 
 const getPortalRoot = () => document.getElementById('modal-root') ?? document.body;
 
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const Modal: React.FC<ModalProps> = ({ children, onClose, className = '' }) => {
   const panelRef = useRef<HTMLDivElement>(null);
 

@@ -17,6 +17,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
  * font-medium inside the field (bold feels like placeholder, not content).
  * label uses Micro typography — all-caps, tracked, 9px.
  */
+/** @deprecated STOP. No usar en nuevas vistas. Usar equivalentes en components/ui-premium/ */
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {

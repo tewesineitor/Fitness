@@ -40,13 +40,13 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 }) => {
   return (
     <div
-      className="fixed inset-0 z-[200] bg-zinc-950/95 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
+      className="fixed inset-0 z-[200] bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) { vibrate(5); onClose(); } }}
     >
       {/* ── Inner card ──────────────────────────────────────────────────────── */}
       <div
         className={[
-          'w-full bg-zinc-900/80 border border-zinc-800/50 rounded-[2.5rem] p-8',
+          'w-full bg-zinc-900/80 border border-zinc-800/50 rounded-[2.5rem] p-8 pb-10',
           'flex flex-col gap-6 shadow-2xl max-h-[90dvh] overflow-y-auto hide-scrollbar',
           'animate-slide-in-up',
           maxWidth,
@@ -78,14 +78,16 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
               )}
             </div>
 
-            {/* Dismiss X */}
-            <button
-              onClick={() => { vibrate(5); onClose(); }}
-              className="w-10 h-10 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
-              aria-label="Cerrar"
-            >
-              <XIcon className="w-4 h-4 text-zinc-400" />
-            </button>
+            {/* Dismiss X — oculta cuando hay CTA primario inferior */}
+            {!primaryLabel && (
+              <button
+                onClick={() => { vibrate(5); onClose(); }}
+                className="w-10 h-10 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+                aria-label="Cerrar"
+              >
+                <XIcon className="w-4 h-4 text-zinc-400" />
+              </button>
+            )}
           </div>
         )}
 
