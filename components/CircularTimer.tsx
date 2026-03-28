@@ -64,7 +64,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({
   const minutes = Math.floor(displayTime / 60);
   const seconds = displayTime % 60;
 
-  const fontSizeClass = size >= 250 ? 'text-5xl sm:text-7xl' : 'text-4xl sm:text-5xl';
+  const fontSizeClass = size >= 300 ? 'text-7xl' : size >= 250 ? 'text-5xl' : 'text-4xl';
 
   return (
     <div className="relative" style={{ width: size, height: size, maxWidth: '100%', maxHeight: '100%' }}>
@@ -93,10 +93,10 @@ const CircularTimer: React.FC<CircularTimerProps> = ({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className={`${fontSizeClass} font-bold tracking-tighter tabular-nums`}>
+        <span className={`${fontSizeClass} font-black tracking-tighter tabular-nums`}>
           {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
         </span>
-        <span className="text-sm text-text-secondary uppercase tracking-widest">Restante</span>
+        <span className="text-sm text-zinc-400 uppercase tracking-widest">Restante</span>
       </div>
     </div>
   );

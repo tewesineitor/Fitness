@@ -1,6 +1,6 @@
 import React from 'react';
 import CircularTimer from '../../../components/CircularTimer';
-import { FireIcon, InformationCircleIcon, StrengthIcon, YogaIcon } from '../../../components/icons';
+import { InformationCircleIcon, StrengthIcon } from '../../../components/icons';
 import type { Exercise } from '../../../types';
 import { vibrate } from '../../../utils/helpers';
 import { INFO_STEP_DURATION } from '../hooks/useInfoStepFlow';
@@ -92,13 +92,12 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
     return <PotentiationScreen exerciseName={potentiateExerciseName} onStartWorkout={onAdvance} />;
   }
 
-  const Icon = isWarmup ? FireIcon : YogaIcon;
   const label = isWarmup ? 'Calentamiento' : 'Enfriamiento';
 
   return (
     <div className="flex h-full flex-col">
       {/* Atmospheric glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(52,211,153,0.1),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-accent/10 to-transparent" />
 
       {/* Progress bar — top, no box wrapper */}
       <div className="relative z-10 flex flex-col gap-3 px-6 pt-4">
@@ -133,18 +132,13 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
 
       {/* Floating content — no card cage */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
-        {/* Icon — floats directly */}
-        <div className="text-emerald-400">
-          <Icon className="h-10 w-10" />
-        </div>
-
-        {/* Timer — massive, no wrapper card */}
+        {/* Timer — colossal, no wrapper, no decorative icon */}
         <CircularTimer
           initialDuration={INFO_STEP_DURATION}
           timeLeft={timeLeft}
           strokeColor="text-emerald-400"
-          size={240}
-          strokeWidth={8}
+          size={320}
+          strokeWidth={10}
           onTick={onTimerTick}
         />
 
@@ -154,12 +148,9 @@ const InfoStepScreenView: React.FC<InfoStepScreenViewProps> = ({
             {currentExercise.name}
           </h2>
           {currentItemReps && (
-            <span
-              className="text-[9px] font-black uppercase px-3 py-1.5 rounded-full text-zinc-400"
-              style={{ letterSpacing: 'var(--letter-spacing-caps)', backgroundColor: 'rgba(63,63,70,0.5)' }}
-            >
+            <p className="text-3xl font-black text-emerald-400 uppercase tracking-widest">
               {currentItemReps}
-            </span>
+            </p>
           )}
         </div>
 

@@ -2,7 +2,6 @@ import React from 'react';
 import type { RoutineTask } from '../../types';
 import { useActiveRoutineState } from './hooks/useActiveRoutineState';
 
-import ImmersiveBackground from '../../components/ImmersiveBackground';
 import Modal from '../../components/Modal';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
 import AddExerciseModal from './AddExerciseModal';
@@ -21,16 +20,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
   const s = useActiveRoutineState(activeRoutine);
 
   return (
-    <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-bg-base font-sans text-text-primary">
-      {/* ── Immersive background layer ─────────────────────────────────────── */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <ImmersiveBackground exercise={s.bgExercise} />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(var(--color-brand-accent-rgb),0.16),transparent_42%),linear-gradient(180deg,rgba(8,10,16,0.18),rgba(8,10,16,0.72))]" />
-        <div className="absolute inset-0 bg-bg-base/86 backdrop-blur-[12px]" />
-      </div>
-
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-gradient-to-b from-black/35 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-gradient-to-t from-bg-base via-bg-base/92 to-transparent" />
+    <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-zinc-950 font-sans text-text-primary">
 
       {/* ── Overlays / modals ──────────────────────────────────────────────── */}
       {s.showConfirmExit ? (
