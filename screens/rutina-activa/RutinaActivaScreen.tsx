@@ -20,7 +20,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
   const s = useActiveRoutineState(activeRoutine);
 
   return (
-    <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-zinc-950 font-sans text-text-primary">
+    <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col overflow-y-auto bg-zinc-950 font-sans text-text-primary">
 
       {/* ── Overlays / modals ──────────────────────────────────────────────── */}
       {s.showConfirmExit ? (
@@ -77,7 +77,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
       ) : null}
 
       {/* ── Main content area ──────────────────────────────────────────────── */}
-      <main className="relative z-20 mx-auto flex h-full w-full max-w-4xl flex-grow flex-col overflow-hidden">
+      <main className="relative z-20 w-full flex-grow flex-col">
 
         {!s.isStarted ? (
           <RoutineLaunchScreen
@@ -87,7 +87,7 @@ const RutinaActivaScreen: React.FC<RutinaActivaScreenProps> = ({ activeRoutine }
             onBack={s.onBack}
           />
         ) : (
-          <div className="relative z-10 flex h-full flex-col overflow-hidden">
+          <div className="relative z-10 flex flex-col">
             <RoutineStepRenderer
               activeRoutine={activeRoutine}
               allExercises={s.allExercises}

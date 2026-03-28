@@ -1,10 +1,8 @@
 import React from 'react';
 import { Exercise, LoggedSet, RoutineStep, RoutineTask, WorkoutStats } from '../../../types';
-import CardioScreen from '../CardioScreen';
 import FuerzaScreen from '../FuerzaScreen';
 import InfoStepScreen from '../InfoStepScreen';
 import PostRoutineScreen from '../PostRoutineScreen';
-import PoseScreen from '../PoseScreen';
 import RestoScreen from '../RestoScreen';
 
 interface RoutineStepRendererProps {
@@ -69,10 +67,6 @@ const RoutineStepRenderer: React.FC<RoutineStepRendererProps> = ({
         );
     }
 
-    if (activeRoutine.type === 'cardio') {
-        return <CardioScreen cardioWeek={cardioWeek} onComplete={onFinishWorkout} />;
-    }
-
     if (isResting) {
         const nextUpStep = advanceAfterRest ? nextStep : currentStep;
         return (
@@ -123,18 +117,6 @@ const RoutineStepRenderer: React.FC<RoutineStepRendererProps> = ({
                     nextStep={nextStep}
                 />
             );
-        case 'pose':
-        case 'meditation': {
-            const exerciseId = 'exerciseId' in currentStep ? currentStep.exerciseId : undefined;
-
-            return (
-                <PoseScreen
-                    step={currentStep}
-                    onComplete={onHandleStepComplete}
-                    onShowExerciseDetails={() => exerciseId && onShowExerciseDetails(exerciseId)}
-                />
-            );
-        }
         default:
             return <p>Paso desconocido.</p>;
     }

@@ -14,28 +14,30 @@ const formatClock = (seconds: number) => new Date(seconds * 1000).toISOString().
 
 const RoutineSessionHeader: React.FC<RoutineSessionHeaderProps> = ({ globalTime, isResting, onSkip, onExit }) => {
     return (
-        <header className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-6 pb-2 pt-6 max-w-4xl mx-auto pointer-events-auto">
-            <Tag variant="status" tone={isResting ? 'accent' : 'success'} size="md" count={formatClock(globalTime)}>
-                {isResting ? 'Descanso' : 'Activo'}
-            </Tag>
+        <header className="sticky top-0 z-[200] w-full bg-zinc-950/90 backdrop-blur-xl border-b border-zinc-800/50">
+            <div className="max-w-4xl mx-auto w-full flex items-center justify-between px-4 sm:px-6 py-4">
+                <Tag variant="status" tone={isResting ? 'accent' : 'success'} size="md" count={formatClock(globalTime)}>
+                    {isResting ? 'Descanso' : 'Activo'}
+                </Tag>
 
-            <div className="relative z-[200] flex items-center gap-3 pointer-events-auto">
-                <IconButton
-                    variant="secondary"
-                    size="small"
-                    onClick={() => { console.log('Header Button Clicked: Skip'); onSkip(); }}
-                    icon={ChevronRightIcon}
-                    label="Saltar paso actual"
-                    className="bg-zinc-800/80 border border-zinc-700/50"
-                />
-                <IconButton
-                    variant="destructive"
-                    size="small"
-                    onClick={() => { console.log('Header Button Clicked: Exit'); onExit(); }}
-                    icon={XIcon}
-                    label="Salir de la rutina"
-                    className="bg-red-500/15 border border-red-500/20"
-                />
+                <div className="flex items-center gap-3">
+                    <IconButton
+                        variant="secondary"
+                        size="small"
+                        onClick={onSkip}
+                        icon={ChevronRightIcon}
+                        label="Saltar paso actual"
+                        className="bg-zinc-800/80 border border-zinc-700/50"
+                    />
+                    <IconButton
+                        variant="destructive"
+                        size="small"
+                        onClick={onExit}
+                        icon={XIcon}
+                        label="Salir de la rutina"
+                        className="bg-red-500/15 border border-red-500/20"
+                    />
+                </div>
             </div>
         </header>
     );

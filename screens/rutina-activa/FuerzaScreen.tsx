@@ -85,7 +85,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
         />
       ) : null}
 
-      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col gap-8 px-4 pt-28 pb-36">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col gap-8 px-4 pt-6 pb-36">
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <header className="flex flex-col gap-4 animate-fade-in-up">
