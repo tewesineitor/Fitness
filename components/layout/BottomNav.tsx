@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeIcon, BookOpenIcon, PlateIcon, ChartBarIcon } from '../icons';
+import { HomeIcon, BookOpenIcon, PlateIcon, ChartBarIcon, PlaygroundIcon } from '../icons';
 import { Screen } from '../../types';
 import { vibrate } from '../../utils/helpers';
 
@@ -14,6 +14,7 @@ const navItems: Array<{ screen: Screen; label: string; icon: React.FC<{ classNam
   { screen: 'Nutrición', label: 'Nutrición', icon: PlateIcon },
   { screen: 'Biblioteca', label: 'Biblioteca', icon: BookOpenIcon },
   { screen: 'Progreso', label: 'Progreso', icon: ChartBarIcon },
+  { screen: 'Playground', label: 'UI Kit', icon: PlaygroundIcon },
 ];
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeScreen, visible, onNavigate }) => {
@@ -21,7 +22,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeScreen, visible, onNavigate
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[120] px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-      <nav className="mx-auto flex max-w-md items-stretch gap-2 rounded-[1.5rem] border border-surface-border/80 bg-surface-bg/90 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-2xl">
+      <nav className="mx-auto flex max-w-xl items-stretch gap-2 rounded-[1.5rem] border border-surface-border/80 bg-surface-bg/90 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-2xl">
         {navItems.map(({ screen, label, icon: Icon }) => {
           const isActive = activeScreen === screen;
 
@@ -49,7 +50,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeScreen, visible, onNavigate
                   isActive ? 'scale-110' : 'group-hover:scale-105',
                 ].join(' ')}
               />
-              <span className="text-[9px] font-black uppercase tracking-[0.18em]">
+              <span className="text-[8px] font-black uppercase tracking-[0.16em]">
                 {label}
               </span>
             </button>
@@ -61,3 +62,4 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeScreen, visible, onNavigate
 };
 
 export default BottomNav;
+

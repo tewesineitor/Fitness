@@ -27,6 +27,7 @@ const BibliotecaScreen = lazy(() => import('./screens/Biblioteca'));
 const NutricionScreen = lazy(() => import('./screens/Nutricion'));
 const ProgresoScreen = lazy(() => import('./screens/Progreso'));
 const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen'));
+const DesignSystemDevScreen = lazy(() => import('./screens/DesignSystemDevScreen'));
 
 const renderScreenById = (screen: Screen) => {
   switch (screen) {
@@ -36,6 +37,8 @@ const renderScreenById = (screen: Screen) => {
       return <BibliotecaScreen />;
     case 'Progreso':
       return <ProgresoScreen />;
+    case 'Playground':
+      return <DesignSystemDevScreen />;
     case 'Hoy':
     default:
       return <HoyScreen />;

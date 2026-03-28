@@ -28,6 +28,14 @@ export const ChartBarIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
+export const PlaygroundIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/>
+    <path d="M19 15l.95 2.55L22.5 18.5l-2.55.95L19 22l-.95-2.55L15.5 18.5l2.55-.95L19 15z"/>
+    <path d="M5 14l.72 1.78L7.5 16.5l-1.78.72L5 19l-.72-1.78L2.5 16.5l1.78-.72L5 14z"/>
+  </svg>
+);
+
 export const UserCircleIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -35,3 +43,4 @@ export const UserCircleIcon: React.FC<IconProps> = ({ className }) => (
         <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
     </svg>
 );
+

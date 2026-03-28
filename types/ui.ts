@@ -1,6 +1,6 @@
 import type { AddedFood } from './nutrition';
 
-export type Screen = 'Hoy' | 'Nutrición' | 'Biblioteca' | 'Progreso' | 'RutinaActiva';
+export type Screen = 'Hoy' | 'Nutrición' | 'Biblioteca' | 'Progreso' | 'Playground' | 'RutinaActiva';
 
 export type SyncStatus = 'synced' | 'syncing' | 'error' | 'offline';
 
