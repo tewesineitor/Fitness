@@ -27,6 +27,12 @@ Fit Architect is a fitness and nutrition SPA for logging workouts, meals, body m
 - `npm run preview` serves the build locally.
 - `npm run lint` runs the TypeScript check.
 
+## Docs
+- `docs/README.md` is the documentation index.
+- `docs/active/PROJECT_OVERVIEW.md` is the current internal overview.
+- `docs/active/FRONTEND_REDESIGN_MASTER_PLAN.md` is the active frontend redesign plan.
+- `docs/archive/` contains historical snapshots only.
+
 ## Notes
 - The app is organized in the repository root, not in `src/`.
 - Supabase is required for auth and cloud sync.

@@ -3,7 +3,7 @@
 > Estado del documento: Definitivo  
 > Fecha: 2026-03-27  
 > Rol emisor: Arquitectura Frontend / Tech Lead  
-> Base de auditoría: `APP_TOPOLOGY.md`, `DOCUMENTATION.md`, `.windsurf/rules/frontend-anti-patterns.md` y revisión estática del árbol real del proyecto
+> Base de auditoria: `docs/active/PROJECT_OVERVIEW.md`, `docs/archive/APP_TOPOLOGY_2026-03-23.md`, `.windsurf/rules/frontend-anti-patterns.md` y revision estatica del arbol real del proyecto
 
 ---
 
@@ -472,3 +472,4 @@ No por conveniencia, sino por arquitectura:
 Después de `FuerzaScreen`, el plan correcto es cerrar todo el vertical de `Rutina Activa`, luego `FocusMode`, después la profundidad de `Nutrición`, y solo entonces avanzar a `Biblioteca`, `Progreso` y bordes de entrada.
 
 Ese es el orden que maximiza impacto, consistencia y velocidad de ejecución sin seguir acumulando deuda híbrida.
+
