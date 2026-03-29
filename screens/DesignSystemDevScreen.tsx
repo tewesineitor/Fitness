@@ -88,7 +88,7 @@ const DesignSystemDevScreen: React.FC = () => {
   const [searchValue, setSearchValue] = useState('Upper strength');
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8 pb-40 overflow-y-auto">
+    <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
       <div className="max-w-4xl mx-auto flex flex-col gap-16">
         <section className="flex flex-col gap-4">
           <EyebrowText>Playground temporal</EyebrowText>

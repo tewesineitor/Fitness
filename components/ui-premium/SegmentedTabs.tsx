@@ -1,5 +1,6 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
+import { EyebrowText } from './Typography';
 
 interface SegmentOption {
   label: string;
@@ -20,14 +21,7 @@ const SegmentedTabs: React.FC<SegmentedTabsProps> = ({
   onChange,
 }) => (
   <SquishyCard padding="md">
-    {label && (
-      <span
-        className="text-[9px] font-black uppercase text-zinc-400"
-        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-      >
-        {label}
-      </span>
-    )}
+    {label && <EyebrowText>{label}</EyebrowText>}
 
     <div className={`flex gap-2 ${label ? 'mt-4' : ''}`}>
       {options.map((option) => {

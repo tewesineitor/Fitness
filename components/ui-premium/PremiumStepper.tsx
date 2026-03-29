@@ -1,5 +1,6 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
+import { EyebrowText } from './Typography';
 
 interface PremiumStepperProps {
   label: string;
@@ -20,15 +21,10 @@ const PremiumStepper: React.FC<PremiumStepperProps> = ({
 }) => (
   <SquishyCard padding="lg">
     <div className="flex items-center justify-between mb-4">
-      <span
-        className="text-[9px] font-black uppercase text-zinc-400"
-        style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-      >
-        {label}
-      </span>
+      <EyebrowText>{label}</EyebrowText>
       <div className="flex items-center gap-2">
         {prevLabel ? (
-          <span className="text-[9px] font-bold text-zinc-400">{prevLabel}</span>
+          <EyebrowText>{prevLabel}</EyebrowText>
         ) : null}
         {accessorySlot}
       </div>

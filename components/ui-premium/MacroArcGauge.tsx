@@ -96,7 +96,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
             })}
           </svg>
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <StatValue className="text-3xl">{Math.round(averageProgress * 100)}%</StatValue>
             <MutedText>cumplimiento</MutedText>
           </div>
