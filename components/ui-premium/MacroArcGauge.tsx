@@ -25,7 +25,7 @@ const toneClasses: Record<MacroTone, string> = {
   sky: 'text-sky-300',
 };
 
-const radii = [44, 34, 24];
+const radii = [46, 36, 26];
 
 const clampProgress = (value: number, target: number) => {
   if (target <= 0) {
@@ -59,7 +59,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
       </div>
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <div className="relative mx-auto h-56 w-56 shrink-0">
+        <div className="relative mx-auto h-64 w-64 shrink-0">
           <svg viewBox="0 0 120 120" className="h-full w-full">
             {visibleMacros.map((macro, index) => {
               const radius = radii[index] ?? radii[radii.length - 1];
@@ -76,7 +76,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
                     r={radius}
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="8"
+                    strokeWidth="5"
                     className="text-zinc-800"
                   />
                   <circle
@@ -85,7 +85,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
                     r={radius}
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="8"
+                    strokeWidth="5"
                     strokeLinecap="round"
                     strokeDasharray={circumference}
                     strokeDashoffset={strokeDashoffset}

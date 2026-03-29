@@ -377,18 +377,6 @@ const DesignSystemDevScreen: React.FC = () => {
               }
             />
 
-            <SquishyCard padding="lg" className="flex flex-col gap-4">
-              <EyebrowText>Composición</EyebrowText>
-              <CardTitle>Stack de biblioteca</CardTitle>
-              <BodyText>
-                Estos bloques se pueden combinar para formar carruseles, rows editoriales y panels de onboarding sin salir del lenguaje premium del sistema.
-              </BodyText>
-              <div className="flex flex-wrap gap-3">
-                <PremiumBadge>Hoy</PremiumBadge>
-                <PremiumBadge>Biblioteca</PremiumBadge>
-                <PremiumBadge>Reusable</PremiumBadge>
-              </div>
-            </SquishyCard>
           </div>
         </section>
       </div>

@@ -34,7 +34,7 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
       padding="md"
       interactive={Boolean(onClick)}
       onClick={onClick}
-      className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}
+      className={['w-full max-w-[380px] mx-auto flex flex-col gap-4', className].filter(Boolean).join(' ')}
     >
       <div className="w-full aspect-video rounded-[2rem] overflow-hidden relative border border-zinc-800/60 bg-zinc-900">
         {media ?? (

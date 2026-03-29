@@ -21,21 +21,21 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
 }) => {
   return (
     <SquishyCard
-      padding="md"
+      padding="sm"
       interactive={Boolean(onClick)}
       onClick={onClick}
-      className={['flex items-center gap-4', className].filter(Boolean).join(' ')}
+      className={['flex items-center gap-3', className].filter(Boolean).join(' ')}
     >
-      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-zinc-300">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-zinc-800/80 text-zinc-300">
         {icon}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <EyebrowText>{title}</EyebrowText>
         <MutedText>{description}</MutedText>
       </div>
 
-      {meta ? <MonoValue className="text-zinc-400">{meta}</MonoValue> : null}
+      {meta ? <MonoValue className="shrink-0 text-zinc-400">{meta}</MonoValue> : null}
     </SquishyCard>
   );
 };
