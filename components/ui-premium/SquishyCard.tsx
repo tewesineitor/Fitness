@@ -41,7 +41,7 @@ const SquishyCard: React.FC<SquishyCardProps> = ({
         radiusClasses[radius],
         paddingClasses[padding],
         interactive
-          ? 'cursor-pointer select-none active:bg-zinc-800/40 transition-colors duration-100'
+          ? 'cursor-pointer select-none hover:brightness-[1.08] active:scale-[0.98] active:bg-zinc-800/40 transition-all duration-200 ease-out'
           : '',
         className,
       ]

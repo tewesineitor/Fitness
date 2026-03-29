@@ -103,6 +103,30 @@ const DesignSystemDevScreen: React.FC = () => {
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
+            <SectionTitle>Colores Semánticos</SectionTitle>
+            <MutedText>Paleta cromática canónica del sistema. Cada token tiene un rol semántico único e irremplazable.</MutedText>
+          </div>
+          <div className="flex flex-wrap gap-6">
+            {[
+              { label: 'Fondo Base', bg: 'bg-zinc-950', border: 'border border-zinc-800' },
+              { label: 'Cristal', bg: 'bg-zinc-900/80', border: 'border border-zinc-700/50' },
+              { label: 'Éxito', bg: 'bg-emerald-400', border: '' },
+              { label: 'Fuerza', bg: 'bg-orange-500', border: '' },
+              { label: 'Cardio', bg: 'bg-cyan-400', border: '' },
+              { label: 'Proteína', bg: 'bg-violet-500', border: '' },
+              { label: 'Advertencia', bg: 'bg-amber-400', border: '' },
+              { label: 'Límite', bg: 'bg-rose-500', border: '' },
+            ].map(({ label, bg, border }) => (
+              <div key={label} className="flex flex-col items-center gap-2">
+                <div className={['w-16 h-16 rounded-2xl', bg, border].filter(Boolean).join(' ')} />
+                <MutedText>{label}</MutedText>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
             <SectionTitle>Tipografía</SectionTitle>
             <MutedText>Vista comparativa para revisar escala, peso y contraste.</MutedText>
           </div>

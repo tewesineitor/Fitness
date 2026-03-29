@@ -23,9 +23,9 @@ const sizeClasses: Record<PremiumButtonSize, string> = {
 
 const variantClasses: Record<PremiumButtonVariant, string> = {
   primary:
-    'bg-emerald-400 text-zinc-950 shadow-[0_0_30px_rgba(52,211,153,0.3)] hover:scale-105 active:bg-emerald-500 active:scale-[0.97]',
+    'bg-emerald-400 text-zinc-950 shadow-[0_0_30px_rgba(52,211,153,0.3)] hover:brightness-110 hover:scale-[1.02] active:brightness-95 active:scale-[0.97]',
   ghost:
-    'bg-transparent text-zinc-400 hover:text-zinc-200 active:text-zinc-300',
+    'bg-zinc-800/60 border border-zinc-700/50 text-zinc-300 hover:bg-zinc-700/60 hover:text-zinc-100 active:scale-[0.98] active:bg-zinc-800',
 };
 
 const PremiumButton: React.FC<PremiumButtonProps> = ({
@@ -58,7 +58,7 @@ const PremiumButton: React.FC<PremiumButtonProps> = ({
       onClick={handleClick}
       style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
       className={[
-        'w-full rounded-full font-black uppercase select-none transition-all duration-150',
+        'w-full rounded-full font-black uppercase select-none transition-all duration-200 ease-out',
         sizeClasses[size],
         variantClasses[variant],
         disabled ? 'opacity-40 pointer-events-none' : '',
