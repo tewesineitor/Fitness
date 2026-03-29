@@ -1,6 +1,6 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
-import { CardTitle, EyebrowText, MonoValue, MutedText, StatValue } from './Typography';
+import { CardTitle, EyebrowText, MonoValue, MutedText, StatLabel, StatValue } from './Typography';
 
 type MacroTone = 'emerald' | 'amber' | 'sky';
 
@@ -98,7 +98,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
 
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <StatValue className="text-3xl">{Math.round(averageProgress * 100)}%</StatValue>
-            <MutedText>cumplimiento</MutedText>
+            <StatLabel>Cumplimiento</StatLabel>
           </div>
         </div>
 

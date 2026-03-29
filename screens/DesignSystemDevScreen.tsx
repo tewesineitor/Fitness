@@ -275,7 +275,7 @@ const DesignSystemDevScreen: React.FC = () => {
             <MutedText>Bloques estructurales premium para dashboards de hoy, listados y bibliotecas ricas.</MutedText>
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="flex flex-col gap-8">
             <MacroArcGauge
               eyebrow="Resumen nutricional"
               title="Macros del día"
@@ -314,9 +314,7 @@ const DesignSystemDevScreen: React.FC = () => {
                 </>
               }
             />
-          </div>
 
-          <div className="grid gap-6 xl:grid-cols-2">
             <RoutineCardPremium
               eyebrow="Intermedio - Fuerza"
               title="Upper Strength / Semana 4"
@@ -327,33 +325,29 @@ const DesignSystemDevScreen: React.FC = () => {
               onCtaClick={() => console.log('Click')}
             />
 
-            <div className="flex flex-col gap-4">
-              <NonNegotiableCard
-                icon={<WaterGlassIcon className="h-7 w-7" />}
-                title="Bebe Agua"
-                description="Tarjeta horizontal para hábitos no negociables y recordatorios rápidos del dashboard diario."
-                meta="3L"
-                onClick={() => console.log('Click')}
-              />
+            <NonNegotiableCard
+              icon={<WaterGlassIcon className="h-7 w-7" />}
+              title="Bebe Agua"
+              description="Tarjeta horizontal para hábitos no negociables y recordatorios rápidos del dashboard diario."
+              meta="3L"
+              onClick={() => console.log('Click')}
+            />
 
-              <NonNegotiableCard
-                icon={<BookOpenIcon className="h-7 w-7" />}
-                title="Lee 10 min"
-                description="El mismo bloque puede vivir como checklist premium en Hoy o como item destacado dentro de Biblioteca."
-                meta="10m"
-              />
+            <NonNegotiableCard
+              icon={<BookOpenIcon className="h-7 w-7" />}
+              title="Lee 10 min"
+              description="El mismo bloque puede vivir como checklist premium en Hoy o como item destacado dentro de Biblioteca."
+              meta="10m"
+            />
 
-              <PremiumInput
-                label="Buscar receta o rutina"
-                value={searchValue}
-                onChange={(event) => setSearchValue(event.target.value)}
-                placeholder="Ej. upper strength, bowl proteico"
-                hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
-              />
-            </div>
-          </div>
+            <PremiumInput
+              label="Buscar receta o rutina"
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder="Ej. upper strength, bowl proteico"
+              hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
+            />
 
-          <div className="grid gap-6 xl:grid-cols-2">
             <RecipeCardPremium
               title="Overnight oats de cacao"
               calories="410 kcal"

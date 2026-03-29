@@ -1,4 +1,5 @@
 import React from 'react';
+import { StatLabel } from './Typography';
 
 interface PremiumChipProps {
   children: React.ReactNode;
@@ -18,14 +19,14 @@ const PremiumChip: React.FC<PremiumChipProps> = ({
 }) => (
   <span
     className={[
-      'inline-flex items-center rounded-full px-3 py-1 text-xs font-bold',
+      'inline-flex items-center rounded-full px-3 py-1',
       toneClasses[tone],
       className,
     ]
       .filter(Boolean)
       .join(' ')}
   >
-    {children}
+    <StatLabel>{children}</StatLabel>
   </span>
 );
 
