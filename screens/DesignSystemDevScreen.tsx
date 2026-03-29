@@ -297,13 +297,21 @@ const DesignSystemDevScreen: React.FC = () => {
                 { label: 'F', value: '16 g' },
               ]}
               media={
-                <div className="flex h-full w-full items-end justify-between bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950 p-5">
-                  <div className="flex flex-col gap-2">
-                    <EyebrowText>Biblioteca</EyebrowText>
-                    <MutedText>Meal prep premium</MutedText>
+                <>
+                  <img
+                    src="/assets/recipes/bowl-pollo.png"
+                    alt="Bowl de pollo"
+                    className="h-full w-full object-cover opacity-60"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent" />
+                  <div className="absolute inset-0 p-5 flex items-end justify-between">
+                    <div className="flex flex-col gap-2">
+                      <EyebrowText>Biblioteca</EyebrowText>
+                      <MutedText>Meal prep premium</MutedText>
+                    </div>
+                    <PlateIcon className="h-12 w-12 text-zinc-300 drop-shadow-lg" />
                   </div>
-                  <PlateIcon className="h-12 w-12 text-zinc-700" />
-                </div>
+                </>
               }
             />
           </div>
@@ -357,13 +365,21 @@ const DesignSystemDevScreen: React.FC = () => {
                 { label: 'F', value: '11 g' },
               ]}
               media={
-                <div className="flex h-full w-full items-center justify-between bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-800 p-5">
-                  <div className="flex flex-col gap-2">
-                    <EyebrowText>Favorita</EyebrowText>
-                    <MutedText>Alta en proteína</MutedText>
+                <>
+                  <img
+                    src="/assets/recipes/oats-cacao.png"
+                    alt="Overnight oats"
+                    className="h-full w-full object-cover opacity-60"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-zinc-950/10" />
+                  <div className="absolute inset-0 p-5 flex items-center justify-between">
+                    <div className="flex flex-col gap-2">
+                      <EyebrowText>Favorita</EyebrowText>
+                      <MutedText>Alta en proteína</MutedText>
+                    </div>
+                    <PlayIcon className="h-10 w-10 text-zinc-300 drop-shadow-lg" />
                   </div>
-                  <PlayIcon className="h-10 w-10 text-zinc-700" />
-                </div>
+                </>
               }
             />
 
