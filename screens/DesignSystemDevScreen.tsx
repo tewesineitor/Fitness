@@ -12,7 +12,7 @@ import RecipeCardPremium from '../components/ui-premium/RecipeCardPremium';
 import RoutineCardPremium from '../components/ui-premium/RoutineCardPremium';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
 import SquishyCard from '../components/ui-premium/SquishyCard';
-import CircularTimer from '../components/CircularTimer';
+import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import {
   EyebrowText,
   ModalTitle,
@@ -257,18 +257,10 @@ const DesignSystemDevScreen: React.FC = () => {
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <SectionTitle>Indicadores de Progreso</SectionTitle>
-            <MutedText>Anillo SVG de cuenta regresiva. Simulado con 45 s de duración.</MutedText>
+            <SectionTitle>Cronómetro Inteligente (Modo Foco)</SectionTitle>
+            <MutedText>Widget de descanso activo con fases dinámicas y controles de acción rápida.</MutedText>
           </div>
-          <SquishyCard padding="lg" className="flex items-center justify-center py-10">
-            <CircularTimer
-              initialDuration={90}
-              timeLeft={45}
-              size={220}
-              strokeWidth={14}
-              strokeColor="text-brand-accent"
-            />
-          </SquishyCard>
+          <SmartRestTimer targetTime={120} minimumTime={90} />
         </section>
 
         <section className="flex flex-col gap-6">

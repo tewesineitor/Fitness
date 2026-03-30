@@ -2,7 +2,7 @@ import React from 'react';
 import { vibrate } from '../../utils/helpers';
 
 type PremiumButtonVariant = 'primary' | 'ghost';
-type PremiumButtonSize = 'md' | 'lg';
+type PremiumButtonSize = 'sm' | 'md' | 'lg';
 
 interface PremiumButtonProps {
   children: React.ReactNode;
@@ -17,6 +17,7 @@ interface PremiumButtonProps {
 }
 
 const sizeClasses: Record<PremiumButtonSize, string> = {
+  sm: 'py-2 text-sm',
   md: 'py-4 text-base',
   lg: 'py-5 text-lg',
 };
