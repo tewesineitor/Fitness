@@ -13,6 +13,9 @@ import RoutineCardPremium from '../components/ui-premium/RoutineCardPremium';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
+import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
+import NutritionSummaryMini from '../components/ui-premium/NutritionSummaryMini';
+import SmartFlexibleMacros from '../components/ui-premium/SmartFlexibleMacros';
 import {
   EyebrowText,
   ModalTitle,
@@ -86,6 +89,7 @@ const segmentOptions = [
 
 const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRuckingFormOpen, setIsRuckingFormOpen] = useState(false);
   const [stepperValue, setStepperValue] = useState(80);
   const [selectedSegment, setSelectedSegment] = useState<string | number>(1);
   const [searchValue, setSearchValue] = useState('Upper strength');
@@ -293,77 +297,44 @@ const DesignSystemDevScreen: React.FC = () => {
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <SectionTitle>Ecosistema de Formularios</SectionTitle>
-            <MutedText>Formulario de alta conversión. Inputs de cristal con unidades, métrica hero de solo lectura y textarea.</MutedText>
+            <SectionTitle>Menú de Actividades</SectionTitle>
+            <MutedText>Selección de actividad estilo Bento. Cada tarjeta abre su formulario de registro.</MutedText>
           </div>
 
-          <div className="max-w-[380px] mx-auto w-full flex flex-col gap-4">
-            <PremiumButton variant="ghost" size="sm" className="w-full border border-cyan-400/20 text-cyan-400">
-              Leer resumen con IA
-            </PremiumButton>
-
-            <div className="grid grid-cols-2 gap-4">
-              <PremiumInput
-                label="Distancia"
-                type="number"
-                placeholder="0.0"
-                rightElement="km"
-              />
-              <PremiumInput
-                label="Duración"
-                type="number"
-                placeholder="0"
-                rightElement="min"
-              />
-            </div>
-
-            <SquishyCard padding="md" className="my-2 flex flex-col items-center justify-center text-center gap-2">
-              <EyebrowText>RITMO PROMEDIO</EyebrowText>
-              <GiantValue>
-                0&apos;00&quot;<span className="text-xl text-zinc-500">/km</span>
-              </GiantValue>
+          <div className="grid grid-cols-2 gap-4 max-w-[380px] mx-auto w-full">
+            <SquishyCard interactive padding="md" className="flex flex-col items-center gap-3">
+              <svg className="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="5" r="1.5" />
+                <path d="M8 17l1.5-5 2.5 2 2.5-4L16 17" />
+                <path d="M7 12l1-3 4 1 3-3" />
+              </svg>
+              <CardTitle>Carrera</CardTitle>
+              <MutedText className="text-center">Ritmo y km</MutedText>
             </SquishyCard>
 
-            <div className="grid grid-cols-2 gap-4">
-              <PremiumInput
-                label="Kcal"
-                type="number"
-                placeholder="0"
-                rightElement="kcal"
-              />
-              <PremiumInput
-                label="PPM máx."
-                type="number"
-                placeholder="0"
-                rightElement="ppm"
-              />
-            </div>
+            <SquishyCard interactive padding="md" className="flex flex-col items-center gap-3">
+              <svg className="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 20l4-8 4 4 4-10 4 14" />
+                <path d="M3 20h18" />
+              </svg>
+              <CardTitle>Senderismo</CardTitle>
+              <MutedText className="text-center">Ruta y elevación</MutedText>
+            </SquishyCard>
 
-            <div className="grid grid-cols-2 gap-4">
-              <PremiumInput
-                label="Elevación"
-                type="number"
-                placeholder="0"
-                rightElement="m"
-              />
-              <PremiumInput
-                label="Peso extra"
-                type="number"
-                placeholder="0"
-                rightElement="kg"
-              />
-            </div>
-
-            <PremiumInput
-              label="Notas"
-              multiline
-              rows={4}
-              placeholder="¿Cómo fue la sesión? Terreno, sensaciones, equipamiento..."
-            />
-
-            <PremiumButton variant="primary" className="w-full mt-4">
-              GUARDAR RUCKING
-            </PremiumButton>
+            <SquishyCard
+              interactive
+              padding="md"
+              className="flex flex-col items-center gap-3 col-span-2"
+              onClick={() => setIsRuckingFormOpen(true)}
+            >
+              <svg className="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                <path d="M12 11v6M9 14h6" />
+              </svg>
+              <CardTitle>Rucking</CardTitle>
+              <MutedText className="text-center">Carga, ritmo y elevación</MutedText>
+            </SquishyCard>
           </div>
         </section>
 
@@ -525,7 +496,126 @@ const DesignSystemDevScreen: React.FC = () => {
             />
           </div>
         </section>
+
+        {/* ── Gráficos de Nutrición Premium ─────────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Gráficos de Nutrición Premium</SectionTitle>
+            <MutedText>Widgets headless de macros. Escenario 1: estado sano. Escenario 2: alerta de bolsa compartida activa.</MutedText>
+          </div>
+
+          {(() => {
+            const target = {
+              kcal: 2200,
+              protein: 150,
+              carbMin: 150,
+              carbIdeal: 220,
+              carbMax: 250,
+              fatMin: 55,
+              fatIdeal: 80,
+              fatMax: 100,
+            };
+            const healthy = { kcal: 1500, protein: 110, carbs: 160, fat: 40 };
+            const alert   = { kcal: 2150, protein: 140, carbs: 250, fat: 30 };
+
+            return (
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-3">
+                  <EyebrowText className="text-emerald-400">ESCENARIO 1 — Estado sano</EyebrowText>
+                  <NutritionSummaryMini target={target} consumed={healthy} />
+                  <SmartFlexibleMacros target={target} consumed={healthy} />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <EyebrowText className="text-rose-400">ESCENARIO 2 — Alerta bolsa compartida</EyebrowText>
+                  <NutritionSummaryMini target={target} consumed={alert} />
+                  <SmartFlexibleMacros target={target} consumed={alert} />
+                </div>
+              </div>
+            );
+          })()}
+        </section>
       </div>
+
+      {isRuckingFormOpen && (
+        <PremiumModal
+          onClose={() => setIsRuckingFormOpen(false)}
+          onPrimary={() => setIsRuckingFormOpen(false)}
+          eyebrow="Actividad de Carga"
+          title="Registrar Rucking"
+          primaryLabel="GUARDAR RUCKING"
+        >
+          <PremiumButton
+            variant="ghost"
+            size="sm"
+            leftIcon={<SparklesIcon className="w-4 h-4" />}
+            className="w-full border border-cyan-400/20 text-cyan-400"
+          >
+            Leer resumen con IA
+          </PremiumButton>
+
+          <div className="grid grid-cols-2 gap-4">
+            <PremiumInput
+              label="Distancia"
+              type="number"
+              placeholder="0.0"
+              rightElement="km"
+            />
+            <PremiumInput
+              label="Duración"
+              type="number"
+              placeholder="0"
+              rightElement="min"
+            />
+          </div>
+
+          <SquishyCard padding="md" className="flex flex-col items-center justify-center text-center gap-2">
+            <EyebrowText>RITMO PROMEDIO</EyebrowText>
+            <GiantValue>
+              0&apos;00&quot;<span className="text-xl text-zinc-500">/km</span>
+            </GiantValue>
+          </SquishyCard>
+
+          <div className="grid grid-cols-2 gap-4">
+            <PremiumInput
+              label="Kcal"
+              type="number"
+              placeholder="0"
+              rightElement="kcal"
+            />
+            <PremiumInput
+              label="PPM máx."
+              type="number"
+              placeholder="0"
+              rightElement="ppm"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <PremiumInput
+              label="Elevación"
+              type="number"
+              placeholder="0"
+              rightElement="m"
+            />
+            <PremiumInput
+              label="Peso extra"
+              type="number"
+              placeholder="0"
+              rightElement="kg"
+            />
+          </div>
+
+          <ImageUploadArea />
+
+          <PremiumInput
+            label="Notas"
+            multiline
+            rows={4}
+            placeholder="¿Cómo fue la sesión? Terreno, sensaciones, equipamiento..."
+          />
+        </PremiumModal>
+      )}
 
       {isModalOpen && (
         <PremiumModal

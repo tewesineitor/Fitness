@@ -1,4 +1,9 @@
 export { default as BentoQuadrant } from './BentoQuadrant';
+export { default as ImageUploadArea } from './ImageUploadArea';
+export { default as NutritionSummaryMini } from './NutritionSummaryMini';
+export { default as SmartFlexibleMacros } from './SmartFlexibleMacros';
+export { useFlexibleMacros } from './useFlexibleMacros';
+export type { FlexibleMacroTarget, FlexibleMacroConsumed, UseFlexibleMacrosReturn } from './useFlexibleMacros';
 export { default as SmartRestTimer } from './SmartRestTimer';
 export { useRestTimer } from './useRestTimer';
 export type { RestPhase, UseRestTimerReturn } from './useRestTimer';
