@@ -37,7 +37,7 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
 // ── BarRow ───────────────────────────────────────────────────────────────
 interface BarRowProps {
   label: string;
-  rightLabel: string;
+  rightLabel: React.ReactNode;
   pct: number;
   colorClass: string;
   labelColorClass?: string;
@@ -101,6 +101,57 @@ const BentoMacroCard: React.FC<BentoMacroCardProps> = ({
       <MutedText className={valueColorClass}>{unit}</MutedText>
     </div>
     <MutedText>{subtitle}</MutedText>
+  </SquishyCard>
+);
+
+// ── MacroLimitCard (Mini-Dashboard 4 filas) ───────────────────────────────
+interface MacroLimitCardProps {
+  label: string;
+  value: number;
+  min: number;
+  ideal: number;
+  max: number;
+  pillText: string;
+  pillClass: string;
+  cardClass?: string;
+  labelColorClass?: string;
+  valueColorClass?: string;
+}
+
+const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
+  label, value, min, ideal, max,
+  pillText, pillClass,
+  cardClass = '', labelColorClass = '', valueColorClass = '',
+}) => (
+  <SquishyCard
+    interactive
+    padding="sm"
+    className={['flex flex-col', cardClass].filter(Boolean).join(' ')}
+  >
+    <div className="text-center">
+      <EyebrowText className={labelColorClass}>{label}</EyebrowText>
+    </div>
+    <div className="py-4 text-center">
+      <div className="flex items-baseline justify-center gap-0.5">
+        <GiantValue className={`!text-5xl !leading-none ${valueColorClass}`}>{value}</GiantValue>
+        <MutedText className={valueColorClass}>g</MutedText>
+      </div>
+    </div>
+    <div className="grid grid-cols-3 gap-2 border-t border-white/5 pt-3 mb-4">
+      {[
+        { k: 'MÍN', v: `${min}g` },
+        { k: 'IDEAL', v: `${ideal}g` },
+        { k: 'MÁX', v: `${max}g` },
+      ].map(({ k, v }) => (
+        <div key={k} className="flex flex-col items-center gap-0.5">
+          <MutedText className="!text-[9px] text-center">{k}</MutedText>
+          <StatLabel className="text-center">{v}</StatLabel>
+        </div>
+      ))}
+    </div>
+    <div className={`w-full text-center py-1.5 rounded-lg text-xs font-semibold ${pillClass}`}>
+      {pillText}
+    </div>
   </SquishyCard>
 );
 
@@ -169,17 +220,25 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const carbValueClass = isAlert ? '!text-amber-400' : '';
   const fatValueClass  = isAlert ? '!text-rose-400'  : '';
 
-  // ── Dynamic subtitles ─────────────────────────────────────────────────────
+  // ── Píldoras de estado dinámicas ──────────────────────────────────────────────
   const fatGap      = Math.max(0, Math.round(target.fatMin - consumed.fat));
-  const fatSubtitle = isFatMinMet
-    ? 'Mínimo cubierto'
-    : `Faltan ${fatGap}g para el mín`;
-  const carbGap      = Math.max(0, Math.round(target.carbIdeal - consumed.carbs));
-  const carbSubtitle = consumed.carbs > target.carbMax
-    ? 'Límite excedido'
+  const fatPillText = isFatMinMet
+    ? '✅ Mínimo cubierto'
+    : `🚨 Faltan ${fatGap}g para el mínimo vital`;
+  const fatPillClass = isFatMinMet
+    ? 'bg-emerald-400/20 text-emerald-400'
+    : 'bg-rose-500/20 text-rose-400';
+
+  const carbPillText = consumed.carbs >= target.carbMax
+    ? '⚠️ Límite máximo alcanzado'
     : consumed.carbs >= target.carbIdeal
-    ? 'Ideal alcanzado'
-    : `${carbGap}g para el ideal`;
+    ? '✅ Ideal alcanzado'
+    : `${Math.round(target.carbIdeal - consumed.carbs)}g para el ideal`;
+  const carbPillClass = consumed.carbs >= target.carbMax
+    ? 'bg-amber-400/20 text-amber-400'
+    : consumed.carbs >= target.carbIdeal
+    ? 'bg-emerald-400/20 text-emerald-400'
+    : 'bg-zinc-800/60 text-zinc-400';
 
   return (
     <div className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}>
@@ -244,7 +303,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             />
             <BarRow
               label="CARBOS"
-              rightLabel={`${Math.round(consumed.carbs)}g / ${target.carbMax}g`}
+              rightLabel={<>{Math.round(consumed.carbs)}g <span className="text-zinc-500 font-normal">/ {target.carbIdeal}g ideal</span></>}
               pct={carbPct}
               colorClass={carbBarClass}
               labelColorClass={carbLabelClass}
@@ -252,7 +311,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             />
             <BarRow
               label="GRASAS"
-              rightLabel={`${Math.round(consumed.fat)}g / ${target.fatMax}g`}
+              rightLabel={<>{Math.round(consumed.fat)}g <span className="text-zinc-500 font-normal">/ {target.fatIdeal}g ideal</span></>}
               pct={fatPct}
               colorClass={fatBarClass}
               labelColorClass={fatLabelClass}
@@ -264,7 +323,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
 
       {/* ── Bolsa Compartida C+G ─────────────────────────────────────────────── */}
       <SquishyCard padding="md">
-        <div className="mb-4">
+        <div className="mb-1">
           <EyebrowText className="!text-zinc-100 flex items-center gap-2">
             <span className="text-emerald-400 flex-shrink-0">
               <IconInfo />
@@ -272,22 +331,31 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             BOLSA COMPARTIDA C+G
           </EyebrowText>
         </div>
+        <MutedText className="block text-xs mb-4">
+          Cubre tus mínimos vitales primero. El resto compártelo según tu energía.
+        </MutedText>
 
         <div className="grid grid-cols-3 gap-3">
-          <BentoMacroCard
+          <MacroLimitCard
             label="CARBOS"
             value={Math.round(consumed.carbs)}
-            unit="g"
-            subtitle={carbSubtitle}
+            min={target.carbMin}
+            ideal={target.carbIdeal}
+            max={target.carbMax}
+            pillText={carbPillText}
+            pillClass={carbPillClass}
             cardClass={carbCardClass}
             labelColorClass={carbLabelClass}
             valueColorClass={carbValueClass}
           />
-          <BentoMacroCard
+          <MacroLimitCard
             label="GRASAS"
             value={Math.round(consumed.fat)}
-            unit="g"
-            subtitle={fatSubtitle}
+            min={target.fatMin}
+            ideal={target.fatIdeal}
+            max={target.fatMax}
+            pillText={fatPillText}
+            pillClass={fatPillClass}
             cardClass={fatCardClass}
             labelColorClass={fatLabelClass}
             valueColorClass={fatValueClass}
