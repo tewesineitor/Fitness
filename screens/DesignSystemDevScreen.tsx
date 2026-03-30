@@ -20,6 +20,7 @@ import {
   CardTitle,
   BodyText,
   MutedText,
+  StatLabel,
   StatValue,
   MonoValue,
 } from '../components/ui-premium/Typography';
@@ -427,24 +428,43 @@ const DesignSystemDevScreen: React.FC = () => {
         <PremiumModal
           onClose={() => setIsModalOpen(false)}
           onPrimary={() => setIsModalOpen(false)}
-          eyebrow="Playground modal"
-          title="Premium Modal"
-          primaryLabel="Cerrar modal"
+          eyebrow="Ejercicio Compuesto"
+          title="Peso Muerto Rumano"
+          primaryLabel="Entendido"
           headerMedia={
             <img src="/assets/ui/modal-pulse.svg" alt="Pulse" className="w-full h-full object-cover" />
           }
         >
+          <EyebrowText className="text-emerald-400 mb-2">MÚSCULOS IMPLICADOS</EyebrowText>
+          <div className="flex flex-wrap gap-2">
+            {['Isquiotibiales', 'Glúteo Mayor', 'Erectores Espinales'].map((m) => (
+              <span
+                key={m}
+                className="px-3 py-1 rounded-full border border-zinc-700/50 bg-zinc-800/50"
+              >
+                <StatLabel>{m}</StatLabel>
+              </span>
+            ))}
+          </div>
+
+          <SectionTitle className="mt-8 mb-4">Técnica de Ejecución</SectionTitle>
+          <div className="flex flex-col gap-5">
+            {[
+              { n: 1, text: 'Posición Inicial: De pie, con los pies a la anchura de las caderas. Sostén la barra con agarre prono frente a tus muslos.' },
+              { n: 2, text: 'Rodillas: Mantén una flexión muy ligera en las rodillas durante todo el movimiento.' },
+              { n: 3, text: 'El Descenso: Empuja las caderas hacia atrás, como si quisieras tocar una pared con los glúteos.' },
+            ].map(({ n, text }) => (
+              <div key={n} className="flex items-start gap-4">
+                <StatValue className="text-zinc-700 flex-shrink-0 w-6 text-center">{n}</StatValue>
+                <BodyText>{text}</BodyText>
+              </div>
+            ))}
+          </div>
+
+          <SectionTitle className="mt-8 mb-4">Puntos Clave</SectionTitle>
           <div className="flex flex-col gap-3">
-            <EyebrowText>Audit copy</EyebrowText>
-            <ModalTitle className="text-2xl">Contenido de ejemplo</ModalTitle>
-            <BodyText>
-              Este modal sirve para revisar la composición del contenedor, el slot de media y la
-              convivencia entre tokens tipográficos dentro del overlay.
-            </BodyText>
-            <MutedText>
-              Cierra con el CTA inferior o tocando el backdrop para comprobar el comportamiento.
-            </MutedText>
-            <MonoValue>modal.state = open</MonoValue>
+            <BodyText>• La barra debe deslizarse pegada a tus muslos durante todo el recorrido.</BodyText>
+            <BodyText>• La espalda recta es innegociable: activa los erectores antes de iniciar el descenso.</BodyText>
           </div>
         </PremiumModal>
       )}

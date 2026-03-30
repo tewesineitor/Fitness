@@ -47,54 +47,59 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
       {/* ── Inner card ──────────────────────────────────────────────────────── */}
       <div
         className={[
-          'w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[2.5rem] p-8 pb-10',
-          'flex flex-col gap-6 shadow-2xl max-h-[90dvh] overflow-y-auto hide-scrollbar',
+          'w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[2.5rem]',
+          'flex flex-col shadow-2xl max-h-[90dvh] overflow-hidden',
           'animate-slide-in-up',
           maxWidth,
         ].join(' ')}
       >
-        {/* Header media slot — 16:9, sits above everything */}
-        {headerMedia && (
-          <div className="w-full aspect-video bg-zinc-950 rounded-3xl border border-zinc-800/50 overflow-hidden flex items-center justify-center">
-            {headerMedia}
-          </div>
-        )}
-
-        {/* Title row */}
-        {(eyebrow || title) && (
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              {eyebrow && <EyebrowText>{eyebrow}</EyebrowText>}
-              {title && <ModalTitle className="text-2xl">{title}</ModalTitle>}
+        {/* ── Scrollable area ─────────────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain hide-scrollbar p-8 flex flex-col gap-6">
+          {/* Header media slot — 16:9, sits above everything */}
+          {headerMedia && (
+            <div className="w-full aspect-video bg-zinc-950 rounded-3xl border border-zinc-800/50 overflow-hidden flex items-center justify-center">
+              {headerMedia}
             </div>
+          )}
 
-            {/* Dismiss X — oculta cuando hay CTA primario inferior */}
-            {!primaryLabel && (
-              <button
-                onClick={() => { vibrate(5); onClose(); }}
-                className="w-10 h-10 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
-                aria-label="Cerrar"
-              >
-                <XIcon className="w-4 h-4 text-zinc-400" />
-              </button>
-            )}
+          {/* Title row */}
+          {(eyebrow || title) && (
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-1">
+                {eyebrow && <EyebrowText>{eyebrow}</EyebrowText>}
+                {title && <ModalTitle className="text-2xl">{title}</ModalTitle>}
+              </div>
+
+              {/* Dismiss X — oculta cuando hay CTA primario inferior */}
+              {!primaryLabel && (
+                <button
+                  onClick={() => { vibrate(5); onClose(); }}
+                  className="w-10 h-10 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+                  aria-label="Cerrar"
+                >
+                  <XIcon className="w-4 h-4 text-zinc-400" />
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Slot para contenido libre del consumidor */}
+          <div className="flex flex-col gap-4">
+            {children}
           </div>
-        )}
-
-        {/* Slot para contenido libre del consumidor */}
-        <div className="flex flex-col gap-4">
-          {children}
         </div>
 
-        {/* Primary CTA FAB */}
+        {/* ── Sticky footer CTA ───────────────────────────────────────────────── */}
         {primaryLabel && (
-          <PremiumButton
-            onPress={() => { onPrimary ? onPrimary() : onClose(); }}
-            size="lg"
-            variant="primary"
-          >
-            {primaryLabel}
-          </PremiumButton>
+          <div className="sticky bottom-0 w-full p-6 bg-zinc-950/80 backdrop-blur-md border-t border-white/5 z-10">
+            <PremiumButton
+              onPress={() => { onPrimary ? onPrimary() : onClose(); }}
+              size="lg"
+              variant="primary"
+            >
+              {primaryLabel}
+            </PremiumButton>
+          </div>
         )}
       </div>
     </div>
