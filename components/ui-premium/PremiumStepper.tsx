@@ -1,6 +1,6 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
-import { EyebrowText } from './Typography';
+import { EyebrowText, GiantValue } from './Typography';
 
 interface PremiumStepperProps {
   label: string;
@@ -38,9 +38,9 @@ const PremiumStepper: React.FC<PremiumStepperProps> = ({
         −
       </button>
 
-      <span className="font-mono text-7xl font-black text-white leading-none tracking-tight flex-1 text-center tabular-nums">
+      <GiantValue className="flex-1 text-center">
         {value === '' || value === undefined ? '0' : value}
-      </span>
+      </GiantValue>
 
       <button
         onPointerDown={onIncrement}

@@ -16,6 +16,8 @@ import React from 'react';
  *   StatLabel    → etiqueta de métrica (micro-caps)
  *   StatValue    → valor numérico grande de KPI
  *   MonoValue    → número tabulado (tabular-nums, mono)
+ *   GiantValue   → número masivo para centros de steppers y KPIs de primer nivel (text-7xl)
+ *   TabLabel     → texto táctil de alta legibilidad para botones y pestañas (text-base)
  */
 
 interface TypographyProps {
@@ -115,6 +117,28 @@ export const MonoValue: React.FC<TypographyProps> = ({ children, className = '' 
   <span
     className={[
       'font-mono text-sm font-semibold text-zinc-300 tabular-nums',
+      className,
+    ].join(' ')}
+  >
+    {children}
+  </span>
+);
+
+export const GiantValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
+  <span
+    className={[
+      'font-mono text-7xl font-black tracking-tighter text-white leading-none tabular-nums',
+      className,
+    ].join(' ')}
+  >
+    {children}
+  </span>
+);
+
+export const TabLabel: React.FC<TypographyProps> = ({ children, className = '' }) => (
+  <span
+    className={[
+      'text-base font-black tracking-wide',
       className,
     ].join(' ')}
   >

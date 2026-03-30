@@ -1,67 +1,67 @@
 # APP_ARCHITECTURE.md
 
-## 1. FilosofÌa de DiseÒo (Tendencias 2026)
+## 1. Filosof√≠a de Dise√±o (Tendencias 2026)
 
-Este repositorio adopta una direcciÛn visual premium, expresiva y deliberadamente no genÈrica. Todo agente de IA que produzca UI en esta app debe tratar estas reglas como contrato arquitectÛnico, no como sugerencias.
+Este repositorio adopta una direcci√≥n visual premium, expresiva y deliberadamente no gen√©rica. Todo agente de IA que produzca UI en esta app debe tratar estas reglas como contrato arquitect√≥nico, no como sugerencias.
 
 ### 1.1 Liquid Glass
 - El efecto `Liquid Glass` existe para crear profundidad en overlays y capas elevadas.
-- Se permite ˙nicamente en:
+- Se permite √∫nicamente en:
   - modales
   - sheets
   - tarjetas superpuestas
-  - superficies premium de auditorÌa o focus mode
-- El patrÛn base permitido es:
+  - superficies premium de auditor√≠a o focus mode
+- El patr√≥n base permitido es:
   - `bg-zinc-900/80`
   - `backdrop-blur-xl`
   - `border-zinc-800/50`
-- Regla crÌtica:
-  - el texto importante nunca debe depender de un fondo transl˙cido complejo para mantener legibilidad
-  - tÌtulos, mÈtricas clave y CTAs deben descansar visualmente sobre contraste fuerte y estable
+- Regla cr√≠tica:
+  - el texto importante nunca debe depender de un fondo transl√∫cido complejo para mantener legibilidad
+  - t√≠tulos, m√©tricas clave y CTAs deben descansar visualmente sobre contraste fuerte y estable
 
-### 1.2 Maximalismo T·ctil y Color DopamÌnico
-- Se rechaza explÌcitamente el diseÒo plano, tÌmido o intercambiable.
-- La interfaz debe sentirse fÌsica, t·ctil y con intenciÛn editorial.
+### 1.2 Maximalismo T√°ctil y Color Dopam√≠nico
+- Se rechaza expl√≠citamente el dise√±o plano, t√≠mido o intercambiable.
+- La interfaz debe sentirse f√≠sica, t√°ctil y con intenci√≥n editorial.
 - Se prioriza:
-  - controles grandes y f·ciles de tocar
-  - jerarquÌas visuales dram·ticas
-  - tipografÌa masiva como elemento gr·fico, no solo funcional
-  - CTAs claros y energÈticos
+  - controles grandes y f√°ciles de tocar
+  - jerarqu√≠as visuales dram√°ticas
+  - tipograf√≠a masiva como elemento gr√°fico, no solo funcional
+  - CTAs claros y energ√©ticos
 - Componentes como steppers, gauges, badges y botones principales deben tener presencia visual evidente.
-- Los n˙meros, porcentajes y estados de progreso deben sentirse protagonistas.
+- Los n√∫meros, porcentajes y estados de progreso deben sentirse protagonistas.
 
 ### 1.3 Human Scribble / Anti-Grid
-- La UI no debe caer en una cuadrÌcula perfecta y rÌgida en todas las superficies.
-- Se permiten composiciones org·nicas, asimetrÌas controladas y bloques con personalidad.
+- La UI no debe caer en una cuadr√≠cula perfecta y r√≠gida en todas las superficies.
+- Se permiten composiciones org√°nicas, asimetr√≠as controladas y bloques con personalidad.
 - Esto aplica especialmente a:
-  - mÈtricas
+  - m√©tricas
   - progreso
   - dashboards
   - tarjetas hero
-  - res˙menes de actividad
-- La intenciÛn es evitar layouts que parezcan plantillas genÈricas de dashboard.
-- La irregularidad debe ser intencional, nunca caÛtica.
+  - res√∫menes de actividad
+- La intenci√≥n es evitar layouts que parezcan plantillas gen√©ricas de dashboard.
+- La irregularidad debe ser intencional, nunca ca√≥tica.
 
 ### 1.4 Arquitectura Data-Driven
 - Los componentes deben responder al contenido y al volumen de datos antes que a una grilla fija.
-- Se prefieren anchos intrÌnsecos y lÌmites naturales de lectura.
-- Ejemplos v·lidos:
+- Se prefieren anchos intr√≠nsecos y l√≠mites naturales de lectura.
+- Ejemplos v√°lidos:
   - `max-w-[380px]` para tarjetas de contenido denso
   - bloques que crecen por contenido
   - filas horizontales que se adaptan al dato dominante
 - Se evita forzar todo en:
   - grids uniformes
-  - cards idÈnticas
-  - columnas artificiales sin relaciÛn con el contenido
+  - cards id√©nticas
+  - columnas artificiales sin relaci√≥n con el contenido
 - Regla:
   - el dato manda la forma
-  - la composiciÛn sigue a la informaciÛn
+  - la composici√≥n sigue a la informaci√≥n
 
 ---
 
-## 2. Tokens de Color Sem·ntico (Modo Oscuro Profundo)
+## 2. Tokens de Color Sem√°ntico (Modo Oscuro Profundo)
 
-El sistema vive sobre un modo oscuro profundo y cinematogr·fico. No se deben introducir paletas aleatorias ni variantes ad hoc fuera de estos tokens sem·nticos.
+El sistema vive sobre un modo oscuro profundo y cinematogr√°fico. No se deben introducir paletas aleatorias ni variantes ad hoc fuera de estos tokens sem√°nticos.
 
 ### 2.1 Superficies
 - Fondo global:
@@ -69,19 +69,19 @@ El sistema vive sobre un modo oscuro profundo y cinematogr·fico. No se deben int
 - Cristales / overlays premium:
   - `bg-zinc-900/80`
   - `backdrop-blur-xl`
-- Bordes de elevaciÛn:
+- Bordes de elevaci√≥n:
   - `border-zinc-800/50`
 
-### 2.2 Acentos DopamÌnicos
+### 2.2 Acentos Dopam√≠nicos
 - `emerald-400`
-  - Èxito
+  - √©xito
   - CTA principal
   - rango ideal
-  - confirmaciÛn positiva
+  - confirmaci√≥n positiva
 - `orange-500`
   - fuerza
   - grasas
-  - esfuerzo fÌsico
+  - esfuerzo f√≠sico
   - intensidad muscular
 - `cyan-400`
   - cardio
@@ -89,150 +89,156 @@ El sistema vive sobre un modo oscuro profundo y cinematogr·fico. No se deben int
   - agua
   - movimiento y fluidez
 - `violet-500`
-  - proteÌna
-  - construcciÛn
+  - prote√≠na
+  - construcci√≥n
   - desarrollo
-  - recuperaciÛn estructural
+  - recuperaci√≥n estructural
 - `amber-400`
   - advertencia
-  - atenciÛn
+  - atenci√≥n
   - estado intermedio
 - `rose-500`
-  - lÌmite superado
+  - l√≠mite superado
   - exceso
-  - error crÌtico
+  - error cr√≠tico
   - sobreconsumo o sobrecarga
 
 ### 2.3 Reglas de Uso
-- No usar colores por gusto personal o moda moment·nea.
-- Todo color debe comunicar estado, tipo de dato o intenciÛn.
-- Los colores de acento deben destacar informaciÛn relevante, no decorar sin propÛsito.
+- No usar colores por gusto personal o moda moment√°nea.
+- Todo color debe comunicar estado, tipo de dato o intenci√≥n.
+- Los colores de acento deben destacar informaci√≥n relevante, no decorar sin prop√≥sito.
 - El fondo oscuro es la base por defecto de la app.
-- El texto crÌtico debe conservar legibilidad alta sobre las superficies definidas.
+- El texto cr√≠tico debe conservar legibilidad alta sobre las superficies definidas.
 
 ---
 
-## 3. Tokens Tipogr·ficos Oficiales (Importados de Typography.tsx)
+## 3. Tokens Tipogr√°ficos Oficiales (Importados de Typography.tsx)
 
-La tipografÌa oficial del producto vive en `components/ui-premium/Typography.tsx`.  
-Estos componentes son obligatorios para construir jerarquÌa visual consistente.
+La tipograf√≠a oficial del producto vive en `components/ui-premium/Typography.tsx`.  
+Estos componentes son obligatorios para construir jerarqu√≠a visual consistente.
 
 ### 3.1 Uso estricto por componente
 - `<EyebrowText>`
   - para etiquetas superiores
   - metadata breve
-  - categorÌas
-  - labels de contexto encima de tÌtulos
+  - categor√≠as
+  - labels de contexto encima de t√≠tulos
 - `<ModalTitle>`
-  - para tÌtulos principales de modales, sheets y tarjetas hero premium
+  - para t√≠tulos principales de modales, sheets y tarjetas hero premium
 - `<SectionTitle>`
   - para encabezados de secciones dentro de pantallas
 - `<CardTitle>`
-  - para tÌtulos de tarjetas, mÛdulos compactos y bloques bento
+  - para t√≠tulos de tarjetas, m√≥dulos compactos y bloques bento
 - `<BodyText>`
-  - para descripciÛn principal, p·rrafos explicativos y contenido base
+  - para descripci√≥n principal, p√°rrafos explicativos y contenido base
 - `<MutedText>`
   - para hints, apoyo contextual, metadata secundaria y texto de baja prioridad
 - `<StatLabel>`
-  - para etiquetas de KPIs y mÈtricas
+  - para etiquetas de KPIs y m√©tricas
 - `<StatValue>`
-  - para n˙meros grandes, mÈtricas hero, porcentajes y valores protagonistas
+  - para n√∫meros grandes, m√©tricas hero, porcentajes y valores protagonistas
 - `<MonoValue>`
-  - para tiempos, cifras tÈcnicas, datos tabulados y valores de precisiÛn
+  - para tiempos, cifras t√©cnicas, datos tabulados y valores de precisi√≥n
+- `<GiantValue>`
+  - para n√∫meros masivos en centros de steppers y KPIs de primer nivel
+  - `text-7xl font-black tracking-tighter` ‚Äî m√°xima presencia visual t√°ctil
+- `<TabLabel>`
+  - para texto central de botones t√°ctiles, pesta√±as y segmented controls
+  - `text-base font-black tracking-wide` ‚Äî alta legibilidad sin color propio (hereda del contexto)
 
-### 3.2 Regla de prohibiciÛn
+### 3.2 Regla de prohibici√≥n
 - Queda prohibido inventar etiquetas manuales con clases sueltas como:
   - `text-xs text-gray-500`
   - `text-sm text-zinc-400`
   - `font-bold uppercase tracking-wide`
-- Si el patrÛn es tipogr·fico, debe salir de `Typography.tsx`.
-- Si falta un token, se debe proponer una ampliaciÛn del sistema tipogr·fico, no improvisar clases locales.
+- Si el patr√≥n es tipogr√°fico, debe salir de `Typography.tsx`.
+- Si falta un token, se debe proponer una ampliaci√≥n del sistema tipogr√°fico, no improvisar clases locales.
 
 ### 3.3 Regla operativa para agentes
-- Nunca crear jerarquÌas de texto ad hoc en pantallas nuevas.
+- Nunca crear jerarqu√≠as de texto ad hoc en pantallas nuevas.
 - Toda pantalla o componente premium debe importar primero los tokens oficiales antes de escribir cualquier texto UI.
-- La consistencia tipogr·fica es parte del contrato arquitectÛnico.
+- La consistencia tipogr√°fica es parte del contrato arquitect√≥nico.
 
 ---
 
-## 4. TopologÌa de Pantallas (El Contrato de Datos)
+## 4. Topolog√≠a de Pantallas (El Contrato de Datos)
 
-La topologÌa define quÈ mÛdulos debe soportar la app y quÈ bloques de informaciÛn son estructuralmente obligatorios. No es una maqueta cerrada, pero sÌ un contrato de producto.
+La topolog√≠a define qu√© m√≥dulos debe soportar la app y qu√© bloques de informaci√≥n son estructuralmente obligatorios. No es una maqueta cerrada, pero s√≠ un contrato de producto.
 
 ### 4.1 Hoy
-Pantalla diaria orientada a acciÛn inmediata y lectura r·pida.
+Pantalla diaria orientada a acci√≥n inmediata y lectura r√°pida.
 
 Bloques esperados:
-- Header din·mico
+- Header din√°mico
 - Calendario de rachas
 - Lanzador de rutinas
 - Dashboard Bento Box con innegociables:
-  - proteÌna
-  - calorÌas
-  - sueÒo
+  - prote√≠na
+  - calor√≠as
+  - sue√±o
   - pasos
 - Resumen nutricional mini
 - Modales de actividad libre
 
 Principios:
 - Debe sentirse viva, editorial y priorizada.
-- La misiÛn del dÌa y los innegociables deben tener m·xima claridad.
-- No convertir `Hoy` en una tabla aburrida de widgets idÈnticos.
+- La misi√≥n del d√≠a y los innegociables deben tener m√°xima claridad.
+- No convertir `Hoy` en una tabla aburrida de widgets id√©nticos.
 
-### 4.2 NutriciÛn
+### 4.2 Nutrici√≥n
 Pantalla orientada a feedback continuo e impacto inmediato de decisiones alimentarias.
 
 Bloques esperados:
 - Dashboard de macros flexibles con `Arc Gauge`
-- Bit·cora del dÌa colapsable
+- Bit√°cora del d√≠a colapsable
 - Navegador de fechas
 - Creador de plato con:
   - buscador
-  - esc·ner IA
+  - esc√°ner IA
   - entrada manual
   - live feedback de impacto
 
 Principios:
 - Debe responder al dato y al contexto diario.
-- La visualizaciÛn de macros no debe limitarse a barras genÈricas.
-- El creador de plato debe sentirse asistido, r·pido y t·ctil.
+- La visualizaci√≥n de macros no debe limitarse a barras gen√©ricas.
+- El creador de plato debe sentirse asistido, r√°pido y t√°ctil.
 
 ### 4.3 Biblioteca
-Pantalla de exploraciÛn, construcciÛn y reutilizaciÛn de conocimiento fitness.
+Pantalla de exploraci√≥n, construcci√≥n y reutilizaci√≥n de conocimiento fitness.
 
 Bloques esperados:
 - Recetas con `RecipeCardPremium`
 - Base de datos de ejercicios
 - Constructor de rutinas
 - Planificador semanal con:
-  - maÒana
+  - ma√±ana
   - tarde
   - noche
 
 Principios:
 - Biblioteca no es un listado plano.
 - Debe permitir descubrir, editar, guardar y recombinar contenido.
-- Las tarjetas y flows deben priorizar claridad editorial y utilidad pr·ctica.
+- Las tarjetas y flows deben priorizar claridad editorial y utilidad pr√°ctica.
 
 ### 4.4 Progreso
-Pantalla enfocada en evoluciÛn visible, tendencia y narrativa de cambio.
+Pantalla enfocada en evoluci√≥n visible, tendencia y narrativa de cambio.
 
 Bloques esperados:
 - Meta de peso
-- Gr·ficas:
+- Gr√°ficas:
   - fuerza
   - medidas
   - cardio
 - Historial de sesiones
-- GalerÌa de comparaciÛn visual
+- Galer√≠a de comparaci√≥n visual
 
 Principios:
 - El progreso debe sentirse acumulativo y significativo.
-- Las visualizaciones deben comunicar direcciÛn, no solo almacenar datos.
-- La comparaciÛn visual debe tener un rol fuerte y emocional.
+- Las visualizaciones deben comunicar direcci√≥n, no solo almacenar datos.
+- La comparaci√≥n visual debe tener un rol fuerte y emocional.
 
 ### 4.5 Rutina Activa (Focus Mode)
-Modo inmersivo de ejecuciÛn con reducciÛn extrema de distracciÛn.
+Modo inmersivo de ejecuci√≥n con reducci√≥n extrema de distracci√≥n.
 
 Fases esperadas:
 - Pre-start
@@ -244,9 +250,9 @@ Fases esperadas:
 - Resumen final
 
 Principios:
-- Toda la experiencia debe sentirse enfocada, t·ctil y decisiva.
+- Toda la experiencia debe sentirse enfocada, t√°ctil y decisiva.
 - Los controles deben ser grandes, obvios y resistentes a error.
-- Focus Mode debe tener coherencia visual total entre inicio, ejecuciÛn, descanso y cierre.
+- Focus Mode debe tener coherencia visual total entre inicio, ejecuci√≥n, descanso y cierre.
 
 ---
 
@@ -255,5 +261,5 @@ Principios:
 Todo agente que produzca UI o arquitectura visual en este proyecto debe asumir lo siguiente:
 - `APP_ARCHITECTURE.md` es la SSOT visual y estructural.
 - `components/ui-premium/` es la base prioritaria para UI nueva.
-- No se permite cÛdigo genÈrico, estÈticas por defecto ni decisiones visuales ìde plantillaî.
-- Si una decisiÛn contradice este documento, debe considerarse incorrecta hasta que se actualice formalmente esta arquitectura.
+- No se permite c√≥digo gen√©rico, est√©ticas por defecto ni decisiones visuales ¬ìde plantilla¬î.
+- Si una decisi√≥n contradice este documento, debe considerarse incorrecta hasta que se actualice formalmente esta arquitectura.
