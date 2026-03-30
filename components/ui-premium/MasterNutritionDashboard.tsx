@@ -67,59 +67,41 @@ const BarRow: React.FC<BarRowProps> = ({
   </div>
 );
 
-// ── Inline mini icons ─────────────────────────────────────────────────────────
-const IconArrow: React.FC = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <path d="M2.5 6h7m-3-3 3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+// ── IconInfo (inline SVG) ─────────────────────────────────────────────────
+const IconInfo: React.FC = () => (
+  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M6 5.5v3M6 3.5h.01" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
 
-const IconDiamond: React.FC = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-    <path d="M6 1.5 10.5 6 6 10.5 1.5 6Z" />
-  </svg>
-);
-
-const IconBolt: React.FC = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-    <path d="M7 1 3.5 6.5H6L5 11l5.5-6H8L7 1Z" />
-  </svg>
-);
-
-// ── BentoMacroCard ─────────────────────────────────────────────────────────
+// ── BentoMacroCard (SquishyCard-based) ─────────────────────────────────────
 interface BentoMacroCardProps {
   label: string;
   value: number;
   unit: string;
   subtitle: string;
-  icon: React.ReactNode;
-  cardExtraClass?: string;
   labelColorClass?: string;
   valueColorClass?: string;
+  cardClass?: string;
 }
 
 const BentoMacroCard: React.FC<BentoMacroCardProps> = ({
-  label, value, unit, subtitle, icon,
-  cardExtraClass = '', labelColorClass = '', valueColorClass = '',
+  label, value, unit, subtitle,
+  labelColorClass = '', valueColorClass = '', cardClass = '',
 }) => (
-  <div
-    className={[
-      'bg-zinc-900/50 rounded-3xl p-4 border border-zinc-800/40 flex flex-col gap-2',
-      cardExtraClass,
-    ].filter(Boolean).join(' ')}
+  <SquishyCard
+    interactive
+    padding="sm"
+    className={['flex flex-col gap-2', cardClass].filter(Boolean).join(' ')}
   >
-    <div className="flex items-start justify-between">
-      <EyebrowText className={labelColorClass}>{label}</EyebrowText>
-      <div className="w-7 h-7 rounded-full bg-zinc-800/80 border border-zinc-700/40 flex items-center justify-center flex-shrink-0 text-zinc-400">
-        {icon}
-      </div>
-    </div>
+    <EyebrowText className={labelColorClass}>{label}</EyebrowText>
     <div className="flex items-baseline gap-0.5">
       <GiantValue className={`!text-3xl !leading-none ${valueColorClass}`}>{value}</GiantValue>
       <MutedText className={valueColorClass}>{unit}</MutedText>
     </div>
     <MutedText>{subtitle}</MutedText>
-  </div>
+  </SquishyCard>
 );
 
 interface MasterNutritionDashboardProps {
@@ -164,8 +146,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   // ── Bar colors ────────────────────────────────────────────────────────────
   const carbBarClass   = isAlert ? 'bg-amber-400'  : 'bg-emerald-400';
   const fatBarClass    = isAlert ? 'bg-rose-500'   : 'bg-emerald-400';
-  const carbLabelClass = isAlert ? 'text-amber-400' : '';
-  const fatLabelClass  = isAlert ? 'text-rose-400'  : '';
+  const carbLabelClass = isAlert ? '!text-amber-400' : '';
+  const fatLabelClass  = isAlert ? '!text-rose-400'  : '';
 
   // ── Bar percentages & markers ──────────────────────────────────────────────
   const proteinPct    = proteinProgress * 100;
@@ -179,12 +161,25 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const kcalDisponibles  = Math.max(0, sharedBudgetKcal - consumed.carbs * 4 - consumed.fat * 9);
 
   // ── Bento card alert classes ────────────────────────────────────────────────
-  const carbCardClass  = isAlert ? 'bg-amber-400/10 border-amber-400/30' : '';
+  const carbCardClass  = isAlert ? '!bg-amber-400/10 !border-amber-400/30' : '!bg-zinc-900/50';
   const fatCardClass   = isAlert
-    ? 'bg-rose-500/10 border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.08)]'
-    : '';
+    ? '!bg-rose-500/10 !border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.08)]'
+    : '!bg-zinc-900/50';
+  const kcalCardClass  = '!bg-zinc-900/50';
   const carbValueClass = isAlert ? '!text-amber-400' : '';
   const fatValueClass  = isAlert ? '!text-rose-400'  : '';
+
+  // ── Dynamic subtitles ─────────────────────────────────────────────────────
+  const fatGap      = Math.max(0, Math.round(target.fatMin - consumed.fat));
+  const fatSubtitle = isFatMinMet
+    ? 'Mínimo cubierto'
+    : `Faltan ${fatGap}g para el mín`;
+  const carbGap      = Math.max(0, Math.round(target.carbIdeal - consumed.carbs));
+  const carbSubtitle = consumed.carbs > target.carbMax
+    ? 'Límite excedido'
+    : consumed.carbs >= target.carbIdeal
+    ? 'Ideal alcanzado'
+    : `${carbGap}g para el ideal`;
 
   return (
     <div className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}>
@@ -267,11 +262,15 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
         </SquishyCard>
       </div>
 
-      {/* ── Bolsa Compartida C+G ─────────────────────────────────────────────────── */}
+      {/* ── Bolsa Compartida C+G ─────────────────────────────────────────────── */}
       <SquishyCard padding="md">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" aria-hidden="true" />
-          <EyebrowText className="text-zinc-100">BOLSA COMPARTIDA C+G</EyebrowText>
+        <div className="mb-4">
+          <EyebrowText className="!text-zinc-100 flex items-center gap-2">
+            <span className="text-emerald-400 flex-shrink-0">
+              <IconInfo />
+            </span>
+            BOLSA COMPARTIDA C+G
+          </EyebrowText>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
@@ -279,9 +278,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             label="CARBOS"
             value={Math.round(consumed.carbs)}
             unit="g"
-            subtitle={`Meta: ${target.carbIdeal}g`}
-            icon={<IconArrow />}
-            cardExtraClass={carbCardClass}
+            subtitle={carbSubtitle}
+            cardClass={carbCardClass}
             labelColorClass={carbLabelClass}
             valueColorClass={carbValueClass}
           />
@@ -289,9 +287,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             label="GRASAS"
             value={Math.round(consumed.fat)}
             unit="g"
-            subtitle={`Mín: ${target.fatMin}g`}
-            icon={<IconDiamond />}
-            cardExtraClass={fatCardClass}
+            subtitle={fatSubtitle}
+            cardClass={fatCardClass}
             labelColorClass={fatLabelClass}
             valueColorClass={fatValueClass}
           />
@@ -300,7 +297,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             value={Math.round(kcalDisponibles)}
             unit="kcal"
             subtitle="Presupuesto"
-            icon={<IconBolt />}
+            cardClass={kcalCardClass}
           />
         </div>
       </SquishyCard>
