@@ -432,7 +432,7 @@ const DesignSystemDevScreen: React.FC = () => {
           title="Peso Muerto Rumano"
           primaryLabel="Entendido"
           headerMedia={
-            <img src="/assets/ui/modal-pulse.svg" alt="Pulse" className="w-full h-full object-cover" />
+            <img src="/assets/ui/modal-pulse.svg" alt="Pulse" className="absolute inset-0 w-full h-full object-cover" />
           }
         >
           <EyebrowText className="text-emerald-400 mb-2">MÚSCULOS IMPLICADOS</EyebrowText>

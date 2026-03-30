@@ -55,9 +55,9 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
       >
         {/* ── Scrollable area ─────────────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto overscroll-contain hide-scrollbar p-8 flex flex-col gap-6">
-          {/* Header media slot — 16:9, sits above everything */}
+          {/* Header media slot — 16:9 anti-collapse, shrink-0 prevents flexbox crush */}
           {headerMedia && (
-            <div className="w-full aspect-video bg-zinc-950 rounded-3xl border border-zinc-800/50 overflow-hidden flex items-center justify-center">
+            <div className="relative w-full aspect-video shrink-0 bg-zinc-950/50 overflow-hidden rounded-t-[2rem]">
               {headerMedia}
             </div>
           )}
