@@ -7,7 +7,7 @@ import {
   FlexibleMacroConsumed,
 } from './useFlexibleMacros';
 
-const RING_SIZE = 120;
+const RING_SIZE = 180;
 const STROKE_W = 12;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -23,9 +23,9 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
   <button
     onClick={onClick}
     aria-label={direction === 'prev' ? 'Día anterior' : 'Día siguiente'}
-    className="w-8 h-8 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+    className="w-12 h-12 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
   >
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       {direction === 'prev'
         ? <path d="M6.5 1.5 3 5l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         : <path d="M3.5 1.5 7 5l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -66,7 +66,7 @@ const BarRow: React.FC<BarRowProps> = ({
           style={{ left: `${markerPct}%` }}
         >
           {markerLabel && (
-            <EyebrowText className="!text-[9px] text-zinc-400 absolute -top-4 -translate-x-1/2 whitespace-nowrap">
+            <EyebrowText className="!text-[9px] text-zinc-400 absolute -bottom-5 -translate-x-1/2 whitespace-nowrap">
               {markerLabel}
             </EyebrowText>
           )}
@@ -259,8 +259,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           <div className="flex items-center gap-3">
             <NavButton direction="prev" onClick={onPrevDay} />
             <div className="flex flex-col items-center gap-0.5">
-              <GiantValue className="!text-3xl !leading-none tabular-nums tracking-tight">{dayLabel}</GiantValue>
-              <MutedText className="text-center">{dateSubtitleCap}</MutedText>
+              <GiantValue className="!text-5xl !leading-none tabular-nums tracking-tight">{dayLabel}</GiantValue>
+              <MutedText className="text-center text-sm">{dateSubtitleCap}</MutedText>
             </div>
             <NavButton direction="next" onClick={onNextDay} />
           </div>
@@ -296,7 +296,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-              <GiantValue className="!text-2xl !leading-none tabular-nums tracking-tight">
+              <GiantValue className="!text-5xl !leading-none tabular-nums tracking-tight">
                 {Math.round(kcalRemaining)}
               </GiantValue>
               <MutedText>kcal</MutedText>
@@ -304,7 +304,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           </div>
 
           {/* Barras: Prot / Carbos / Grasas */}
-          <div className="flex-1 flex flex-col gap-3">
+          <div className="flex-1 flex flex-col gap-8">
             <BarRow
               label="PROTEÍNA"
               rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
@@ -379,3 +379,4 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
 };
 
 export default MasterNutritionDashboard;
+
