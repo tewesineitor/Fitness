@@ -7,23 +7,132 @@ import {
   FlexibleMacroConsumed,
 } from './useFlexibleMacros';
 
-const RING_SIZE = 140;
+const RING_SIZE = 120;
 const STROKE_W = 12;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const CENTER = RING_SIZE / 2;
 
+// ── NavButton (ghost circle arrow) ────────────────────────────────────────────
+interface NavButtonProps {
+  direction: 'prev' | 'next';
+  onClick?: () => void;
+}
+
+const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label={direction === 'prev' ? 'Día anterior' : 'Día siguiente'}
+    className="w-8 h-8 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+  >
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      {direction === 'prev'
+        ? <path d="M6.5 1.5 3 5l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        : <path d="M3.5 1.5 7 5l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      }
+    </svg>
+  </button>
+);
+
+// ── BarRow ───────────────────────────────────────────────────────────────
+interface BarRowProps {
+  label: string;
+  rightLabel: string;
+  pct: number;
+  colorClass: string;
+  labelColorClass?: string;
+  markerPct?: number;
+}
+
+const BarRow: React.FC<BarRowProps> = ({
+  label, rightLabel, pct, colorClass, labelColorClass = '', markerPct,
+}) => (
+  <div className="flex flex-col gap-1">
+    <div className="flex items-center justify-between">
+      <EyebrowText className={labelColorClass}>{label}</EyebrowText>
+      <StatLabel>{rightLabel}</StatLabel>
+    </div>
+    <div className="relative h-2 rounded-full bg-zinc-800/50 overflow-hidden">
+      {markerPct !== undefined && (
+        <div
+          className="absolute w-[2px] h-full bg-white/40 z-10"
+          style={{ left: `${markerPct}%` }}
+        />
+      )}
+      <div
+        className={`h-2 rounded-full transition-all duration-700 ease-out ${colorClass}`}
+        style={{ width: `${Math.min(pct, 100)}%` }}
+      />
+    </div>
+  </div>
+);
+
+// ── Inline mini icons ─────────────────────────────────────────────────────────
+const IconArrow: React.FC = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <path d="M2.5 6h7m-3-3 3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const IconDiamond: React.FC = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+    <path d="M6 1.5 10.5 6 6 10.5 1.5 6Z" />
+  </svg>
+);
+
+const IconBolt: React.FC = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+    <path d="M7 1 3.5 6.5H6L5 11l5.5-6H8L7 1Z" />
+  </svg>
+);
+
+// ── BentoMacroCard ─────────────────────────────────────────────────────────
+interface BentoMacroCardProps {
+  label: string;
+  value: number;
+  unit: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  cardExtraClass?: string;
+  labelColorClass?: string;
+  valueColorClass?: string;
+}
+
+const BentoMacroCard: React.FC<BentoMacroCardProps> = ({
+  label, value, unit, subtitle, icon,
+  cardExtraClass = '', labelColorClass = '', valueColorClass = '',
+}) => (
+  <div
+    className={[
+      'bg-zinc-900/50 rounded-3xl p-4 border border-zinc-800/40 flex flex-col gap-2',
+      cardExtraClass,
+    ].filter(Boolean).join(' ')}
+  >
+    <div className="flex items-start justify-between">
+      <EyebrowText className={labelColorClass}>{label}</EyebrowText>
+      <div className="w-7 h-7 rounded-full bg-zinc-800/80 border border-zinc-700/40 flex items-center justify-center flex-shrink-0 text-zinc-400">
+        {icon}
+      </div>
+    </div>
+    <div className="flex items-baseline gap-0.5">
+      <GiantValue className={`!text-3xl !leading-none ${valueColorClass}`}>{value}</GiantValue>
+      <MutedText className={valueColorClass}>{unit}</MutedText>
+    </div>
+    <MutedText>{subtitle}</MutedText>
+  </div>
+);
 
 interface MasterNutritionDashboardProps {
   target: FlexibleMacroTarget;
   consumed: FlexibleMacroConsumed;
+  date?: Date;
+  onPrevDay?: () => void;
+  onNextDay?: () => void;
   className?: string;
 }
 
 const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
-  target,
-  consumed,
-  className = '',
+  target, consumed, date, onPrevDay, onNextDay, className = '',
 }) => {
   const {
     kcalRemaining,
@@ -34,6 +143,13 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     isFatMinimumAtRisk,
   } = useFlexibleMacros(target, consumed);
 
+  // ── Date label ───────────────────────────────────────────────────────────
+  const d = date ?? new Date();
+  const isToday = !date;
+  const dayLabel = isToday ? 'HOY' : d.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
+  const dateSubtitle = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  const dateSubtitleCap = dateSubtitle.charAt(0).toUpperCase() + dateSubtitle.slice(1);
+
   // ── Ring color ────────────────────────────────────────────────────────────
   const ringStrokeClass = isKcalOver
     ? 'stroke-rose-500'
@@ -42,132 +158,152 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     : 'stroke-emerald-400';
   const dashOffset = CIRCUMFERENCE * (1 - Math.min(kcalProgress, 1));
 
-  // ── Alert condition (grasas en peligro) ──────────────────────────────────────
+  // ── Alert condition ──────────────────────────────────────────────────────────
   const isAlert = !isFatMinMet || isFatMinimumAtRisk;
 
-  // ── Kcal disponibles en la Bolsa Compartida ──────────────────────────────────
+  // ── Bar colors ────────────────────────────────────────────────────────────
+  const carbBarClass   = isAlert ? 'bg-amber-400'  : 'bg-emerald-400';
+  const fatBarClass    = isAlert ? 'bg-rose-500'   : 'bg-emerald-400';
+  const carbLabelClass = isAlert ? 'text-amber-400' : '';
+  const fatLabelClass  = isAlert ? 'text-rose-400'  : '';
+
+  // ── Bar percentages & markers ──────────────────────────────────────────────
+  const proteinPct    = proteinProgress * 100;
+  const carbPct       = target.carbMax > 0 ? (consumed.carbs / target.carbMax) * 100 : 0;
+  const fatPct        = target.fatMax  > 0 ? (consumed.fat   / target.fatMax)  * 100 : 0;
+  const carbMarkerPct = target.carbMax > 0 ? (target.carbIdeal / target.carbMax) * 100 : 0;
+  const fatMarkerPct  = target.fatMax  > 0 ? (target.fatMin   / target.fatMax)  * 100 : 0;
+
+  // ── Bolsa Compartida kcal disponibles ───────────────────────────────────────
   const sharedBudgetKcal = target.carbIdeal * 4 + target.fatIdeal * 9;
-  const kcalDisponibles = Math.max(
-    0,
-    sharedBudgetKcal - consumed.carbs * 4 - consumed.fat * 9,
-  );
+  const kcalDisponibles  = Math.max(0, sharedBudgetKcal - consumed.carbs * 4 - consumed.fat * 9);
+
+  // ── Bento card alert classes ────────────────────────────────────────────────
+  const carbCardClass  = isAlert ? 'bg-amber-400/10 border-amber-400/30' : '';
+  const fatCardClass   = isAlert
+    ? 'bg-rose-500/10 border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.08)]'
+    : '';
+  const carbValueClass = isAlert ? '!text-amber-400' : '';
+  const fatValueClass  = isAlert ? '!text-rose-400'  : '';
 
   return (
     <div className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}>
 
-      {/* ── Bloque Superior: Innegociables ────────────────────────────────── */}
-      <SquishyCard padding="lg" className="flex flex-row items-center gap-8 mb-4">
-        {/* Left: Calorie ring */}
-        <div
-          className="relative flex-shrink-0"
-          style={{ width: RING_SIZE, height: RING_SIZE }}
-        >
-          <svg
-            width={RING_SIZE} height={RING_SIZE}
-            viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-            className="-rotate-90" aria-hidden="true"
-          >
-            <circle
-              cx={CENTER} cy={CENTER} r={RADIUS}
-              fill="none" strokeWidth={STROKE_W}
-              className="stroke-zinc-800"
-            />
-            <circle
-              cx={CENTER} cy={CENTER} r={RADIUS}
-              fill="none" strokeWidth={STROKE_W}
-              strokeLinecap="round"
-              strokeDasharray={CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              className={`${ringStrokeClass} transition-all duration-700 ease-out`}
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-            <GiantValue className="!text-3xl !leading-none">
-              {Math.round(kcalRemaining)}
-            </GiantValue>
-            <MutedText>kcal rest.</MutedText>
+      {/* ── Header Nutricional: Fecha + Ring + Barras ────────────────────── */}
+      <div className="flex flex-row gap-4 items-stretch">
+
+        {/* Columna Izquierda: Selector de Fecha */}
+        <div className="w-1/3 flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <NavButton direction="prev" onClick={onPrevDay} />
+            <div className="flex flex-col items-center gap-0.5">
+              <GiantValue className="!text-3xl !leading-none">{dayLabel}</GiantValue>
+              <MutedText className="text-center">{dateSubtitleCap}</MutedText>
+            </div>
+            <NavButton direction="next" onClick={onNextDay} />
           </div>
         </div>
 
-        {/* Right: Proteína */}
-        <div className="flex-1 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <EyebrowText>PROTEÍNA</EyebrowText>
-            <StatLabel>{Math.round(consumed.protein)}g / {target.protein}g</StatLabel>
+        {/* Columna Derecha: Anillo + Barras */}
+        <SquishyCard padding="md" className="flex-1 flex flex-row items-center gap-6">
+
+          {/* Anillo de Calorías */}
+          <div
+            className="relative flex-shrink-0"
+            style={{ width: RING_SIZE, height: RING_SIZE }}
+          >
+            <svg
+              width={RING_SIZE} height={RING_SIZE}
+              viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+              className="-rotate-90" aria-hidden="true"
+            >
+              <circle
+                cx={CENTER} cy={CENTER} r={RADIUS}
+                fill="none" strokeWidth={STROKE_W}
+                className="stroke-zinc-800"
+              />
+              <circle
+                cx={CENTER} cy={CENTER} r={RADIUS}
+                fill="none" strokeWidth={STROKE_W}
+                strokeLinecap="round"
+                strokeDasharray={CIRCUMFERENCE}
+                strokeDashoffset={dashOffset}
+                className={`${ringStrokeClass} transition-all duration-700 ease-out`}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+              <GiantValue className="!text-2xl !leading-none">
+                {Math.round(kcalRemaining)}
+              </GiantValue>
+              <MutedText>kcal</MutedText>
+            </div>
           </div>
-          <div className="relative h-2 rounded-full bg-zinc-800/50 overflow-hidden">
-            <div
-              className="absolute w-[2px] h-full bg-white/40 z-10"
-              style={{ left: '100%' }}
+
+          {/* Barras: Prot / Carbos / Grasas */}
+          <div className="flex-1 flex flex-col gap-3">
+            <BarRow
+              label="PROTEÍNA"
+              rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
+              pct={proteinPct}
+              colorClass="bg-violet-500"
             />
-            <div
-              className="h-2 rounded-full bg-violet-500 transition-all duration-700 ease-out"
-              style={{ width: `${Math.min(proteinProgress * 100, 100)}%` }}
+            <BarRow
+              label="CARBOS"
+              rightLabel={`${Math.round(consumed.carbs)}g / ${target.carbMax}g`}
+              pct={carbPct}
+              colorClass={carbBarClass}
+              labelColorClass={carbLabelClass}
+              markerPct={carbMarkerPct}
+            />
+            <BarRow
+              label="GRASAS"
+              rightLabel={`${Math.round(consumed.fat)}g / ${target.fatMax}g`}
+              pct={fatPct}
+              colorClass={fatBarClass}
+              labelColorClass={fatLabelClass}
+              markerPct={fatMarkerPct}
             />
           </div>
-          <MutedText>Innegociable · no comparte presupuesto</MutedText>
+        </SquishyCard>
+      </div>
+
+      {/* ── Bolsa Compartida C+G ─────────────────────────────────────────────────── */}
+      <SquishyCard padding="md">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" aria-hidden="true" />
+          <EyebrowText className="text-zinc-100">BOLSA COMPARTIDA C+G</EyebrowText>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <BentoMacroCard
+            label="CARBOS"
+            value={Math.round(consumed.carbs)}
+            unit="g"
+            subtitle={`Meta: ${target.carbIdeal}g`}
+            icon={<IconArrow />}
+            cardExtraClass={carbCardClass}
+            labelColorClass={carbLabelClass}
+            valueColorClass={carbValueClass}
+          />
+          <BentoMacroCard
+            label="GRASAS"
+            value={Math.round(consumed.fat)}
+            unit="g"
+            subtitle={`Mín: ${target.fatMin}g`}
+            icon={<IconDiamond />}
+            cardExtraClass={fatCardClass}
+            labelColorClass={fatLabelClass}
+            valueColorClass={fatValueClass}
+          />
+          <BentoMacroCard
+            label="KCAL C+G"
+            value={Math.round(kcalDisponibles)}
+            unit="kcal"
+            subtitle="Presupuesto"
+            icon={<IconBolt />}
+          />
         </div>
       </SquishyCard>
-
-      {/* ── Bloque Inferior: Bolsa Compartida (Bento Grid) ───────────────────── */}
-      <div className="bg-zinc-900/40 rounded-[2rem] p-6 border border-white/5">
-        <EyebrowText className="text-cyan-400 mb-4 flex items-center gap-2">
-          BOLSA COMPARTIDA C+G
-        </EyebrowText>
-
-        <div className="grid grid-cols-3 gap-4">
-
-          {/* Tarjeta: Carbohidratos */}
-          <SquishyCard
-            padding="md"
-            className={[
-              'flex flex-col gap-1',
-              isAlert ? '!bg-amber-400/10 !border-amber-400/30' : '',
-            ].filter(Boolean).join(' ')}
-          >
-            <EyebrowText className={isAlert ? 'text-amber-400' : ''}>
-              CARBOS
-            </EyebrowText>
-            <GiantValue className="!text-3xl !leading-none">
-              {Math.round(consumed.carbs)}g
-            </GiantValue>
-            <MutedText>Meta: {target.carbIdeal}g</MutedText>
-          </SquishyCard>
-
-          {/* Tarjeta: Grasas */}
-          <SquishyCard
-            padding="md"
-            className={[
-              'flex flex-col gap-1',
-              isAlert
-                ? '!bg-rose-500/10 !border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.1)]'
-                : '',
-            ].filter(Boolean).join(' ')}
-          >
-            <EyebrowText className={isAlert ? 'text-rose-400' : ''}>
-              GRASAS
-            </EyebrowText>
-            <GiantValue
-              className={`!text-3xl !leading-none ${isAlert ? '!text-rose-400' : ''}`}
-            >
-              {Math.round(consumed.fat)}g
-            </GiantValue>
-            <MutedText className={isAlert ? 'text-rose-400/70' : ''}>
-              Mín: {target.fatMin}g
-            </MutedText>
-          </SquishyCard>
-
-          {/* Tarjeta: Kcal Flexibles */}
-          <SquishyCard padding="md" className="flex flex-col gap-1">
-            <EyebrowText>KCAL C+G</EyebrowText>
-            <GiantValue className="!text-3xl !leading-none">
-              {Math.round(kcalDisponibles)}
-            </GiantValue>
-            <MutedText>Presupuesto</MutedText>
-          </SquishyCard>
-
-        </div>
-      </div>
     </div>
   );
 };
