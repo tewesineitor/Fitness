@@ -160,7 +160,6 @@ const DesignSystemDevScreen: React.FC = () => {
                   <CardTitle>{variant} / {size}</CardTitle>
                   <MutedText>PremiumButton</MutedText>
                 </div>
-
                 <PremiumButton
                   variant={variant}
                   size={size}
@@ -171,30 +170,48 @@ const DesignSystemDevScreen: React.FC = () => {
               </SquishyCard>
             ))}
           </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <SquishyCard padding="md" className="flex flex-col gap-4">
+              <div className="flex items-center justify-between gap-3">
+                <CardTitle>primary / isLoading</CardTitle>
+                <MutedText>Estado asíncrono</MutedText>
+              </div>
+              <PremiumButton variant="primary" size="lg" isLoading>
+                Guardando
+              </PremiumButton>
+            </SquishyCard>
+
+            <SquishyCard padding="md" className="flex flex-col gap-4">
+              <div className="flex items-center justify-between gap-3">
+                <CardTitle>danger / md</CardTitle>
+                <MutedText>Acción destructiva</MutedText>
+              </div>
+              <PremiumButton variant="danger" size="md" onClick={() => console.log('Danger')}>
+                Eliminar registro
+              </PremiumButton>
+            </SquishyCard>
+          </div>
         </section>
 
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Tarjetas</SectionTitle>
-            <MutedText>Exploración rápida de densidad, padding y affordance interactivo.</MutedText>
+            <MutedText>Densidad, padding, estado activo y affordance interactivo.</MutedText>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
-            <SquishyCard padding="md" className="flex flex-col gap-3">
-              <EyebrowText>Padding md</EyebrowText>
-              <CardTitle>Resumen compacto</CardTitle>
-              <BodyText>
-                Ejemplo base para validar spacing medio en tarjetas informativas.
-              </BodyText>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <SquishyCard padding="sm" className="flex flex-col gap-3">
+              <EyebrowText>padding sm (p-4) — estática</EyebrowText>
+              <CardTitle>Tarjeta compacta</CardTitle>
+              <BodyText>Densidad alta para listas o bento de datos secundarios.</BodyText>
               <StatValue>84%</StatValue>
             </SquishyCard>
 
             <SquishyCard padding="lg" className="flex flex-col gap-4">
-              <EyebrowText>Padding lg</EyebrowText>
+              <EyebrowText>padding lg (p-8) — estática</EyebrowText>
               <CardTitle>Tarjeta amplia</CardTitle>
-              <BodyText>
-                Variante con mayor respiración interna para layouts premium o módulos hero.
-              </BodyText>
+              <BodyText>Mayor respiración interna para layouts hero o módulos premium.</BodyText>
               <MonoValue>cal / week / 12,480</MonoValue>
             </SquishyCard>
 
@@ -202,14 +219,23 @@ const DesignSystemDevScreen: React.FC = () => {
               padding="md"
               interactive
               onClick={() => console.log('Click')}
-              className="flex flex-col gap-3 ring-1 ring-emerald-400/20"
+              className="flex flex-col gap-3"
             >
-              <EyebrowText>Interactive</EyebrowText>
+              <EyebrowText>interactive — escala al presionar</EyebrowText>
               <CardTitle>Estado presionable</CardTitle>
-              <BodyText>
-                Simulación de una superficie tocable para revisar feedback visual y jerarquía.
-              </BodyText>
-              <MutedText>Haz click para probar la interacción.</MutedText>
+              <BodyText>Presiona para sentir la física táctil: scale-[0.98] + brightness.</BodyText>
+              <MutedText>active:scale-[0.98] hover:brightness-[1.08]</MutedText>
+            </SquishyCard>
+
+            <SquishyCard
+              padding="md"
+              active
+              className="flex flex-col gap-3"
+            >
+              <EyebrowText>active — selección activa</EyebrowText>
+              <CardTitle>Estado seleccionado</CardTitle>
+              <BodyText>Ring esmeralda visible cuando la tarjeta es la opción activa del sistema.</BodyText>
+              <MutedText>ring-1 ring-emerald-400/50 border-emerald-400/50</MutedText>
             </SquishyCard>
           </div>
         </section>
