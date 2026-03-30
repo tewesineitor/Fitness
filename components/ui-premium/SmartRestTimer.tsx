@@ -1,12 +1,11 @@
 import React from 'react';
 import PremiumButton from './PremiumButton';
-import SquishyCard from './SquishyCard';
 import { GiantValue, StatLabel } from './Typography';
 import { useRestTimer, RestPhase } from './useRestTimer';
 
-const SVG_SIZE = 200;
-const STROKE_WIDTH = 16;
-const RADIUS = (SVG_SIZE - STROKE_WIDTH) / 2;
+const SVG_SIZE = 320;
+const STROKE_WIDTH = 14;
+const RADIUS = 144;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 interface PhaseConfig {
@@ -64,11 +63,10 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
   };
 
   return (
-    <SquishyCard
-      padding="lg"
-      className={['flex flex-col items-center gap-6 w-full max-w-[380px] mx-auto', className].filter(Boolean).join(' ')}
+    <div
+      className={['flex flex-col items-center gap-6 w-full max-w-[400px] mx-auto', className].filter(Boolean).join(' ')}
     >
-      <div className="relative inline-flex items-center justify-center">
+      <div className="relative inline-flex items-center justify-center" style={{ width: SVG_SIZE, height: SVG_SIZE }}>
         <svg
           width={SVG_SIZE}
           height={SVG_SIZE}
@@ -77,8 +75,8 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
           aria-hidden="true"
         >
           <circle
-            cx={SVG_SIZE / 2}
-            cy={SVG_SIZE / 2}
+            cx={160}
+            cy={160}
             r={RADIUS}
             fill="none"
             stroke="currentColor"
@@ -86,8 +84,8 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
             className="text-zinc-800/50"
           />
           <circle
-            cx={SVG_SIZE / 2}
-            cy={SVG_SIZE / 2}
+            cx={160}
+            cy={160}
             r={RADIUS}
             fill="none"
             stroke="currentColor"
@@ -100,7 +98,7 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
           />
         </svg>
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
           <GiantValue className={config.valueColor}>{formattedTime}</GiantValue>
           <StatLabel className={config.labelClass}>{config.message}</StatLabel>
         </div>
@@ -114,7 +112,7 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
           INICIAR SERIE
         </PremiumButton>
       </div>
-    </SquishyCard>
+    </div>
   );
 };
 
