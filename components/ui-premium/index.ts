@@ -8,7 +8,6 @@ export type { FlexibleMacroTarget, FlexibleMacroConsumed, UseFlexibleMacrosRetur
 export { default as SmartRestTimer } from './SmartRestTimer';
 export { useRestTimer } from './useRestTimer';
 export type { RestPhase, UseRestTimerReturn } from './useRestTimer';
-export { default as MacroArcGauge } from './MacroArcGauge';
 export { default as NonNegotiableCard } from './NonNegotiableCard';
 export { default as StreakCalendar } from './StreakCalendar';
 export { default as PremiumBadge } from './PremiumBadge';

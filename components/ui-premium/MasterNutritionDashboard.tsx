@@ -1,47 +1,84 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
-import { EyebrowText, GiantValue, StatLabel, StatValue, MutedText } from './Typography';
+import { EyebrowText, GiantValue, MonoValue, StatLabel, StatValue, MutedText } from './Typography';
 import {
   useFlexibleMacros,
   FlexibleMacroTarget,
   FlexibleMacroConsumed,
 } from './useFlexibleMacros';
 
-const RING_SIZE = 120;
-const STROKE_W = 12;
+const RING_SIZE = 160;
+const STROKE_W = 14;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const CENTER = RING_SIZE / 2;
 
-interface MacroRowProps {
-  label: string;
+// ── MarkerRow ────────────────────────────────────────────────────────────────
+interface MarkerRowProps {
+  minVal: number;
+  idealVal: number;
+  maxVal: number;
+}
+
+const MarkerRow: React.FC<MarkerRowProps> = ({ minVal, idealVal, maxVal }) => {
+  const markers = [
+    { label: 'MIN',   pct: (minVal   / maxVal) * 100, colorClass: 'text-zinc-500' },
+    { label: 'IDEAL', pct: (idealVal / maxVal) * 100, colorClass: 'text-zinc-400' },
+    { label: 'MAX',   pct: 100,                        colorClass: 'text-zinc-500' },
+  ] as const;
+
+  return (
+    <div className="relative h-7 select-none" aria-hidden="true">
+      {markers.map(({ label, pct, colorClass }) => (
+        <div
+          key={label}
+          className={`absolute flex flex-col items-center gap-px bottom-0 -translate-x-1/2 ${colorClass}`}
+          style={{ left: `${pct}%` }}
+        >
+          <EyebrowText className={`!text-[8px] !leading-none ${colorClass}`}>{label}</EyebrowText>
+          <span className="text-[6px] leading-none">&#9660;</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ── FlexibleMacroRow ─────────────────────────────────────────────────────────
+interface FlexibleMacroRowProps {
+  name: string;
   current: number;
-  displayMax: number;
+  absoluteMax: number;
+  minVal: number;
+  idealVal: number;
+  dynamicMax: number;
   barPct: number;
   barClass: string;
-  rightLabel: string;
+  eyebrowColorClass?: string;
+  glow?: boolean;
   alertText?: string;
   alertClass?: string;
 }
 
-const MacroRow: React.FC<MacroRowProps> = ({
-  label,
-  barPct,
-  barClass,
-  rightLabel,
-  alertText,
-  alertClass = 'text-rose-400',
+const FlexibleMacroRow: React.FC<FlexibleMacroRowProps> = ({
+  name, current, absoluteMax, minVal, idealVal, dynamicMax,
+  barPct, barClass, eyebrowColorClass = '', glow = false,
+  alertText, alertClass = 'text-rose-400',
 }) => (
-  <div className="flex flex-col gap-1.5">
-    <div className="flex items-center justify-between">
-      <EyebrowText>{label}</EyebrowText>
-      <StatLabel>{rightLabel}</StatLabel>
+  <div className="flex flex-col gap-0.5">
+    <div className="flex items-baseline gap-1.5 flex-wrap">
+      <EyebrowText className={eyebrowColorClass}>{name}</EyebrowText>
+      <span className="text-zinc-600 font-black text-[10px]">–</span>
+      <StatValue className="!text-base !leading-none">{Math.round(current)}g</StatValue>
+      <MutedText>(Rango: {minVal}–{Math.round(dynamicMax)}g)</MutedText>
     </div>
-    <div className="h-2 rounded-full bg-zinc-800/50 overflow-hidden">
-      <div
-        className={`h-2 rounded-full transition-all duration-700 ease-out ${barClass}`}
-        style={{ width: `${Math.min(barPct, 100)}%` }}
-      />
+    <MarkerRow minVal={minVal} idealVal={idealVal} maxVal={absoluteMax} />
+    <div className={`rounded-full ${glow ? 'shadow-lg shadow-rose-500/60' : ''}`}>
+      <div className="h-2 rounded-full bg-zinc-800/50 overflow-hidden">
+        <div
+          className={`h-2 rounded-full transition-all duration-700 ease-out ${barClass}`}
+          style={{ width: `${Math.min(barPct, 100)}%` }}
+        />
+      </div>
     </div>
     {alertText && (
       <MutedText className={alertClass}>{alertText}</MutedText>
@@ -66,6 +103,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     isKcalOver,
     proteinProgress,
     dynamicCarbMax,
+    dynamicFatMax,
     isFatMinMet,
     isFatMinimumAtRisk,
     isCarbOverMax,
@@ -87,6 +125,11 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     : carbOverIdeal
     ? 'bg-amber-400'
     : 'bg-emerald-400';
+  const carbEyebrowClass = isCarbOverMax
+    ? 'text-rose-400'
+    : carbOverIdeal
+    ? 'text-amber-400'
+    : 'text-emerald-400';
 
   const carbPct = target.carbMax > 0
     ? (consumed.carbs / target.carbMax) * 100
@@ -95,10 +138,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const carbAlertText = isCarbOverMax
     ? 'Límite absoluto superado — bolsa compartida comprometida.'
     : carbOverIdeal
-    ? `Excediendo ideal · límite dinámico: ${Math.round(dynamicCarbMax)}g`
+    ? 'Excediendo ideal · comprime la bolsa de grasas.'
     : undefined;
-
-  const carbAlertClass = isCarbOverMax ? 'text-rose-400' : 'text-amber-400';
 
   // ── Fat bar semantic color ───────────────────────────────────────────────
   const fatOverIdeal = consumed.fat > target.fatIdeal;
@@ -107,6 +148,11 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     : fatOverIdeal
     ? 'bg-amber-400'
     : 'bg-emerald-400';
+  const fatEyebrowClass = !isFatMinMet
+    ? 'text-rose-400'
+    : fatOverIdeal
+    ? 'text-amber-400'
+    : 'text-emerald-400';
 
   const fatPct = target.fatMax > 0
     ? (consumed.fat / target.fatMax) * 100
@@ -123,9 +169,9 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
       padding="lg"
       className={['flex flex-col gap-8', className].filter(Boolean).join(' ')}
     >
-      {/* ── Hero: Calorie ring ────────────────────────────────────────────── */}
-      <div className="flex items-center gap-6">
-        {/* SVG ring */}
+      {/* ── Hero: Anillo Maestro ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-[1fr,2fr] items-center gap-12">
+        {/* Left: Ring SVG */}
         <div
           className="relative flex-shrink-0"
           style={{ width: RING_SIZE, height: RING_SIZE }}
@@ -137,48 +183,38 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             className="-rotate-90"
             aria-hidden="true"
           >
-            {/* Track */}
             <circle
               cx={CENTER} cy={CENTER} r={RADIUS}
-              fill="none"
-              strokeWidth={STROKE_W}
+              fill="none" strokeWidth={STROKE_W}
               className="stroke-zinc-800"
             />
-            {/* Progress */}
             <circle
               cx={CENTER} cy={CENTER} r={RADIUS}
-              fill="none"
-              strokeWidth={STROKE_W}
+              fill="none" strokeWidth={STROKE_W}
               strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}
               strokeDashoffset={dashOffset}
               className={`${ringStrokeClass} transition-all duration-700 ease-out`}
             />
           </svg>
-
-          {/* Center text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-            <GiantValue className="!text-2xl !leading-none">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <GiantValue className="!text-4xl !leading-none">
               {Math.round(kcalRemaining)}
             </GiantValue>
-            <MutedText>kcal</MutedText>
+            <MutedText>kcal rest.</MutedText>
           </div>
         </div>
 
-        {/* Ring legend */}
-        <div className="flex flex-col gap-1.5">
+        {/* Right: Leyenda calórica */}
+        <div className="flex flex-col gap-2">
           <EyebrowText>CALORÍAS RESTANTES</EyebrowText>
-          <StatValue>
-            {Math.round(consumed.kcal)}{' '}
-            <span className="text-zinc-500 font-normal">/ {target.kcal}</span>
-          </StatValue>
-          <MutedText>
-            {Math.round(kcalProgress * 100)}% consumido
-          </MutedText>
+          <MonoValue className="!text-2xl !leading-none">
+            {Math.round(consumed.kcal)}
+            <span className="text-zinc-500 font-normal text-sm"> / {target.kcal}</span>
+          </MonoValue>
+          <MutedText>{Math.round(kcalProgress * 100)}% consumido</MutedText>
           {isKcalOver && (
-            <MutedText className="text-rose-400">
-              Presupuesto excedido
-            </MutedText>
+            <MutedText className="text-rose-400">Presupuesto excedido</MutedText>
           )}
         </div>
       </div>
@@ -187,37 +223,48 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
       <div className="h-px bg-zinc-800/50" />
 
       {/* ── Macro bars: P / C / F ────────────────────────────────────────── */}
-      <div className="flex flex-col gap-5">
-        {/* Proteína — innegociable */}
-        <MacroRow
-          label="PROTEÍNA"
-          current={consumed.protein}
-          displayMax={target.protein}
-          barPct={proteinProgress * 100}
-          barClass="bg-violet-500"
-          rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
-        />
+      <div className="flex flex-col gap-6">
+        {/* Proteína — innegociable, sin marcadores de rango */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <EyebrowText>PROTEÍNA</EyebrowText>
+            <StatLabel>{Math.round(consumed.protein)}g / {target.protein}g</StatLabel>
+          </div>
+          <div className="h-2 rounded-full bg-zinc-800/50 overflow-hidden">
+            <div
+              className="h-2 rounded-full bg-violet-500 transition-all duration-700 ease-out"
+              style={{ width: `${Math.min(proteinProgress * 100, 100)}%` }}
+            />
+          </div>
+        </div>
 
-        {/* Carbohidratos — Bolsa Compartida */}
-        <MacroRow
-          label="CARBOHIDRATOS"
+        {/* Carbohidratos — Bolsa Compartida con marcadores */}
+        <FlexibleMacroRow
+          name="CARBOHIDRATOS"
           current={consumed.carbs}
-          displayMax={target.carbMax}
+          absoluteMax={target.carbMax}
+          minVal={target.carbMin}
+          idealVal={target.carbIdeal}
+          dynamicMax={dynamicCarbMax}
           barPct={carbPct}
           barClass={carbBarClass}
-          rightLabel={`${Math.round(consumed.carbs)}g / ${target.carbMax}g`}
+          eyebrowColorClass={carbEyebrowClass}
           alertText={carbAlertText}
-          alertClass={carbAlertClass}
+          alertClass={isCarbOverMax ? 'text-rose-400' : 'text-amber-400'}
         />
 
-        {/* Grasas — Bolsa Compartida */}
-        <MacroRow
-          label="GRASAS"
+        {/* Grasas — Bolsa Compartida con marcadores + glow de peligro */}
+        <FlexibleMacroRow
+          name="GRASAS"
           current={consumed.fat}
-          displayMax={target.fatMax}
+          absoluteMax={target.fatMax}
+          minVal={target.fatMin}
+          idealVal={target.fatIdeal}
+          dynamicMax={dynamicFatMax}
           barPct={fatPct}
           barClass={fatBarClass}
-          rightLabel={`${Math.round(consumed.fat)}g · mín. ${target.fatMin}g`}
+          eyebrowColorClass={fatEyebrowClass}
+          glow={!isFatMinMet}
           alertText={fatAlertText}
           alertClass="text-rose-400"
         />

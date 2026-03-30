@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircleIcon, HeartIcon, MoonIcon, SparklesIcon } from '../components/icons';
 import BentoQuadrant from '../components/ui-premium/BentoQuadrant';
-import MacroArcGauge from '../components/ui-premium/MacroArcGauge';
 import StreakCalendar from '../components/ui-premium/StreakCalendar';
 import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
@@ -367,16 +366,6 @@ const DesignSystemDevScreen: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-8">
-            <MacroArcGauge
-              eyebrow="Resumen nutricional"
-              title="Macros del día"
-              macros={[
-                { label: 'Proteínas', value: 138, target: 160, tone: 'violet' },
-                { label: 'Carbohidratos', value: 146, target: 180, tone: 'cyan' },
-                { label: 'Grasas', value: 52, target: 70, tone: 'orange' },
-              ]}
-            />
-
             <RecipeCardPremium
               title="Bowl de pollo con arroz jazmín"
               calories="520 kcal"
@@ -501,8 +490,8 @@ const DesignSystemDevScreen: React.FC = () => {
           <div className="flex flex-col gap-2">
             <SectionTitle>Dashboard Maestro de Nutrición</SectionTitle>
             <MutedText>
-              Bolsa Compartida activa: 230g carbos (excediendo ideal 220g) comprime el margen de
-              grasas. 40g consumidos bajo el mínimo vital (55g) — barra roja.
+              Escenario Peligro: 250g carbos (excediendo ideal + al límite), 30g grasas
+              (bajo el mínimo vital 55g). Carbos → ámbar. Grasas → rose + glow. Ring → ámbar (97%).
             </MutedText>
           </div>
 
@@ -518,10 +507,10 @@ const DesignSystemDevScreen: React.FC = () => {
               fatMax: 100,
             }}
             consumed={{
-              kcal: 2010,
+              kcal: 2150,
               protein: 140,
-              carbs: 230,
-              fat: 40,
+              carbs: 250,
+              fat: 30,
             }}
           />
         </section>
