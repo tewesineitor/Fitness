@@ -112,7 +112,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
             return (
               <div
                 key={macro.label}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-800/60 bg-zinc-950/40 px-4 py-3"
+                className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm px-4 py-3"
               >
                 <div className="flex flex-col gap-1">
                   <EyebrowText>{macro.label}</EyebrowText>

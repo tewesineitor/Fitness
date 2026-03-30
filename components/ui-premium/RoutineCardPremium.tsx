@@ -30,7 +30,7 @@ const RoutineCardPremium: React.FC<RoutineCardPremiumProps> = ({
     <div
       className={[
         'w-full max-w-[380px] mx-auto relative overflow-hidden rounded-[2rem] border border-zinc-800/50',
-        'bg-zinc-900/50 backdrop-blur-xl shadow-2xl',
+        'bg-zinc-900/80 backdrop-blur-xl shadow-2xl',
         className,
       ].filter(Boolean).join(' ')}
     >

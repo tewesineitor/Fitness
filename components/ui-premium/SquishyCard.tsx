@@ -37,7 +37,7 @@ const SquishyCard: React.FC<SquishyCardProps> = ({
     <div
       onClick={onClick}
       className={[
-        'bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50',
+        'bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50',
         radiusClasses[radius],
         paddingClasses[padding],
         interactive

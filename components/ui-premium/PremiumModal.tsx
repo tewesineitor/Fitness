@@ -2,6 +2,7 @@ import React from 'react';
 import { XIcon } from '../icons';
 import { vibrate } from '../../utils/helpers';
 import PremiumButton from './PremiumButton';
+import { EyebrowText, ModalTitle } from './Typography';
 
 interface PremiumModalProps {
   onClose: () => void;
@@ -46,7 +47,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
       {/* ── Inner card ──────────────────────────────────────────────────────── */}
       <div
         className={[
-          'w-full bg-zinc-900/80 border border-zinc-800/50 rounded-[2.5rem] p-8 pb-10',
+          'w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[2.5rem] p-8 pb-10',
           'flex flex-col gap-6 shadow-2xl max-h-[90dvh] overflow-y-auto hide-scrollbar',
           'animate-slide-in-up',
           maxWidth,
@@ -63,19 +64,8 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
         {(eyebrow || title) && (
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-1">
-              {eyebrow && (
-                <span
-                  className="text-[9px] font-black uppercase text-emerald-400"
-                  style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
-                >
-                  {eyebrow}
-                </span>
-              )}
-              {title && (
-                <h2 className="font-heading text-2xl font-black text-white leading-tight tracking-tight">
-                  {title}
-                </h2>
-              )}
+              {eyebrow && <EyebrowText>{eyebrow}</EyebrowText>}
+              {title && <ModalTitle className="text-2xl">{title}</ModalTitle>}
             </div>
 
             {/* Dismiss X — oculta cuando hay CTA primario inferior */}

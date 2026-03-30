@@ -18,7 +18,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(({
   return (
     <div className={['flex flex-col gap-2', className].filter(Boolean).join(' ')}>
       {label ? <EyebrowText>{label}</EyebrowText> : null}
-      <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] px-5 py-4 transition-all duration-200 ease-out focus-within:border-emerald-400/50 focus-within:ring-1 focus-within:ring-emerald-400/30">
+      <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] px-5 py-4 transition-all duration-200 ease-out focus-within:border-emerald-400/50 focus-within:ring-1 focus-within:ring-emerald-400/30">
         <input
           ref={ref}
           {...inputProps}
