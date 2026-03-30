@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { BookOpenIcon, PlateIcon, PlayIcon, WaterGlassIcon } from '../components/icons';
+import { CheckCircleIcon, HeartIcon, MoonIcon, PlateIcon, PlayIcon, SparklesIcon } from '../components/icons';
+import BentoQuadrant from '../components/ui-premium/BentoQuadrant';
 import MacroArcGauge from '../components/ui-premium/MacroArcGauge';
-import NonNegotiableCard from '../components/ui-premium/NonNegotiableCard';
+import StreakCalendar from '../components/ui-premium/StreakCalendar';
 import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
 import PremiumInput from '../components/ui-premium/PremiumInput';
@@ -350,21 +351,6 @@ const DesignSystemDevScreen: React.FC = () => {
               onCtaClick={() => console.log('Click')}
             />
 
-            <NonNegotiableCard
-              icon={<WaterGlassIcon className="h-7 w-7" />}
-              title="Bebe Agua"
-              description="Tarjeta horizontal para hábitos no negociables y recordatorios rápidos del dashboard diario."
-              meta="3L"
-              onClick={() => console.log('Click')}
-            />
-
-            <NonNegotiableCard
-              icon={<BookOpenIcon className="h-7 w-7" />}
-              title="Lee 10 min"
-              description="El mismo bloque puede vivir como checklist premium en Hoy o como item destacado dentro de Biblioteca."
-              meta="10m"
-            />
-
             <PremiumInput
               label="Buscar receta o rutina"
               value={searchValue}
@@ -403,6 +389,57 @@ const DesignSystemDevScreen: React.FC = () => {
               }
             />
 
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Dashboard Base (Hoy)</SectionTitle>
+            <MutedText>Bloques atómicos del layout Bento Box. Proporcionados al tamaño de un flagship móvil.</MutedText>
+          </div>
+
+          <StreakCalendar
+            days={[
+              { label: 'L', completed: true },
+              { label: 'M', completed: true },
+              { label: 'M', completed: true },
+              { label: 'J', completed: false },
+              { label: 'V', completed: false },
+              { label: 'S', completed: false },
+              { label: 'D', completed: false },
+            ]}
+            className="max-w-[380px] mx-auto"
+          />
+
+          <div className="grid grid-cols-2 gap-4 max-w-[380px] mx-auto mt-2">
+            <BentoQuadrant
+              title="Proteína"
+              value="138"
+              unit="g"
+              icon={<HeartIcon className="h-5 w-5" />}
+              colorToken="text-violet-500"
+            />
+            <BentoQuadrant
+              title="Calorías"
+              value="2010"
+              unit="kcal"
+              icon={<SparklesIcon className="h-5 w-5" />}
+              colorToken="text-amber-400"
+            />
+            <BentoQuadrant
+              title="Sueño"
+              value="7.5"
+              unit="h"
+              icon={<MoonIcon className="h-5 w-5" />}
+              colorToken="text-cyan-400"
+            />
+            <BentoQuadrant
+              title="Pasos"
+              value="8.2"
+              unit="k"
+              icon={<CheckCircleIcon className="h-5 w-5" />}
+              colorToken="text-emerald-400"
+            />
           </div>
         </section>
       </div>

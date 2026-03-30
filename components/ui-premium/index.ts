@@ -1,5 +1,7 @@
+export { default as BentoQuadrant } from './BentoQuadrant';
 export { default as MacroArcGauge } from './MacroArcGauge';
 export { default as NonNegotiableCard } from './NonNegotiableCard';
+export { default as StreakCalendar } from './StreakCalendar';
 export { default as PremiumBadge } from './PremiumBadge';
 export { default as PremiumButton } from './PremiumButton';
 export { default as PremiumChip } from './PremiumChip';

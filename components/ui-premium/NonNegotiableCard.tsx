@@ -1,3 +1,6 @@
+/**
+ * @deprecated STOP. No usar en nuevas vistas. Reemplazado por BentoQuadrant en la arquitectura Bento Box.
+ */
 import React from 'react';
 import SquishyCard from './SquishyCard';
 import { EyebrowText, MonoValue, MutedText } from './Typography';
