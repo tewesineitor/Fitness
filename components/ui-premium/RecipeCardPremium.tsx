@@ -1,11 +1,13 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
-import PremiumChip from './PremiumChip';
-import { BodyText, CardTitle, EyebrowText, MutedText } from './Typography';
+import { BodyText, CardTitle, EyebrowText, MutedText, StatLabel } from './Typography';
+
+type MacroTone = 'violet' | 'cyan' | 'orange' | 'neutral' | 'accent';
 
 interface RecipeMacro {
   label: string;
   value: string;
+  tone?: MacroTone;
 }
 
 interface RecipeCardPremiumProps {
@@ -14,10 +16,19 @@ interface RecipeCardPremiumProps {
   description: string;
   macros: RecipeMacro[];
   servings?: string;
+  badge?: string;
   media?: React.ReactNode;
   className?: string;
   onClick?: () => void;
 }
+
+const macroToneClasses: Record<MacroTone, string> = {
+  violet: 'bg-violet-500/15 text-violet-400',
+  cyan: 'bg-cyan-400/15 text-cyan-400',
+  orange: 'bg-orange-500/15 text-orange-400',
+  neutral: 'bg-zinc-800 text-zinc-400',
+  accent: 'bg-emerald-400/10 text-emerald-300',
+};
 
 const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
   title,
@@ -25,6 +36,7 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
   description,
   macros,
   servings,
+  badge,
   media,
   className = '',
   onClick,
@@ -51,6 +63,11 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
             </div>
           </>
         )}
+        {badge ? (
+          <div className="absolute top-4 left-4 z-20 bg-zinc-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+            <EyebrowText>{badge}</EyebrowText>
+          </div>
+        ) : null}
       </div>
 
       <div className="flex items-start justify-between gap-4">
@@ -65,9 +82,15 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
 
       <div className="flex flex-wrap gap-2">
         {macros.map((macro) => (
-          <PremiumChip key={`${macro.label}-${macro.value}`}>
-            {macro.label}: {macro.value}
-          </PremiumChip>
+          <span
+            key={`${macro.label}-${macro.value}`}
+            className={[
+              'inline-flex items-center rounded-full px-3 py-1',
+              macroToneClasses[macro.tone ?? 'neutral'],
+            ].join(' ')}
+          >
+            <StatLabel>{macro.label}: {macro.value}</StatLabel>
+          </span>
         ))}
       </div>
     </SquishyCard>

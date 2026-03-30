@@ -2,7 +2,7 @@ import React from 'react';
 import SquishyCard from './SquishyCard';
 import { CardTitle, EyebrowText, MonoValue, MutedText, StatLabel, StatValue } from './Typography';
 
-type MacroTone = 'emerald' | 'amber' | 'sky';
+type MacroTone = 'emerald' | 'amber' | 'sky' | 'violet' | 'cyan' | 'orange';
 
 export interface MacroArcGaugeItem {
   label: string;
@@ -23,6 +23,9 @@ const toneClasses: Record<MacroTone, string> = {
   emerald: 'text-emerald-400',
   amber: 'text-amber-300',
   sky: 'text-sky-300',
+  violet: 'text-violet-500',
+  cyan: 'text-cyan-400',
+  orange: 'text-orange-500',
 };
 
 const radii = [46, 36, 26];
@@ -97,7 +100,7 @@ const MacroArcGauge: React.FC<MacroArcGaugeProps> = ({
           </svg>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <StatValue className="text-3xl">{Math.round(averageProgress * 100)}%</StatValue>
+            <StatValue className="text-3xl text-emerald-400">{Math.round(averageProgress * 100)}%</StatValue>
             <StatLabel>Cumplimiento</StatLabel>
           </div>
         </div>

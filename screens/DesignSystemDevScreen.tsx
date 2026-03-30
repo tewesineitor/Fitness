@@ -108,17 +108,17 @@ const DesignSystemDevScreen: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-6">
             {[
-              { label: 'Fondo Base', bg: 'bg-zinc-950', border: 'border border-zinc-800' },
-              { label: 'Cristal', bg: 'bg-zinc-900/80', border: 'border border-zinc-700/50' },
-              { label: 'Éxito', bg: 'bg-emerald-400', border: '' },
-              { label: 'Fuerza', bg: 'bg-orange-500', border: '' },
-              { label: 'Cardio', bg: 'bg-cyan-400', border: '' },
-              { label: 'Proteína', bg: 'bg-violet-500', border: '' },
-              { label: 'Advertencia', bg: 'bg-amber-400', border: '' },
-              { label: 'Límite', bg: 'bg-rose-500', border: '' },
-            ].map(({ label, bg, border }) => (
+              { label: 'Fondo Base', bg: 'bg-zinc-950' },
+              { label: 'Cristal', bg: 'bg-zinc-900/80' },
+              { label: 'Éxito / Ideal', bg: 'bg-emerald-400' },
+              { label: 'Proteína', bg: 'bg-violet-500' },
+              { label: 'Cardio / Carbos', bg: 'bg-cyan-400' },
+              { label: 'Fuerza / Grasas', bg: 'bg-orange-500' },
+              { label: 'Advertencia', bg: 'bg-amber-400' },
+              { label: 'Límite', bg: 'bg-rose-500' },
+            ].map(({ label, bg }) => (
               <div key={label} className="flex flex-col items-center gap-2">
-                <div className={['w-16 h-16 rounded-2xl', bg, border].filter(Boolean).join(' ')} />
+                <div className={['w-16 h-16 rounded-2xl border border-white/5', bg].join(' ')} />
                 <MutedText>{label}</MutedText>
               </div>
             ))}
@@ -304,9 +304,9 @@ const DesignSystemDevScreen: React.FC = () => {
               eyebrow="Resumen nutricional"
               title="Macros del día"
               macros={[
-                { label: 'Carbohidratos', value: 146, target: 180, tone: 'amber' },
-                { label: 'Grasas', value: 52, target: 70, tone: 'sky' },
-                { label: 'Proteínas', value: 138, target: 160, tone: 'emerald' },
+                { label: 'Proteínas', value: 138, target: 160, tone: 'violet' },
+                { label: 'Carbohidratos', value: 146, target: 180, tone: 'cyan' },
+                { label: 'Grasas', value: 52, target: 70, tone: 'orange' },
               ]}
             />
 
@@ -314,11 +314,12 @@ const DesignSystemDevScreen: React.FC = () => {
               title="Bowl de pollo con arroz jazmín"
               calories="520 kcal"
               servings="2 porciones"
+              badge="Biblioteca"
               description="Tarjeta premium para biblioteca de recetas con hero visual, metadata y chips de macros reutilizables."
               macros={[
-                { label: 'P', value: '42 g' },
-                { label: 'C', value: '48 g' },
-                { label: 'F', value: '16 g' },
+                { label: 'P', value: '42 g', tone: 'violet' },
+                { label: 'C', value: '48 g', tone: 'cyan' },
+                { label: 'F', value: '16 g', tone: 'orange' },
               ]}
               media={
                 <>
@@ -376,11 +377,12 @@ const DesignSystemDevScreen: React.FC = () => {
               title="Overnight oats de cacao"
               calories="410 kcal"
               servings="Desayuno"
+              badge="Favorita"
               description="Variante compacta para destacar recetas recurrentes, favoritos o sugerencias basadas en objetivos."
               macros={[
-                { label: 'P', value: '28 g' },
-                { label: 'C', value: '39 g' },
-                { label: 'F', value: '11 g' },
+                { label: 'P', value: '28 g', tone: 'violet' },
+                { label: 'C', value: '39 g', tone: 'cyan' },
+                { label: 'F', value: '11 g', tone: 'orange' },
               ]}
               media={
                 <>
