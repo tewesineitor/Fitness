@@ -57,10 +57,6 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
               className="w-full h-full object-cover opacity-50"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-5 flex flex-col gap-1">
-              <EyebrowText>Recipe Cover</EyebrowText>
-              <MutedText>Biblioteca premium</MutedText>
-            </div>
           </>
         )}
         {badge ? (

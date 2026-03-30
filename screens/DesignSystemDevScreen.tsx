@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircleIcon, HeartIcon, MoonIcon, PlateIcon, PlayIcon, SparklesIcon } from '../components/icons';
+import { CheckCircleIcon, HeartIcon, MoonIcon, SparklesIcon } from '../components/icons';
 import BentoQuadrant from '../components/ui-premium/BentoQuadrant';
 import MacroArcGauge from '../components/ui-premium/MacroArcGauge';
 import StreakCalendar from '../components/ui-premium/StreakCalendar';
@@ -330,13 +330,6 @@ const DesignSystemDevScreen: React.FC = () => {
                     className="h-full w-full object-cover opacity-60"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent" />
-                  <div className="absolute inset-0 p-5 flex items-end justify-between">
-                    <div className="flex flex-col gap-2">
-                      <EyebrowText>Biblioteca</EyebrowText>
-                      <MutedText>Meal prep premium</MutedText>
-                    </div>
-                    <PlateIcon className="h-12 w-12 text-zinc-300 drop-shadow-lg" />
-                  </div>
                 </>
               }
             />
@@ -344,6 +337,7 @@ const DesignSystemDevScreen: React.FC = () => {
             <RoutineCardPremium
               eyebrow="Intermedio - Fuerza"
               title="Upper Strength / Semana 4"
+              src="/assets/routines/upper-strength-bg.webp"
               meta="45 min"
               description="Tarjeta hero para rutinas activas o sugeridas, con jerarquía editorial fuerte y CTA sutil para entrar al detalle."
               chips={['4 bloques', 'Push / Pull', 'RPE 8']}
@@ -378,13 +372,6 @@ const DesignSystemDevScreen: React.FC = () => {
                     className="h-full w-full object-cover opacity-60"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-zinc-950/10" />
-                  <div className="absolute inset-0 p-5 flex items-center justify-between">
-                    <div className="flex flex-col gap-2">
-                      <EyebrowText>Favorita</EyebrowText>
-                      <MutedText>Alta en proteína</MutedText>
-                    </div>
-                    <PlayIcon className="h-10 w-10 text-zinc-300 drop-shadow-lg" />
-                  </div>
                 </>
               }
             />
@@ -452,14 +439,7 @@ const DesignSystemDevScreen: React.FC = () => {
           title="Premium Modal"
           primaryLabel="Cerrar modal"
           headerMedia={
-            <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top,rgba(52,211,153,0.22),transparent_55%),linear-gradient(135deg,rgba(24,24,27,1),rgba(39,39,42,0.92))]">
-              <div className="absolute inset-6 rounded-[2rem] border border-white/10" />
-              <div className="relative flex flex-col items-center gap-2 text-center px-6">
-                <EyebrowText>Header Media</EyebrowText>
-                <StatValue>16:9</StatValue>
-                <MutedText>Placeholder visual para imagen, GIF o video.</MutedText>
-              </div>
-            </div>
+            <img src="/assets/ui/modal-pulse.svg" alt="Pulse" className="w-full h-full object-cover" />
           }
         >
           <div className="flex flex-col gap-3">

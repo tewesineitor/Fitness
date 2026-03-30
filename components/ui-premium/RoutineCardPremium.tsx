@@ -62,11 +62,9 @@ const RoutineCardPremium: React.FC<RoutineCardPremiumProps> = ({
 
       <div className="flex flex-col gap-3 p-6 pt-4">
         <BodyText>{description}</BodyText>
-        <div className="w-full sm:w-48">
-          <PremiumButton variant="ghost" size="md" onClick={onCtaClick}>
-            {ctaLabel}
-          </PremiumButton>
-        </div>
+        <PremiumButton variant="primary" size="md" className="w-full mt-4" onClick={onCtaClick}>
+          {ctaLabel}
+        </PremiumButton>
       </div>
     </div>
   );
