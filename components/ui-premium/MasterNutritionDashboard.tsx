@@ -42,27 +42,36 @@ interface BarRowProps {
   colorClass: string;
   labelColorClass?: string;
   markerPct?: number;
+  markerLabel?: string;
 }
 
 const BarRow: React.FC<BarRowProps> = ({
-  label, rightLabel, pct, colorClass, labelColorClass = '', markerPct,
+  label, rightLabel, pct, colorClass, labelColorClass = '', markerPct, markerLabel,
 }) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-center justify-between">
       <EyebrowText className={['!text-xs', labelColorClass].filter(Boolean).join(' ')}>{label}</EyebrowText>
       <StatLabel className="!text-sm">{rightLabel}</StatLabel>
     </div>
-    <div className="relative h-5 bg-zinc-950 rounded-full border border-white/5 shadow-inner overflow-hidden">
+    <div className="relative h-5">
+      <div className="absolute inset-0 bg-zinc-950 rounded-2xl border border-white/5 shadow-inner overflow-hidden">
+        <div
+          className={`h-full rounded-2xl transition-all duration-700 ease-out ${colorClass}`}
+          style={{ width: `${Math.min(pct, 100)}%` }}
+        />
+      </div>
       {markerPct !== undefined && (
         <div
-          className="absolute w-[2px] h-full bg-white/40 z-10"
+          className="absolute inset-y-0 w-[2px] bg-white/40 z-10"
           style={{ left: `${markerPct}%` }}
-        />
+        >
+          {markerLabel && (
+            <EyebrowText className="!text-[9px] text-zinc-400 absolute -top-4 -translate-x-1/2 whitespace-nowrap">
+              {markerLabel}
+            </EyebrowText>
+          )}
+        </div>
       )}
-      <div
-        className={`h-full rounded-full transition-all duration-700 ease-out ${colorClass}`}
-        style={{ width: `${Math.min(pct, 100)}%` }}
-      />
     </div>
   </div>
 );
@@ -133,7 +142,7 @@ const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
     </div>
     <div className="py-4 text-center">
       <div className="flex items-baseline justify-center gap-0.5">
-        <GiantValue className={`!text-5xl !leading-none ${valueColorClass}`}>{value}</GiantValue>
+        <GiantValue className={`!text-5xl !leading-none tabular-nums tracking-tight ${valueColorClass}`}>{value}</GiantValue>
         <MutedText className={valueColorClass}>g</MutedText>
       </div>
     </div>
@@ -195,8 +204,12 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const isAlert = !isFatMinMet || isFatMinimumAtRisk;
 
   // ── Bar colors ────────────────────────────────────────────────────────────
-  const carbBarClass   = isAlert ? 'bg-amber-400'  : 'bg-emerald-400';
-  const fatBarClass    = isAlert ? 'bg-rose-500'   : 'bg-emerald-400';
+  const carbBarClass   = isAlert
+    ? 'bg-gradient-to-r from-amber-500 to-amber-300'
+    : 'bg-gradient-to-r from-emerald-600 to-emerald-400';
+  const fatBarClass    = isAlert
+    ? 'bg-gradient-to-r from-rose-600 to-rose-400'
+    : 'bg-gradient-to-r from-emerald-600 to-emerald-400';
   const carbLabelClass = isAlert ? '!text-amber-400' : '';
   const fatLabelClass  = isAlert ? '!text-rose-400'  : '';
 
@@ -222,7 +235,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     : `🚨 Faltan ${fatGap}g para el mínimo vital`;
   const fatPillClass = isFatMinMet
     ? 'bg-emerald-400/20 text-emerald-400'
-    : 'bg-rose-500/20 text-rose-400';
+    : 'bg-rose-500/20 text-rose-400 animate-pulse';
 
   const carbPillText = consumed.carbs >= target.carbMax
     ? '⚠️ Límite máximo alcanzado'
@@ -246,12 +259,14 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           <div className="flex items-center gap-3">
             <NavButton direction="prev" onClick={onPrevDay} />
             <div className="flex flex-col items-center gap-0.5">
-              <GiantValue className="!text-3xl !leading-none">{dayLabel}</GiantValue>
+              <GiantValue className="!text-3xl !leading-none tabular-nums tracking-tight">{dayLabel}</GiantValue>
               <MutedText className="text-center">{dateSubtitleCap}</MutedText>
             </div>
             <NavButton direction="next" onClick={onNextDay} />
           </div>
         </div>
+
+        <div className="w-px self-stretch bg-white/5 mx-2" />
 
         {/* Columna Derecha: Anillo + Barras */}
         <SquishyCard padding="md" className="flex-1 flex flex-row items-center gap-6">
@@ -281,7 +296,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-              <GiantValue className="!text-2xl !leading-none">
+              <GiantValue className="!text-2xl !leading-none tabular-nums tracking-tight">
                 {Math.round(kcalRemaining)}
               </GiantValue>
               <MutedText>kcal</MutedText>
@@ -294,7 +309,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               label="PROTEÍNA"
               rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
               pct={proteinPct}
-              colorClass="bg-violet-500"
+              colorClass="bg-gradient-to-r from-violet-600 to-violet-400"
             />
             <BarRow
               label="CARBOS"
@@ -303,6 +318,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               colorClass={carbBarClass}
               labelColorClass={carbLabelClass}
               markerPct={carbMarkerPct}
+              markerLabel={`${target.carbIdeal}g`}
             />
             <BarRow
               label="GRASAS"
@@ -311,6 +327,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               colorClass={fatBarClass}
               labelColorClass={fatLabelClass}
               markerPct={fatMarkerPct}
+              markerLabel={`${target.fatMin}g`}
             />
           </div>
         </SquishyCard>
