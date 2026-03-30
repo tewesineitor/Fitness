@@ -8,7 +8,7 @@ import {
 } from './useFlexibleMacros';
 
 const RING_SIZE = 180;
-const STROKE_W = 12;
+const STROKE_W = 20;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const CENTER = RING_SIZE / 2;
@@ -66,7 +66,7 @@ const BarRow: React.FC<BarRowProps> = ({
           style={{ left: `${markerPct}%` }}
         >
           {markerLabel && (
-            <EyebrowText className="!text-[9px] text-zinc-400 absolute -bottom-5 -translate-x-1/2 whitespace-nowrap">
+            <EyebrowText className="!text-[10px] text-zinc-400 absolute -bottom-4 -translate-x-1/2 whitespace-nowrap">
               {markerLabel}
             </EyebrowText>
           )}
@@ -135,7 +135,7 @@ const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
   <SquishyCard
     interactive
     padding="sm"
-    className={['flex flex-col', cardClass].filter(Boolean).join(' ')}
+    className={['flex flex-col justify-center h-full', cardClass].filter(Boolean).join(' ')}
   >
     <div className="text-center">
       <EyebrowText className={labelColorClass}>{label}</EyebrowText>
@@ -192,16 +192,16 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const dateSubtitle = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
   const dateSubtitleCap = dateSubtitle.charAt(0).toUpperCase() + dateSubtitle.slice(1);
 
-  // ── Ring color ────────────────────────────────────────────────────────────
-  const ringStrokeClass = isKcalOver
-    ? 'stroke-rose-500'
-    : kcalProgress > 0.85
-    ? 'stroke-amber-400'
-    : 'stroke-emerald-400';
-  const dashOffset = CIRCUMFERENCE * (1 - Math.min(kcalProgress, 1));
-
   // ── Alert condition ──────────────────────────────────────────────────────────
   const isAlert = !isFatMinMet || isFatMinimumAtRisk;
+
+  // ── Ring color ────────────────────────────────────────────────────────────
+  const ringStrokeUrl = isKcalOver
+    ? 'url(#ringGradientRose)'
+    : isAlert || kcalProgress > 0.85
+    ? 'url(#ringGradientAmber)'
+    : 'url(#ringGradientEmerald)';
+  const dashOffset = CIRCUMFERENCE * (1 - Math.min(kcalProgress, 1));
 
   // ── Bar colors ────────────────────────────────────────────────────────────
   const carbBarClass   = isAlert
@@ -281,6 +281,20 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
               className="-rotate-90" aria-hidden="true"
             >
+              <defs>
+                <linearGradient id="ringGradientEmerald" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#34d399" />
+                  <stop offset="100%" stopColor="#059669" />
+                </linearGradient>
+                <linearGradient id="ringGradientAmber" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#fbbf24" />
+                  <stop offset="100%" stopColor="#d97706" />
+                </linearGradient>
+                <linearGradient id="ringGradientRose" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#f43f5e" />
+                  <stop offset="100%" stopColor="#e11d48" />
+                </linearGradient>
+              </defs>
               <circle
                 cx={CENTER} cy={CENTER} r={RADIUS}
                 fill="none" strokeWidth={STROKE_W}
@@ -292,7 +306,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
                 strokeLinecap="round"
                 strokeDasharray={CIRCUMFERENCE}
                 strokeDashoffset={dashOffset}
-                className={`${ringStrokeClass} transition-all duration-700 ease-out`}
+                stroke={ringStrokeUrl}
+                className="transition-all duration-700 ease-out"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
@@ -304,7 +319,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           </div>
 
           {/* Barras: Prot / Carbos / Grasas */}
-          <div className="flex-1 flex flex-col gap-8">
+          <div className="flex-1 flex flex-col gap-6">
             <BarRow
               label="PROTEÍNA"
               rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
