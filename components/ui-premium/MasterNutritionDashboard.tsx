@@ -47,12 +47,12 @@ interface BarRowProps {
 const BarRow: React.FC<BarRowProps> = ({
   label, rightLabel, pct, colorClass, labelColorClass = '', markerPct,
 }) => (
-  <div className="flex flex-col gap-1">
+  <div className="flex flex-col gap-1.5">
     <div className="flex items-center justify-between">
-      <EyebrowText className={labelColorClass}>{label}</EyebrowText>
-      <StatLabel>{rightLabel}</StatLabel>
+      <EyebrowText className={['!text-xs', labelColorClass].filter(Boolean).join(' ')}>{label}</EyebrowText>
+      <StatLabel className="!text-sm">{rightLabel}</StatLabel>
     </div>
-    <div className="relative h-2 rounded-full bg-zinc-800/50 overflow-hidden">
+    <div className="relative h-5 bg-zinc-950 rounded-full border border-white/5 shadow-inner overflow-hidden">
       {markerPct !== undefined && (
         <div
           className="absolute w-[2px] h-full bg-white/40 z-10"
@@ -60,7 +60,7 @@ const BarRow: React.FC<BarRowProps> = ({
         />
       )}
       <div
-        className={`h-2 rounded-full transition-all duration-700 ease-out ${colorClass}`}
+        className={`h-full rounded-full transition-all duration-700 ease-out ${colorClass}`}
         style={{ width: `${Math.min(pct, 100)}%` }}
       />
     </div>
@@ -207,16 +207,11 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const carbMarkerPct = target.carbMax > 0 ? (target.carbIdeal / target.carbMax) * 100 : 0;
   const fatMarkerPct  = target.fatMax  > 0 ? (target.fatMin   / target.fatMax)  * 100 : 0;
 
-  // ── Bolsa Compartida kcal disponibles ───────────────────────────────────────
-  const sharedBudgetKcal = target.carbIdeal * 4 + target.fatIdeal * 9;
-  const kcalDisponibles  = Math.max(0, sharedBudgetKcal - consumed.carbs * 4 - consumed.fat * 9);
-
-  // ── Bento card alert classes ────────────────────────────────────────────────
+  // ── Bento card alert classes ────────────────────────────────────────
   const carbCardClass  = isAlert ? '!bg-amber-400/10 !border-amber-400/30' : '!bg-zinc-900/50';
   const fatCardClass   = isAlert
     ? '!bg-rose-500/10 !border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.08)]'
     : '!bg-zinc-900/50';
-  const kcalCardClass  = '!bg-zinc-900/50';
   const carbValueClass = isAlert ? '!text-amber-400' : '';
   const fatValueClass  = isAlert ? '!text-rose-400'  : '';
 
@@ -335,7 +330,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           Cubre tus mínimos vitales primero. El resto compártelo según tu energía.
         </MutedText>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-6">
           <MacroLimitCard
             label="CARBOS"
             value={Math.round(consumed.carbs)}
@@ -359,13 +354,6 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             cardClass={fatCardClass}
             labelColorClass={fatLabelClass}
             valueColorClass={fatValueClass}
-          />
-          <BentoMacroCard
-            label="KCAL C+G"
-            value={Math.round(kcalDisponibles)}
-            unit="kcal"
-            subtitle="Presupuesto"
-            cardClass={kcalCardClass}
           />
         </div>
       </SquishyCard>
