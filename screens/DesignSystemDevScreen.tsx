@@ -23,6 +23,7 @@ import {
   StatLabel,
   StatValue,
   MonoValue,
+  GiantValue,
 } from '../components/ui-premium/Typography';
 
 type TypographyShowcaseItem = {
@@ -288,6 +289,82 @@ const DesignSystemDevScreen: React.FC = () => {
             <MutedText>Widget de descanso activo con fases dinámicas y controles de acción rápida.</MutedText>
           </div>
           <SmartRestTimer targetTime={120} minimumTime={90} />
+        </section>
+
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Ecosistema de Formularios</SectionTitle>
+            <MutedText>Formulario de alta conversión. Inputs de cristal con unidades, métrica hero de solo lectura y textarea.</MutedText>
+          </div>
+
+          <div className="max-w-[380px] mx-auto w-full flex flex-col gap-4">
+            <PremiumButton variant="ghost" size="sm" className="w-full border border-cyan-400/20 text-cyan-400">
+              Leer resumen con IA
+            </PremiumButton>
+
+            <div className="grid grid-cols-2 gap-4">
+              <PremiumInput
+                label="Distancia"
+                type="number"
+                placeholder="0.0"
+                rightElement="km"
+              />
+              <PremiumInput
+                label="Duración"
+                type="number"
+                placeholder="0"
+                rightElement="min"
+              />
+            </div>
+
+            <SquishyCard padding="md" className="my-2 flex flex-col items-center justify-center text-center gap-2">
+              <EyebrowText>RITMO PROMEDIO</EyebrowText>
+              <GiantValue>
+                0&apos;00&quot;<span className="text-xl text-zinc-500">/km</span>
+              </GiantValue>
+            </SquishyCard>
+
+            <div className="grid grid-cols-2 gap-4">
+              <PremiumInput
+                label="Kcal"
+                type="number"
+                placeholder="0"
+                rightElement="kcal"
+              />
+              <PremiumInput
+                label="PPM máx."
+                type="number"
+                placeholder="0"
+                rightElement="ppm"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <PremiumInput
+                label="Elevación"
+                type="number"
+                placeholder="0"
+                rightElement="m"
+              />
+              <PremiumInput
+                label="Peso extra"
+                type="number"
+                placeholder="0"
+                rightElement="kg"
+              />
+            </div>
+
+            <PremiumInput
+              label="Notas"
+              multiline
+              rows={4}
+              placeholder="¿Cómo fue la sesión? Terreno, sensaciones, equipamiento..."
+            />
+
+            <PremiumButton variant="primary" className="w-full mt-4">
+              GUARDAR RUCKING
+            </PremiumButton>
+          </div>
         </section>
 
         <section className="flex flex-col gap-6">
