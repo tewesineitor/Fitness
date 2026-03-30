@@ -1,5 +1,6 @@
 export { default as BentoQuadrant } from './BentoQuadrant';
 export { default as ImageUploadArea } from './ImageUploadArea';
+export { default as MasterNutritionDashboard } from './MasterNutritionDashboard';
 export { default as NutritionSummaryMini } from './NutritionSummaryMini';
 export { default as SmartFlexibleMacros } from './SmartFlexibleMacros';
 export { useFlexibleMacros } from './useFlexibleMacros';

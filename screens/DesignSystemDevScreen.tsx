@@ -14,8 +14,7 @@ import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
-import NutritionSummaryMini from '../components/ui-premium/NutritionSummaryMini';
-import SmartFlexibleMacros from '../components/ui-premium/SmartFlexibleMacros';
+import MasterNutritionDashboard from '../components/ui-premium/MasterNutritionDashboard';
 import {
   EyebrowText,
   ModalTitle,
@@ -497,15 +496,18 @@ const DesignSystemDevScreen: React.FC = () => {
           </div>
         </section>
 
-        {/* ── Gráficos de Nutrición Premium ─────────────────────────────────── */}
+        {/* ── Dashboard Maestro de Nutrición ─────────────────────────────── */}
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <SectionTitle>Gráficos de Nutrición Premium</SectionTitle>
-            <MutedText>Widgets headless de macros. Escenario 1: estado sano. Escenario 2: alerta de bolsa compartida activa.</MutedText>
+            <SectionTitle>Dashboard Maestro de Nutrición</SectionTitle>
+            <MutedText>
+              Bolsa Compartida activa: 230g carbos (excediendo ideal 220g) comprime el margen de
+              grasas. 40g consumidos bajo el mínimo vital (55g) — barra roja.
+            </MutedText>
           </div>
 
-          {(() => {
-            const target = {
+          <MasterNutritionDashboard
+            target={{
               kcal: 2200,
               protein: 150,
               carbMin: 150,
@@ -514,26 +516,14 @@ const DesignSystemDevScreen: React.FC = () => {
               fatMin: 55,
               fatIdeal: 80,
               fatMax: 100,
-            };
-            const healthy = { kcal: 1500, protein: 110, carbs: 160, fat: 40 };
-            const alert   = { kcal: 2150, protein: 140, carbs: 250, fat: 30 };
-
-            return (
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-3">
-                  <EyebrowText className="text-emerald-400">ESCENARIO 1 — Estado sano</EyebrowText>
-                  <NutritionSummaryMini target={target} consumed={healthy} />
-                  <SmartFlexibleMacros target={target} consumed={healthy} />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <EyebrowText className="text-rose-400">ESCENARIO 2 — Alerta bolsa compartida</EyebrowText>
-                  <NutritionSummaryMini target={target} consumed={alert} />
-                  <SmartFlexibleMacros target={target} consumed={alert} />
-                </div>
-              </div>
-            );
-          })()}
+            }}
+            consumed={{
+              kcal: 2010,
+              protein: 140,
+              carbs: 230,
+              fat: 40,
+            }}
+          />
         </section>
       </div>
 
