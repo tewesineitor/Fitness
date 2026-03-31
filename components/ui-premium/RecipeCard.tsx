@@ -41,11 +41,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
     <SquishyCard
       interactive
       padding="none"
-      className={['overflow-hidden flex flex-col', className].filter(Boolean).join(' ')}
+      className={['overflow-hidden flex flex-col w-full max-w-[340px] mx-auto', className].filter(Boolean).join(' ')}
       onClick={onClick}
     >
       {/* Hero */}
-      <div className="relative h-48 bg-zinc-900 flex-shrink-0">
+      <div className="relative h-44 bg-zinc-900 flex-shrink-0">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
@@ -66,18 +66,17 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col gap-3 flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <StatLabel className="text-emerald-400 tabular-nums">{totals.kcal} kcal</StatLabel>
-            <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug">
-              {title}
-            </EyebrowText>
-          </div>
-          <MutedText className="whitespace-nowrap shrink-0">{portions}p · {prepTimeMin}min</MutedText>
+      <div className="p-5 flex flex-col gap-2 flex-1">
+        <div className="flex items-center justify-between mb-2">
+          <StatLabel className="text-emerald-400 text-xs tabular-nums">{totals.kcal} kcal</StatLabel>
+          <MutedText className="text-xs">{portions}p · {prepTimeMin}min</MutedText>
         </div>
 
-        <MutedText className="line-clamp-2">{description}</MutedText>
+        <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug mb-2">
+          {title}
+        </EyebrowText>
+
+        <MutedText className="line-clamp-2 text-xs">{description}</MutedText>
 
         {/* Macro pills */}
         <div className="flex items-center gap-2 flex-wrap mt-auto pt-1">

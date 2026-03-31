@@ -25,10 +25,10 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
     <SquishyCard
       interactive
       padding="none"
-      className={['overflow-hidden flex flex-col', className].filter(Boolean).join(' ')}
+      className={['overflow-hidden flex flex-col w-full max-w-[340px] mx-auto', className].filter(Boolean).join(' ')}
     >
-      {/* Hero h-64 */}
-      <div className="relative h-64 bg-zinc-900 flex-shrink-0">
+      {/* Hero h-56 */}
+      <div className="relative h-56 bg-zinc-900 flex-shrink-0">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
@@ -43,7 +43,7 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
             <StatLabel className="text-emerald-400 uppercase tracking-wider">
               {focus} • {estimatedTimeMin} MIN
             </StatLabel>
-            <GiantValue className="!text-3xl !leading-tight mt-1">{title}</GiantValue>
+            <GiantValue className="!text-2xl !leading-tight mt-1 mb-3">{title}</GiantValue>
           </div>
 
           {/* Clinical pills — bottom of image */}
@@ -59,12 +59,12 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col gap-4 flex-1">
-        <MutedText>{description}</MutedText>
+      <div className="p-5 flex flex-col gap-3 flex-1">
+        <MutedText className="text-xs">{description}</MutedText>
         <PremiumButton
           variant="primary"
-          size="lg"
-          className="w-full mt-6"
+          size="md"
+          className="w-full mt-4"
           onClick={onView}
         >
           VER RUTINA
