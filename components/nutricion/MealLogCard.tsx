@@ -12,14 +12,24 @@ const ChevronDown: React.FC<{ className?: string }> = ({ className }) => (
     <path d="m6 9 6 6 6-6"/>
   </svg>
 );
+const Pencil: React.FC<{ size?: number }> = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+  </svg>
+);
+const Trash2: React.FC<{ size?: number }> = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 6h18M19 6l-1 14H6L5 6M9 6V4h6v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
+  </svg>
+);
 import SquishyCard from '../ui-premium/SquishyCard';
 import {
   EyebrowText,
   MutedText,
-  GiantValue,
   StatLabel,
 } from '../ui-premium/Typography';
-import PremiumButton from '../ui-premium/PremiumButton';
 
 export interface MacroBreakdown {
   p: number;
@@ -83,21 +93,21 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
           {/* Header Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <EyebrowText className="text-sm text-zinc-100 truncate normal-case tracking-normal">
+              <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal mb-1 truncate">
                 {meal.title}
               </EyebrowText>
               <MutedText>• {meal.time}</MutedText>
             </div>
-            <StatLabel className="text-xs mt-1 block truncate">
-              <span className="text-violet-500">P</span>: {meal.totalMacros.p}g{' '}
-              <span className="text-cyan-400">C</span>: {meal.totalMacros.c}g{' '}
-              <span className="text-orange-500">G</span>: {meal.totalMacros.f}g
+            <StatLabel className="mt-1 block truncate">
+              <span className="text-violet-400">P</span>: {meal.totalMacros.p}g{' '}
+              <span className="text-emerald-400">C</span>: {meal.totalMacros.c}g{' '}
+              <span className="text-rose-400">G</span>: {meal.totalMacros.f}g
             </StatLabel>
           </div>
 
           {/* Value & Chevron */}
           <div className="flex items-center gap-3 shrink-0">
-            <GiantValue className="text-2xl">{meal.totalKcal}</GiantValue>
+            <StatLabel className="!text-xl font-black tabular-nums">{meal.totalKcal}</StatLabel>
             <ChevronDown
               className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${
                 expanded ? 'rotate-180' : ''
@@ -114,45 +124,46 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
         >
           <div className="overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <EyebrowText className="text-[10px] mb-2 mt-4 block">INGREDIENTES</EyebrowText>
-            
-            <div className="flex flex-col gap-2.5 mt-3">
-              {meal.ingredients.map((ing) => (
-                <div key={ing.id} className="flex flex-row items-center gap-3 text-xs">
-                  <div className="tabular-nums tracking-tight text-zinc-400 w-10 flex-none">
-                    [{ing.amount}{ing.unit}]
-                  </div>
-                  
-                  <div className="text-zinc-300 truncate flex-1">
-                    {ing.name}
-                  </div>
-                  
-                  {/* Dotted separator or empty space to right align macros */}
-                  <div className="flex-none flex items-center justify-end gap-3 text-right">
-                    <div className="tabular-nums tracking-tight text-zinc-400 w-[60px]">
-                      [{ing.kcal} kcal]
-                    </div>
-                    <div className="tabular-nums tracking-tight text-zinc-500 w-[95px]">
-                      [<span className="text-violet-500/80">P</span>:{ing.macros.p}g{' '}
-                      <span className="text-cyan-400/80">C</span>:{ing.macros.c}g{' '}
-                      <span className="text-orange-500/80">G</span>:{ing.macros.f}g]
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            <div className="flex gap-3 mt-6">
-              <PremiumButton variant="ghost" size="sm" onClick={() => console.log('Edit ' + meal.id)}>
-                Editar
-              </PremiumButton>
-              <PremiumButton 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => console.log('Delete ' + meal.id)} 
-                className="!text-rose-400 hover:!text-rose-300 !border-rose-400/20 hover:!bg-rose-400/10"
-              >
-                Eliminar
-              </PremiumButton>
+            <div className="flex flex-col divide-y divide-white/5 mt-3">
+              {meal.ingredients.map((ing) => {
+                const isStd = ['g', 'ml', 'l', 'kg'].includes(ing.unit.toLowerCase());
+                return (
+                  <div key={ing.id} className="grid grid-cols-[5rem_1fr_4rem_6rem_2rem] items-center gap-x-3 py-2">
+                    <div>
+                      <StatLabel className="tabular-nums">
+                        {ing.amount}{isStd ? ing.unit : ''}
+                      </StatLabel>
+                      {!isStd && (
+                        <MutedText className="block !text-[10px]">({ing.unit})</MutedText>
+                      )}
+                    </div>
+                    <EyebrowText className="!text-sm !normal-case !tracking-normal truncate">
+                      {ing.name}
+                    </EyebrowText>
+                    <StatLabel className="tabular-nums text-right">{ing.kcal}</StatLabel>
+                    <StatLabel className="tabular-nums !text-[10px] text-right whitespace-nowrap">
+                      <span className="text-violet-400">P</span>:{ing.macros.p}g{' '}
+                      <span className="text-emerald-400">C</span>:{ing.macros.c}g{' '}
+                      <span className="text-rose-400">G</span>:{ing.macros.f}g
+                    </StatLabel>
+                    <div className="flex items-center justify-end gap-0.5">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); console.log('Edit', ing.id); }}
+                        className="text-zinc-500 hover:text-emerald-400 cursor-pointer p-1 rounded transition-colors"
+                      >
+                        <Pencil size={12} />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); console.log('Delete', ing.id); }}
+                        className="text-zinc-500 hover:text-rose-400 cursor-pointer p-1 rounded transition-colors"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
