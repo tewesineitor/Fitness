@@ -98,7 +98,7 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
               </EyebrowText>
               <MutedText>• {meal.time}</MutedText>
             </div>
-            <StatLabel className="mt-1 block truncate">
+            <StatLabel className="text-sm mt-1 block truncate">
               <span className="text-violet-400">P</span>: {meal.totalMacros.p}g{' '}
               <span className="text-emerald-400">C</span>: {meal.totalMacros.c}g{' '}
               <span className="text-rose-400">G</span>: {meal.totalMacros.f}g
@@ -107,7 +107,7 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
 
           {/* Value & Chevron */}
           <div className="flex items-center gap-3 shrink-0">
-            <StatLabel className="!text-xl font-black tabular-nums">{meal.totalKcal}</StatLabel>
+            <StatLabel className="!text-xl font-black tabular-nums">{meal.totalKcal} <span className="text-xs text-zinc-500 font-normal">kcal</span></StatLabel>
             <ChevronDown
               className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${
                 expanded ? 'rotate-180' : ''
@@ -129,20 +129,15 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
               {meal.ingredients.map((ing) => {
                 const isStd = ['g', 'ml', 'l', 'kg'].includes(ing.unit.toLowerCase());
                 return (
-                  <div key={ing.id} className="grid grid-cols-[5rem_1fr_4rem_6rem_2rem] items-center gap-x-3 py-2">
-                    <div>
-                      <StatLabel className="tabular-nums">
-                        {ing.amount}{isStd ? ing.unit : ''}
-                      </StatLabel>
-                      {!isStd && (
-                        <MutedText className="block !text-[10px]">({ing.unit})</MutedText>
-                      )}
-                    </div>
-                    <EyebrowText className="!text-sm !normal-case !tracking-normal truncate">
+                  <div key={ing.id} className="grid grid-cols-[7rem_1fr_4rem_7rem_2rem] items-center gap-x-3 py-2">
+                    <StatLabel className="text-xs tabular-nums">
+                      {ing.amount}{isStd ? ing.unit : ing.unit}
+                    </StatLabel>
+                    <StatLabel className="text-sm text-zinc-300 font-normal truncate">
                       {ing.name}
-                    </EyebrowText>
-                    <StatLabel className="tabular-nums text-right">{ing.kcal}</StatLabel>
-                    <StatLabel className="tabular-nums !text-[10px] text-right whitespace-nowrap">
+                    </StatLabel>
+                    <StatLabel className="text-xs tabular-nums text-right">{ing.kcal}</StatLabel>
+                    <StatLabel className="text-xs tabular-nums text-right whitespace-nowrap">
                       <span className="text-violet-400">P</span>:{ing.macros.p}g{' '}
                       <span className="text-emerald-400">C</span>:{ing.macros.c}g{' '}
                       <span className="text-rose-400">G</span>:{ing.macros.f}g

@@ -110,9 +110,9 @@ const mockCustomMeal: DailyLogMeal = {
   totalMacros: { p: 45, c: 20, f: 5 },
   isCustom: true,
   ingredients: [
-    { id: '1', name: 'Whey Protein Isolate', amount: 1.5, unit: 'scoop', kcal: 180, macros: { p: 38, c: 3, f: 1 } },
-    { id: '2', name: 'Leche de conf. de almendras', amount: 250, unit: 'ml', kcal: 30, macros: { p: 1, c: 0, f: 2 } },
-    { id: '3', name: 'Plátano mediano', amount: 1, unit: 'ud', kcal: 100, macros: { p: 1, c: 25, f: 0 } },
+    { id: '1', name: 'Whey Protein Isolate', amount: 1.5, unit: 'scoop (45g)', kcal: 180, macros: { p: 38, c: 3, f: 1 } },
+    { id: '2', name: 'Leche de almendras sin azúcar', amount: 250, unit: 'ml', kcal: 30, macros: { p: 1, c: 0, f: 2 } },
+    { id: '3', name: 'Plátano mediano', amount: 1, unit: 'Pieza (120g)', kcal: 100, macros: { p: 1, c: 25, f: 0 } },
   ],
 };
 
