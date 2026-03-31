@@ -1,19 +1,26 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
-import { EyebrowText, GiantValue, StatLabel, MutedText } from './Typography';
+import {
+  BodyText,
+  CardTitle,
+  EyebrowText,
+  GiantValue,
+  MonoValue,
+  MutedText,
+  StatLabel,
+} from './Typography';
 import {
   useFlexibleMacros,
   FlexibleMacroTarget,
   FlexibleMacroConsumed,
 } from './useFlexibleMacros';
 
-const RING_SIZE = 180;
-const STROKE_W = 20;
+const RING_SIZE = 160;
+const STROKE_W = 12;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const CENTER = RING_SIZE / 2;
 
-// ── NavButton (ghost circle arrow) ────────────────────────────────────────────
 interface NavButtonProps {
   direction: 'prev' | 'next';
   onClick?: () => void;
@@ -23,7 +30,7 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
   <button
     onClick={onClick}
     aria-label={direction === 'prev' ? 'Día anterior' : 'Día siguiente'}
-    className="w-12 h-12 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+    className="h-14 w-14 rounded-full border border-zinc-700/50 bg-zinc-900/80 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
   >
     <svg width="14" height="14" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       {direction === 'prev'
@@ -34,49 +41,61 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
   </button>
 );
 
-// ── BarRow ───────────────────────────────────────────────────────────────
 interface BarRowProps {
   label: string;
-  rightLabel: React.ReactNode;
+  current: number;
+  goalText: string;
   pct: number;
-  colorClass: string;
-  labelColorClass?: string;
+  fillClass: string;
+  labelClass?: string;
   markerPct?: number;
   markerLabel?: string;
 }
 
 const BarRow: React.FC<BarRowProps> = ({
-  label, rightLabel, pct, colorClass, labelColorClass = '', markerPct, markerLabel,
+  label,
+  current,
+  goalText,
+  pct,
+  fillClass,
+  labelClass = '',
+  markerPct,
+  markerLabel,
 }) => (
-  <div className="flex flex-col gap-1.5">
-    <div className="flex items-center justify-between">
-      <EyebrowText className={['!text-xs', labelColorClass].filter(Boolean).join(' ')}>{label}</EyebrowText>
-      <StatLabel className="!text-sm">{rightLabel}</StatLabel>
+  <div className="flex flex-col gap-3">
+    <div className="flex items-end justify-between gap-4">
+      <StatLabel className={labelClass}>{label}</StatLabel>
+      <div className="flex items-baseline gap-1">
+        <MonoValue className="text-zinc-100">{Math.round(current)}g</MonoValue>
+        <MutedText>{goalText}</MutedText>
+      </div>
     </div>
-    <div className="relative h-5">
-      <div className="absolute inset-0 bg-zinc-950 rounded-2xl border border-white/5 shadow-inner overflow-hidden">
+
+    <div className="relative h-7 overflow-visible">
+      <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full border border-white/5 bg-zinc-950">
         <div
-          className={`h-full rounded-2xl transition-all duration-700 ease-out ${colorClass}`}
+          className={['h-full rounded-full transition-all duration-700 ease-out', fillClass].join(' ')}
           style={{ width: `${Math.min(pct, 100)}%` }}
         />
       </div>
-      {markerPct !== undefined && (
+
+      {markerPct !== undefined ? (
         <div
-          className="absolute inset-y-0 w-[2px] bg-white/40 z-10"
+          className="absolute top-1/2 z-10 h-5 -translate-y-1/2"
           style={{ left: `${markerPct}%` }}
         >
-          {markerLabel && (
-            <EyebrowText className="!text-[10px] text-zinc-400 absolute -bottom-4 -translate-x-1/2 whitespace-nowrap">
+          <div className="h-full w-px bg-white/40" />
+          {markerLabel ? (
+            <MutedText className="absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap">
               {markerLabel}
-            </EyebrowText>
-          )}
+            </MutedText>
+          ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   </div>
 );
 
-// ── IconInfo (inline SVG) ─────────────────────────────────────────────────
 const IconInfo: React.FC = () => (
   <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
     <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1.2" />
@@ -84,36 +103,6 @@ const IconInfo: React.FC = () => (
   </svg>
 );
 
-// ── BentoMacroCard (SquishyCard-based) ─────────────────────────────────────
-interface BentoMacroCardProps {
-  label: string;
-  value: number;
-  unit: string;
-  subtitle: string;
-  labelColorClass?: string;
-  valueColorClass?: string;
-  cardClass?: string;
-}
-
-const BentoMacroCard: React.FC<BentoMacroCardProps> = ({
-  label, value, unit, subtitle,
-  labelColorClass = '', valueColorClass = '', cardClass = '',
-}) => (
-  <SquishyCard
-    interactive
-    padding="sm"
-    className={['flex flex-col gap-2', cardClass].filter(Boolean).join(' ')}
-  >
-    <EyebrowText className={labelColorClass}>{label}</EyebrowText>
-    <div className="flex items-baseline gap-0.5">
-      <GiantValue className={`!text-3xl !leading-none ${valueColorClass}`}>{value}</GiantValue>
-      <MutedText className={valueColorClass}>{unit}</MutedText>
-    </div>
-    <MutedText>{subtitle}</MutedText>
-  </SquishyCard>
-);
-
-// ── MacroLimitCard (Mini-Dashboard 4 filas) ───────────────────────────────
 interface MacroLimitCardProps {
   label: string;
   value: number;
@@ -128,38 +117,50 @@ interface MacroLimitCardProps {
 }
 
 const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
-  label, value, min, ideal, max,
-  pillText, pillClass,
-  cardClass = '', labelColorClass = '', valueColorClass = '',
+  label,
+  value,
+  min,
+  ideal,
+  max,
+  pillText,
+  pillClass,
+  cardClass = '',
+  labelColorClass = '',
+  valueColorClass = '',
 }) => (
   <SquishyCard
     interactive
     padding="sm"
-    className={['flex flex-col justify-center h-full', cardClass].filter(Boolean).join(' ')}
+    className={['flex h-full flex-col justify-center gap-5', cardClass].filter(Boolean).join(' ')}
   >
     <div className="text-center">
       <EyebrowText className={labelColorClass}>{label}</EyebrowText>
     </div>
-    <div className="py-4 text-center">
-      <div className="flex items-baseline justify-center gap-0.5">
-        <GiantValue className={`!text-5xl !leading-none tabular-nums tracking-tight ${valueColorClass}`}>{value}</GiantValue>
+
+    <div className="text-center">
+      <div className="flex items-baseline justify-center gap-1">
+        <GiantValue className={['!text-5xl !leading-none', valueColorClass].filter(Boolean).join(' ')}>
+          {value}
+        </GiantValue>
         <MutedText className={valueColorClass}>g</MutedText>
       </div>
     </div>
-    <div className="grid grid-cols-3 gap-2 border-t border-white/5 pt-3 mb-4">
+
+    <div className="grid grid-cols-3 gap-3 border-t border-white/5 pt-4">
       {[
-        { k: 'MÍN', v: `${min}g` },
-        { k: 'IDEAL', v: `${ideal}g` },
-        { k: 'MÁX', v: `${max}g` },
-      ].map(({ k, v }) => (
-        <div key={k} className="flex flex-col items-center gap-0.5">
-          <MutedText className="!text-[9px] text-center">{k}</MutedText>
-          <StatLabel className="text-center">{v}</StatLabel>
+        { label: 'MIN', value: `${min}g` },
+        { label: 'IDEAL', value: `${ideal}g` },
+        { label: 'MAX', value: `${max}g` },
+      ].map((item) => (
+        <div key={item.label} className="flex flex-col items-center gap-1 text-center">
+          <StatLabel className="text-zinc-500">{item.label}</StatLabel>
+          <MonoValue>{item.value}</MonoValue>
         </div>
       ))}
     </div>
-    <div className={`w-full text-center py-1.5 rounded-lg text-xs font-semibold ${pillClass}`}>
-      {pillText}
+
+    <div className={['rounded-lg px-3 py-2', pillClass].join(' ')}>
+      <BodyText className="text-center text-current">{pillText}</BodyText>
     </div>
   </SquishyCard>
 );
@@ -174,7 +175,12 @@ interface MasterNutritionDashboardProps {
 }
 
 const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
-  target, consumed, date, onPrevDay, onNextDay, className = '',
+  target,
+  consumed,
+  date,
+  onPrevDay,
+  onNextDay,
+  className = '',
 }) => {
   const {
     kcalRemaining,
@@ -185,208 +191,193 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
     isFatMinimumAtRisk,
   } = useFlexibleMacros(target, consumed);
 
-  // ── Date label ───────────────────────────────────────────────────────────
   const d = date ?? new Date();
   const isToday = !date;
   const dayLabel = isToday ? 'HOY' : d.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
   const dateSubtitle = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
   const dateSubtitleCap = dateSubtitle.charAt(0).toUpperCase() + dateSubtitle.slice(1);
 
-  // ── Alert condition ──────────────────────────────────────────────────────────
   const isAlert = !isFatMinMet || isFatMinimumAtRisk;
 
-  // ── Ring color ────────────────────────────────────────────────────────────
-  const ringStrokeUrl = isKcalOver
-    ? 'url(#ringGradientRose)'
+  const ringStrokeClass = isKcalOver
+    ? 'stroke-rose-500'
     : isAlert || kcalProgress > 0.85
-    ? 'url(#ringGradientAmber)'
-    : 'url(#ringGradientEmerald)';
+      ? 'stroke-amber-400'
+      : 'stroke-emerald-400';
   const dashOffset = CIRCUMFERENCE * (1 - Math.min(kcalProgress, 1));
 
-  // ── Bar colors ────────────────────────────────────────────────────────────
-  const carbBarClass   = isAlert
+  const carbBarClass = isAlert
     ? 'bg-gradient-to-r from-amber-500 to-amber-300'
     : 'bg-gradient-to-r from-emerald-600 to-emerald-400';
-  const fatBarClass    = isAlert
+  const fatBarClass = isAlert
     ? 'bg-gradient-to-r from-rose-600 to-rose-400'
     : 'bg-gradient-to-r from-emerald-600 to-emerald-400';
-  const carbLabelClass = isAlert ? '!text-amber-400' : '';
-  const fatLabelClass  = isAlert ? '!text-rose-400'  : '';
+  const carbLabelClass = isAlert ? 'text-amber-400' : 'text-zinc-500';
+  const fatLabelClass = isAlert ? 'text-rose-400' : 'text-zinc-500';
 
-  // ── Bar percentages & markers ──────────────────────────────────────────────
-  const proteinPct    = proteinProgress * 100;
-  const carbPct       = target.carbMax > 0 ? (consumed.carbs / target.carbMax) * 100 : 0;
-  const fatPct        = target.fatMax  > 0 ? (consumed.fat   / target.fatMax)  * 100 : 0;
+  const proteinPct = proteinProgress * 100;
+  const carbPct = target.carbMax > 0 ? (consumed.carbs / target.carbMax) * 100 : 0;
+  const fatPct = target.fatMax > 0 ? (consumed.fat / target.fatMax) * 100 : 0;
   const carbMarkerPct = target.carbMax > 0 ? (target.carbIdeal / target.carbMax) * 100 : 0;
-  const fatMarkerPct  = target.fatMax  > 0 ? (target.fatMin   / target.fatMax)  * 100 : 0;
+  const fatMarkerPct = target.fatMax > 0 ? (target.fatMin / target.fatMax) * 100 : 0;
 
-  // ── Bento card alert classes ────────────────────────────────────────
-  const carbCardClass  = isAlert ? '!bg-amber-400/10 !border-amber-400/30' : '!bg-zinc-900/50';
-  const fatCardClass   = isAlert
-    ? '!bg-rose-500/10 !border-rose-500/30 shadow-[inset_0_0_20px_rgba(244,63,94,0.08)]'
+  const carbCardClass = isAlert ? '!bg-amber-400/10 !border-amber-400/30' : '!bg-zinc-900/50';
+  const fatCardClass = isAlert
+    ? '!bg-rose-500/10 !border-rose-500/30'
     : '!bg-zinc-900/50';
   const carbValueClass = isAlert ? '!text-amber-400' : '';
-  const fatValueClass  = isAlert ? '!text-rose-400'  : '';
+  const fatValueClass = isAlert ? '!text-rose-400' : '';
 
-  // ── Píldoras de estado dinámicas ──────────────────────────────────────────────
-  const fatGap      = Math.max(0, Math.round(target.fatMin - consumed.fat));
+  const fatGap = Math.max(0, Math.round(target.fatMin - consumed.fat));
   const fatPillText = isFatMinMet
-    ? '✅ Mínimo cubierto'
-    : `🚨 Faltan ${fatGap}g para el mínimo vital`;
+    ? 'Mínimo cubierto'
+    : `Faltan ${fatGap}g para el mínimo vital`;
   const fatPillClass = isFatMinMet
     ? 'bg-emerald-400/20 text-emerald-400'
     : 'bg-rose-500/20 text-rose-400 animate-pulse';
 
   const carbPillText = consumed.carbs >= target.carbMax
-    ? '⚠️ Límite máximo alcanzado'
+    ? 'Límite máximo alcanzado'
     : consumed.carbs >= target.carbIdeal
-    ? '✅ Ideal alcanzado'
-    : `${Math.round(target.carbIdeal - consumed.carbs)}g para el ideal`;
+      ? 'Ideal alcanzado'
+      : `${Math.round(target.carbIdeal - consumed.carbs)}g para el ideal`;
   const carbPillClass = consumed.carbs >= target.carbMax
     ? 'bg-amber-400/20 text-amber-400'
     : consumed.carbs >= target.carbIdeal
-    ? 'bg-emerald-400/20 text-emerald-400'
-    : 'bg-zinc-800/60 text-zinc-400';
+      ? 'bg-emerald-400/20 text-emerald-400'
+      : 'bg-zinc-800/60 text-zinc-400';
 
   return (
     <div className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}>
-
-      {/* ── Header Nutricional: Fecha + Ring + Barras ────────────────────── */}
-      <div className="flex flex-row gap-4 items-stretch">
-
-        {/* Columna Izquierda: Selector de Fecha */}
-        <div className="w-1/3 flex items-center justify-center">
-          <div className="flex items-center gap-3">
+      <section className="grid gap-6 lg:grid-cols-[minmax(15rem,0.9fr)_1px_minmax(0,1.7fr)] lg:items-center">
+        <div className="flex items-center justify-center lg:justify-start">
+          <div className="flex items-center gap-5">
             <NavButton direction="prev" onClick={onPrevDay} />
-            <div className="flex flex-col items-center gap-0.5">
-              <GiantValue className="!text-5xl !leading-none tabular-nums tracking-tight">{dayLabel}</GiantValue>
-              <MutedText className="text-center text-sm">{dateSubtitleCap}</MutedText>
+            <div className="flex min-w-40 flex-col items-center gap-1.5 text-center lg:items-start lg:text-left">
+              <GiantValue className="!text-5xl !leading-none tabular-nums tracking-tight">
+                {dayLabel}
+              </GiantValue>
+              <MutedText className="text-sm">{dateSubtitleCap}</MutedText>
             </div>
             <NavButton direction="next" onClick={onNextDay} />
           </div>
         </div>
 
-        <div className="w-px self-stretch bg-white/5 mx-2" />
+        <div className="hidden self-stretch bg-white/5 lg:block lg:w-px" />
 
-        {/* Columna Derecha: Anillo + Barras */}
-        <SquishyCard padding="md" className="flex-1 flex flex-row items-center gap-6">
-
-          {/* Anillo de Calorías */}
-          <div
-            className="relative flex-shrink-0"
-            style={{ width: RING_SIZE, height: RING_SIZE }}
-          >
+        <SquishyCard padding="lg" className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-10">
+          <div className="relative mx-auto h-40 w-40 flex-shrink-0 sm:mx-0">
             <svg
-              width={RING_SIZE} height={RING_SIZE}
+              width={RING_SIZE}
+              height={RING_SIZE}
               viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-              className="-rotate-90" aria-hidden="true"
+              className="-rotate-90"
+              aria-hidden="true"
             >
-              <defs>
-                <linearGradient id="ringGradientEmerald" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#34d399" />
-                  <stop offset="100%" stopColor="#059669" />
-                </linearGradient>
-                <linearGradient id="ringGradientAmber" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#fbbf24" />
-                  <stop offset="100%" stopColor="#d97706" />
-                </linearGradient>
-                <linearGradient id="ringGradientRose" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#f43f5e" />
-                  <stop offset="100%" stopColor="#e11d48" />
-                </linearGradient>
-              </defs>
               <circle
-                cx={CENTER} cy={CENTER} r={RADIUS}
-                fill="none" strokeWidth={STROKE_W}
+                cx={CENTER}
+                cy={CENTER}
+                r={RADIUS}
+                fill="none"
+                strokeWidth={STROKE_W}
                 className="stroke-zinc-800"
               />
               <circle
-                cx={CENTER} cy={CENTER} r={RADIUS}
-                fill="none" strokeWidth={STROKE_W}
+                cx={CENTER}
+                cy={CENTER}
+                r={RADIUS}
+                fill="none"
+                strokeWidth={STROKE_W}
                 strokeLinecap="round"
                 strokeDasharray={CIRCUMFERENCE}
                 strokeDashoffset={dashOffset}
-                stroke={ringStrokeUrl}
-                className="transition-all duration-700 ease-out"
+                className={[ringStrokeClass, 'transition-all duration-700 ease-out'].join(' ')}
               />
             </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
               <GiantValue className="!text-5xl !leading-none tabular-nums tracking-tight">
                 {Math.round(kcalRemaining)}
               </GiantValue>
-              <MutedText>kcal</MutedText>
+              <EyebrowText className={isKcalOver ? '!text-rose-500' : isAlert || kcalProgress > 0.85 ? '!text-amber-400' : ''}>
+                {isKcalOver ? 'Excedido' : 'kcal rest.'}
+              </EyebrowText>
+              <MutedText>/ {target.kcal}</MutedText>
             </div>
           </div>
 
-          {/* Barras: Prot / Carbos / Grasas */}
-          <div className="flex-1 flex flex-col gap-6">
+          <div className="flex-1 space-y-7">
             <BarRow
               label="PROTEÍNA"
-              rightLabel={`${Math.round(consumed.protein)}g / ${target.protein}g`}
+              current={consumed.protein}
+              goalText={`/ ${target.protein}g`}
               pct={proteinPct}
-              colorClass="bg-gradient-to-r from-violet-600 to-violet-400"
+              fillClass="bg-gradient-to-r from-violet-600 to-violet-400"
+              labelClass="text-violet-500"
             />
             <BarRow
               label="CARBOS"
-              rightLabel={<>{Math.round(consumed.carbs)}g <span className="text-zinc-500 font-normal">/ {target.carbIdeal}g ideal</span></>}
+              current={consumed.carbs}
+              goalText={`/ ${target.carbIdeal}g ideal`}
               pct={carbPct}
-              colorClass={carbBarClass}
-              labelColorClass={carbLabelClass}
+              fillClass={carbBarClass}
+              labelClass={carbLabelClass}
               markerPct={carbMarkerPct}
               markerLabel={`${target.carbIdeal}g`}
             />
             <BarRow
               label="GRASAS"
-              rightLabel={<>{Math.round(consumed.fat)}g <span className="text-zinc-500 font-normal">/ {target.fatIdeal}g ideal</span></>}
+              current={consumed.fat}
+              goalText={`/ ${target.fatIdeal}g ideal`}
               pct={fatPct}
-              colorClass={fatBarClass}
-              labelColorClass={fatLabelClass}
+              fillClass={fatBarClass}
+              labelClass={fatLabelClass}
               markerPct={fatMarkerPct}
               markerLabel={`${target.fatMin}g`}
             />
           </div>
         </SquishyCard>
-      </div>
+      </section>
 
-      {/* ── Bolsa Compartida C+G ─────────────────────────────────────────────── */}
       <SquishyCard padding="md">
-        <div className="mb-1">
-          <EyebrowText className="!text-zinc-100 flex items-center gap-2">
-            <span className="text-emerald-400 flex-shrink-0">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="flex-shrink-0 text-emerald-400">
               <IconInfo />
             </span>
-            BOLSA COMPARTIDA C+G
-          </EyebrowText>
-        </div>
-        <MutedText className="block text-xs mb-4">
-          Cubre tus mínimos vitales primero. El resto compártelo según tu energía.
-        </MutedText>
+            <CardTitle>Bolsa Compartida C+G</CardTitle>
+          </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <MacroLimitCard
-            label="CARBOS"
-            value={Math.round(consumed.carbs)}
-            min={target.carbMin}
-            ideal={target.carbIdeal}
-            max={target.carbMax}
-            pillText={carbPillText}
-            pillClass={carbPillClass}
-            cardClass={carbCardClass}
-            labelColorClass={carbLabelClass}
-            valueColorClass={carbValueClass}
-          />
-          <MacroLimitCard
-            label="GRASAS"
-            value={Math.round(consumed.fat)}
-            min={target.fatMin}
-            ideal={target.fatIdeal}
-            max={target.fatMax}
-            pillText={fatPillText}
-            pillClass={fatPillClass}
-            cardClass={fatCardClass}
-            labelColorClass={fatLabelClass}
-            valueColorClass={fatValueClass}
-          />
+          <BodyText className="max-w-2xl">
+            Cubre tus mínimos vitales primero. El resto compártelo según tu energía.
+          </BodyText>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <MacroLimitCard
+              label="CARBOS"
+              value={Math.round(consumed.carbs)}
+              min={target.carbMin}
+              ideal={target.carbIdeal}
+              max={target.carbMax}
+              pillText={carbPillText}
+              pillClass={carbPillClass}
+              cardClass={carbCardClass}
+              labelColorClass={carbLabelClass}
+              valueColorClass={carbValueClass}
+            />
+            <MacroLimitCard
+              label="GRASAS"
+              value={Math.round(consumed.fat)}
+              min={target.fatMin}
+              ideal={target.fatIdeal}
+              max={target.fatMax}
+              pillText={fatPillText}
+              pillClass={fatPillClass}
+              cardClass={fatCardClass}
+              labelColorClass={fatLabelClass}
+              valueColorClass={fatValueClass}
+            />
+          </div>
         </div>
       </SquishyCard>
     </div>
@@ -394,4 +385,3 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
 };
 
 export default MasterNutritionDashboard;
-
