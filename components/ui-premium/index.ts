@@ -11,6 +11,7 @@ export type { RestPhase, UseRestTimerReturn } from './useRestTimer';
 export { default as NonNegotiableCard } from './NonNegotiableCard';
 export { default as StreakCalendar } from './StreakCalendar';
 export { default as PremiumBadge } from './PremiumBadge';
+export { default as IconButton } from './IconButton';
 export { default as PremiumButton } from './PremiumButton';
 export { default as PremiumChip } from './PremiumChip';
 export { default as PremiumInput } from './PremiumInput';

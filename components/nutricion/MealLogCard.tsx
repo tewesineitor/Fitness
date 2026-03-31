@@ -25,6 +25,7 @@ const Trash2: React.FC<{ size?: number }> = ({ size = 12 }) => (
   </svg>
 );
 import SquishyCard from '../ui-premium/SquishyCard';
+import IconButton from '../ui-premium/IconButton';
 import {
   EyebrowText,
   MutedText,
@@ -129,32 +130,32 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
               {meal.ingredients.map((ing) => {
                 const isStd = ['g', 'ml', 'l', 'kg'].includes(ing.unit.toLowerCase());
                 return (
-                  <div key={ing.id} className="grid grid-cols-[7rem_1fr_4rem_7rem_2rem] items-center gap-x-3 py-2">
+                  <div key={ing.id} className="grid grid-cols-[6rem_1fr_3rem_9rem_4.5rem] items-center gap-x-2 py-2">
                     <StatLabel className="text-xs tabular-nums">
-                      {ing.amount}{isStd ? ing.unit : ing.unit}
+                      {ing.amount}{ing.unit}
                     </StatLabel>
-                    <StatLabel className="text-sm text-zinc-300 font-normal truncate">
+                    <span className="text-sm font-medium text-zinc-200 truncate">
                       {ing.name}
-                    </StatLabel>
+                    </span>
                     <StatLabel className="text-xs tabular-nums text-right">{ing.kcal}</StatLabel>
                     <StatLabel className="text-xs tabular-nums text-right whitespace-nowrap">
                       <span className="text-violet-400">P</span>:{ing.macros.p}g{' '}
                       <span className="text-emerald-400">C</span>:{ing.macros.c}g{' '}
                       <span className="text-rose-400">G</span>:{ing.macros.f}g
                     </StatLabel>
-                    <div className="flex items-center justify-end gap-0.5">
-                      <button
+                    <div className="flex items-center justify-end gap-1">
+                      <IconButton
+                        icon={<Pencil size={14} />}
+                        variant="ghost"
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); console.log('Edit', ing.id); }}
-                        className="text-zinc-500 hover:text-emerald-400 cursor-pointer p-1 rounded transition-colors"
-                      >
-                        <Pencil size={12} />
-                      </button>
-                      <button
+                      />
+                      <IconButton
+                        icon={<Trash2 size={14} />}
+                        variant="danger"
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); console.log('Delete', ing.id); }}
-                        className="text-zinc-500 hover:text-rose-400 cursor-pointer p-1 rounded transition-colors"
-                      >
-                        <Trash2 size={12} />
-                      </button>
+                      />
                     </div>
                   </div>
                 );

@@ -4,6 +4,7 @@ import BentoQuadrant from '../components/ui-premium/BentoQuadrant';
 import StreakCalendar from '../components/ui-premium/StreakCalendar';
 import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
+import IconButton from '../components/ui-premium/IconButton';
 import PremiumInput from '../components/ui-premium/PremiumInput';
 import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
@@ -226,6 +227,24 @@ const DesignSystemDevScreen: React.FC = () => {
               </PremiumButton>
             </SquishyCard>
           </div>
+
+          <SquishyCard padding="md" className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <CardTitle>IconButton</CardTitle>
+              <MutedText>Íconos interactivos SSOT — ghost, danger, primary × sm/md/lg.</MutedText>
+            </div>
+            <div className="flex items-center gap-4 flex-wrap">
+              <IconButton icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>} variant="ghost" size="sm" onClick={() => console.log('ghost sm')} />
+              <IconButton icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>} variant="ghost" size="md" onClick={() => console.log('ghost md')} />
+              <IconButton icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>} variant="ghost" size="lg" onClick={() => console.log('ghost lg')} />
+              <div className="w-px h-6 bg-white/10" />
+              <IconButton icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6l-1 14H6L5 6M9 6V4h6v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>} variant="danger" size="sm" onClick={() => console.log('danger sm')} />
+              <IconButton icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6l-1 14H6L5 6M9 6V4h6v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>} variant="danger" size="md" onClick={() => console.log('danger md')} />
+              <div className="w-px h-6 bg-white/10" />
+              <IconButton icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></svg>} variant="primary" size="sm" onClick={() => console.log('primary sm')} />
+              <IconButton icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></svg>} variant="primary" size="md" onClick={() => console.log('primary md')} />
+            </div>
+          </SquishyCard>
         </section>
 
         <section className="flex flex-col gap-6">
