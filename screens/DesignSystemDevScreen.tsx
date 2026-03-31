@@ -14,6 +14,7 @@ import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
 import MasterNutritionDashboard from '../components/ui-premium/MasterNutritionDashboard';
+import { MealLogCard, DailyLogMeal } from '../components/nutricion/MealLogCard';
 import {
   EyebrowText,
   ModalTitle,
@@ -84,6 +85,36 @@ const segmentOptions = [
   { label: '2', value: 2 },
   { label: '3+', value: 3 },
 ];
+
+const mockMealWithImage: DailyLogMeal = {
+  id: 'meal-1',
+  title: 'Bowl de pollo con arroz jazmín',
+  time: '14:30 PM',
+  totalKcal: 520,
+  totalMacros: { p: 42, c: 48, f: 16 },
+  isCustom: false,
+  imageUrl: '/assets/recipes/bowl-pollo.png',
+  ingredients: [
+    { id: '1', name: 'Pechuga de pollo', amount: 150, unit: 'g', kcal: 247, macros: { p: 46, c: 0, f: 5 } },
+    { id: '2', name: 'Arroz jazmín cocido', amount: 120, unit: 'g', kcal: 156, macros: { p: 3, c: 35, f: 0 } },
+    { id: '3', name: 'Aguacate', amount: 50, unit: 'g', kcal: 80, macros: { p: 1, c: 4, f: 7 } },
+    { id: '4', name: 'Brócoli al vapor', amount: 100, unit: 'g', kcal: 35, macros: { p: 2, c: 7, f: 0 } },
+  ],
+};
+
+const mockCustomMeal: DailyLogMeal = {
+  id: 'meal-2',
+  title: 'Snack Post-Entreno',
+  time: '18:15 PM',
+  totalKcal: 310,
+  totalMacros: { p: 45, c: 20, f: 5 },
+  isCustom: true,
+  ingredients: [
+    { id: '1', name: 'Whey Protein Isolate', amount: 1.5, unit: 'scoop', kcal: 180, macros: { p: 38, c: 3, f: 1 } },
+    { id: '2', name: 'Leche de conf. de almendras', amount: 250, unit: 'ml', kcal: 30, macros: { p: 1, c: 0, f: 2 } },
+    { id: '3', name: 'Plátano mediano', amount: 1, unit: 'ud', kcal: 100, macros: { p: 1, c: 25, f: 0 } },
+  ],
+};
 
 const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -513,6 +544,21 @@ const DesignSystemDevScreen: React.FC = () => {
               fat: 30,
             }}
           />
+        </section>
+
+        {/* ── Historial de Consumo ─────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Historial de Consumo</SectionTitle>
+            <MutedText>
+              Tarjetas premium de registro de comida con físicas de acordeón, placeholder inteligente y tabla de ingredientes tabular.
+            </MutedText>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <MealLogCard meal={mockMealWithImage} />
+            <MealLogCard meal={mockCustomMeal} />
+          </div>
         </section>
       </div>
 
