@@ -108,7 +108,7 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
 
           {/* Value & Chevron */}
           <div className="flex items-center gap-3 shrink-0">
-            <StatLabel className="!text-xl font-black tabular-nums">{meal.totalKcal} <span className="text-xs text-zinc-500 font-normal">kcal</span></StatLabel>
+            <StatLabel className="!text-xl font-black tabular-nums text-emerald-400">{meal.totalKcal} <span className="text-xs text-zinc-500 font-normal">kcal</span></StatLabel>
             <ChevronDown
               className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${
                 expanded ? 'rotate-180' : ''

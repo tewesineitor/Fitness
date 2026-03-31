@@ -8,8 +8,6 @@ import IconButton from '../components/ui-premium/IconButton';
 import PremiumInput from '../components/ui-premium/PremiumInput';
 import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
-import RecipeCardPremium from '../components/ui-premium/RecipeCardPremium';
-import RoutineCardPremium from '../components/ui-premium/RoutineCardPremium';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
@@ -105,22 +103,33 @@ const mockMealWithImage: DailyLogMeal = {
   ],
 };
 
-const mockRecipe: Recipe = {
+const mockBowlRecipe: Recipe = {
   title: 'Bowl de pollo con arroz jazmín',
-  description: 'Proteína magra, carbohidratos de índice glucémico medio y grasas saludables del aguacate. Ideal para post-entreno.',
-  imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=60',
+  description: 'Proteína magra, carbohidratos de índice glucémico medio y grasas saludables del aguacate.',
+  imageUrl: '/assets/recipes/bowl-pollo.png',
+  category: 'POST-ENTRENO',
   portions: 2,
   prepTimeMin: 25,
   totals: { kcal: 520, macros: { protein: 42, carbs: 48, fat: 16 } },
 };
 
-const mockRoutine: WorkoutRoutine = {
+const mockOatsRecipe: Recipe = {
+  title: 'Overnight oats de cacao',
+  description: 'Variante compacta con alto nivel de fibra y proteína. Ideal para comenzar el día.',
+  imageUrl: '/assets/recipes/oats-cacao.png',
+  category: 'DESAYUNO',
+  portions: 1,
+  prepTimeMin: 10,
+  totals: { kcal: 410, macros: { protein: 28, carbs: 39, fat: 11 } },
+};
+
+const mockUpperRoutine: WorkoutRoutine = {
   title: 'Upper Strength / Semana 4',
   description: 'Sesión de fuerza de torso superior con énfasis en press y remo. Incluye activación escapular y core anti-rotacional.',
-  imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=60',
+  imageUrl: '/assets/routines/upper-strength-bg.webp',
   focus: 'Fuerza',
-  estimatedTimeMin: 55,
-  exerciseCount: 6,
+  estimatedTimeMin: 45,
+  exerciseCount: 4,
 };
 
 const mockCustomMeal: DailyLogMeal = {
@@ -435,73 +444,30 @@ const DesignSystemDevScreen: React.FC = () => {
             <MutedText>Bloques estructurales premium para dashboards de hoy, listados y bibliotecas ricas.</MutedText>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <RecipeCardPremium
-              title="Bowl de pollo con arroz jazmín"
-              calories="520 kcal"
-              servings="2 porciones"
-              badge="Biblioteca"
-              description="Tarjeta premium para biblioteca de recetas con hero visual, metadata y chips de macros reutilizables."
-              macros={[
-                { label: 'P', value: '42 g', tone: 'violet' },
-                { label: 'C', value: '48 g', tone: 'cyan' },
-                { label: 'F', value: '16 g', tone: 'orange' },
-              ]}
-              media={
-                <>
-                  <img
-                    src="/assets/recipes/bowl-pollo.png"
-                    alt="Bowl de pollo"
-                    className="h-full w-full object-cover opacity-60"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent" />
-                </>
-              }
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <RecipeCard
+              recipe={mockBowlRecipe}
+              onQuickAdd={() => console.log('Quick add bowl')}
+              onClick={() => console.log('Open bowl')}
             />
-
-            <RoutineCardPremium
-              eyebrow="Intermedio - Fuerza"
-              title="Upper Strength / Semana 4"
-              src="/assets/routines/upper-strength-bg.webp"
-              meta="45 min"
-              description="Tarjeta hero para rutinas activas o sugeridas, con jerarquía editorial fuerte y CTA sutil para entrar al detalle."
-              chips={['4 bloques', 'Push / Pull', 'RPE 8']}
-              ctaLabel="Ver rutina"
-              onCtaClick={() => console.log('Click')}
+            <RoutineCard
+              routine={mockUpperRoutine}
+              onView={() => console.log('View routine')}
             />
-
-            <PremiumInput
-              label="Buscar receta o rutina"
-              value={searchValue}
-              onChange={(event) => setSearchValue(event.target.value)}
-              placeholder="Ej. upper strength, bowl proteico"
-              hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
+            <RecipeCard
+              recipe={mockOatsRecipe}
+              onQuickAdd={() => console.log('Quick add oats')}
+              onClick={() => console.log('Open oats')}
             />
-
-            <RecipeCardPremium
-              title="Overnight oats de cacao"
-              calories="410 kcal"
-              servings="Desayuno"
-              badge="Favorita"
-              description="Variante compacta para destacar recetas recurrentes, favoritos o sugerencias basadas en objetivos."
-              macros={[
-                { label: 'P', value: '28 g', tone: 'violet' },
-                { label: 'C', value: '39 g', tone: 'cyan' },
-                { label: 'F', value: '11 g', tone: 'orange' },
-              ]}
-              media={
-                <>
-                  <img
-                    src="/assets/recipes/oats-cacao.png"
-                    alt="Overnight oats"
-                    className="h-full w-full object-cover opacity-60"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-zinc-950/10" />
-                </>
-              }
-            />
-
           </div>
+
+          <PremiumInput
+            label="Buscar receta o rutina"
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.target.value)}
+            placeholder="Ej. upper strength, bowl proteico"
+            hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
+          />
         </section>
 
         <section className="flex flex-col gap-6">
@@ -600,27 +566,6 @@ const DesignSystemDevScreen: React.FC = () => {
           </div>
         </section>
 
-        {/* ── Tarjetas de Entidades ─────────────────────────────── */}
-        <section className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <SectionTitle>Tarjetas de Entidades (Recetas y Rutinas)</SectionTitle>
-            <MutedText>
-              Contratos de datos estrictos. Hero inmersivo, píldoras de macros tabular-nums y acciones contextuales.
-            </MutedText>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <RecipeCard
-              recipe={mockRecipe}
-              onQuickAdd={() => console.log('Quick add recipe')}
-              onClick={() => console.log('Open recipe')}
-            />
-            <RoutineCard
-              routine={mockRoutine}
-              onView={() => console.log('View routine')}
-            />
-          </div>
-        </section>
       </div>
 
       {isRuckingFormOpen && (

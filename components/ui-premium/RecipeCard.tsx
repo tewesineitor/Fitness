@@ -19,6 +19,7 @@ export interface Recipe {
   title: string;
   description: string;
   imageUrl?: string;
+  category?: string;
   portions: number;
   prepTimeMin: number;
   totals: {
@@ -35,7 +36,7 @@ interface RecipeCardProps {
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, className = '' }) => {
-  const { title, description, imageUrl, portions, prepTimeMin, totals } = recipe;
+  const { title, description, imageUrl, totals, category } = recipe;
 
   return (
     <SquishyCard
@@ -68,32 +69,26 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       {/* Content */}
       <div className="p-5 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between mb-2">
-          <StatLabel className="text-emerald-400 text-xs tabular-nums">{totals.kcal} kcal</StatLabel>
-          <MutedText className="text-xs">{portions}p · {prepTimeMin}min</MutedText>
+          <StatLabel className="text-emerald-400 text-sm tabular-nums">{totals.kcal} kcal</StatLabel>
+          <MutedText className="text-xs uppercase tracking-wider">{category ?? 'RECETA'}</MutedText>
         </div>
 
         <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug mb-2">
           {title}
         </EyebrowText>
 
-        <MutedText className="line-clamp-2 text-xs">{description}</MutedText>
+        <MutedText className="line-clamp-2">{description}</MutedText>
 
         {/* Macro pills */}
         <div className="flex items-center gap-2 flex-wrap mt-auto pt-1">
-          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
-            <StatLabel className="tabular-nums">
-              <span className="text-violet-400">P</span> {totals.macros.protein}g
-            </StatLabel>
+          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-violet-400">P</span>: {totals.macros.protein}g</span>
           </span>
-          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
-            <StatLabel className="tabular-nums">
-              <span className="text-emerald-400">C</span> {totals.macros.carbs}g
-            </StatLabel>
+          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-emerald-400">C</span>: {totals.macros.carbs}g</span>
           </span>
-          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
-            <StatLabel className="tabular-nums">
-              <span className="text-rose-400">G</span> {totals.macros.fat}g
-            </StatLabel>
+          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-rose-400">G</span>: {totals.macros.fat}g</span>
           </span>
         </div>
       </div>

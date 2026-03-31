@@ -1,7 +1,7 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
 import PremiumButton from './PremiumButton';
-import { GiantValue, MutedText, StatLabel } from './Typography';
+import { MutedText, StatLabel } from './Typography';
 
 export interface WorkoutRoutine {
   title: string;
@@ -43,15 +43,15 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
             <StatLabel className="text-emerald-400 uppercase tracking-wider">
               {focus} • {estimatedTimeMin} MIN
             </StatLabel>
-            <GiantValue className="!text-2xl !leading-tight mt-1 mb-3">{title}</GiantValue>
+            <span className="text-2xl font-bold text-white leading-tight block mt-1 mb-3">{title}</span>
           </div>
 
           {/* Clinical pills — bottom of image */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-[10px] text-zinc-200 uppercase tracking-wider">
+            <span className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-xs text-zinc-200 uppercase tracking-wider">
               {exerciseCount} bloques
             </span>
-            <span className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-[10px] text-zinc-200 uppercase tracking-wider">
+            <span className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-xs text-zinc-200 uppercase tracking-wider">
               enfoque: {focus}
             </span>
           </div>
@@ -60,7 +60,7 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
 
       {/* Content */}
       <div className="p-5 flex flex-col gap-3 flex-1">
-        <MutedText className="text-xs">{description}</MutedText>
+        <MutedText>{description}</MutedText>
         <PremiumButton
           variant="primary"
           size="md"
