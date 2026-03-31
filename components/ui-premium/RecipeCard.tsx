@@ -58,10 +58,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
         <div className="absolute bottom-3 right-3 z-10">
           <IconButton
             icon={<PlusIcon size={18} />}
-            variant="primary"
+            variant="solid"
             size="md"
             onClick={(e) => { e.stopPropagation(); onQuickAdd?.(); }}
-            className="bg-emerald-500/90 hover:bg-emerald-400 text-zinc-950 !text-zinc-950 hover:!text-zinc-950 rounded-full shadow-lg"
           />
         </div>
       </div>
@@ -69,8 +68,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       {/* Content */}
       <div className="p-5 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between mb-2">
-          <StatLabel className="text-emerald-400 text-sm tabular-nums">{totals.kcal} kcal</StatLabel>
-          <MutedText className="text-xs uppercase tracking-wider">{category ?? 'RECETA'}</MutedText>
+          <StatLabel className="text-emerald-400 text-sm font-bold tabular-nums">{totals.kcal} kcal</StatLabel>
+          <span className="text-xs uppercase tracking-wider text-zinc-400">{category ?? 'RECETA'}</span>
         </div>
 
         <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug mb-2">
