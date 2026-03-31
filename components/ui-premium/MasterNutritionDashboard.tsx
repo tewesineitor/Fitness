@@ -68,9 +68,9 @@ const BarRow: React.FC<BarRowProps> = ({
   <div className="flex flex-col gap-2">
     <div className="flex items-end justify-between">
       <EyebrowText className={labelClass}>{label}</EyebrowText>
-      <div className="flex items-baseline gap-1">
-        <StatLabel className="!text-[13px] sm:!text-[14px] text-zinc-100">{current}</StatLabel>
-        <MutedText className="!text-[11px] sm:!text-[12px] font-semibold tracking-wider text-zinc-500 uppercase">{goalText}</MutedText>
+      <div className="flex items-baseline gap-1.5">
+        <MonoValue className="!text-[14px] sm:!text-[15px] !text-zinc-100 !font-bold leading-none tracking-tight">{current}</MonoValue>
+        <MutedText className="!text-[10px] sm:!text-[11px] font-bold tracking-tight text-zinc-500 opacity-80">{goalText}</MutedText>
       </div>
     </div>
 
@@ -236,10 +236,10 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const isLargeKcal = kcalStr.length >= 4;
   const kcalFontSizeClass = isLargeKcal ? '!text-[36px] sm:!text-[46px]' : '!text-[48px] sm:!text-[56px]';
 
-  const carbCardClass = isAlert ? '!bg-zinc-900/50 !border-amber-500/40' : '!bg-zinc-900/50';
+  const carbCardClass = isAlert ? '!bg-zinc-900/60 !border-amber-500/30 shadow-lg shadow-amber-500/5' : '!bg-zinc-900/60 !border-white/5';
   const fatCardClass = isAlert
-    ? '!bg-zinc-900/50 !border-rose-500/40'
-    : '!bg-zinc-900/50';
+    ? '!bg-zinc-900/60 !border-rose-500/30 shadow-lg shadow-rose-500/5'
+    : '!bg-zinc-900/60 !border-white/5';
   const carbValueClass = isAlert ? '!text-amber-400' : '';
   const fatValueClass = isAlert ? '!text-rose-400' : '';
 
