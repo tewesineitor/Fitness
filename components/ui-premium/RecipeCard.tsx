@@ -1,0 +1,105 @@
+import React from 'react';
+import SquishyCard from './SquishyCard';
+import IconButton from './IconButton';
+import { EyebrowText, MutedText, StatLabel } from './Typography';
+
+const PlusIcon: React.FC<{ size?: number }> = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export interface RecipeMacros {
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface Recipe {
+  title: string;
+  description: string;
+  imageUrl?: string;
+  portions: number;
+  prepTimeMin: number;
+  totals: {
+    kcal: number;
+    macros: RecipeMacros;
+  };
+}
+
+interface RecipeCardProps {
+  recipe: Recipe;
+  onQuickAdd?: () => void;
+  onClick?: () => void;
+  className?: string;
+}
+
+const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, className = '' }) => {
+  const { title, description, imageUrl, portions, prepTimeMin, totals } = recipe;
+
+  return (
+    <SquishyCard
+      interactive
+      padding="none"
+      className={['overflow-hidden flex flex-col', className].filter(Boolean).join(' ')}
+      onClick={onClick}
+    >
+      {/* Hero */}
+      <div className="relative h-48 bg-zinc-900 flex-shrink-0">
+        {imageUrl ? (
+          <img src={imageUrl} alt={title} className="absolute inset-0 w-full h-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent" />
+
+        {/* Quick Add */}
+        <div className="absolute bottom-3 right-3 z-10">
+          <IconButton
+            icon={<PlusIcon size={18} />}
+            variant="primary"
+            size="md"
+            onClick={(e) => { e.stopPropagation(); onQuickAdd?.(); }}
+            className="bg-emerald-500/90 hover:bg-emerald-400 text-zinc-950 !text-zinc-950 hover:!text-zinc-950 rounded-full shadow-lg"
+          />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col gap-3 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <StatLabel className="text-emerald-400 tabular-nums">{totals.kcal} kcal</StatLabel>
+            <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug">
+              {title}
+            </EyebrowText>
+          </div>
+          <MutedText className="whitespace-nowrap shrink-0">{portions}p · {prepTimeMin}min</MutedText>
+        </div>
+
+        <MutedText className="line-clamp-2">{description}</MutedText>
+
+        {/* Macro pills */}
+        <div className="flex items-center gap-2 flex-wrap mt-auto pt-1">
+          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
+            <StatLabel className="tabular-nums">
+              <span className="text-violet-400">P</span> {totals.macros.protein}g
+            </StatLabel>
+          </span>
+          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
+            <StatLabel className="tabular-nums">
+              <span className="text-emerald-400">C</span> {totals.macros.carbs}g
+            </StatLabel>
+          </span>
+          <span className="inline-flex items-center gap-1 bg-zinc-900 rounded-full px-3 py-1">
+            <StatLabel className="tabular-nums">
+              <span className="text-rose-400">G</span> {totals.macros.fat}g
+            </StatLabel>
+          </span>
+        </div>
+      </div>
+    </SquishyCard>
+  );
+};
+
+export default RecipeCard;

@@ -16,6 +16,8 @@ import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
 import MasterNutritionDashboard from '../components/ui-premium/MasterNutritionDashboard';
 import { MealLogCard, DailyLogMeal } from '../components/nutricion/MealLogCard';
+import RecipeCard, { Recipe } from '../components/ui-premium/RecipeCard';
+import RoutineCard, { WorkoutRoutine } from '../components/ui-premium/RoutineCard';
 import {
   EyebrowText,
   ModalTitle,
@@ -101,6 +103,24 @@ const mockMealWithImage: DailyLogMeal = {
     { id: '3', name: 'Aguacate', amount: 50, unit: 'g', kcal: 80, macros: { p: 1, c: 4, f: 7 } },
     { id: '4', name: 'Brócoli al vapor', amount: 100, unit: 'g', kcal: 35, macros: { p: 2, c: 7, f: 0 } },
   ],
+};
+
+const mockRecipe: Recipe = {
+  title: 'Bowl de pollo con arroz jazmín',
+  description: 'Proteína magra, carbohidratos de índice glucémico medio y grasas saludables del aguacate. Ideal para post-entreno.',
+  imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=60',
+  portions: 2,
+  prepTimeMin: 25,
+  totals: { kcal: 520, macros: { protein: 42, carbs: 48, fat: 16 } },
+};
+
+const mockRoutine: WorkoutRoutine = {
+  title: 'Upper Strength / Semana 4',
+  description: 'Sesión de fuerza de torso superior con énfasis en press y remo. Incluye activación escapular y core anti-rotacional.',
+  imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=60',
+  focus: 'Fuerza',
+  estimatedTimeMin: 55,
+  exerciseCount: 6,
 };
 
 const mockCustomMeal: DailyLogMeal = {
@@ -577,6 +597,28 @@ const DesignSystemDevScreen: React.FC = () => {
           <div className="flex flex-col gap-4">
             <MealLogCard meal={mockMealWithImage} />
             <MealLogCard meal={mockCustomMeal} />
+          </div>
+        </section>
+
+        {/* ── Tarjetas de Entidades ─────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Tarjetas de Entidades (Recetas y Rutinas)</SectionTitle>
+            <MutedText>
+              Contratos de datos estrictos. Hero inmersivo, píldoras de macros tabular-nums y acciones contextuales.
+            </MutedText>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <RecipeCard
+              recipe={mockRecipe}
+              onQuickAdd={() => console.log('Quick add recipe')}
+              onClick={() => console.log('Open recipe')}
+            />
+            <RoutineCard
+              routine={mockRoutine}
+              onView={() => console.log('View routine')}
+            />
           </div>
         </section>
       </div>
