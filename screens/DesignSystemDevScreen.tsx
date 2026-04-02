@@ -20,6 +20,8 @@ import NonNegotiableCard from '../components/ui-premium/NonNegotiableCard';
 import WeeklyStreakTracker, { DailyStreak } from '../components/ui-premium/WeeklyStreakTracker';
 import PremiumFilterTab from '../components/ui-premium/PremiumFilterTab';
 import IngredientListItem from '../components/ui-premium/IngredientListItem';
+import type { IngredientEditableData } from '../components/ui-premium/IngredientListItem';
+import IngredientEditModal from '../components/ui-premium/IngredientEditModal';
 import {
   EyebrowText,
   ModalTitle,
@@ -170,7 +172,42 @@ const DesignSystemDevScreen: React.FC = () => {
   const [stepsValue, setStepsValue] = useState(6800);
   const [sleepValue, setSleepValue] = useState(6.5);
   const [activeFilter, setActiveFilter] = useState('all');
-  const [addedIngredients, setAddedIngredients] = useState<Record<string, number>>({});
+  const [addedIngredients, setAddedIngredients] = useState<Record<string, number>>({ chicken: 1.5, quinoa: 1 });
+  const [editingIngId, setEditingIngId] = useState<string | null>(null);
+  const [ingredientsData, setIngredientsData] = useState<Record<string, IngredientEditableData>>({
+    chicken: {
+      name: 'Pechuga de Pollo (Sin Piel)',
+      brand: 'Genérico',
+      standardPortion: '100g Crudo (~75g Cocido)',
+      rawWeightG: 100,
+      cookedWeightG: 75,
+      macros: { kcal: 110, protein: 23, carbs: 0, fat: 1.5 },
+    },
+    rice: {
+      name: 'Arroz Blanco (Vapor)',
+      brand: 'Genérico',
+      standardPortion: '100g (Peso Cocido)',
+      rawWeightG: 33,
+      cookedWeightG: 100,
+      macros: { kcal: 130, protein: 2.5, carbs: 28, fat: 0.3 },
+    },
+    quinoa: {
+      name: 'Quinoa',
+      brand: "Member's Mark",
+      standardPortion: '50g Crudo (~150g Cocido)',
+      rawWeightG: 50,
+      cookedWeightG: 150,
+      macros: { kcal: 183, protein: 7, carbs: 32, fat: 3 },
+    },
+    pork: {
+      name: 'Lomo de Cerdo',
+      brand: 'Genérico',
+      standardPortion: '100g Crudo (~75g Cocido)',
+      rawWeightG: 100,
+      cookedWeightG: 75,
+      macros: { kcal: 125, protein: 22, carbs: 0, fat: 3.5 },
+    },
+  });
 
   const handleIngredientAdd = (id: string) =>
     setAddedIngredients((prev) => ({ ...prev, [id]: 1 }));
@@ -179,6 +216,11 @@ const DesignSystemDevScreen: React.FC = () => {
       ...prev,
       [id]: Math.max(0.25, parseFloat(((prev[id] ?? 1) + delta).toFixed(2))),
     }));
+  const handleIngredientSave = (updated: IngredientEditableData) => {
+    if (!editingIngId) return;
+    setIngredientsData((prev) => ({ ...prev, [editingIngId]: updated }));
+    setEditingIngId(null);
+  };
 
   return (
     <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
@@ -658,66 +700,54 @@ const DesignSystemDevScreen: React.FC = () => {
             ))}
           </div>
 
-          {/* IngredientListItem — 4 variants */}
+          {/* IngredientListItem — 4 variantes con datos reales de la DB */}
           <div className="flex flex-col gap-3">
-            {/* 1: Con imagen generada (Atún), solo cocido */}
+            {/* 1. Pechuga: crudo+cocido, stepper fraccionario activo */}
             <IngredientListItem
-              name="Atún en Lata"
-              brand="Calvo"
-              imageUrl="/assets/ingredients/atun_premium.png"
-              macros={{ protein: 26, carbs: 0, fat: 2 }}
-              calories={120}
-              standardPortion="1 LATA (80g)"
-              weightCooked="80g"
-              isAddedToPlate={!!addedIngredients['tuna']}
-              quantityMultiplier={addedIngredients['tuna'] ?? 1}
-              onAdd={() => handleIngredientAdd('tuna')}
-              onUpdateQuantity={(d) => handleIngredientQty('tuna', d)}
-              onEdit={() => console.log('edit tuna')}
+              {...ingredientsData['chicken']}
+              isAddedToPlate={!!addedIngredients['chicken']}
+              quantityMultiplier={addedIngredients['chicken'] ?? 1}
+              onAdd={() => handleIngredientAdd('chicken')}
+              onUpdateQuantity={(d) => handleIngredientQty('chicken', d)}
+              onEdit={() => setEditingIngId('chicken')}
             />
-            {/* 2: Con nueva imagen generada, con crudo Y cocido, qty fraccionario (stepper) */}
+            {/* 2. Arroz Blanco: crudo 33g → cocido 100g, no agregado */}
             <IngredientListItem
-              name="Arroz Basmati"
-              brand="La Abuela"
-              imageUrl="/assets/ingredients/arroz_basmati_2026.png"
-              macros={{ protein: 3, carbs: 78, fat: 1 }}
-              calories={350}
-              standardPortion="1 TAZA"
-              weightRaw="100g"
-              weightCooked="250g"
+              {...ingredientsData['rice']}
               isAddedToPlate={!!addedIngredients['rice']}
-              quantityMultiplier={addedIngredients['rice'] ?? 1.5}
+              quantityMultiplier={addedIngredients['rice'] ?? 1}
               onAdd={() => handleIngredientAdd('rice')}
               onUpdateQuantity={(d) => handleIngredientQty('rice', d)}
-              onEdit={() => console.log('edit rice')}
+              onEdit={() => setEditingIngId('rice')}
             />
-            {/* 3: SIN equivalencias — testea que el layout no se rompe sin hasEquiv */}
+            {/* 3. Quinoa: crudo 50g → cocido 150g, stepper activo */}
             <IngredientListItem
-              name="Claras de Huevo"
-              brand="San Juan"
-              imageUrl="/assets/ingredients/claras_de_huevo_2026.png"
-              macros={{ protein: 11, carbs: 0, fat: 0 }}
-              calories={52}
-              standardPortion="3 CLARAS"
-              isAddedToPlate={true}
-              quantityMultiplier={addedIngredients['eggs'] ?? 3}
-              onAdd={() => handleIngredientAdd('eggs')}
-              onUpdateQuantity={(d) => handleIngredientQty('eggs', d)}
-              onEdit={() => console.log('edit eggs')}
+              {...ingredientsData['quinoa']}
+              isAddedToPlate={!!addedIngredients['quinoa']}
+              quantityMultiplier={addedIngredients['quinoa'] ?? 1}
+              onAdd={() => handleIngredientAdd('quinoa')}
+              onUpdateQuantity={(d) => handleIngredientQty('quinoa', d)}
+              onEdit={() => setEditingIngId('quinoa')}
             />
-            {/* 4: Sin imagen (fall-back), sin brand */}
+            {/* 4. Lomo de Cerdo: sin imagen → fallback inicial */}
             <IngredientListItem
-              name="Pimienta Negra"
-              macros={{ protein: 0, carbs: 1, fat: 0 }}
-              calories={5}
-              standardPortion="1 PIZCA"
-              isAddedToPlate={!!addedIngredients['pimienta']}
-              quantityMultiplier={addedIngredients['pimienta'] ?? 1}
-              onAdd={() => handleIngredientAdd('pimienta')}
-              onUpdateQuantity={(d) => handleIngredientQty('pimienta', d)}
-              onEdit={() => console.log('edit pimienta')}
+              {...ingredientsData['pork']}
+              isAddedToPlate={!!addedIngredients['pork']}
+              quantityMultiplier={addedIngredients['pork'] ?? 1}
+              onAdd={() => handleIngredientAdd('pork')}
+              onUpdateQuantity={(d) => handleIngredientQty('pork', d)}
+              onEdit={() => setEditingIngId('pork')}
             />
           </div>
+
+          {/* Edit modal */}
+          {editingIngId && ingredientsData[editingIngId] && (
+            <IngredientEditModal
+              item={ingredientsData[editingIngId]}
+              onSave={handleIngredientSave}
+              onClose={() => setEditingIngId(null)}
+            />
+          )}
         </section>
 
       </div>

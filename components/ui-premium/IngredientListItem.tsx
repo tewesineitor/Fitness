@@ -44,25 +44,28 @@ const MacroPill: React.FC<{
 };
 
 export interface IngredientMacros {
+  kcal: number;
   protein: number;
   carbs: number;
   fat: number;
 }
 
-export interface IngredientItemProps {
+export interface IngredientEditableData {
   name: string;
   brand?: string;
-  imageUrl?: string;
-  macros: IngredientMacros;
-  calories: number;
   standardPortion: string;
-  weightRaw?: string;
-  weightCooked?: string;
+  rawWeightG?: number;
+  cookedWeightG?: number;
+  macros: IngredientMacros;
+}
+
+export interface IngredientItemProps extends IngredientEditableData {
+  imageUrl?: string;
   isAddedToPlate: boolean;
   quantityMultiplier: number;
   onAdd: () => void;
   onUpdateQuantity: (delta: number) => void;
-  onEdit: () => void;
+  onEdit: (data: IngredientEditableData) => void;
 }
 
 const IngredientListItem: React.FC<IngredientItemProps> = ({
@@ -70,25 +73,16 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
   brand,
   imageUrl,
   macros,
-  calories,
   standardPortion,
-  weightRaw,
-  weightCooked,
+  rawWeightG,
+  cookedWeightG,
   isAddedToPlate,
   quantityMultiplier,
   onAdd,
   onUpdateQuantity,
   onEdit,
 }) => {
-  const parseWeight = (val?: string): number => {
-    if (!val) return 0;
-    const match = val.match(/\d+(\.\d+)?/);
-    return match ? parseFloat(match[0]) : 0;
-  };
-
-  const rawBase    = parseWeight(weightRaw);
-  const cookedBase = parseWeight(weightCooked);
-  const hasEquiv   = (weightRaw && rawBase > 0) || (weightCooked && cookedBase > 0);
+  const hasEquiv = (rawWeightG != null && rawWeightG > 0) || (cookedWeightG != null && cookedWeightG > 0);
 
   const fmtQty = (n: number) => n % 1 === 0 ? String(n) : n.toFixed(2);
 
@@ -134,7 +128,7 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
           <IconButton
             icon={<PencilIcon size={12} />}
             variant="ghost"
-            onClick={onEdit}
+            onClick={() => onEdit({ name, brand, standardPortion, rawWeightG, cookedWeightG, macros })}
             aria-label="Editar ingrediente"
             className="!p-0 !size-4 !min-w-0 !rounded-sm text-zinc-600 hover:text-zinc-300 shrink-0"
           />
@@ -162,19 +156,19 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
           {/* Right: equivalencias crudo/cocido (conditional) */}
           {hasEquiv && (
             <div className="flex gap-2 items-center text-[11px] font-mono tabular-nums shrink-0">
-              {weightRaw && rawBase > 0 && (
+              {rawWeightG != null && rawWeightG > 0 && (
                 <span className="text-zinc-400">
                   <span className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider mr-0.5">Crudo</span>
-                  {Math.round(rawBase * quantityMultiplier)}g
+                  {Math.round(rawWeightG * quantityMultiplier)}g
                 </span>
               )}
-              {weightRaw && rawBase > 0 && weightCooked && cookedBase > 0 && (
+              {rawWeightG != null && rawWeightG > 0 && cookedWeightG != null && cookedWeightG > 0 && (
                 <span className="text-zinc-700">|</span>
               )}
-              {weightCooked && cookedBase > 0 && (
+              {cookedWeightG != null && cookedWeightG > 0 && (
                 <span className="text-emerald-300">
                   <span className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider mr-0.5">Cocido</span>
-                  {Math.round(cookedBase * quantityMultiplier)}g
+                  {Math.round(cookedWeightG * quantityMultiplier)}g
                 </span>
               )}
             </div>
@@ -186,7 +180,7 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
       <div className="w-28 flex flex-col items-end gap-3 shrink-0 self-stretch justify-between">
         {/* Calories */}
         <StatLabel className="!text-2xl !font-black !text-emerald-400 !tabular-nums text-right leading-none">
-          {Math.round(calories * quantityMultiplier)}{' '}
+          {Math.round(macros.kcal * quantityMultiplier)}{' '}
           <span className="text-xs text-zinc-500 font-normal">KCAL</span>
         </StatLabel>
 
