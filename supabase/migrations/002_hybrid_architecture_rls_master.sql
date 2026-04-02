@@ -78,6 +78,15 @@ ALTER TABLE public.recipes
 ALTER TABLE public.recipes
   ADD COLUMN IF NOT EXISTS is_global BOOLEAN NOT NULL DEFAULT false;
 
+-- ── routines ─────────────────────────────────────────────────────────────────
+-- CORRECCIÓN: routines.id es TEXT y la tabla no tiene columna user_id.
+-- Se añade user_id UUID para vincular cada rutina a su propietario.
+-- No se añade is_global porque routines ya tiene isUserCreated (boolean).
+
+ALTER TABLE public.routines
+  ADD COLUMN IF NOT EXISTS user_id UUID
+    REFERENCES auth.users(id) ON DELETE CASCADE;
+
 
 -- ============================================================================
 -- SECCIÓN 2: CREACIÓN DE TABLAS TRANSACCIONALES PRIVADAS
@@ -99,8 +108,9 @@ CREATE TABLE IF NOT EXISTS public.meal_logs (
 
   date        DATE        NOT NULL,                   -- Día del registro
   meal_type   TEXT        NOT NULL,                   -- 'desayuno' | 'almuerzo' | 'cena' | 'snack'
-  food_id     UUID        REFERENCES public.foods(id) ON DELETE SET NULL,
-  recipe_id   UUID        REFERENCES public.recipes(id) ON DELETE SET NULL,
+  -- CORRECCIÓN 42804: foods.id y recipes.id son TEXT, no UUID.
+  food_id     TEXT        REFERENCES public.foods(id) ON DELETE SET NULL,
+  recipe_id   TEXT        REFERENCES public.recipes(id) ON DELETE SET NULL,
   amount      NUMERIC     NOT NULL                    -- Gramos o unidades según el ítem
 );
 
@@ -112,7 +122,8 @@ CREATE TABLE IF NOT EXISTS public.workout_logs (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
 
   date         DATE        NOT NULL,                  -- Día del entrenamiento
-  routine_id   UUID        REFERENCES public.routines(id) ON DELETE SET NULL,
+  -- CORRECCIÓN 42804: routines.id es TEXT, no UUID.
+  routine_id   TEXT        REFERENCES public.routines(id) ON DELETE SET NULL,
   duration_min INT,                                   -- Duración real en minutos (puede ser NULL si no finalizó)
   notes        TEXT                                   -- Observaciones libres del usuario
 );
@@ -332,21 +343,24 @@ DROP POLICY IF EXISTS "user_state: insert own"  ON public.user_state;
 DROP POLICY IF EXISTS "user_state: update own"  ON public.user_state;
 DROP POLICY IF EXISTS "user_state: delete own"  ON public.user_state;
 
+-- CORRECCIÓN: user_state.user_id es tipo TEXT (no UUID).
+-- auth.uid() devuelve UUID. Se requiere cast explícito ::text para evitar
+-- error de tipo en la comparación. PostgreSQL no castea UUID→TEXT implícitamente en RLS.
 CREATE POLICY "user_state: select own"
   ON public.user_state FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
+  USING (user_id = auth.uid()::text);
 
 CREATE POLICY "user_state: insert own"
   ON public.user_state FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
+  WITH CHECK (user_id = auth.uid()::text);
 
 CREATE POLICY "user_state: update own"
   ON public.user_state FOR UPDATE TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+  USING (user_id = auth.uid()::text) WITH CHECK (user_id = auth.uid()::text);
 
 CREATE POLICY "user_state: delete own"
   ON public.user_state FOR DELETE TO authenticated
-  USING (user_id = auth.uid());
+  USING (user_id = auth.uid()::text);
 
 
 -- ── routines ─────────────────────────────────────────────────────────────────
