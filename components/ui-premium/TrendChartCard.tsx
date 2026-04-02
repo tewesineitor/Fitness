@@ -118,6 +118,13 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
 
       {/* Área de gráfica — ampliada a h-40 */}
       <div className="w-full h-40 relative">
+        {/* Y-Axis Labels (HTML Overlay to prevent SVG stretching) */}
+        <div className="absolute left-0 top-0 w-full h-full pointer-events-none z-10 text-[9px] text-zinc-500 font-mono tracking-wider">
+          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(maxPrimary)}% - 12px)` }}>{formatY(maxPrimary)}</span>
+          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(midPrimary)}% - 12px)` }}>{formatY(midPrimary)}</span>
+          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(minPrimary)}% - 12px)` }}>{formatY(minPrimary)}</span>
+        </div>
+
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
@@ -142,11 +149,6 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
               vectorEffect="non-scaling-stroke"
             />
           ))}
-
-          {/* Y-Axis Labels (Absolute so they sit nicely on left) */}
-          <text x="0" y={getPrimaryY(maxPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(maxPrimary)}</text>
-          <text x="0" y={getPrimaryY(midPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(midPrimary)}</text>
-          <text x="0" y={getPrimaryY(minPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(minPrimary)}</text>
 
           {/* DUAL-AXIS: Barras con padding inferior */}
           {chartType === 'dual-axis' && chartData.map((d, i) => {
