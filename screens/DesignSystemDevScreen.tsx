@@ -22,7 +22,7 @@ import PremiumFilterTab from '../components/ui-premium/PremiumFilterTab';
 import IngredientListItem from '../components/ui-premium/IngredientListItem';
 import type { IngredientEditableData } from '../components/ui-premium/IngredientListItem';
 import IngredientEditModal from '../components/ui-premium/IngredientEditModal';
-import TrendChartCard from '../components/ui-premium/TrendChartCard';
+import InteractiveProgressWidget from '../components/ui-premium/InteractiveProgressWidget';
 import {
   EyebrowText,
   ModalTitle,
@@ -756,45 +756,12 @@ const DesignSystemDevScreen: React.FC = () => {
           <div className="flex flex-col gap-2">
             <SectionTitle>Gráficas de Tendencia HUD</SectionTitle>
             <MutedText>
-              Fuerza / Peso (single-line) y Ritmo / Distancia (dual-axis). SVG nativo sin librerías externas.
+              Widget Inteligente Stateful con navegación filtrada localmente.
             </MutedText>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TrendChartCard
-              title="Progreso Sentadilla Libre"
-              chartType="single-line"
-              primaryMetric={{
-                label: 'Último PR',
-                currentValue: '115 kg',
-                trend: 'up'
-              }}
-              chartData={[
-                { dateLabel: 'S1', primaryValue: 95 },
-                { dateLabel: 'S2', primaryValue: 100 },
-                { dateLabel: 'S3', primaryValue: 97.5 },
-                { dateLabel: 'S4', primaryValue: 105 },
-                { dateLabel: 'S5', primaryValue: 110 },
-                { dateLabel: 'S6', primaryValue: 115 }
-              ]}
-            />
-
-            <TrendChartCard
-              title="Ritmo vs Distancia"
-              chartType="dual-axis"
-              primaryMetric={{
-                label: 'Ritmo prom.',
-                currentValue: "5'20\"",
-                trend: 'up'
-              }}
-              chartData={[
-                { dateLabel: 'M', primaryValue: 350, secondaryValue: 5 },
-                { dateLabel: 'J', primaryValue: 330, secondaryValue: 7 },
-                { dateLabel: 'S', primaryValue: 320, secondaryValue: 10 },
-                { dateLabel: 'D', primaryValue: 340, secondaryValue: 6 },
-                { dateLabel: 'M', primaryValue: 310, secondaryValue: 12 }
-              ]}
-            />
+          <div className="w-full">
+            <InteractiveProgressWidget />
           </div>
         </section>
 
