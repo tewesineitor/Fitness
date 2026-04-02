@@ -18,6 +18,8 @@ import RecipeCard, { Recipe } from '../components/ui-premium/RecipeCard';
 import RoutineCard, { WorkoutRoutine } from '../components/ui-premium/RoutineCard';
 import NonNegotiableCard from '../components/ui-premium/NonNegotiableCard';
 import WeeklyStreakTracker, { DailyStreak } from '../components/ui-premium/WeeklyStreakTracker';
+import PremiumFilterTab from '../components/ui-premium/PremiumFilterTab';
+import IngredientListItem from '../components/ui-premium/IngredientListItem';
 import {
   EyebrowText,
   ModalTitle,
@@ -167,6 +169,16 @@ const DesignSystemDevScreen: React.FC = () => {
   const [searchValue, setSearchValue] = useState('Upper strength');
   const [stepsValue, setStepsValue] = useState(6800);
   const [sleepValue, setSleepValue] = useState(6.5);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [addedIngredients, setAddedIngredients] = useState<Record<string, number>>({});
+
+  const handleIngredientAdd = (id: string) =>
+    setAddedIngredients((prev) => ({ ...prev, [id]: 1 }));
+  const handleIngredientQty = (id: string, delta: number) =>
+    setAddedIngredients((prev) => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] ?? 1) + delta),
+    }));
 
   return (
     <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
@@ -613,6 +625,96 @@ const DesignSystemDevScreen: React.FC = () => {
                 toleranceThreshold: 0.875,
               }}
               onValueChange={(_, v) => setSleepValue(v)}
+            />
+          </div>
+        </section>
+
+        {/* ── Biblioteca de Ingredientes ──────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Biblioteca de Ingredientes</SectionTitle>
+            <MutedText>
+              Filtros tipo píldora y tarjetas de ingredientes con stepper premium y equivalencias de cocción.
+            </MutedText>
+          </div>
+
+          {/* PremiumFilterTab row */}
+          <div className="flex flex-wrap gap-2">
+            {([
+              { id: 'all',      label: 'Todo',      count: 143 },
+              { id: 'protein',  label: 'Proteína',  count: 38  },
+              { id: 'carbs',    label: 'Carbohidratos', count: 51 },
+              { id: 'fat',      label: 'Grasas',    count: 22  },
+              { id: 'veggie',   label: 'Verduras',  count: 32  },
+            ] as const).map((f) => (
+              <PremiumFilterTab
+                key={f.id}
+                id={f.id}
+                label={f.label}
+                count={f.count}
+                isActive={activeFilter === f.id}
+                onClick={setActiveFilter}
+              />
+            ))}
+          </div>
+
+          {/* IngredientListItem — 4 variants */}
+          <div className="flex flex-col gap-3">
+            {/* 1: Con imagen, sin datos de cocción, NO agregado */}
+            <IngredientListItem
+              name="Pechuga de Pollo"
+              brand="Genérico"
+              imageUrl="https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=120&q=80"
+              macros={{ protein: 31, carbs: 0, fat: 3 }}
+              calories={165}
+              standardPortion="100g"
+              isAddedToPlate={!!addedIngredients['chicken']}
+              quantityMultiplier={addedIngredients['chicken'] ?? 1}
+              onAdd={() => handleIngredientAdd('chicken')}
+              onUpdateQuantity={(d) => handleIngredientQty('chicken', d)}
+              onEdit={() => console.log('edit chicken')}
+            />
+            {/* 2: Con imagen, con crudo Y cocido, YA agregado (stepper visible) */}
+            <IngredientListItem
+              name="Arroz Basmati"
+              brand="La Abuela"
+              imageUrl="https://images.unsplash.com/photo-1536304993881-ff86e0c9e4e7?w=120&q=80"
+              macros={{ protein: 3, carbs: 78, fat: 1 }}
+              calories={350}
+              standardPortion="1 TAZA"
+              weightRaw="100g"
+              weightCooked="250g"
+              isAddedToPlate={!!addedIngredients['rice']}
+              quantityMultiplier={addedIngredients['rice'] ?? 1}
+              onAdd={() => handleIngredientAdd('rice')}
+              onUpdateQuantity={(d) => handleIngredientQty('rice', d)}
+              onEdit={() => console.log('edit rice')}
+            />
+            {/* 3: Sin imagen (fallback inicial), solo cocido */}
+            <IngredientListItem
+              name="Atún en Lata"
+              brand="Calvo"
+              macros={{ protein: 26, carbs: 0, fat: 2 }}
+              calories={120}
+              standardPortion="1 LATA (80g)"
+              weightCooked="80g"
+              isAddedToPlate={!!addedIngredients['tuna']}
+              quantityMultiplier={addedIngredients['tuna'] ?? 1}
+              onAdd={() => handleIngredientAdd('tuna')}
+              onUpdateQuantity={(d) => handleIngredientQty('tuna', d)}
+              onEdit={() => console.log('edit tuna')}
+            />
+            {/* 4: Sin imagen, sin brand, ya agregado con qty 3 para probar stepper */}
+            <IngredientListItem
+              name="Claras de Huevo"
+              macros={{ protein: 11, carbs: 0, fat: 0 }}
+              calories={52}
+              standardPortion="3 CLARAS"
+              isAddedToPlate={true}
+              quantityMultiplier={addedIngredients['eggs'] ?? 3}
+              onAdd={() => handleIngredientAdd('eggs')}
+              onUpdateQuantity={(d) => handleIngredientQty('eggs', d)}
+              onEdit={() => console.log('edit eggs')}
             />
           </div>
         </section>
