@@ -762,31 +762,59 @@ const DesignSystemDevScreen: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-3">
+            {/* Sticky Date Divider */}
+            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md">
+              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">Hoy</MutedText>
+            </div>
+
             <LogEntryCard
               id="le-1"
-              date="Hoy, 10:30 AM"
+              date="10:30 AM"
               type="strength"
               title="Torso A (Fuerza)"
               heroValue="12,450"
               heroUnit="kg"
               metadata={{ label: 'Volumen', subValue: '6 ejercicios' }}
               isPR={true}
+              details={[
+                 'Press de Banca Plano 4x8 (100kg)',
+                 'Remo con Barra 4x10 (80kg)',
+                 'Press Militar 3x10 (60kg)',
+                 'Dominadas 3x12 (BW)',
+                 'Elevaciones Laterales 3x15 (15kg)',
+                 'Extensiones Tríceps 3x15 (25kg)'
+              ]}
             />
             
+            {/* Sticky Date Divider */}
+            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md mt-4">
+              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">Ayer</MutedText>
+            </div>
+
             <LogEntryCard
               id="le-2"
-              date="Ayer, 19:45 PM"
+              date="19:45 PM"
               type="cardio"
               title="Carrera Nocturna"
-              heroValue="05'15''"
+              heroValue="05′15″"
               heroUnit="/km"
               metadata={{ label: 'Distancia', subValue: '5.2 km' }}
               hasAISummary={true}
+              details={[
+                 'Zona 2: 25 min',
+                 'Zona 3: 5 min',
+                 'Frecuencia Cardíaca Promedio: 145 bpm'
+              ]}
             />
+
+            {/* Sticky Date Divider */}
+            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md mt-4">
+              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">01 Mar 2026</MutedText>
+            </div>
 
             <LogEntryCard
               id="le-3"
-              date="01 Mar 2026"
+              date="08:00 AM"
               type="anthropometry"
               title="Control Mensual"
               heroValue="74.5"
