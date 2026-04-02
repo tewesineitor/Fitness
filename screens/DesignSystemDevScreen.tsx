@@ -10,6 +10,7 @@ import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
 import LogEntryCard from '../components/ui-premium/LogEntryCard';
+import ProgressThumbnail from '../components/ui-premium/ProgressThumbnail';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
@@ -823,6 +824,52 @@ const DesignSystemDevScreen: React.FC = () => {
               heroValue="74.5"
               heroUnit="kg"
               metadata={{ label: 'Cintura', subValue: '79 cm' }}
+            />
+          </div>
+        </section>
+
+        {/* ── Galería de Progreso Físico ─────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Galería de Progreso Físico</SectionTitle>
+            <MutedText>
+              Tarjetas visuales con data HUD superpuesta.
+            </MutedText>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <ProgressThumbnail
+              id="img1"
+              imageUrl="/assets/progress_1.png"
+              date="05 Ene 2026"
+              weight={75.5}
+              weightUnit="kg"
+              bodyFatPercentage={15.2}
+              isSelectable
+              isSelected={false}
+              onSelect={(id) => console.log('Selected', id)}
+            />
+            <ProgressThumbnail
+              id="img2"
+              imageUrl="/assets/progress_2.png"
+              date="12 Feb 2026"
+              weight={74.8}
+              weightUnit="kg"
+              bodyFatPercentage={14.8}
+              isSelectable
+              isSelected={true}
+              onSelect={(id) => console.log('Selected', id)}
+            />
+            <ProgressThumbnail
+              id="img3"
+              imageUrl="/assets/progress_3.png"
+              date="01 Abr 2026"
+              weight={74.2}
+              weightUnit="kg"
+              bodyFatPercentage={13.9}
+              isSelectable
+              isSelected={false}
+              onSelect={(id) => console.log('Selected', id)}
             />
           </div>
         </section>
