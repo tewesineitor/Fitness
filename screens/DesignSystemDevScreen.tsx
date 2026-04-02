@@ -17,6 +17,8 @@ import MasterNutritionDashboard from '../components/ui-premium/MasterNutritionDa
 import { MealLogCard, DailyLogMeal } from '../components/nutricion/MealLogCard';
 import RecipeCard, { Recipe } from '../components/ui-premium/RecipeCard';
 import RoutineCard, { WorkoutRoutine } from '../components/ui-premium/RoutineCard';
+import NonNegotiableCard from '../components/ui-premium/NonNegotiableCard';
+import WeeklyStreakTracker, { DailyStreak } from '../components/ui-premium/WeeklyStreakTracker';
 import {
   EyebrowText,
   ModalTitle,
@@ -148,12 +150,24 @@ const mockCustomMeal: DailyLogMeal = {
   ],
 };
 
+const mockWeeklyStreak: DailyStreak[] = [
+  { date: '2026-03-26', dayInitial: 'L', isToday: false, status: 'completed' },
+  { date: '2026-03-27', dayInitial: 'M', isToday: false, status: 'completed' },
+  { date: '2026-03-28', dayInitial: 'M', isToday: false, status: 'completed' },
+  { date: '2026-03-29', dayInitial: 'J', isToday: false, status: 'failed' },
+  { date: '2026-03-30', dayInitial: 'V', isToday: false, status: 'completed' },
+  { date: '2026-03-31', dayInitial: 'S', isToday: false, status: 'completed' },
+  { date: '2026-04-01', dayInitial: 'D', isToday: true, status: 'pending' },
+];
+
 const DesignSystemDevScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRuckingFormOpen, setIsRuckingFormOpen] = useState(false);
   const [stepperValue, setStepperValue] = useState(80);
   const [selectedSegment, setSelectedSegment] = useState<string | number>(1);
   const [searchValue, setSearchValue] = useState('Upper strength');
+  const [stepsValue, setStepsValue] = useState(6800);
+  const [sleepValue, setSleepValue] = useState(6.5);
 
   return (
     <div className="min-h-screen text-white p-8 pb-40 overflow-y-auto">
@@ -563,6 +577,95 @@ const DesignSystemDevScreen: React.FC = () => {
           <div className="flex flex-col gap-4">
             <MealLogCard meal={mockMealWithImage} />
             <MealLogCard meal={mockCustomMeal} />
+          </div>
+        </section>
+
+        {/* ── Dashboard de Innegociables ────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Dashboard de Innegociables</SectionTitle>
+            <MutedText>
+              Grid de métricas diarias críticas. Las automáticas se actualizan desde nutrición.
+              Las manuales abren modo input al tocar.
+            </MutedText>
+          </div>
+
+          <WeeklyStreakTracker days={mockWeeklyStreak} />
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Automática: Proteína */}
+            <NonNegotiableCard
+              metric={{
+                id: 'protein',
+                label: 'Proteína',
+                icon: (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M8 12h8M12 8v8" />
+                  </svg>
+                ),
+                currentValue: 148,
+                targetValue: 175,
+                unit: 'g',
+                isAutomated: true,
+                toleranceThreshold: 0.9,
+              }}
+            />
+            {/* Automática: Calorías */}
+            <NonNegotiableCard
+              metric={{
+                id: 'calories',
+                label: 'Calorías',
+                icon: (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z" />
+                  </svg>
+                ),
+                currentValue: 2150,
+                targetValue: 2400,
+                unit: 'kcal',
+                isAutomated: true,
+                toleranceThreshold: 0.85,
+              }}
+            />
+            {/* Manual: Pasos */}
+            <NonNegotiableCard
+              metric={{
+                id: 'steps',
+                label: 'Pasos',
+                icon: (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M13 4h3a2 2 0 0 1 2 2v14" />
+                    <path d="M4 17v-6a2 2 0 0 1 2-2h7" />
+                    <polyline points="9 11 9 17 17 17" />
+                  </svg>
+                ),
+                currentValue: stepsValue,
+                targetValue: 10000,
+                unit: 'p',
+                isAutomated: false,
+                toleranceThreshold: 0.8,
+              }}
+              onValueChange={(_, v) => setStepsValue(v)}
+            />
+            {/* Manual: Sueño */}
+            <NonNegotiableCard
+              metric={{
+                id: 'sleep',
+                label: 'Sueño',
+                icon: (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                  </svg>
+                ),
+                currentValue: sleepValue,
+                targetValue: 8,
+                unit: 'h',
+                isAutomated: false,
+                toleranceThreshold: 0.875,
+              }}
+              onValueChange={(_, v) => setSleepValue(v)}
+            />
           </div>
         </section>
 

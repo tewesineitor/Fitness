@@ -1,44 +1,134 @@
-/**
- * @deprecated STOP. No usar en nuevas vistas. Reemplazado por BentoQuadrant en la arquitectura Bento Box.
- */
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import SquishyCard from './SquishyCard';
-import { EyebrowText, MonoValue, MutedText } from './Typography';
+import { EyebrowText, GiantValue, MutedText } from './Typography';
+
+export interface DailyMetric {
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  currentValue: number;
+  targetValue: number;
+  unit: string;
+  isAutomated: boolean;
+  toleranceThreshold: number;
+}
 
 interface NonNegotiableCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  meta?: string;
+  metric: DailyMetric;
+  onValueChange?: (id: string, newValue: number) => void;
   className?: string;
-  onClick?: () => void;
 }
 
 const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
-  icon,
-  title,
-  description,
-  meta,
+  metric,
+  onValueChange,
   className = '',
-  onClick,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftValue, setDraftValue] = useState(String(metric.currentValue));
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const progress = Math.min(metric.currentValue / metric.targetValue, 1);
+  const isMet = progress >= metric.toleranceThreshold;
+
+  const handleCardClick = () => {
+    if (metric.isAutomated || isEditing) return;
+    setDraftValue(String(metric.currentValue));
+    setIsEditing(true);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  const commitEdit = () => {
+    const parsed = parseFloat(draftValue);
+    if (!isNaN(parsed) && parsed >= 0) {
+      onValueChange?.(metric.id, parsed);
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') commitEdit();
+    if (e.key === 'Escape') setIsEditing(false);
+  };
+
   return (
     <SquishyCard
+      interactive={!metric.isAutomated}
       padding="sm"
-      interactive={Boolean(onClick)}
-      onClick={onClick}
-      className={['flex items-center gap-3', className].filter(Boolean).join(' ')}
+      onClick={handleCardClick}
+      className={[
+        'flex flex-col gap-2 relative overflow-hidden select-none',
+        className,
+      ].filter(Boolean).join(' ')}
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-zinc-800/80 text-zinc-300">
-        {icon}
+      {/* Header */}
+      <div className="flex items-center gap-2">
+        {metric.icon && (
+          <span className="text-zinc-500 flex items-center">{metric.icon}</span>
+        )}
+        <EyebrowText>{metric.label}</EyebrowText>
+        {!metric.isAutomated && (
+          <span className="ml-auto text-zinc-700">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+            </svg>
+          </span>
+        )}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <EyebrowText>{title}</EyebrowText>
-        <MutedText>{description}</MutedText>
+      {/* Value flip area */}
+      <div className="relative flex items-center justify-center min-h-[56px]">
+        {/* Display mode */}
+        <div
+          className={[
+            'flex items-end gap-1 transition-all duration-300',
+            isEditing
+              ? 'opacity-0 scale-95 pointer-events-none absolute'
+              : 'opacity-100 scale-100',
+          ].join(' ')}
+        >
+          <GiantValue className="!text-4xl !leading-none">{metric.currentValue}</GiantValue>
+          <MutedText className="!text-xs pb-1">{metric.unit}</MutedText>
+        </div>
+
+        {/* Input mode */}
+        <div
+          className={[
+            'w-full transition-all duration-300',
+            isEditing
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-95 pointer-events-none absolute',
+          ].join(' ')}
+        >
+          <input
+            ref={inputRef}
+            type="number"
+            value={draftValue}
+            onChange={(e) => setDraftValue(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={handleKeyDown}
+            className="bg-transparent border-none outline-none text-4xl font-black text-center w-full text-white tabular-nums"
+          />
+        </div>
       </div>
 
-      {meta ? <MonoValue className="shrink-0 text-zinc-400">{meta}</MonoValue> : null}
+      {/* Target label */}
+      <MutedText className="!text-xs">
+        Meta: {metric.targetValue}{metric.unit}
+      </MutedText>
+
+      {/* Progress bar — flush to card bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800">
+        <div
+          className={[
+            'h-full transition-all duration-500',
+            isMet
+              ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]'
+              : 'bg-zinc-600',
+          ].join(' ')}
+          style={{ width: `${progress * 100}%` }}
+        />
+      </div>
     </SquishyCard>
   );
 };
