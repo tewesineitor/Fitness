@@ -29,16 +29,19 @@ const MacroPill: React.FC<{
   label: string;
   value: number;
   colorClass: string;
-}> = ({ label, value, colorClass }) => (
-  <span
-    className={[
-      'text-[10px] font-black tabular-nums px-1.5 py-0.5 rounded',
-      colorClass,
-    ].join(' ')}
-  >
-    {label} {value}
-  </span>
-);
+}> = ({ label, value, colorClass }) => {
+  if (value === 0) return null;
+  return (
+    <span
+      className={[
+        'text-[10px] font-black tabular-nums px-1.5 py-0.5 rounded',
+        colorClass,
+      ].join(' ')}
+    >
+      {label} {value}
+    </span>
+  );
+};
 
 export interface IngredientMacros {
   protein: number;
@@ -87,6 +90,8 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
   const cookedBase = parseWeight(weightCooked);
   const hasEquiv   = (weightRaw && rawBase > 0) || (weightCooked && cookedBase > 0);
 
+  const fmtQty = (n: number) => n % 1 === 0 ? String(n) : n.toFixed(2);
+
   const scaledMacros = {
     protein: Math.round(macros.protein * quantityMultiplier),
     carbs:   Math.round(macros.carbs   * quantityMultiplier),
@@ -94,7 +99,7 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
   };
 
   return (
-    <SquishyCard padding="sm" className="flex gap-4 items-center">
+    <SquishyCard padding="sm" active={isAddedToPlate} className="flex gap-4 items-center">
 
       {/* ── LEFT: Image ─────────────────────────────────── */}
       <div className="shrink-0">
@@ -146,11 +151,9 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
         <div className="w-full flex items-center justify-between gap-3 mt-0.5 pt-1.5 border-t border-zinc-800/50">
           {/* Left: portion multiplier */}
           <div className="flex items-center gap-1.5 text-zinc-300">
-            <ScaleIcon className="text-zinc-600 shrink-0" />
+            <ScaleIcon className="text-zinc-500 shrink-0" />
             <span className="text-[11px] font-mono tabular-nums text-zinc-400">
-              {quantityMultiplier % 1 !== 0
-                ? quantityMultiplier.toFixed(2)
-                : quantityMultiplier}{' '}
+              {fmtQty(quantityMultiplier)}{' '}
               <span className="text-zinc-600">×</span>{' '}
               {standardPortion}
             </span>
@@ -207,9 +210,7 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
               −
             </button>
             <span className="font-mono text-emerald-400 text-xs w-10 text-center tabular-nums font-bold">
-              {quantityMultiplier % 1 !== 0
-                ? quantityMultiplier.toFixed(2)
-                : quantityMultiplier}
+              {fmtQty(quantityMultiplier)}
             </span>
             <button
               type="button"

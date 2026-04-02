@@ -22,7 +22,7 @@ const PremiumFilterTab: React.FC<PremiumFilterTabProps> = ({
     onClick={() => onClick(id)}
     className={[
       'relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm',
-      'bg-zinc-950/20 backdrop-blur-lg shadow-inner border border-zinc-800/60',
+      'bg-zinc-900/60 backdrop-blur-lg border border-zinc-700/80',
       'transition-all duration-200 active:scale-95 select-none whitespace-nowrap',
       'hover:bg-zinc-800/60',
       isActive ? 'text-emerald-400 font-bold' : 'text-zinc-500',
