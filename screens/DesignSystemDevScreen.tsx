@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircleIcon, HeartIcon, MoonIcon, SparklesIcon } from '../components/icons';
 import BentoQuadrant from '../components/ui-premium/BentoQuadrant';
-import StreakCalendar from '../components/ui-premium/StreakCalendar';
 import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
 import IconButton from '../components/ui-premium/IconButton';
@@ -151,13 +150,13 @@ const mockCustomMeal: DailyLogMeal = {
 };
 
 const mockWeeklyStreak: DailyStreak[] = [
-  { date: '2026-03-26', dayInitial: 'L', isToday: false, status: 'completed' },
-  { date: '2026-03-27', dayInitial: 'M', isToday: false, status: 'completed' },
-  { date: '2026-03-28', dayInitial: 'M', isToday: false, status: 'completed' },
-  { date: '2026-03-29', dayInitial: 'J', isToday: false, status: 'failed' },
-  { date: '2026-03-30', dayInitial: 'V', isToday: false, status: 'completed' },
-  { date: '2026-03-31', dayInitial: 'S', isToday: false, status: 'completed' },
-  { date: '2026-04-01', dayInitial: 'D', isToday: true, status: 'pending' },
+  { date: '2026-03-26', dayInitial: 'L', dayNumber: 26, isToday: false, status: 'completed' },
+  { date: '2026-03-27', dayInitial: 'M', dayNumber: 27, isToday: false, status: 'completed' },
+  { date: '2026-03-28', dayInitial: 'M', dayNumber: 28, isToday: false, status: 'completed' },
+  { date: '2026-03-29', dayInitial: 'J', dayNumber: 29, isToday: false, status: 'failed' },
+  { date: '2026-03-30', dayInitial: 'V', dayNumber: 30, isToday: false, status: 'completed' },
+  { date: '2026-03-31', dayInitial: 'S', dayNumber: 31, isToday: false, status: 'completed' },
+  { date: '2026-04-01', dayInitial: 'D', dayNumber: 1, isToday: true, status: 'pending' },
 ];
 
 const DesignSystemDevScreen: React.FC = () => {
@@ -482,57 +481,6 @@ const DesignSystemDevScreen: React.FC = () => {
             onChange={setSearchValue}
             placeholder="Buscar receta o rutina..."
           />
-        </section>
-
-        <section className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <SectionTitle>Dashboard Base (Hoy)</SectionTitle>
-            <MutedText>Bloques atómicos del layout Bento Box. Proporcionados al tamaño de un flagship móvil.</MutedText>
-          </div>
-
-          <StreakCalendar
-            days={[
-              { label: 'L', completed: true },
-              { label: 'M', completed: true },
-              { label: 'M', completed: true },
-              { label: 'J', completed: false },
-              { label: 'V', completed: false },
-              { label: 'S', completed: false },
-              { label: 'D', completed: false },
-            ]}
-            className="max-w-[380px] mx-auto"
-          />
-
-          <div className="grid grid-cols-2 gap-4 max-w-[380px] mx-auto mt-2">
-            <BentoQuadrant
-              title="Proteína"
-              value="138"
-              unit="g"
-              icon={<HeartIcon className="h-5 w-5" />}
-              colorToken="text-violet-500"
-            />
-            <BentoQuadrant
-              title="Calorías"
-              value="2010"
-              unit="kcal"
-              icon={<SparklesIcon className="h-5 w-5" />}
-              colorToken="text-amber-400"
-            />
-            <BentoQuadrant
-              title="Sueño"
-              value="7.5"
-              unit="h"
-              icon={<MoonIcon className="h-5 w-5" />}
-              colorToken="text-cyan-400"
-            />
-            <BentoQuadrant
-              title="Pasos"
-              value="8.2"
-              unit="k"
-              icon={<CheckCircleIcon className="h-5 w-5" />}
-              colorToken="text-emerald-400"
-            />
-          </div>
         </section>
 
         {/* ── Dashboard Maestro de Nutrición ─────────────────────────────── */}

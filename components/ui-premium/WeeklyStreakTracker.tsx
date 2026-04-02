@@ -1,9 +1,10 @@
 import React from 'react';
-import { EyebrowText } from './Typography';
+import { EyebrowText, MutedText } from './Typography';
 
 export interface DailyStreak {
   date: string;
   dayInitial: string;
+  dayNumber?: number;
   isToday: boolean;
   status: 'completed' | 'failed' | 'pending';
 }
@@ -73,6 +74,12 @@ const WeeklyStreakTracker: React.FC<WeeklyStreakTrackerProps> = ({
         <EyebrowText className="!text-[10px] !normal-case block text-center mt-2">
           {day.dayInitial}
         </EyebrowText>
+        {/* Day number */}
+        {day.dayNumber !== undefined && (
+          <MutedText className="!text-[10px] block text-center -mt-1">
+            {day.dayNumber}
+          </MutedText>
+        )}
       </div>
     ))}
   </div>

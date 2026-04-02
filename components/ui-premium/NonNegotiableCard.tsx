@@ -77,7 +77,7 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
       </div>
 
       {/* Value flip area */}
-      <div className="relative flex items-center justify-center min-h-[56px]">
+      <div className="relative flex items-start justify-start min-h-[56px] pt-1">
         {/* Display mode */}
         <div
           className={[
@@ -87,7 +87,14 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
               : 'opacity-100 scale-100',
           ].join(' ')}
         >
-          <GiantValue className="!text-4xl !leading-none">{metric.currentValue}</GiantValue>
+          <GiantValue
+            className={[
+              '!text-4xl !leading-none tabular-nums transition-colors duration-500',
+              isMet ? '!text-emerald-400' : '',
+            ].filter(Boolean).join(' ')}
+          >
+            {metric.currentValue}
+          </GiantValue>
           <MutedText className="!text-xs pb-1">{metric.unit}</MutedText>
         </div>
 
@@ -107,7 +114,7 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
             onChange={(e) => setDraftValue(e.target.value)}
             onBlur={commitEdit}
             onKeyDown={handleKeyDown}
-            className="bg-transparent border-none outline-none text-4xl font-black text-center w-full text-white tabular-nums"
+            className="bg-transparent border-none outline-none text-4xl font-black text-left w-full text-white tabular-nums"
           />
         </div>
       </div>
