@@ -690,10 +690,11 @@ const DesignSystemDevScreen: React.FC = () => {
               onUpdateQuantity={(d) => handleIngredientQty('rice', d)}
               onEdit={() => console.log('edit rice')}
             />
-            {/* 3: Sin imagen (fallback inicial), solo cocido */}
+            {/* 3: Con imagen generada (Atún), solo cocido */}
             <IngredientListItem
               name="Atún en Lata"
               brand="Calvo"
+              imageUrl="/assets/ingredients/atun_premium.png"
               macros={{ protein: 26, carbs: 0, fat: 2 }}
               calories={120}
               standardPortion="1 LATA (80g)"

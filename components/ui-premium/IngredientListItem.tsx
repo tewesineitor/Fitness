@@ -15,6 +15,16 @@ const PencilIcon: React.FC = () => (
   </svg>
 );
 
+const ScaleIcon: React.FC = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="M7 21h10"/>
+    <path d="M12 3v18"/>
+    <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+  </svg>
+);
+
 const MacroPill: React.FC<{
   label: string;
   value: number;
@@ -67,9 +77,17 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
   onUpdateQuantity,
   onEdit,
 }) => {
-  const footerParts: string[] = [standardPortion];
-  if (weightRaw) footerParts.push(`CRUDO: ${weightRaw}`);
-  if (weightCooked) footerParts.push(`COCIDO: ${weightCooked}`);
+  const parseBaseWeight = (val?: string) => {
+    if (!val) return 0;
+    const match = val.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+  };
+  
+  const basePeso = parseBaseWeight(weightRaw) || parseBaseWeight(standardPortion) || parseBaseWeight(weightCooked);
+  const pesoCalculado = basePeso * quantityMultiplier;
+  
+  const baseCocido = parseBaseWeight(weightCooked);
+  const pesoCocidoCalculado = baseCocido ? baseCocido * quantityMultiplier : null;
 
   return (
     <SquishyCard padding="sm" className="flex flex-row gap-3 items-center">
@@ -93,38 +111,54 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
       {/* Center — name, brand, macros, footer */}
       <div className="flex flex-col gap-1 flex-1 min-w-0">
         {/* Name */}
-        <EyebrowText className="!text-zinc-100 !text-[11px] !normal-case !tracking-normal truncate">
+        <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal truncate leading-tight">
           {name}
         </EyebrowText>
 
         {/* Brand + edit pencil */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 -mt-1">
           {brand && (
-            <MutedText className="!text-[10px] uppercase tracking-wider truncate">
+            <MutedText className="!text-[10px] uppercase block truncate">
               {brand}
             </MutedText>
           )}
-          <button
-            type="button"
-            onClick={onEdit}
-            className="text-zinc-600 hover:text-zinc-400 transition-colors duration-150 flex items-center shrink-0"
-            aria-label="Editar ingrediente"
-          >
-            <PencilIcon />
-          </button>
+          <IconButton 
+            variant="ghost" 
+            size="sm" 
+            icon={<PencilIcon />} 
+            onClick={onEdit} 
+            aria-label="Editar ingrediente" 
+            className="w-5 h-5 !min-w-0 !min-h-0 !p-1"
+          />
         </div>
 
         {/* Macro pills */}
-        <div className="flex gap-1 flex-wrap">
+        <div className="flex gap-1 flex-wrap mt-0.5">
           <MacroPill label="P" value={macros.protein} colorClass="bg-violet-500/20 text-violet-400" />
           <MacroPill label="C" value={macros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
           <MacroPill label="G" value={macros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
         </div>
 
-        {/* Footer equivalences */}
-        <MutedText className="!text-[10px]">
-          {footerParts.join(' • ')}
-        </MutedText>
+        {/* HUD Layout Footer */}
+        <div className="w-full flex items-center gap-3 mt-1.5 pt-1.5 border-t border-zinc-900/50">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-zinc-600"><ScaleIcon /></span>
+            <span className="text-xs text-zinc-300">{standardPortion}</span>
+          </div>
+          
+          <div className="flex-1 h-px bg-zinc-800 relative" />
+          
+          <div className="flex items-center gap-1.5 shrink-0">
+            {pesoCocidoCalculado && (
+              <span className="bg-emerald-500/10 text-emerald-300 px-1.5 rounded text-[10px]">
+                → {pesoCocidoCalculado}g
+              </span>
+            )}
+            <span className="font-mono text-[11px] text-zinc-100 tabular-nums">
+              {pesoCalculado}<span className="text-zinc-500">g</span>
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Right — calories + action */}
