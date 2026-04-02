@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import SquishyCard from '../ui-premium/SquishyCard';
+import IconButton from '../ui-premium/IconButton';
+import { EyebrowText, MutedText, StatLabel } from '../ui-premium/Typography';
 const Utensils: React.FC<{ className?: string }> = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
@@ -24,18 +27,17 @@ const Trash2: React.FC<{ size?: number }> = ({ size = 12 }) => (
     <line x1="14" y1="11" x2="14" y2="17" />
   </svg>
 );
-import SquishyCard from '../ui-premium/SquishyCard';
-import IconButton from '../ui-premium/IconButton';
-import {
-  EyebrowText,
-  MutedText,
-  StatLabel,
-} from '../ui-premium/Typography';
+
+const MacroPill: React.FC<{ label: string; value: number; colorClass: string }> = ({ label, value, colorClass }) => (
+  <span className={['text-[10px] font-black tabular-nums px-1.5 py-0.5 rounded', colorClass].join(' ')}>
+    {label} {value}g
+  </span>
+);
 
 export interface MacroBreakdown {
-  p: number;
-  c: number;
-  f: number;
+  protein: number;
+  carbs: number;
+  fat: number;
 }
 
 export interface LoggedIngredient {
@@ -68,9 +70,9 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
   const toggleExpand = () => setExpanded((prev) => !prev);
 
   const getDominantMacroColor = () => {
-    const { p, c, f } = meal.totalMacros;
-    if (p >= c && p >= f) return 'text-violet-400';
-    if (c >= p && c >= f) return 'text-emerald-400';
+    const { protein, carbs, fat } = meal.totalMacros;
+    if (protein >= carbs && protein >= fat) return 'text-violet-400';
+    if (carbs >= protein && carbs >= fat) return 'text-emerald-400';
     return 'text-rose-400';
   };
 
@@ -99,11 +101,11 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
               </EyebrowText>
               <MutedText>• {meal.time}</MutedText>
             </div>
-            <StatLabel className="text-sm mt-1 block truncate">
-              <span className="text-violet-400">P</span>: {meal.totalMacros.p}g{' '}
-              <span className="text-emerald-400">C</span>: {meal.totalMacros.c}g{' '}
-              <span className="text-rose-400">G</span>: {meal.totalMacros.f}g
-            </StatLabel>
+            <div className="flex gap-1 mt-1 flex-wrap">
+              <MacroPill label="P" value={meal.totalMacros.protein} colorClass="bg-violet-500/20 text-violet-400" />
+              <MacroPill label="C" value={meal.totalMacros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
+              <MacroPill label="G" value={meal.totalMacros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
+            </div>
           </div>
 
           {/* Value & Chevron */}
@@ -138,11 +140,11 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
                       {ing.name}
                     </span>
                     <StatLabel className="text-xs tabular-nums text-right">{ing.kcal}</StatLabel>
-                    <StatLabel className="text-xs tabular-nums text-right whitespace-nowrap">
-                      <span className="text-violet-400">P</span>:{ing.macros.p}g{' '}
-                      <span className="text-emerald-400">C</span>:{ing.macros.c}g{' '}
-                      <span className="text-rose-400">G</span>:{ing.macros.f}g
-                    </StatLabel>
+                    <div className="flex gap-1 justify-end">
+                      <MacroPill label="P" value={ing.macros.protein} colorClass="bg-violet-500/20 text-violet-400" />
+                      <MacroPill label="C" value={ing.macros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
+                      <MacroPill label="G" value={ing.macros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
+                    </div>
                     <div className="flex items-center justify-end gap-1">
                       <IconButton
                         icon={<Pencil size={14} />}

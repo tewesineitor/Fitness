@@ -30,7 +30,6 @@ const MacroPill: React.FC<{
   value: number;
   colorClass: string;
 }> = ({ label, value, colorClass }) => {
-  if (value === 0) return null;
   return (
     <span
       className={[
@@ -101,11 +100,11 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
           <img
             src={imageUrl}
             alt={name}
-            className="size-20 rounded-2xl object-cover border border-white/5"
+            className="size-14 rounded-xl object-cover border border-white/5"
           />
         ) : (
-          <div className="size-20 rounded-2xl bg-zinc-800/80 border border-white/5 flex items-center justify-center">
-            <span className="text-zinc-500 text-2xl font-black select-none">
+          <div className="size-14 rounded-xl bg-zinc-800/80 border border-white/5 flex items-center justify-center">
+            <span className="text-zinc-500 text-xl font-black select-none">
               {name[0].toUpperCase()}
             </span>
           </div>
@@ -113,25 +112,18 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
       </div>
 
       {/* ── CENTER: Identity + Macros + HUD ─────────────── */}
-      <div className="flex flex-col flex-1 min-w-0 gap-1.5">
+      <div className="flex flex-col flex-1 min-w-0 gap-1">
 
         {/* Name */}
-        <EyebrowText className="!text-[17px] !font-bold !text-zinc-100 !normal-case !tracking-normal !leading-tight truncate">
+        <EyebrowText className="!text-[15px] !font-bold !text-zinc-100 !normal-case !tracking-normal !leading-tight truncate">
           {name}
         </EyebrowText>
 
-        {/* Brand row + pencil */}
-        <div className="flex items-center gap-2 -mt-0.5 pb-1.5 border-b border-zinc-800/50">
-          <MutedText className="!text-[11px] !uppercase !tracking-wider !text-zinc-500 truncate flex-1">
+        {/* Brand */}
+        <div className="pb-1 border-b border-zinc-800/50">
+          <MutedText className="!text-[11px] !uppercase !tracking-wider !text-zinc-500 truncate">
             {brand ?? '—'}
           </MutedText>
-          <IconButton
-            icon={<PencilIcon size={12} />}
-            variant="ghost"
-            onClick={() => onEdit({ name, brand, standardPortion, rawWeightG, cookedWeightG, macros })}
-            aria-label="Editar ingrediente"
-            className="!p-0 !size-4 !min-w-0 !rounded-sm text-zinc-600 hover:text-zinc-300 shrink-0"
-          />
         </div>
 
         {/* Macro pills — scaled */}
@@ -142,7 +134,7 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
         </div>
 
         {/* ── HUD Micro-Viz ───────────────────────────────── */}
-        <div className="w-full flex items-center justify-between gap-3 mt-0.5 pt-1.5 border-t border-zinc-800/50">
+        <div className="w-full flex items-center justify-between gap-3 pt-1 border-t border-zinc-800/50">
           {/* Left: portion multiplier */}
           <div className="flex items-center gap-1.5 text-zinc-300">
             <ScaleIcon className="text-zinc-500 shrink-0" />
@@ -176,46 +168,57 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
         </div>
       </div>
 
-      {/* ── RIGHT: Hero KPI + Action ────────────────────── */}
-      <div className="w-28 flex flex-col items-end gap-3 shrink-0 self-stretch justify-between">
+      {/* ── RIGHT: KCAL + [edit | action] ─────────────── */}
+      <div className="flex flex-col items-end gap-2 shrink-0 self-stretch justify-between">
         {/* Calories */}
-        <StatLabel className="!text-2xl !font-black !text-emerald-400 !tabular-nums text-right leading-none">
+        <StatLabel className="!text-xl !font-black !text-emerald-400 !tabular-nums text-right leading-none">
           {Math.round(macros.kcal * quantityMultiplier)}{' '}
-          <span className="text-xs text-zinc-500 font-normal">KCAL</span>
+          <span className="text-[10px] text-zinc-500 font-normal">KCAL</span>
         </StatLabel>
 
-        {/* Add or Stepper */}
-        {!isAddedToPlate ? (
-          <IconButton
-            variant="solid"
-            icon={<PlusIcon />}
-            size="sm"
-            onClick={onAdd}
-            aria-label={`Añadir ${name}`}
-          />
-        ) : (
-          <div className="bg-zinc-900 border border-zinc-800/60 rounded-lg flex items-center p-1 gap-0.5">
-            <button
-              type="button"
-              onClick={() => onUpdateQuantity(-0.25)}
-              className="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-sm font-bold"
-              aria-label="Reducir 0.25"
-            >
-              −
-            </button>
-            <span className="font-mono text-emerald-400 text-xs w-10 text-center tabular-nums font-bold">
-              {fmtQty(quantityMultiplier)}
-            </span>
-            <button
-              type="button"
-              onClick={() => onUpdateQuantity(0.25)}
-              className="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-sm font-bold"
-              aria-label="Aumentar 0.25"
-            >
-              +
-            </button>
-          </div>
-        )}
+        {/* Bottom row: edit + add/stepper */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => onEdit({ name, brand, standardPortion, rawWeightG, cookedWeightG, macros })}
+            className="w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/50 hover:bg-zinc-700/80 text-zinc-600 hover:text-zinc-300 transition-colors duration-150 shrink-0"
+            aria-label="Editar ingrediente"
+          >
+            <PencilIcon size={11} />
+          </button>
+
+          {!isAddedToPlate ? (
+            <IconButton
+              variant="solid"
+              icon={<PlusIcon />}
+              size="sm"
+              onClick={onAdd}
+              aria-label={`Añadir ${name}`}
+            />
+          ) : (
+            <div className="bg-zinc-900 border border-zinc-800/60 rounded-lg flex items-center p-0.5 gap-0.5">
+              <button
+                type="button"
+                onClick={() => onUpdateQuantity(-0.25)}
+                className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-xs font-bold"
+                aria-label="Reducir 0.25"
+              >
+                −
+              </button>
+              <span className="font-mono text-emerald-400 text-[11px] w-8 text-center tabular-nums font-bold">
+                {fmtQty(quantityMultiplier)}
+              </span>
+              <button
+                type="button"
+                onClick={() => onUpdateQuantity(0.25)}
+                className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-xs font-bold"
+                aria-label="Aumentar 0.25"
+              >
+                +
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
     </SquishyCard>

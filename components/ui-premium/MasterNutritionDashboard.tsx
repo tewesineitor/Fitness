@@ -30,7 +30,7 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
   <button
     onClick={onClick}
     aria-label={direction === 'prev' ? 'Día anterior' : 'Día siguiente'}
-    className="h-14 w-14 rounded-full border border-zinc-700/50 bg-zinc-900/80 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+    className="h-14 w-14 rounded-full border border-zinc-700/50 bg-zinc-900/80 hover:border-zinc-500/70 hover:bg-zinc-800/90 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-150 select-none text-zinc-400 hover:text-zinc-200"
   >
     <svg width="14" height="14" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       {direction === 'prev'
@@ -162,8 +162,8 @@ const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
       ))}
     </div>
 
-    <div className={['rounded-lg px-3 py-2', pillClass].join(' ')}>
-      <BodyText className="text-center text-current">{pillText}</BodyText>
+    <div className={['rounded-2xl px-4 py-2.5 text-center text-[11px] font-bold tracking-wide', pillClass].join(' ')}>
+      {pillText}
     </div>
   </SquishyCard>
 );
@@ -319,7 +319,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col gap-10 pt-2 pb-4">
+          <div className="flex-1 flex flex-col gap-6 pt-2 pb-4">
             <BarRow
               label="PROTEÍNA"
               current={`${Math.round(consumed.protein)}G`}

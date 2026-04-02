@@ -2,6 +2,12 @@ import React, { useRef, useState } from 'react';
 import SquishyCard from './SquishyCard';
 import { EyebrowText, GiantValue, MutedText } from './Typography';
 
+const PencilIcon: React.FC = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+  </svg>
+);
+
 export interface DailyMetric {
   id: string;
   label: string;
@@ -68,10 +74,8 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
         )}
         <EyebrowText>{metric.label}</EyebrowText>
         {!metric.isAutomated && (
-          <span className="ml-auto text-zinc-700">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-            </svg>
+          <span className="ml-auto text-zinc-500">
+            <PencilIcon />
           </span>
         )}
       </div>
