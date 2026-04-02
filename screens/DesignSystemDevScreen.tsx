@@ -9,6 +9,7 @@ import SearchBar from '../components/ui-premium/SearchBar';
 import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
+import LogEntryCard from '../components/ui-premium/LogEntryCard';
 import SquishyCard from '../components/ui-premium/SquishyCard';
 import SmartRestTimer from '../components/ui-premium/SmartRestTimer';
 import ImageUploadArea from '../components/ui-premium/ImageUploadArea';
@@ -749,6 +750,50 @@ const DesignSystemDevScreen: React.FC = () => {
               onClose={() => setEditingIngId(null)}
             />
           )}
+        </section>
+
+        {/* ── Tarjetas de Historial (Bitácora) ─────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Tarjetas de Historial (Bitácora)</SectionTitle>
+            <MutedText>
+              Componente polimórfico LogEntryCard para sesiones de fuerza, cardio y mediciones.
+            </MutedText>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <LogEntryCard
+              id="le-1"
+              date="Hoy, 10:30 AM"
+              type="strength"
+              title="Torso A (Fuerza)"
+              heroValue="12,450"
+              heroUnit="kg"
+              metadata={{ label: 'Volumen', subValue: '6 ejercicios' }}
+              isPR={true}
+            />
+            
+            <LogEntryCard
+              id="le-2"
+              date="Ayer, 19:45 PM"
+              type="cardio"
+              title="Carrera Nocturna"
+              heroValue="05'15''"
+              heroUnit="/km"
+              metadata={{ label: 'Distancia', subValue: '5.2 km' }}
+              hasAISummary={true}
+            />
+
+            <LogEntryCard
+              id="le-3"
+              date="01 Mar 2026"
+              type="anthropometry"
+              title="Control Mensual"
+              heroValue="74.5"
+              heroUnit="kg"
+              metadata={{ label: 'Cintura', subValue: '79 cm' }}
+            />
+          </div>
         </section>
 
         {/* ── Gráficas de Tendencia HUD ─────────────────────────────── */}
