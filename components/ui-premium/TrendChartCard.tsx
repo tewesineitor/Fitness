@@ -61,6 +61,14 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
   const minPrimary = Math.min(...primaryValues);
   const maxPrimary = Math.max(...primaryValues);
   const primaryRange = maxPrimary - minPrimary || 1;
+  const midPrimary = minPrimary + (primaryRange / 2);
+
+  // Formatter para no tener muchos decimales en el eje Y
+  const formatY = (val: number) => {
+    if (val >= 1000) return (val / 1000).toFixed(1) + 'k';
+    return Number.isInteger(val) ? val.toString() : val.toFixed(1);
+  };
+
   // Padding Y: 8 arriba, 5 abajo — más espacio superior para dejar «respirar» la línea
   const paddingTop = 8;
   const paddingBottom = 5;
@@ -134,6 +142,11 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
               vectorEffect="non-scaling-stroke"
             />
           ))}
+
+          {/* Y-Axis Labels (Absolute so they sit nicely on left) */}
+          <text x="0" y={getPrimaryY(maxPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(maxPrimary)}</text>
+          <text x="0" y={getPrimaryY(midPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(midPrimary)}</text>
+          <text x="0" y={getPrimaryY(minPrimary) - 3} fill="currentColor" className="text-[6px] text-zinc-600 font-mono tracking-wider font-semibold">{formatY(minPrimary)}</text>
 
           {/* DUAL-AXIS: Barras con padding inferior */}
           {chartType === 'dual-axis' && chartData.map((d, i) => {
