@@ -113,7 +113,7 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
         <div className="flex gap-2 items-center">
           <MutedText className="!text-[10px] uppercase tracking-wider">{date}</MutedText>
         </div>
-        <EyebrowText className="!text-base line-clamp-1">{title}</EyebrowText>
+        <span className="text-base font-semibold text-zinc-100 tracking-wide line-clamp-1">{title}</span>
         <div className="flex items-center gap-1.5 mt-0.5">
           <MutedText className="text-xs">{metadata.label}:</MutedText>
           <span className="text-xs font-medium text-zinc-300">{metadata.subValue}</span>
@@ -127,9 +127,10 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
           {hasAISummary && <SparklesIcon className="text-violet-400" />}
           {hasNotes && <FileTextIcon className="text-zinc-500" />}
         </div>
-        <StatLabel className="text-xl font-black text-emerald-400 tabular-nums tracking-tight">
-          {heroValue} <span className="text-[10px] text-zinc-500 font-normal uppercase">{heroUnit}</span>
-        </StatLabel>
+        <span className="text-xl font-black text-emerald-400 tabular-nums tracking-tight leading-none">
+          {heroValue}
+          <span className="text-[10px] text-zinc-500 font-normal uppercase ml-1">{heroUnit}</span>
+        </span>
       </div>
     </SquishyCard>
   );
