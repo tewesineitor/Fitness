@@ -761,10 +761,11 @@ const DesignSystemDevScreen: React.FC = () => {
             </MutedText>
           </div>
 
-          <div className="flex flex-col gap-3">
-            {/* Sticky Date Divider */}
-            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md">
-              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">Hoy</MutedText>
+          <div className="flex flex-col">
+            {/* HUD Date Divider */}
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Hoy</span>
+              <div className="flex-1 h-px bg-zinc-800/40" />
             </div>
 
             <LogEntryCard
@@ -786,9 +787,10 @@ const DesignSystemDevScreen: React.FC = () => {
               ]}
             />
             
-            {/* Sticky Date Divider */}
-            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md mt-4">
-              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">Ayer</MutedText>
+            {/* HUD Date Divider */}
+            <div className="flex items-center gap-3 mt-4 mb-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Ayer</span>
+              <div className="flex-1 h-px bg-zinc-800/40" />
             </div>
 
             <LogEntryCard
@@ -807,9 +809,10 @@ const DesignSystemDevScreen: React.FC = () => {
               ]}
             />
 
-            {/* Sticky Date Divider */}
-            <div className="sticky top-0 z-20 py-2 bg-zinc-950/80 backdrop-blur-md mt-4">
-              <MutedText className="text-xs uppercase tracking-widest font-semibold border-b border-zinc-800/50 pb-2">01 Mar 2026</MutedText>
+            {/* HUD Date Divider */}
+            <div className="flex items-center gap-3 mt-4 mb-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">01 Mar 2026</span>
+              <div className="flex-1 h-px bg-zinc-800/40" />
             </div>
 
             <LogEntryCard

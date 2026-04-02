@@ -120,9 +120,9 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
       onClick={() => isExpandable && setIsExpanded(!isExpanded)}
       className={`p-0 flex flex-col group transition-all duration-300 ${config.borderClass} ${isExpanded ? 'bg-zinc-900/60' : ''}`}
     >
-      <div className="p-4 flex items-center gap-4 relative overflow-hidden">
+      <div className="py-3 px-4 flex items-center gap-3 relative overflow-hidden">
         {/* IDENTIDAD POLIMÓRFICA */}
-        <div className={`size-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${config.containerClass}`}>
+        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${config.containerClass}`}>
           <IconProps className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" strokeWidth={2.2} />
         </div>
 
@@ -153,7 +153,7 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
         
         {/* EXPAND ICON INDICATOR */}
         {isExpandable && (
-          <div className={`absolute top-4 right-4 text-zinc-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+          <div className={`absolute top-3 right-3 text-zinc-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
              <ChevronDownIcon className="opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         )}
