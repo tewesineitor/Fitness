@@ -41,7 +41,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 }) => {
   return (
     <div
-      className="fixed inset-0 z-[200] bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
+      className="fixed inset-0 z-50 bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) { vibrate(5); onClose(); } }}
     >
       {/* ── Inner card ──────────────────────────────────────────────────────── */}

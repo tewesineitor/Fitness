@@ -88,9 +88,8 @@ const PremiumButton: React.FC<PremiumButtonProps> = ({
       disabled={isDisabled}
       onPointerDown={handlePointerDown}
       onClick={handleClick}
-      style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
       className={[
-        'relative w-full rounded-full font-black uppercase select-none transition-all duration-200 ease-out',
+        'relative w-full rounded-full font-black uppercase tracking-widest select-none transition-all duration-200 ease-out',
         sizeClasses[size],
         variantClasses[variant],
         isDisabled ? 'opacity-40 pointer-events-none' : '',

@@ -130,8 +130,8 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
-              <stop offset="85%" stopColor="#10b981" stopOpacity="0" />
+              <stop offset="0%" stopColor="rgb(16,185,129)" stopOpacity="0.22" />
+              <stop offset="85%" stopColor="rgb(16,185,129)" stopOpacity="0" />
             </linearGradient>
             <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="1.5" result="blur" />
@@ -204,7 +204,8 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
                 cx={lastPoint.x}
                 cy={lastPoint.y}
                 r="4"
-                fill="#10b981"
+                fill="currentColor"
+                className="text-emerald-500"
                 opacity="0.2"
                 vectorEffect="non-scaling-stroke"
               />
@@ -213,8 +214,9 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
                 cx={lastPoint.x}
                 cy={lastPoint.y}
                 r="2.5"
-                fill="#10b981"
-                stroke="#000"
+                fill="currentColor"
+                stroke="currentColor"
+                className="text-emerald-500"
                 strokeWidth="1"
                 vectorEffect="non-scaling-stroke"
               />
