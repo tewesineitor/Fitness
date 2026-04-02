@@ -118,6 +118,7 @@ const mockOatsRecipe: Recipe = {
   description: 'Variante compacta con alto nivel de fibra y proteína. Ideal para comenzar el día.',
   imageUrl: '/assets/recipes/oats-cacao.png',
   category: 'DESAYUNO',
+  isFavorite: true,
   portions: 1,
   prepTimeMin: 10,
   totals: { kcal: 410, macros: { protein: 28, carbs: 39, fat: 11 } },
