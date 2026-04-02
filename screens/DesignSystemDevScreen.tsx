@@ -177,7 +177,7 @@ const DesignSystemDevScreen: React.FC = () => {
   const handleIngredientQty = (id: string, delta: number) =>
     setAddedIngredients((prev) => ({
       ...prev,
-      [id]: Math.max(1, (prev[id] ?? 1) + delta),
+      [id]: Math.max(0.25, parseFloat(((prev[id] ?? 1) + delta).toFixed(2))),
     }));
 
   return (
@@ -660,37 +660,7 @@ const DesignSystemDevScreen: React.FC = () => {
 
           {/* IngredientListItem — 4 variants */}
           <div className="flex flex-col gap-3">
-            {/* 1: Con imagen, sin datos de cocción, NO agregado */}
-            <IngredientListItem
-              name="Pechuga de Pollo"
-              brand="Genérico"
-              imageUrl="https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=120&q=80"
-              macros={{ protein: 31, carbs: 0, fat: 3 }}
-              calories={165}
-              standardPortion="100g"
-              isAddedToPlate={!!addedIngredients['chicken']}
-              quantityMultiplier={addedIngredients['chicken'] ?? 1}
-              onAdd={() => handleIngredientAdd('chicken')}
-              onUpdateQuantity={(d) => handleIngredientQty('chicken', d)}
-              onEdit={() => console.log('edit chicken')}
-            />
-            {/* 2: Con imagen, con crudo Y cocido, YA agregado (stepper visible) */}
-            <IngredientListItem
-              name="Arroz Basmati"
-              brand="La Abuela"
-              imageUrl="https://images.unsplash.com/photo-1536304993881-ff86e0c9e4e7?w=120&q=80"
-              macros={{ protein: 3, carbs: 78, fat: 1 }}
-              calories={350}
-              standardPortion="1 TAZA"
-              weightRaw="100g"
-              weightCooked="250g"
-              isAddedToPlate={!!addedIngredients['rice']}
-              quantityMultiplier={addedIngredients['rice'] ?? 1}
-              onAdd={() => handleIngredientAdd('rice')}
-              onUpdateQuantity={(d) => handleIngredientQty('rice', d)}
-              onEdit={() => console.log('edit rice')}
-            />
-            {/* 3: Con imagen generada (Atún), solo cocido */}
+            {/* 1: Con imagen generada (Atún), solo cocido */}
             <IngredientListItem
               name="Atún en Lata"
               brand="Calvo"
@@ -705,9 +675,27 @@ const DesignSystemDevScreen: React.FC = () => {
               onUpdateQuantity={(d) => handleIngredientQty('tuna', d)}
               onEdit={() => console.log('edit tuna')}
             />
-            {/* 4: Sin imagen, sin brand, ya agregado con qty 3 para probar stepper */}
+            {/* 2: Con nueva imagen generada, con crudo Y cocido, qty fraccionario (stepper) */}
+            <IngredientListItem
+              name="Arroz Basmati"
+              brand="La Abuela"
+              imageUrl="/assets/ingredients/arroz_basmati_2026.png"
+              macros={{ protein: 3, carbs: 78, fat: 1 }}
+              calories={350}
+              standardPortion="1 TAZA"
+              weightRaw="100g"
+              weightCooked="250g"
+              isAddedToPlate={!!addedIngredients['rice']}
+              quantityMultiplier={addedIngredients['rice'] ?? 1.5}
+              onAdd={() => handleIngredientAdd('rice')}
+              onUpdateQuantity={(d) => handleIngredientQty('rice', d)}
+              onEdit={() => console.log('edit rice')}
+            />
+            {/* 3: SIN equivalencias — testea que el layout no se rompe sin hasEquiv */}
             <IngredientListItem
               name="Claras de Huevo"
+              brand="San Juan"
+              imageUrl="/assets/ingredients/claras_de_huevo_2026.png"
               macros={{ protein: 11, carbs: 0, fat: 0 }}
               calories={52}
               standardPortion="3 CLARAS"
@@ -716,6 +704,18 @@ const DesignSystemDevScreen: React.FC = () => {
               onAdd={() => handleIngredientAdd('eggs')}
               onUpdateQuantity={(d) => handleIngredientQty('eggs', d)}
               onEdit={() => console.log('edit eggs')}
+            />
+            {/* 4: Sin imagen (fall-back), sin brand */}
+            <IngredientListItem
+              name="Pimienta Negra"
+              macros={{ protein: 0, carbs: 1, fat: 0 }}
+              calories={5}
+              standardPortion="1 PIZCA"
+              isAddedToPlate={!!addedIngredients['pimienta']}
+              quantityMultiplier={addedIngredients['pimienta'] ?? 1}
+              onAdd={() => handleIngredientAdd('pimienta')}
+              onUpdateQuantity={(d) => handleIngredientQty('pimienta', d)}
+              onEdit={() => console.log('edit pimienta')}
             />
           </div>
         </section>
