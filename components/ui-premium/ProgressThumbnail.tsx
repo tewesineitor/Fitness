@@ -39,7 +39,7 @@ export const ProgressThumbnail: React.FC<ProgressThumbnailProps> = ({
     <SquishyCard 
       interactive 
       padding="none"
-      className="aspect-[3/4] overflow-hidden relative group"
+      className="aspect-[4/5] overflow-hidden relative group"
       onClick={handleClick}
     >
       {/* Capa de Imagen */}
@@ -87,6 +87,9 @@ export const ProgressThumbnail: React.FC<ProgressThumbnailProps> = ({
           )}
         </div>
       )}
+
+      {/* Ring Interno Arquitectónico */}
+      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[inherit] pointer-events-none" />
     </SquishyCard>
   );
 };
