@@ -117,15 +117,17 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
       </div>
 
       {/* Área de gráfica — ampliada a h-40 */}
-      <div className="w-full h-40 relative">
-        {/* Y-Axis Labels (HTML Overlay to prevent SVG stretching) */}
-        <div className="absolute left-0 top-0 w-full h-full pointer-events-none z-10 text-[9px] text-zinc-500 font-mono tracking-wider">
-          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(maxPrimary)}% - 12px)` }}>{formatY(maxPrimary)}</span>
-          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(midPrimary)}% - 12px)` }}>{formatY(midPrimary)}</span>
-          <span className="absolute left-0" style={{ top: `calc(${getPrimaryY(minPrimary)}% - 12px)` }}>{formatY(minPrimary)}</span>
+      <div className="w-full h-40 flex">
+        {/* Y-Axis Column (separada para no pisar la gráfica) */}
+        <div className="w-8 flex-shrink-0 h-full relative pointer-events-none z-10 text-[9px] text-zinc-500 font-mono tracking-wider">
+          <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(maxPrimary)}% - 6px)` }}>{formatY(maxPrimary)}</span>
+          <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(midPrimary)}% - 6px)` }}>{formatY(midPrimary)}</span>
+          <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(minPrimary)}% - 6px)` }}>{formatY(minPrimary)}</span>
         </div>
 
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+        {/* Contenedor del SVG */}
+        <div className="flex-1 relative h-full">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
@@ -219,13 +221,17 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
             </>
           )}
         </svg>
+        </div>
       </div>
 
       {/* Eje X — etiquetas de fecha */}
-      <div className="w-full flex justify-between items-center">
-        {chartData.map((d, i) => (
-          <MutedText key={`label-${i}`} className="!text-[10px]">{d.dateLabel}</MutedText>
-        ))}
+      <div className="w-full flex mt-1">
+        <div className="w-8 flex-shrink-0" /> {/* Spacer que iguala el ancho del eje Y */}
+        <div className="flex-1 flex justify-between items-center">
+          {chartData.map((d, i) => (
+            <MutedText key={`label-${i}`} className="!text-[10px]">{d.dateLabel}</MutedText>
+          ))}
+        </div>
       </div>
     </SquishyCard>
   );
