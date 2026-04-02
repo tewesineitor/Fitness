@@ -23,6 +23,7 @@ export { default as RecipeCardPremium } from './RecipeCardPremium';
 export { default as RoutineCard } from './RoutineCard';
 export type { WorkoutRoutine } from './RoutineCard';
 export { default as RoutineCardPremium } from './RoutineCardPremium';
+export { default as SearchBar } from './SearchBar';
 export { default as SegmentedTabs } from './SegmentedTabs';
 export { default as SquishyCard } from './SquishyCard';
 export * from './Typography';

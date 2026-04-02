@@ -42,7 +42,8 @@ const RoutineCard: React.FC<RoutineCardProps> = ({ routine, onView, className = 
           <div>
             <StatLabel className="uppercase tracking-wider">
               <span className="text-emerald-400">{focus}</span>
-              <span className="text-zinc-400"> • {estimatedTimeMin} MIN</span>
+              <span className="text-zinc-400"> • </span>
+              <span className="text-emerald-400">{estimatedTimeMin} MIN</span>
             </StatLabel>
             <span className="text-2xl font-bold text-white leading-tight block mt-1 mb-3">{title}</span>
           </div>

@@ -6,6 +6,7 @@ import PremiumBadge from '../components/ui-premium/PremiumBadge';
 import PremiumButton from '../components/ui-premium/PremiumButton';
 import IconButton from '../components/ui-premium/IconButton';
 import PremiumInput from '../components/ui-premium/PremiumInput';
+import SearchBar from '../components/ui-premium/SearchBar';
 import PremiumModal from '../components/ui-premium/PremiumModal';
 import PremiumStepper from '../components/ui-premium/PremiumStepper';
 import SegmentedTabs from '../components/ui-premium/SegmentedTabs';
@@ -462,12 +463,10 @@ const DesignSystemDevScreen: React.FC = () => {
             />
           </div>
 
-          <PremiumInput
-            label="Buscar receta o rutina"
+          <SearchBar
             value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder="Ej. upper strength, bowl proteico"
-            hint="Control de input de cristal para forms, búsqueda rápida y filtros contextuales."
+            onChange={setSearchValue}
+            placeholder="Buscar receta o rutina..."
           />
         </section>
 

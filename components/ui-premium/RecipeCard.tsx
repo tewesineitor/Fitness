@@ -3,8 +3,8 @@ import SquishyCard from './SquishyCard';
 import IconButton from './IconButton';
 import { EyebrowText, MutedText, StatLabel } from './Typography';
 
-const StarIcon: React.FC<{ size?: number }> = ({ size = 14 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+const StarIcon: React.FC<{ size?: number; className?: string }> = ({ size = 14, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
@@ -61,6 +61,13 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent" />
 
+        {/* Favorite badge — top right */}
+        {isFavorite && (
+          <div className="absolute top-3 right-3 z-20 bg-zinc-950/40 p-1.5 rounded-full backdrop-blur-sm">
+            <StarIcon size={16} className="text-amber-400" />
+          </div>
+        )}
+
         {/* Quick Add */}
         <div className="absolute bottom-3 right-3 z-10">
           <IconButton
@@ -75,17 +82,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       {/* Content */}
       <div className="p-5 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between mb-2">
-          <StatLabel className="!text-xl font-black tabular-nums text-emerald-400">{totals.kcal} <span className="text-xs text-zinc-500 font-normal">KCAL</span></StatLabel>
-          <div className="flex items-center gap-1">
-            {isFavorite && (
-              <IconButton
-                icon={<StarIcon size={14} />}
-                variant="ghost"
-                className="text-amber-400 !p-1 -ml-1"
-              />
-            )}
-            <span className="text-xs uppercase tracking-wider text-zinc-400">{category ?? 'RECETA'}</span>
-          </div>
+          <StatLabel className="!text-xl !font-black !tabular-nums !text-emerald-400">{totals.kcal} <span className="text-xs text-zinc-500 font-normal">KCAL</span></StatLabel>
+          <span className="text-xs uppercase tracking-wider text-zinc-400">{category ?? 'RECETA'}</span>
         </div>
 
         <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug mb-2">
