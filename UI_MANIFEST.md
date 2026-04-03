@@ -71,31 +71,32 @@ interface FlexibleMacroConsumed {
 
 ### `useRestTimer(targetTime, minimumTime)`
 **File:** `components/ui-premium/useRestTimer.ts`  
-**Purpose:** Countdown timer with three semantic phases for rest between workout sets. Ticks every 1s via `setInterval`.
+**Purpose:** 100% headless countdown timer for rest intervals between workout sets. Uses `Date.now()`-anchored intervals (250ms tick) for drift-free precision. No UI, no phase labels — purely numeric ratios consumed by `SmartRestTimer`.
 
 **Inputs:**
 ```ts
-targetTime: number;   // seconds
-minimumTime: number;  // threshold in seconds between 'recovery' and 'ready' phases
+targetTime: number;   // seconds (normalized to integer ≥ 0)
+minimumTime: number;  // seconds — threshold for hasReachedMinimum
 ```
 
 **Returns:** `UseRestTimerReturn`
 ```ts
 {
-  currentTime: number;       // seconds remaining
-  phase: 'recovery' | 'ready' | 'urgency';
-  progress: number;          // 0..1 (currentTime / initialTarget)
-  formattedTime: string;     // "M:SS"
+  targetTime: number;         // normalized input
+  minimumTime: number;        // normalized input
+  currentTime: number;        // seconds remaining (integer)
+  elapsedTime: number;        // seconds elapsed = targetTime - currentTime
+  remainingRatio: number;     // 0..1 — currentTime / targetTime (use for ring/arc animations)
+  completionRatio: number;    // 0..1 — 1 - remainingRatio (use for fill animations)
+  hasReachedMinimum: boolean; // true when currentTime <= minimumTime
   addTime: (seconds: number) => void;
-  skipRest: () => void;      // sets currentTime to 0
-  isFinished: boolean;
+  skipRest: () => void;       // sets currentTime to 0
+  reset: (nextTarget?: number) => void;
+  isFinished: boolean;        // currentTime <= 0
 }
 ```
 
-**Phase logic:**
-- `recovery`: currentTime > minimumTime
-- `ready`: currentTime > 10 && <= minimumTime
-- `urgency`: currentTime <= 10
+> **Note:** `phase`, `formattedTime`, and `progress` do NOT exist on this hook. Format time in the consumer (e.g. `SmartRestTimer`) using `Math.floor(currentTime / 60)` and `currentTime % 60`.
 
 ---
 
@@ -645,6 +646,70 @@ To group `LogEntryCard` or other list items by date, use this pattern directly i
 ```
 
 No component — inline pattern. Do NOT use heavy `bg-zinc-950` sticky strips.
+
+---
+
+---
+
+### `ActivityBentoMenu`
+**File:** `components/ui-premium/ActivityBentoMenu.tsx`  
+**Purpose:** Full-width (Span 12) Bento row with 3 square activity tiles: Carrera, Senderismo, Rucking. Each tile is a Framer Motion button with `whileTap={{ scale: 0.98 }}` squishy feedback. Uses `SquishyCard` as container. Zero business logic — purely presentational.
+
+```ts
+export type ActivityType = 'run' | 'hike' | 'rucking';
+
+export interface ActivityBentoMenuProps {
+  onOpen: (type: ActivityType) => void;
+  className?: string;
+}
+```
+
+**Usage:**
+```tsx
+<ActivityBentoMenu onOpen={(type) => activity.openActivityLog(type)} />
+```
+
+---
+
+### `NutritionMacroBar`
+**File:** `components/ui-premium/NutritionMacroBar.tsx`  
+**Purpose:** Renders 3 labeled horizontal progress bars using the **canonical macro color dialect**. Receives raw progress values from `useFlexibleMacros`. No internal calculations.
+
+**Canonical dialect (SSOT — do NOT deviate):**
+
+| Macro | Label | Bar color |
+|---|---|---|
+| Proteína | `PROTEÍNA` | `bg-violet-500` |
+| Carbohidratos | `CARBOS` | `bg-cyan-400` (overMax → `bg-rose-400`) |
+| Grasas | `GRASAS` | `bg-orange-400` (overMax → `bg-rose-400`) |
+
+> ❌ Prohibited abbreviations: `PRO`, `CH`, `GRA`  
+> ❌ Prohibited macro colors: `emerald`, `amber`, `rose` (except overMax state)
+
+```ts
+export interface NutritionMacroBarProps {
+  proteinProgress: number;  // 0..1 from useFlexibleMacros
+  carbProgress:    number;  // 0..1 from useFlexibleMacros
+  fatProgress:     number;  // 0..1 from useFlexibleMacros
+  isCarbOverMax:   boolean; // from useFlexibleMacros
+  isFatOverMax:    boolean; // from useFlexibleMacros
+  className?:      string;
+}
+```
+
+**Usage:**
+```tsx
+const macros = useFlexibleMacros(target, consumed);
+<NutritionMacroBar
+  proteinProgress={macros.proteinProgress}
+  carbProgress={macros.carbProgress}
+  fatProgress={macros.fatProgress}
+  isCarbOverMax={macros.isCarbOverMax}
+  isFatOverMax={macros.isFatOverMax}
+/>
+// or spread shorthand:
+<NutritionMacroBar {...macros} />
+```
 
 ---
 

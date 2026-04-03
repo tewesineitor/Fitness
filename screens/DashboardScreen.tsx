@@ -4,140 +4,99 @@ import type { RoutineTask, RoutineTaskType } from '../types';
 
 // ── Headless Controllers ─────────────────────────────────────────────────────
 import { useTodayDashboardController } from '../hooks/useTodayDashboardController';
-import { useHabitTrackerController } from '../hooks/useHabitTrackerController';
-import { useFreeActivityController } from '../hooks/useFreeActivityController';
-import { useFlexibleMacros } from '../components/ui-premium/useFlexibleMacros';
+import { useHabitTrackerController }   from '../hooks/useHabitTrackerController';
+import { useFreeActivityController }   from '../hooks/useFreeActivityController';
+import { useFlexibleMacros }           from '../components/ui-premium/useFlexibleMacros';
 
-// ── UI Kit Premium (SSOT) ────────────────────────────────────────────────────
+// ── UI Kit Premium — SSOT (UI_MANIFEST.md) ──────────────────────────────────
 import {
     SquishyCard,
+    WeeklyStreakTracker,
     NonNegotiableCard,
     PremiumButton,
     EyebrowText,
     StatLabel,
     BodyText,
     MutedText,
+    ActivityBentoMenu,
+    NutritionMacroBar,
 } from '../components/ui-premium';
 
-// ── Icons ────────────────────────────────────────────────────────────────────
+// ── Icons ─────────────────────────────────────────────────────────────────────
 import {
-    CardioIcon,
-    MountainIcon,
     StrengthIcon,
     YogaIcon,
     MeditationIcon,
+    CardioIcon,
     PostureIcon,
     ChevronRightIcon,
     CheckCircleIcon,
-    FireIcon,
 } from '../components/icons';
 
-// ── Existing overlays ────────────────────────────────────────────────────────
-import RuckingSession from './rutina-activa/RuckingSession';
+// ── Overlays (preservados) ────────────────────────────────────────────────────
+import RuckingSession      from './rutina-activa/RuckingSession';
 import CardioLibreLogModal from '../components/dialogs/CardioLibreLogModal';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  FRAMER MOTION — Stagger Cascade + Squishy
+//  FRAMER MOTION — Stagger cascade · Spring Squishy
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const containerVariants: Variants = {
     hidden: {},
     visible: {
-        transition: {
-            staggerChildren: 0.08, // Staggered entry pour for Bento blocks
-            delayChildren: 0.05,
-        },
+        transition: { staggerChildren: 0.07, delayChildren: 0.04 },
     },
 };
 
 const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            type: 'spring',
-            stiffness: 280,
-            damping: 26,
-            mass: 0.8,
-        },
+    hidden:   { opacity: 0, y: 20 },
+    visible:  {
+        opacity: 1, y: 0,
+        transition: { type: 'spring', stiffness: 300, damping: 28, mass: 0.75 },
     },
 };
 
-const squishyTap = { scale: 0.98 };
+const TAP = { scale: 0.98 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  HELPERS & SUB-COMPONENTS
+//  PURE VISUAL HELPERS (sin lógica de negocio)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const TaskIcon: React.FC<{ type: RoutineTaskType; className?: string }> = ({ type, className }) => {
     switch (type) {
-        case 'strength':   return <StrengthIcon className={className} />;
-        case 'yoga':       return <YogaIcon className={className} />;
-        case 'meditation': return <MeditationIcon className={className} />;
-        case 'cardio':     return <CardioIcon className={className} />;
-        case 'posture':    return <PostureIcon className={className} />;
-        default:           return <StrengthIcon className={className} />;
+        case 'strength':   return <StrengthIcon   className={className} />;
+        case 'yoga':       return <YogaIcon        className={className} />;
+        case 'meditation': return <MeditationIcon  className={className} />;
+        case 'cardio':     return <CardioIcon      className={className} />;
+        case 'posture':    return <PostureIcon     className={className} />;
+        default:           return <StrengthIcon   className={className} />;
     }
 };
 
-const getTaskDetails = (task: RoutineTask, cardioWeek: number): string => {
+const taskSubline = (task: RoutineTask, cardioWeek: number): string => {
     if (task.type === 'strength') return `${task.flow.length} ejercicios`;
-    if (task.type === 'cardio') return `CACO · Semana ${cardioWeek}`;
+    if (task.type === 'cardio')   return `CACO · Semana ${cardioWeek}`;
     return `${task.flow.length} pasos`;
 };
 
-const ACTIVITY_OPTIONS = [
-    { icon: CardioIcon,   label: 'Carrera',    type: 'run'     as const },
-    { icon: MountainIcon, label: 'Senderismo', type: 'hike'    as const },
-    { icon: FireIcon,     label: 'Rucking',    type: 'rucking' as const },
-] as const;
-
-// Internal Menu component as requested
-const MenuDeActividades: React.FC<{
-    onOpen: (type: 'run' | 'hike' | 'rucking') => void
-}> = ({ onOpen }) => (
-    <SquishyCard padding="sm">
-        <EyebrowText className="block mb-4">Actividad Libre</EyebrowText>
-        <div className="grid grid-cols-3 gap-4 md:gap-6">
-            {ACTIVITY_OPTIONS.map(({ icon: Icon, label, type }) => (
-                <motion.button
-                    key={type}
-                    whileTap={squishyTap}
-                    onClick={() => onOpen(type)}
-                    className="flex flex-col items-center gap-3 px-3 py-6 rounded-2xl border border-zinc-800/50 bg-zinc-800/30 hover:border-emerald-400/30 hover:bg-zinc-800/40 transition-all duration-200 cursor-pointer select-none group"
-                >
-                    <div className="w-12 h-12 flex items-center justify-center rounded-full bg-zinc-800 group-hover:bg-emerald-400/10 transition-colors">
-                        <Icon className="w-6 h-6 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
-                    </div>
-                    <StatLabel className="group-hover:!text-zinc-100 transition-colors uppercase tracking-widest text-xs">
-                        {label}
-                    </StatLabel>
-                </motion.button>
-            ))}
-        </div>
-    </SquishyCard>
-);
-
 // ═══════════════════════════════════════════════════════════════════════════════
-//  DASHBOARD SCREEN (Deep Redesign)
+//  DASHBOARD SCREEN — Bento Grid 12 columnas
+//  Contenedor raíz: TRANSPARENTE — el fondo premium lo gobierna AppShell.tsx
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const DashboardScreen: React.FC = () => {
+    // ── Controladores Headless ────────────────────────────────────────────────
     const dashboard = useTodayDashboardController();
-    const habits = useHabitTrackerController();
-    const activity = useFreeActivityController();
-    
-    // Nutrition computations
-    const macros = useFlexibleMacros(dashboard.nutritionTarget, dashboard.nutritionConsumed);
+    const habits    = useHabitTrackerController();
+    const activity  = useFreeActivityController();
 
-    const macroBars = [
-        { label: 'PRO', progress: macros.proteinProgress, colorClass: 'bg-emerald-400' },
-        { label: 'CH',  progress: macros.carbProgress,    colorClass: 'bg-amber-400' },
-        { label: 'GRA', progress: macros.fatProgress,     colorClass: 'bg-rose-400' }
-    ];
+    // ── Cálculo nutricional (LOGIC_MANIFEST §useFlexibleMacros) ──────────────
+    const macros = useFlexibleMacros(
+        dashboard.nutritionTarget,
+        dashboard.nutritionConsumed,
+    );
 
-    // Overlay handle
+    // ── Overlay full-screen: Rucking activo ───────────────────────────────────
     if (activity.isRuckingActive) {
         return (
             <RuckingSession
@@ -147,15 +106,16 @@ const DashboardScreen: React.FC = () => {
         );
     }
 
-    // ── BLANK CANVAS REDESIGN ──────────────────────────────────────────────────
     return (
-        <main className="min-h-screen bg-zinc-950 p-4 md:p-6 max-w-7xl mx-auto flex flex-col gap-6">
-            
+        // ⚠️ SIN bg-* opaco — AppShell.tsx es el único dueño del fondo
+        <main className="min-h-screen p-4 md:p-6 flex flex-col gap-6 max-w-7xl mx-auto">
+
+            {/* ── Modal Actividad Libre ────────────────────────────────────── */}
             {activity.isLoggingActivity && (
                 <CardioLibreLogModal
                     activityType={activity.isLoggingActivity}
                     onSave={
-                        activity.isLoggingActivity === 'run'  ? activity.handleSaveRun :
+                        activity.isLoggingActivity === 'run'  ? activity.handleSaveRun  :
                         activity.isLoggingActivity === 'hike' ? activity.handleSaveHike :
                         activity.handleSaveRucking
                     }
@@ -163,132 +123,111 @@ const DashboardScreen: React.FC = () => {
                 />
             )}
 
-            {/* Bento Grid */}
+            {/* ── CALENDARIO SEMANAL — full width, antes del grid ─────────── */}
+            <WeeklyStreakTracker
+                days={habits.weeklyDays}
+                className="w-full"
+            />
+
+            {/* ── BENTO GRID 12 columnas ───────────────────────────────────── */}
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
                 className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6"
             >
-                {/* ── ENTRENAMIENTO (Span 8) ── */}
-                <div className="md:col-span-8 flex flex-col">
+
+                {/* ── ENTRENAMIENTO (Span 8) ─────────────────────────────── */}
+                <div className="md:col-span-8">
                     <motion.div variants={itemVariants} className="h-full">
-                        <SquishyCard className="h-full flex flex-col relative overflow-hidden group">
-                            {/* Ambient Light */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-transparent opacity-50 pointer-events-none" />
-                            
+                        <SquishyCard className="h-full flex flex-col relative overflow-hidden">
+
+                            {/* Ambient glow — token emerald, sin color hardcodeado */}
+                            <div
+                                aria-hidden
+                                className="absolute inset-0 pointer-events-none"
+                                style={{
+                                    background: 'radial-gradient(ellipse 120% 80% at 8% 10%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+                                }}
+                            />
+
+                            {/* Header */}
                             <div className="relative z-10 flex items-center justify-between mb-8">
                                 <EyebrowText>Misión de Hoy</EyebrowText>
                                 <button
                                     onClick={dashboard.openPlanner}
-                                    className="text-zinc-500 hover:text-emerald-400 transition-colors uppercase font-bold tracking-widest text-[10px]"
+                                    className="text-zinc-500 hover:text-emerald-400 transition-colors font-black uppercase tracking-widest text-[10px]"
                                 >
                                     GESTIONAR →
                                 </button>
                             </div>
 
+                            {/* Content — datos del controlador, cero hardcoding */}
                             <div className="relative z-10 flex-grow flex flex-col justify-center">
                                 {dashboard.primaryTask ? (
-                                    <>
-                                        {/* Task Badge */}
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <span className="bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-full px-3 py-1 font-bold text-[10px] text-zinc-300 uppercase tracking-widest">
-                                                {dashboard.primaryTask.timeOfDay}
-                                            </span>
-                                            {dashboard.isTaskDone(dashboard.primaryTask) ? (
-                                                <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
-                                            ) : (
-                                                <TaskIcon type={dashboard.primaryTask.type} className="w-5 h-5 text-emerald-400" />
-                                            )}
-                                        </div>
-
-                                        {/* Task Title */}
-                                        <h1 className={[
-                                            "font-heading font-black text-5xl md:text-6xl tracking-tight leading-none mb-3",
-                                            dashboard.isTaskDone(dashboard.primaryTask) 
-                                                ? "text-zinc-600 line-through" 
-                                                : "text-white"
-                                        ].join(" ")}>
-                                            {dashboard.primaryTask.name}
-                                        </h1>
-                                        
-                                        <BodyText className="!text-zinc-400 mb-8">
-                                            {getTaskDetails(dashboard.primaryTask, dashboard.cardioWeek)}
-                                        </BodyText>
-
-                                        {/* CTA */}
-                                        <div className="mt-auto">
-                                            <motion.div whileTap={!dashboard.isTaskDone(dashboard.primaryTask) ? squishyTap : undefined}>
-                                                <PremiumButton
-                                                    onClick={() => dashboard.onSelectRoutine(dashboard.primaryTask!)}
-                                                    variant={dashboard.isTaskDone(dashboard.primaryTask) ? "ghost" : "primary"}
-                                                    disabled={dashboard.isTaskDone(dashboard.primaryTask)}
-                                                    className="w-full md:w-auto"
-                                                >
-                                                    {dashboard.isTaskDone(dashboard.primaryTask) ? 'Completado' : 'EMPEZAR RUTINA'}
-                                                </PremiumButton>
-                                            </motion.div>
-                                        </div>
-                                    </>
+                                    <TrainingBlock
+                                        task={dashboard.primaryTask}
+                                        isDone={dashboard.isTaskDone(dashboard.primaryTask)}
+                                        progress={dashboard.getTaskProgress(dashboard.primaryTask)}
+                                        cardioWeek={dashboard.cardioWeek}
+                                        secondaryTasks={dashboard.secondaryTasks}
+                                        onStart={() => dashboard.onSelectRoutine(dashboard.primaryTask!)}
+                                        onSelectSecondary={dashboard.onSelectRoutine}
+                                        isTaskDone={dashboard.isTaskDone}
+                                        getTaskUniqueId={dashboard.getTaskUniqueId}
+                                    />
                                 ) : (
-                                    <div className="flex flex-col items-center justify-center py-10 opacity-70">
-                                        <BodyText>No hay rutinas agendadas para hoy.</BodyText>
-                                    </div>
+                                    <RestDay onActivityLog={activity.openActivityLog} />
                                 )}
                             </div>
                         </SquishyCard>
                     </motion.div>
                 </div>
 
-                {/* ── NUTRICIÓN E INNEGOCIABLES (Span 4) ── */}
+                {/* ── COLUMNA DERECHA: Nutrición + Innegociables (Span 4) ── */}
                 <div className="md:col-span-4 flex flex-col gap-4 md:gap-6">
-                    
-                    {/* Mini Resumen Nutricional */}
-                    <motion.div variants={itemVariants} whileTap={squishyTap}>
-                        <SquishyCard interactive onClick={dashboard.openNutrition} className="flex flex-col gap-4 cursor-pointer relative overflow-hidden group">
-                            
+
+                    {/* Mini Widget Nutricional */}
+                    <motion.div variants={itemVariants} whileTap={TAP}>
+                        <SquishyCard
+                            interactive
+                            onClick={dashboard.openNutrition}
+                            className="flex flex-col gap-4 cursor-pointer group"
+                            padding="sm"
+                        >
                             <div className="flex items-center justify-between">
                                 <EyebrowText>NUTRICIÓN</EyebrowText>
                                 <ChevronRightIcon className="w-4 h-4 text-zinc-600 group-hover:text-zinc-300 transition-colors" />
                             </div>
 
-                            <div className="py-2">
-                                <StatLabel className="!text-3xl !font-black !text-white flex items-baseline gap-1">
-                                    {Math.round(macros.kcalRemaining)} 
-                                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Kcal Rest.</span>
-                                </StatLabel>
+                            {/* Kcal restantes — del hook, no hardcodeado */}
+                            <div className="flex items-baseline gap-1.5">
+                                <span className={[
+                                    'font-heading font-black text-3xl tabular-nums leading-none',
+                                    macros.isKcalOver ? 'text-rose-400' : 'text-white',
+                                ].join(' ')}>
+                                    {Math.round(macros.kcalRemaining)}
+                                </span>
+                                <StatLabel>Kcal Rest.</StatLabel>
                             </div>
 
-                            <div className="flex flex-col gap-3 mt-2">
-                                {macroBars.map((macro) => (
-                                    <div key={macro.label} className="flex items-center gap-3">
-                                        <span className="text-[10px] font-black uppercase text-zinc-500 w-8">{macro.label}</span>
-                                        <div className="h-1.5 flex-1 bg-zinc-800 rounded-full overflow-hidden">
-                                            <div 
-                                                className={`h-full rounded-full ${macro.colorClass} transition-all duration-700 ease-out`}
-                                                style={{ width: `${Math.min(macro.progress * 100, 100)}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            {/* Macro bars — componente SSOT con dialecto canónico */}
+                            <NutritionMacroBar
+                                proteinProgress={macros.proteinProgress}
+                                carbProgress={macros.carbProgress}
+                                fatProgress={macros.fatProgress}
+                                isCarbOverMax={macros.isCarbOverMax}
+                                isFatOverMax={macros.isFatOverMax}
+                                consumed={dashboard.nutritionConsumed}
+                                target={dashboard.nutritionTarget}
+                            />
                         </SquishyCard>
                     </motion.div>
 
-                    {/* Innegociables */}
-                    <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4 md:gap-6">
-                        {habits.nonNegotiables.slice(0,2).map(metric => (
-                            <motion.div key={metric.id} whileTap={squishyTap}>
-                                <NonNegotiableCard
-                                    metric={metric}
-                                    onValueChange={habits.onValueChange}
-                                />
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                    <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4 md:gap-6">
-                        {habits.nonNegotiables.slice(2,4).map(metric => (
-                            <motion.div key={metric.id} whileTap={squishyTap}>
+                    {/* Innegociables — 2×2 grid — desde useHabitTrackerController */}
+                    <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 md:gap-4">
+                        {habits.nonNegotiables.map(metric => (
+                            <motion.div key={metric.id} whileTap={TAP}>
                                 <NonNegotiableCard
                                     metric={metric}
                                     onValueChange={habits.onValueChange}
@@ -299,10 +238,10 @@ const DashboardScreen: React.FC = () => {
 
                 </div>
 
-                {/* ── ACTIVIDAD LIBRE (Span 12) ── */}
-                <div className="md:col-span-12 mt-2 md:mt-4">
+                {/* ── ACTIVITY BENTO MENU (Span 12) ────────────────────── */}
+                <div className="md:col-span-12 mt-2">
                     <motion.div variants={itemVariants}>
-                        <MenuDeActividades onOpen={activity.openActivityLog} />
+                        <ActivityBentoMenu onOpen={activity.openActivityLog} />
                     </motion.div>
                 </div>
 
@@ -310,5 +249,130 @@ const DashboardScreen: React.FC = () => {
         </main>
     );
 };
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SUB-COMPONENTS — JSX principal declarativo y limpio
+// ═══════════════════════════════════════════════════════════════════════════════
+
+interface TrainingBlockProps {
+    task: RoutineTask;
+    isDone: boolean;
+    progress: number;
+    cardioWeek: number;
+    secondaryTasks: RoutineTask[];
+    onStart: () => void;
+    onSelectSecondary: (t: RoutineTask) => void;
+    isTaskDone: (t: RoutineTask) => boolean;
+    getTaskUniqueId: (t: RoutineTask) => string;
+}
+
+const TrainingBlock: React.FC<TrainingBlockProps> = ({
+    task, isDone, progress, cardioWeek,
+    secondaryTasks, onStart, onSelectSecondary,
+    isTaskDone, getTaskUniqueId,
+}) => (
+    <div className="flex flex-col gap-5">
+        {/* Time-of-day badge + type icon */}
+        <div className="flex items-center gap-2">
+            <span className="bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-full px-3 py-1 font-black uppercase tracking-widest text-[10px] text-zinc-300">
+                {task.timeOfDay}
+            </span>
+            {isDone
+                ? <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
+                : <TaskIcon type={task.type} className="w-5 h-5 text-emerald-400" />
+            }
+        </div>
+
+        {/* Task name — tipografía heading, sin clase ad-hoc */}
+        <h1 className={[
+            'font-heading font-black tracking-tight leading-none',
+            'text-4xl sm:text-5xl md:text-6xl',
+            isDone ? 'text-zinc-600 line-through' : 'text-white',
+        ].join(' ')}>
+            {task.name}
+        </h1>
+
+        <BodyText className="!text-zinc-400">
+            {taskSubline(task, cardioWeek)}
+        </BodyText>
+
+        {/* Progress micro-line (visible solo si hay progreso parcial) */}
+        {!isDone && progress > 0 && (
+            <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                    className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                    style={{ width: `${progress * 100}%` }}
+                />
+            </div>
+        )}
+
+        {/* CTA principal */}
+        <motion.div whileTap={isDone ? undefined : TAP}>
+            <PremiumButton
+                onClick={onStart}
+                variant={isDone ? 'ghost' : 'primary'}
+                size="md"
+                disabled={isDone}
+            >
+                {isDone ? 'Completado' : 'EMPEZAR RUTINA'}
+            </PremiumButton>
+        </motion.div>
+
+        {/* Tareas secundarias */}
+        {secondaryTasks.length > 0 && (
+            <div className="flex flex-col gap-2 pt-4 border-t border-zinc-800/50">
+                {secondaryTasks.map(sec => {
+                    const uid   = getTaskUniqueId(sec);
+                    const sDone = isTaskDone(sec);
+                    return (
+                        <motion.button
+                            key={uid}
+                            whileTap={sDone ? undefined : TAP}
+                            onClick={() => onSelectSecondary(sec)}
+                            disabled={sDone}
+                            className={[
+                                'flex items-center gap-3 text-left rounded-2xl px-4 py-3',
+                                'border border-zinc-800/50 transition-all duration-200',
+                                sDone
+                                    ? 'opacity-40 cursor-default bg-zinc-900/30'
+                                    : 'bg-zinc-800/30 hover:border-emerald-400/30 cursor-pointer group',
+                            ].join(' ')}
+                        >
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-800 shrink-0">
+                                {sDone
+                                    ? <CheckCircleIcon className="w-4 h-4 text-emerald-400" />
+                                    : <TaskIcon type={sec.type} className="w-4 h-4 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
+                                }
+                            </div>
+                            <div className="min-w-0 flex-grow">
+                                <p className={`text-sm font-bold truncate ${sDone ? 'line-through text-zinc-600' : 'text-zinc-100'}`}>
+                                    {sec.name}
+                                </p>
+                                <MutedText>{sec.timeOfDay}</MutedText>
+                            </div>
+                            {!sDone && (
+                                <ChevronRightIcon className="w-4 h-4 text-zinc-500 shrink-0 group-hover:text-emerald-400 transition-colors" />
+                            )}
+                        </motion.button>
+                    );
+                })}
+            </div>
+        )}
+    </div>
+);
+
+const RestDay: React.FC<{ onActivityLog: (t: 'run' | 'hike' | 'rucking') => void }> = ({ onActivityLog }) => (
+    <div className="flex flex-col items-center gap-4 py-10 opacity-80">
+        <svg className="w-10 h-10 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+        </svg>
+        <BodyText className="text-center">Hoy toca descanso activo.</BodyText>
+        <motion.div whileTap={TAP}>
+            <PremiumButton onClick={() => onActivityLog('run')} variant="ghost" size="sm">
+                Registrar actividad libre
+            </PremiumButton>
+        </motion.div>
+    </div>
+);
 
 export default DashboardScreen;

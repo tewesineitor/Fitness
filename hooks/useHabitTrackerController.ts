@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import React from 'react';
 import { AppContext } from '../contexts';
 import type { DailyMetric } from '../components/ui-premium/NonNegotiableCard';
 import type { DailyStreak } from '../components/ui-premium/WeeklyStreakTracker';
@@ -8,6 +9,22 @@ import { selectConsumedMacros } from '../selectors/nutritionSelectors';
 import { selectSessionState } from '../selectors/sessionSelectors';
 import { selectProgressState } from '../selectors/progressSelectors';
 import { vibrate } from '../utils/helpers';
+import { SparklesIcon, MoonIcon, SunIcon } from '../components/icons';
+
+// ── Semantic Icons (inlined as ReactNode, SSOT) ───────────────────────────────
+// Protein  → violet SparklesIcon
+// Calories → amber SunIcon
+// Sleep    → cyan MoonIcon
+// Steps    → emerald footsteps SVG (inline, no icon file)
+
+const ProteinIcon = React.createElement(SparklesIcon, { className: 'w-3.5 h-3.5 text-violet-400' });
+const CaloriesIcon = React.createElement(SunIcon, { className: 'w-3.5 h-3.5 text-amber-400' });
+const SleepIcon = React.createElement(MoonIcon, { className: 'w-3.5 h-3.5 text-cyan-400' });
+const StepsIcon = React.createElement(
+    'svg',
+    { xmlns: 'http://www.w3.org/2000/svg', className: 'w-3.5 h-3.5 text-emerald-400', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', strokeWidth: 1.8 },
+    React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', d: 'M13 5.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM9.5 8.5L7 21m2.5-12.5L12 21m1.5-12.5l2 5-3 2.5' }),
+);
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -117,11 +134,12 @@ export const useHabitTrackerController = (): HabitTrackerController => {
         });
     }, [progress, metToday]);
 
-    // ── NonNegotiableCard metrics ─────────────────────────────────────────────
+    // ── NonNegotiableCard metrics — con íconos semánticos inyectados ──────────
     const nonNegotiables = useMemo((): DailyMetric[] => [
         {
             id: 'protein',
             label: 'Proteína',
+            icon: ProteinIcon,
             currentValue: Math.round(consumed.protein),
             targetValue: dailyGoals.protein || 150,
             unit: 'g',
@@ -131,15 +149,17 @@ export const useHabitTrackerController = (): HabitTrackerController => {
         {
             id: 'calories',
             label: 'Calorías',
+            icon: CaloriesIcon,
             currentValue: Math.round(consumed.kcal),
             targetValue: dailyGoals.kcal || 2000,
-            unit: 'k',
+            unit: 'kcal',
             isAutomated: true,
             toleranceThreshold: 0.9,
         },
         {
             id: 'sleep',
             label: 'Sueño',
+            icon: SleepIcon,
             currentValue: habits.sleepHours || 0,
             targetValue: 7,
             unit: 'h',
@@ -149,6 +169,7 @@ export const useHabitTrackerController = (): HabitTrackerController => {
         {
             id: 'steps',
             label: 'Pasos',
+            icon: StepsIcon,
             currentValue: (habits.stepsGoalMet || habits.ruckingSessionMet) ? 10000 : 0,
             targetValue: 10000,
             unit: '',

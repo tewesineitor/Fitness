@@ -35,4 +35,8 @@ export { default as WeeklyStreakTracker } from './WeeklyStreakTracker';
 export type { DailyStreak } from './WeeklyStreakTracker';
 export { default as SegmentedTabs } from './SegmentedTabs';
 export { default as SquishyCard } from './SquishyCard';
+export { default as ActivityBentoMenu } from './ActivityBentoMenu';
+export type { ActivityBentoMenuProps, ActivityType } from './ActivityBentoMenu';
+export { default as NutritionMacroBar } from './NutritionMacroBar';
+export type { NutritionMacroBarProps } from './NutritionMacroBar';
 export * from './Typography';
