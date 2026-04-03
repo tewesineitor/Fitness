@@ -1,9 +1,9 @@
 
 import * as React from 'react';
-import { AppContext } from '../contexts';
-import { HistorialDeSesionesEntry, RoutineTaskType } from '../types';
-import { ChevronRightIcon, CameraIcon, StrengthIcon, YogaIcon, PostureIcon, CardioIcon, MeditationIcon, MountainIcon } from './icons';
-import Button from './Button';
+import { AppContext } from '../../contexts';
+import { HistorialDeSesionesEntry, RoutineTaskType } from '../../types';
+import { ChevronRightIcon, CameraIcon, StrengthIcon, YogaIcon, PostureIcon, CardioIcon, MeditationIcon, MountainIcon } from '../icons';
+import Button from '../Button';
 
 // Widget Wrapper - Clean Utility Style
 const WidgetCard: React.FC<{ children: React.ReactNode; className?: string; }> = ({ children, className = '' }) => (

@@ -1,5 +1,5 @@
 import React from 'react';
-import SegmentedControl from './layout/SegmentedControl';
+import SegmentedControl from '../layout/SegmentedControl';
 
 interface Tab<T extends string> {
   id: T;

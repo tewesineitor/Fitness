@@ -19,8 +19,8 @@ import {
     ChartBarIcon 
 } from '../components/icons';
 import Button from '../components/Button';
-import SectionHeader from '../components/SectionHeader';
-import PillTabs from '../components/PillTabs';
+import SectionHeader from '../components/legacy/SectionHeader';
+import PillTabs from '../components/legacy/PillTabs';
 import ConfirmationDialog from '../components/dialogs/ConfirmationDialog';
 import RecipePreviewCard from '../components/cards/RecipePreviewCard';
 import RoutineCard from '../components/cards/RoutineCard';

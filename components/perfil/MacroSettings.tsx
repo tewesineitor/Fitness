@@ -3,7 +3,7 @@ import { DailyGoals } from '../../types';
 import { FireIcon, ArrowDownIcon, CalculatorIcon } from '../icons';
 import Button from '../Button';
 import Input from '../Input';
-import SectionHeader from '../SectionHeader';
+import SectionHeader from '../legacy/SectionHeader';
 
 interface MacroSettingsProps {
     goals: DailyGoals;

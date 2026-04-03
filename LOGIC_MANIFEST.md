@@ -1,7 +1,7 @@
 # LOGIC_MANIFEST.md
 > SSOT logico del producto.
 > Audience: LLMs and developers maintaining state, hooks and feature controllers.
-> Last updated: 2026-04-02
+> Last updated: 2026-04-03
 
 ---
 
@@ -59,11 +59,11 @@ El nombre exacto puede variar, pero el contrato no:
 
 ### Approved
 
-- `useSupabaseAuthSession` - `appAuth.ts`
-- `useAppBootstrap` - `appBootstrap.ts`
-- `useAppStateSync` - `appSync.ts`
-- `useDailyProgressReset` - `appDailyReset.ts`
-- `useWakeLock` - `hooks/useWakeLock.ts`
+- `useSupabaseAuthSession` - `hooks/app/useSupabaseAuthSession.ts`
+- `useAppBootstrap` - `hooks/app/useAppBootstrap.ts`
+- `useAppStateSync` - `hooks/app/useAppStateSync.ts`
+- `useDailyProgressReset` - `hooks/app/useDailyProgressReset.ts`
+- `useWakeLock` - `hooks/shared/useWakeLock.ts`
 
 ---
 
@@ -72,11 +72,11 @@ El nombre exacto puede variar, pero el contrato no:
 ### Approved
 
 - `useFlexibleMacros` - `components/ui-premium/useFlexibleMacros.ts`
-- `useFoodCatalog` - `screens/nutricion/add-food/useFoodCatalog.ts`
+- `useFoodCatalog` - `screens/nutricion/hooks/useFoodCatalog.ts`
 
 ### Refactor Required
 
-- `useNutritionLogic` - `hooks/useNutritionLogic.ts`
+- `useNutritionLogic` - `screens/nutricion/hooks/useNutritionLogic.ts`
 
 ### Planned
 
@@ -133,13 +133,13 @@ El nombre exacto puede variar, pero el contrato no:
 
 ### Refactor Required
 
-- `useHoyLogic` - `hooks/useHoyLogic.ts`
+- `useHoyLogic` - `screens/hoy/hooks/useHoyLogic.ts`
 
-### Planned
+### Approved
 
-- `useTodayDashboardController`
-- `useHabitTrackerController`
-- `useFreeActivityController`
+- `useTodayDashboardController` - `screens/hoy/hooks/useTodayDashboardController.ts`
+- `useHabitTrackerController` - `screens/hoy/hooks/useHabitTrackerController.ts`
+- `useFreeActivityController` - `screens/hoy/hooks/useFreeActivityController.ts`
 
 ---
 
@@ -147,11 +147,11 @@ El nombre exacto puede variar, pero el contrato no:
 
 ### Approved
 
-- `useAnimatedValue` - `hooks/useAnimatedValue.ts`
+- `useAnimatedValue` - `hooks/shared/useAnimatedValue.ts`
 
 ### Refactor Required
 
-- `useCarousel` - `hooks/useCarousel.ts`
+- `useCarousel` - `hooks/experimental/useCarousel.ts`
 
 ---
 
@@ -169,3 +169,4 @@ El nombre exacto puede variar, pero el contrato no:
 - New feature work should add or update the relevant controller before redesigning JSX.
 - Deprecated hooks should be removed once all consumers are rerouted.
 - If a screen still owns significant state in the component file, it is not logically migrated.
+

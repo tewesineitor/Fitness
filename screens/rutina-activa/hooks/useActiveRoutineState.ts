@@ -13,7 +13,7 @@ import {
 import * as thunks from '../../../thunks';
 import * as actions from '../../../actions';
 import { selectAllExercises, selectCardioWeek } from '../../../selectors/workoutSelectors';
-import { useWakeLock } from '../../../hooks/useWakeLock';
+import { useWakeLock } from '../../../hooks/shared/useWakeLock';
 import { useRoutineTimers } from './useRoutineTimers';
 
 // ── Public interface ─────────────────────────────────────────────────────────

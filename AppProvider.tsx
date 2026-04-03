@@ -5,10 +5,10 @@ import * as thunks from './thunks';
 import { AppContext } from './contexts';
 import { rootReducer } from './reducers/rootReducer';
 import { initialState } from './initialState';
-import { useSupabaseAuthSession } from './appAuth';
-import { useAppBootstrap } from './appBootstrap';
-import { useAppStateSync } from './appSync';
-import { useDailyProgressReset } from './appDailyReset';
+import { useSupabaseAuthSession } from './hooks/app/useSupabaseAuthSession';
+import { useAppBootstrap } from './hooks/app/useAppBootstrap';
+import { useAppStateSync } from './hooks/app/useAppStateSync';
+import { useDailyProgressReset } from './hooks/app/useDailyProgressReset';
 import AuthGate from './components/layout/AuthGate';
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

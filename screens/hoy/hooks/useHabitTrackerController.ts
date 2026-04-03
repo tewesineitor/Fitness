@@ -1,15 +1,15 @@
 import { useContext, useMemo } from 'react';
 import React from 'react';
-import { AppContext } from '../contexts';
-import type { DailyMetric } from '../components/ui-premium/NonNegotiableCard';
-import type { DailyStreak } from '../components/ui-premium/WeeklyStreakTracker';
-import * as actions from '../actions';
-import { selectDailyGoals } from '../selectors/profileSelectors';
-import { selectConsumedMacros } from '../selectors/nutritionSelectors';
-import { selectSessionState } from '../selectors/sessionSelectors';
-import { selectProgressState } from '../selectors/progressSelectors';
-import { vibrate } from '../utils/helpers';
-import { SparklesIcon, MoonIcon, SunIcon } from '../components/icons';
+import { AppContext } from '../../../contexts';
+import type { DailyMetric } from '../../../components/ui-premium/NonNegotiableCard';
+import type { DailyStreak } from '../../../components/ui-premium/WeeklyStreakTracker';
+import * as actions from '../../../actions';
+import { selectDailyGoals } from '../../../selectors/profileSelectors';
+import { selectConsumedMacros } from '../../../selectors/nutritionSelectors';
+import { selectSessionState } from '../../../selectors/sessionSelectors';
+import { selectProgressState } from '../../../selectors/progressSelectors';
+import { vibrate } from '../../../utils/helpers';
+import { SparklesIcon, MoonIcon, SunIcon } from '../../../components/icons';
 
 // ── Semantic Icons (inlined as ReactNode, SSOT) ───────────────────────────────
 // Protein  → violet SparklesIcon
@@ -217,3 +217,4 @@ export const useHabitTrackerController = (): HabitTrackerController => {
         onValueChange,
     };
 };
+

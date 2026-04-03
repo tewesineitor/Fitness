@@ -1,5 +1,5 @@
 import React from 'react';
-import type { HabitStatus, HabitStatuses } from '../../hooks/useHoyLogic';
+import type { HabitStatus, HabitStatuses } from '../../screens/hoy/hooks/useHoyLogic';
 import { ProteinShakeIcon, FireIcon, SleepSideIcon, CardioIcon } from '../icons';
 
 // ── Status → style map ────────────────────────────────────────────────────────
@@ -93,3 +93,4 @@ const DailyNonNegotiablesWidget: React.FC<DailyNonNegotiablesWidgetProps> = ({
 };
 
 export default DailyNonNegotiablesWidget;
+

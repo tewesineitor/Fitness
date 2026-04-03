@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../Button';
-import SectionHeader from '../SectionHeader';
+import SectionHeader from '../legacy/SectionHeader';
 
 export const AccountSection: React.FC<{
     onViewOnboarding: () => void;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import type { AppAction } from './actions';
-import * as actions from './actions';
-import { ThunkDispatch } from './types';
+import type { AppAction } from '../../actions';
+import * as actions from '../../actions';
+import { ThunkDispatch } from '../../types';
 
 type DailyResetParams = {
     isInitialized: boolean;

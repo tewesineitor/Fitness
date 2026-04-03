@@ -18,7 +18,7 @@ import AddFoodImageSourceModal from './add-food/AddFoodImageSourceModal';
 import AddFoodProcessingOverlay from './add-food/AddFoodProcessingOverlay';
 import type { FoodCategory, MainCategory, ProcessingState } from './add-food/addFoodTypes';
 import FoodCatalogView from './add-food/FoodCatalogView';
-import { useFoodCatalog } from './add-food/useFoodCatalog';
+import { useFoodCatalog } from './hooks/useFoodCatalog';
 
 const AddFoodView: React.FC<{
   onBack: () => void;

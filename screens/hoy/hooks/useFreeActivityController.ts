@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../contexts';
-import type { DesgloseCardioLibre } from '../types';
-import * as actions from '../actions';
-import * as thunks from '../thunks';
-import { vibrate } from '../utils/helpers';
+import { AppContext } from '../../../contexts';
+import type { DesgloseCardioLibre } from '../../../types';
+import * as actions from '../../../actions';
+import * as thunks from '../../../thunks';
+import { vibrate } from '../../../utils/helpers';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -70,3 +70,4 @@ export const useFreeActivityController = (): FreeActivityController => {
         },
     };
 };
+

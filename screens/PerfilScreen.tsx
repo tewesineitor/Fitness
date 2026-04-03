@@ -5,7 +5,7 @@ import { ChevronRightIcon, UserCircleIcon, SparklesIcon, CheckIcon, ScaleIcon } 
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
-import SectionHeader from '../components/SectionHeader';
+import SectionHeader from '../components/legacy/SectionHeader';
 import * as actions from '../actions';
 
 import { MacroSettings } from '../components/perfil/MacroSettings';

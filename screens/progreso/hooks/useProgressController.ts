@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AppContext } from '../../../contexts';
 import { HistorialDeMetricasEntry, HistorialDeSesionesEntry } from '../../../types';
 import { selectProgressState } from '../../../selectors/progressSelectors';
-import type { StatTrend } from '../../../components/StatChip';
+import type { StatTrend } from '../../../components/legacy/StatChip';
 
 export type ProgressSubScreen = 'main' | 'gallery' | 'history' | 'session-detail';
 export type ProgressTimeRange = '1M' | '3M' | 'ALL';

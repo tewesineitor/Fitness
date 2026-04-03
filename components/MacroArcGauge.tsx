@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAnimatedValue } from '../hooks/useAnimatedValue';
+import { useAnimatedValue } from '../hooks/shared/useAnimatedValue';
 
 interface MacroArcGaugeProps {
     /** 0–100 percentage of goal met (will be clamped) */

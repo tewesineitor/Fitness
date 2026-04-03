@@ -1,9 +1,9 @@
 import { useEffect, useRef, type MutableRefObject } from 'react';
-import type { AppAction } from './actions';
-import * as actions from './actions';
-import { createPersistedStateSignature, saveStateToStorage } from './statePersistence';
-import { saveUserState } from './services/supabaseService';
-import { AppState, ThunkDispatch } from './types';
+import type { AppAction } from '../../actions';
+import * as actions from '../../actions';
+import { createPersistedStateSignature, saveStateToStorage } from '../../statePersistence';
+import { saveUserState } from '../../services/supabaseService';
+import { AppState, ThunkDispatch } from '../../types';
 
 type AppStateSyncParams = {
     state: AppState;

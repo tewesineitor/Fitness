@@ -1,14 +1,14 @@
 import { useContext, useState, useMemo } from 'react';
-import { AppContext } from '../contexts';
-import type { RoutineTask, TimeOfDay, DesgloseCardioLibre, DayOfWeek, ProgressState, WorkoutState } from '../types';
-import * as actions from '../actions';
-import * as thunks from '../thunks';
-import { selectUserName, selectDailyGoals, selectCustomMantra } from '../selectors/profileSelectors';
-import { selectUserRoutines, selectWeeklySchedule, selectCardioWeek } from '../selectors/workoutSelectors';
-import { selectConsumedMacros } from '../selectors/nutritionSelectors';
-import { selectSessionState } from '../selectors/sessionSelectors';
-import { selectProgressState } from '../selectors/progressSelectors';
-import { vibrate } from '../utils/helpers';
+import { AppContext } from '../../../contexts';
+import type { RoutineTask, TimeOfDay, DesgloseCardioLibre, DayOfWeek, ProgressState, WorkoutState } from '../../../types';
+import * as actions from '../../../actions';
+import * as thunks from '../../../thunks';
+import { selectUserName, selectDailyGoals, selectCustomMantra } from '../../../selectors/profileSelectors';
+import { selectUserRoutines, selectWeeklySchedule, selectCardioWeek } from '../../../selectors/workoutSelectors';
+import { selectConsumedMacros } from '../../../selectors/nutritionSelectors';
+import { selectSessionState } from '../../../selectors/sessionSelectors';
+import { selectProgressState } from '../../../selectors/progressSelectors';
+import { vibrate } from '../../../utils/helpers';
 
 // ── Habit status type ────────────────────────────────────────────────────────
 
@@ -233,3 +233,4 @@ export const useHoyLogic = (): HoyLogic => {
         },
     };
 };
+

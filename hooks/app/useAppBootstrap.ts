@@ -1,15 +1,15 @@
 import { useEffect, useState, type MutableRefObject } from 'react';
-import type { AppAction } from './actions';
-import { AppState, ThunkDispatch } from './types';
-import { initialState } from './initialState';
-import { fetchStaticData, fetchUserState, saveUserState, seedDatabaseIfEmpty } from './services/supabaseService';
+import type { AppAction } from '../../actions';
+import { AppState, ThunkDispatch } from '../../types';
+import { initialState } from '../../initialState';
+import { fetchStaticData, fetchUserState, saveUserState, seedDatabaseIfEmpty } from '../../services/supabaseService';
 import {
     createPersistedStateSignature,
     hydratePersistedState,
     loadStateFromStorage,
     mergeStaticAppData,
     saveStateToStorage,
-} from './statePersistence';
+} from '../../statePersistence';
 
 type BootstrapParams = {
     userId?: string;

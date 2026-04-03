@@ -1,8 +1,8 @@
 
 import { useCallback, useContext, useMemo, useState } from 'react';
-import { AppContext } from '../contexts';
-import * as actions from '../actions';
-import type { LoggedMeal } from '../types';
+import { AppContext } from '../../../contexts';
+import * as actions from '../../../actions';
+import type { LoggedMeal } from '../../../types';
 
 const isSameDay = (d1: Date, d2: Date) =>
     d1.getFullYear() === d2.getFullYear() &&
@@ -140,3 +140,4 @@ export const useNutritionLogic = (onGoToAddFood: () => void) => {
         onGoToAddFood,
     };
 };
+

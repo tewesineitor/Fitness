@@ -1,6 +1,6 @@
 import React from 'react';
 import type { LoggedMeal } from '../../types';
-import { useNutritionLogic } from '../../hooks/useNutritionLogic';
+import { useNutritionLogic } from './hooks/useNutritionLogic';
 import MealEditorModal from '../../components/dialogs/MealEditorModal';
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog';
 import { ChevronRightIcon, PencilIcon, PlusIcon, TrashIcon } from '../../components/icons';
@@ -531,3 +531,4 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
 };
 
 export default NutritionMainView;
+

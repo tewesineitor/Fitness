@@ -1,7 +1,7 @@
 import React from 'react';
 import { Theme } from '../../types';
 import { SunIcon, MoonIcon, MonitorIcon } from '../icons';
-import SectionHeader from '../SectionHeader';
+import SectionHeader from '../legacy/SectionHeader';
 
 export const ThemeTile: React.FC<{
     theme: Theme;

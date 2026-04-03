@@ -1,5 +1,5 @@
 import React from 'react';
-import { GalleryWidget, HistoryWidget } from '../components/ProgressWidgetsGrid';
+import { GalleryWidget, HistoryWidget } from '../components/progreso/ProgressWidgetsGrid';
 import { WorkoutSummaryScreen } from './WorkoutSummary';
 import ProgressGallery from './progreso/ProgressGallery';
 import SessionHistoryList from './progreso/SessionHistoryList';
@@ -8,8 +8,8 @@ import StrengthChart from '../components/charts/StrengthChart';
 import CarreraChart from '../components/charts/CarreraChart';
 import AnatomicalEvolutionCard from '../components/progreso/AnatomicalEvolutionCard';
 import Card from '../components/Card';
-import StatChip from '../components/StatChip';
-import PillTabs from '../components/PillTabs';
+import StatChip from '../components/legacy/StatChip';
+import PillTabs from '../components/legacy/PillTabs';
 import { ScaleIcon, StrengthIcon, CardioIcon } from '../components/icons';
 import { PageHeader } from '../components/layout';
 import { useProgressController } from './progreso/hooks/useProgressController';

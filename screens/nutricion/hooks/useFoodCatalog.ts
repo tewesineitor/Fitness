@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { FoodItem } from '../../../types';
-import type { FoodCategory, MainCategory } from './addFoodTypes';
-import { categoryFilterMap } from './addFoodCatalog';
+import type { FoodCategory, MainCategory } from '../add-food/addFoodTypes';
+import { categoryFilterMap } from '../add-food/addFoodCatalog';
 
 type FoodsToShow = FoodItem[] | Record<string, FoodItem[]>;
 
@@ -42,4 +42,3 @@ export const useFoodCatalog = ({
     }, {} as Record<string, FoodItem[]>);
   }, [allFoodData, searchTerm, activeFilterCategory, activeSubFilter]);
 };
-

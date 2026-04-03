@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import type { RoutineTask, RoutineTaskType } from '../types';
+import type { RoutineTask, RoutineTaskType } from '../../types';
 
 // ── Headless Controllers ─────────────────────────────────────────────────────
-import { useTodayDashboardController } from '../hooks/useTodayDashboardController';
-import { useHabitTrackerController }   from '../hooks/useHabitTrackerController';
-import { useFreeActivityController }   from '../hooks/useFreeActivityController';
-import { useFlexibleMacros }           from '../components/ui-premium/useFlexibleMacros';
+import { useTodayDashboardController } from './hooks/useTodayDashboardController';
+import { useHabitTrackerController }   from './hooks/useHabitTrackerController';
+import { useFreeActivityController }   from './hooks/useFreeActivityController';
+import { useFlexibleMacros }           from '../../components/ui-premium/useFlexibleMacros';
 
 // ── UI Kit Premium — SSOT (UI_MANIFEST.md) ──────────────────────────────────
 import {
@@ -20,7 +20,7 @@ import {
     MutedText,
     ActivityBentoMenu,
     NutritionMacroBar,
-} from '../components/ui-premium';
+} from '../../components/ui-premium';
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 import {
@@ -31,11 +31,11 @@ import {
     PostureIcon,
     ChevronRightIcon,
     CheckCircleIcon,
-} from '../components/icons';
+} from '../../components/icons';
 
 // ── Overlays (preservados) ────────────────────────────────────────────────────
-import RuckingSession      from './rutina-activa/RuckingSession';
-import CardioLibreLogModal from '../components/dialogs/CardioLibreLogModal';
+import RuckingSession      from '../rutina-activa/RuckingSession';
+import CardioLibreLogModal from '../../components/dialogs/CardioLibreLogModal';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  FRAMER MOTION — Stagger cascade · Spring Squishy
@@ -390,3 +390,4 @@ const RestDay: React.FC<{ onActivityLog: (t: 'run' | 'hike' | 'rucking') => void
 );
 
 export default DashboardScreen;
+
