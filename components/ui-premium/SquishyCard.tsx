@@ -22,9 +22,9 @@ const radiusClasses: Record<SquishyCardRadius, string> = {
 
 const paddingClasses: Record<SquishyCardPadding, string> = {
   none: 'p-0',
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
+  sm: 'p-3 md:p-4',
+  md: 'p-4 md:p-6',
+  lg: 'p-5 md:p-8',
 };
 
 const SquishyCard: React.FC<SquishyCardProps> = ({

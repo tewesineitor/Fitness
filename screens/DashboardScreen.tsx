@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import type { RoutineTask, RoutineTaskType } from '../types';
 
@@ -106,9 +106,15 @@ const DashboardScreen: React.FC = () => {
         );
     }
 
+    // ── Header — fecha de hoy + saludo ──────────────────────────────────────
+    const today = useMemo(() => {
+        const d = new Date();
+        return d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+    }, []);
+
     return (
         // ⚠️ SIN bg-* opaco — AppShell.tsx es el único dueño del fondo
-        <main className="min-h-screen p-4 md:p-6 flex flex-col gap-6 max-w-7xl mx-auto">
+        <main className="min-h-screen p-4 md:p-6 flex flex-col gap-6 max-w-5xl mx-auto">
 
             {/* ── Modal Actividad Libre ────────────────────────────────────── */}
             {activity.isLoggingActivity && (
@@ -123,24 +129,34 @@ const DashboardScreen: React.FC = () => {
                 />
             )}
 
+            {/* ── HEADER — respiro superior: fecha + saludo ────────────────── */}
+            <header className="flex flex-col gap-1 mb-2">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-zinc-500 select-none">
+                    {today}
+                </span>
+                <h2 className="text-2xl font-semibold text-zinc-100 leading-tight">
+                    Hola, Fer 👋
+                </h2>
+            </header>
+
             {/* ── CALENDARIO SEMANAL — full width, antes del grid ─────────── */}
             <WeeklyStreakTracker
                 days={habits.weeklyDays}
                 className="w-full"
             />
 
-            {/* ── BENTO GRID 12 columnas ───────────────────────────────────── */}
+            {/* ── BENTO GRID ASIMÉTRICO ────────────────────────────────────── */}
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
             >
 
-                {/* ── ENTRENAMIENTO (Span 8) ─────────────────────────────── */}
-                <div className="md:col-span-8">
-                    <motion.div variants={itemVariants} className="h-full">
-                        <SquishyCard className="h-full flex flex-col relative overflow-hidden">
+                {/* ── COLUMNA IZQUIERDA (Span 7) ─────────────────────────── */}
+                <div className="lg:col-span-7 flex flex-col gap-6">
+                    <motion.div variants={itemVariants} className="h-auto">
+                        <SquishyCard className="h-auto flex flex-col relative overflow-hidden">
 
                             {/* Ambient glow — token emerald, sin color hardcodeado */}
                             <div
@@ -182,10 +198,15 @@ const DashboardScreen: React.FC = () => {
                             </div>
                         </SquishyCard>
                     </motion.div>
+
+                    {/* ── ACTIVITY BENTO MENU ──────────────────────────────── */}
+                    <motion.div variants={itemVariants}>
+                        <ActivityBentoMenu onOpen={activity.openActivityLog} />
+                    </motion.div>
                 </div>
 
-                {/* ── COLUMNA DERECHA: Nutrición + Innegociables (Span 4) ── */}
-                <div className="md:col-span-4 flex flex-col gap-4 md:gap-6">
+                {/* ── COLUMNA DERECHA: Nutrición + Innegociables (Span 5) ── */}
+                <div className="lg:col-span-5 flex flex-col gap-6">
 
                     {/* Mini Widget Nutricional */}
                     <motion.div variants={itemVariants} whileTap={TAP}>
@@ -238,13 +259,6 @@ const DashboardScreen: React.FC = () => {
 
                 </div>
 
-                {/* ── ACTIVITY BENTO MENU (Span 12) ────────────────────── */}
-                <div className="md:col-span-12 mt-2">
-                    <motion.div variants={itemVariants}>
-                        <ActivityBentoMenu onOpen={activity.openActivityLog} />
-                    </motion.div>
-                </div>
-
             </motion.div>
         </main>
     );
@@ -286,7 +300,7 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
         {/* Task name — tipografía heading, sin clase ad-hoc */}
         <h1 className={[
             'font-heading font-black tracking-tight leading-none',
-            'text-4xl sm:text-5xl md:text-6xl',
+            'text-3xl md:text-4xl lg:text-5xl',
             isDone ? 'text-zinc-600 line-through' : 'text-white',
         ].join(' ')}>
             {task.name}
@@ -311,7 +325,7 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
             <PremiumButton
                 onClick={onStart}
                 variant={isDone ? 'ghost' : 'primary'}
-                size="md"
+                size="sm"
                 disabled={isDone}
             >
                 {isDone ? 'Completado' : 'EMPEZAR RUTINA'}

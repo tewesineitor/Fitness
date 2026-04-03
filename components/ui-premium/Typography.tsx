@@ -14,9 +14,10 @@ import React from 'react';
  *   BodyText     → párrafo de cuerpo estándar
  *   MutedText    → texto de soporte, hints, metadatos
  *   StatLabel    → etiqueta de métrica (micro-caps)
- *   StatValue    → valor numérico grande de KPI
+ *   StatValue    → valor numérico grande de KPI (3xl → 4xl fluid)
  *   MonoValue    → número tabulado (tabular-nums, mono)
- *   GiantValue   → número masivo para centros de steppers y KPIs de primer nivel (text-7xl)
+ *   MediumValue  → número intermedio (text-4xl → 5xl fluid) para widgets secundarios
+ *   GiantValue   → número masivo para centros de steppers y KPIs (text-5xl → 7xl fluid)
  *   TabLabel     → texto táctil de alta legibilidad para botones y pestañas (text-base)
  */
 
@@ -105,7 +106,7 @@ export const StatLabel: React.FC<TypographyProps> = ({ children, className = '' 
 export const StatValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-heading text-4xl font-black text-white leading-none tabular-nums',
+      'font-heading text-3xl md:text-4xl font-black text-white leading-none tabular-nums',
       className,
     ].join(' ')}
   >
@@ -124,10 +125,21 @@ export const MonoValue: React.FC<TypographyProps> = ({ children, className = '' 
   </span>
 );
 
+export const MediumValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
+  <span
+    className={[
+      'font-mono text-4xl md:text-5xl font-black tracking-tighter text-white leading-none tabular-nums',
+      className,
+    ].join(' ')}
+  >
+    {children}
+  </span>
+);
+
 export const GiantValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-mono text-7xl font-black tracking-tighter text-white leading-none tabular-nums',
+      'font-mono text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none tabular-nums',
       className,
     ].join(' ')}
   >

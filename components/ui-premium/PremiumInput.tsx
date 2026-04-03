@@ -19,7 +19,7 @@ const inputBaseClasses = [
 
 const wrapperClasses = [
   'flex items-center gap-3',
-  'bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[1.5rem] px-5 py-4',
+  'bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[1.25rem] px-4 py-3',
   'transition-all duration-200 ease-out',
   'focus-within:border-emerald-400/50 focus-within:ring-1 focus-within:ring-emerald-400/50',
 ].join(' ');

@@ -20,9 +20,9 @@ interface PremiumButtonProps {
 }
 
 const sizeClasses: Record<PremiumButtonSize, string> = {
-  sm: 'py-2 text-sm',
-  md: 'py-4 text-base',
-  lg: 'py-5 text-lg',
+  sm: 'py-2 px-5 text-sm',
+  md: 'py-2.5 px-6 text-sm md:py-3 md:text-base',
+  lg: 'py-3 px-6 text-base md:py-4 md:px-8 md:text-lg',
 };
 
 const variantClasses: Record<PremiumButtonVariant, string> = {

@@ -12,7 +12,7 @@ import StatChip from '../components/StatChip';
 import PillTabs from '../components/PillTabs';
 import { ScaleIcon, StrengthIcon, CardioIcon } from '../components/icons';
 import { PageHeader } from '../components/layout';
-import { useProgressController } from '@/screens/progreso/hooks/useProgressController';
+import { useProgressController } from './progreso/hooks/useProgressController';
 
 type TimeRange = '1M' | '3M' | 'ALL';
 type ChartType = 'body' | 'strength' | 'cardio';

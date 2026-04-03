@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../contexts';
 import type { DesgloseCardioLibre } from '../types';
 import * as actions from '../actions';
@@ -29,6 +29,16 @@ export const useFreeActivityController = (): FreeActivityController => {
 
     const [isLoggingActivity, setIsLoggingActivity] = useState<FreeActivityType | null>(null);
     const [isRuckingActive, setIsRuckingActive] = useState(false);
+
+    // Hide bottom nav when a modal is open (same pattern as useProgressController)
+    useEffect(() => {
+        if (isLoggingActivity) {
+            dispatch({ type: 'SET_BOTTOM_NAV_VISIBLE', payload: false });
+        }
+        return () => {
+            dispatch({ type: 'SET_BOTTOM_NAV_VISIBLE', payload: true });
+        };
+    }, [dispatch, isLoggingActivity]);
 
     return {
         isLoggingActivity,

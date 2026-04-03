@@ -8,7 +8,7 @@ import PremiumModal from '../ui-premium/PremiumModal';
 import PremiumInput from '../ui-premium/PremiumInput';
 import PremiumButton from '../ui-premium/PremiumButton';
 import SquishyCard from '../ui-premium/SquishyCard';
-import { EyebrowText, GiantValue } from '../ui-premium/Typography';
+import { EyebrowText } from '../ui-premium/Typography';
 import { SparklesIcon } from '../icons';
 
 interface CardioLibreLogModalProps {
@@ -184,9 +184,9 @@ const CardioLibreLogModal: React.FC<CardioLibreLogModalProps> = ({ activityType,
             {/* Pace HUD Widget */}
             <SquishyCard padding="md" className="flex flex-col items-center justify-center text-center gap-2 bg-zinc-800/30">
                 <EyebrowText>RITMO PROMEDIO</EyebrowText>
-                <GiantValue>
+                <span className="font-mono text-4xl md:text-5xl font-black tracking-tighter text-white leading-none tabular-nums">
                     {paceParts.min}&apos;{paceParts.sec}&quot;<span className="text-xl text-zinc-500">/km</span>
-                </GiantValue>
+                </span>
             </SquishyCard>
 
             {/* Secondary Metrics */}

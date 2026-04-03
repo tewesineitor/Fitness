@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import SquishyCard from './SquishyCard';
-import { EyebrowText, GiantValue, MutedText } from './Typography';
+import { EyebrowText, MediumValue, MutedText } from './Typography';
 
 const PencilIcon: React.FC = () => (
   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -91,14 +91,14 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
               : 'opacity-100 scale-100',
           ].join(' ')}
         >
-          <GiantValue
+          <MediumValue
             className={[
-              '!text-4xl !leading-none tabular-nums transition-colors duration-500',
+              'transition-colors duration-500',
               isMet ? '!text-emerald-400' : '',
             ].filter(Boolean).join(' ')}
           >
             {metric.currentValue}
-          </GiantValue>
+          </MediumValue>
           <MutedText className="!text-xs pb-1">{metric.unit}</MutedText>
         </div>
 

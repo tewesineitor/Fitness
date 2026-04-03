@@ -37,11 +37,11 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
   title,
   primaryLabel,
   onPrimary,
-  maxWidth = 'max-w-2xl',
+  maxWidth = 'w-full max-w-md mx-auto',
 }) => {
   return (
     <div
-      className="fixed inset-0 z-50 bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
+      className="fixed inset-0 z-[100] bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) { vibrate(5); onClose(); } }}
     >
       {/* ── Inner card ──────────────────────────────────────────────────────── */}
@@ -54,7 +54,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
         ].join(' ')}
       >
         {/* ── Scrollable area ─────────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto overscroll-contain hide-scrollbar p-8 flex flex-col gap-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain hide-scrollbar p-5 md:p-8 flex flex-col gap-5 md:gap-6">
           {/* Header media slot — 16:9 anti-collapse, shrink-0 prevents flexbox crush */}
           {headerMedia && (
             <div className="relative w-full aspect-video shrink-0 bg-zinc-950/50 overflow-hidden rounded-t-[2rem]">
@@ -91,10 +91,10 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 
         {/* ── Sticky footer CTA ───────────────────────────────────────────────── */}
         {primaryLabel && (
-          <div className="sticky bottom-0 w-full p-6 bg-zinc-950/80 backdrop-blur-md border-t border-white/5 z-10">
+          <div className="sticky bottom-0 w-full p-4 md:p-6 bg-zinc-950/80 backdrop-blur-md border-t border-white/5 z-10">
             <PremiumButton
               onPress={() => { onPrimary ? onPrimary() : onClose(); }}
-              size="lg"
+              size="md"
               variant="primary"
             >
               {primaryLabel}
