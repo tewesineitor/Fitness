@@ -12,12 +12,9 @@ const OnboardingScreen: React.FC = () => {
     const [step, setStep] = useState(1);
     const [name, setName] = useState('');
     
-    // Metrics
     const [weight, setWeight] = useState('');
     const [waist, setWaist] = useState('');
     const [hips, setHips] = useState('');
-    
-    // Goals
     const [goals, setGoals] = useState(defaultGoals);
 
     const handleNext = () => {
@@ -29,10 +26,8 @@ const OnboardingScreen: React.FC = () => {
     };
 
     const handleFinish = () => {
-        // Update profile
-        dispatch(actions.updateProfile({ name, goals, customMantra: '' }));
+        dispatch(actions.updateProfile({ name, goals, customMantra: '', bodyGoalWeightKg: null }));
         
-        // Add initial metric entry if any provided
         if (weight || waist || hips) {
             dispatch(actions.addMetricEntry({
                 date: new Date().toISOString().split('T')[0],
@@ -41,14 +36,11 @@ const OnboardingScreen: React.FC = () => {
                 hips: hips ? parseFloat(hips) : undefined
             }));
         }
-        
-        // The App component will automatically switch to 'Hoy' screen because userName is no longer empty
     };
 
     return (
         <div className="fixed inset-0 z-[200] bg-surface-bg flex flex-col items-center justify-center p-6 animate-fade-in-up">
             <div className="w-full max-w-md bg-surface-hover/20 border border-surface-border rounded-sheet p-8 shadow-lg relative overflow-hidden">
-                {/* Decorative background element */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
                 <div className="flex items-center gap-3 mb-8 relative z-10">
@@ -57,7 +49,7 @@ const OnboardingScreen: React.FC = () => {
                     </div>
                     <div>
                         <h1 className="text-2xl font-heading font-black text-text-primary tracking-tighter">Bienvenido</h1>
-                        <p className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">Configuración Inicial</p>
+                        <p className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">Configuracion Inicial</p>
                     </div>
                 </div>
 
@@ -65,7 +57,7 @@ const OnboardingScreen: React.FC = () => {
                     {step === 1 && (
                         <div className="space-y-6 animate-fade-in-up">
                             <div>
-                                <h2 className="text-lg font-bold text-text-primary mb-2">¿Cómo te llamas?</h2>
+                                <h2 className="text-lg font-bold text-text-primary mb-2">Como te llamas?</h2>
                                 <p className="text-sm text-text-secondary mb-4">Para personalizar tu experiencia.</p>
                                 <Input 
                                     label="Nombre" 
@@ -85,7 +77,7 @@ const OnboardingScreen: React.FC = () => {
                         <div className="space-y-6 animate-fade-in-up">
                             <div>
                                 <h2 className="text-lg font-bold text-text-primary mb-2">Tus Medidas Iniciales</h2>
-                                <p className="text-sm text-text-secondary mb-4">Opcional. Puedes agregarlas más tarde.</p>
+                                <p className="text-sm text-text-secondary mb-4">Opcional. Puedes agregarlas mas tarde.</p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <Input 
                                         label="Peso (kg)" 
@@ -112,7 +104,7 @@ const OnboardingScreen: React.FC = () => {
                             </div>
                             <div className="flex gap-3">
                                 <Button variant="secondary" onClick={() => setStep(1)} className="flex-1">
-                                    Atrás
+                                    Atras
                                 </Button>
                                 <Button onClick={handleNext} className="flex-1" icon={ChevronRightIcon}>
                                     Continuar
@@ -128,7 +120,7 @@ const OnboardingScreen: React.FC = () => {
                                 <p className="text-sm text-text-secondary mb-4">Puedes ajustarlas en tu perfil en cualquier momento.</p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <Input 
-                                        label="Proteína (g)" 
+                                        label="Proteina (g)" 
                                         type="number" 
                                         value={goals.protein.toString()} 
                                         onChange={(e) => setGoals({...goals, protein: parseFloat(e.target.value) || 0})} 
@@ -149,7 +141,7 @@ const OnboardingScreen: React.FC = () => {
                             </div>
                             <div className="flex gap-3">
                                 <Button variant="secondary" onClick={() => setStep(2)} className="flex-1">
-                                    Atrás
+                                    Atras
                                 </Button>
                                 <Button onClick={handleFinish} className="flex-1" icon={CheckIcon}>
                                     Comenzar
@@ -159,7 +151,6 @@ const OnboardingScreen: React.FC = () => {
                     )}
                 </div>
                 
-                {/* Step indicator */}
                 <div className="flex justify-center gap-2 mt-8 relative z-10">
                     {[1, 2, 3].map(i => (
                         <div 

@@ -1,52 +1,90 @@
-import { useState, useEffect, useCallback } from 'react';
-
-export type RestPhase = 'recovery' | 'ready' | 'urgency';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UseRestTimerReturn {
+  targetTime: number;
+  minimumTime: number;
   currentTime: number;
-  phase: RestPhase;
-  progress: number;
-  formattedTime: string;
+  elapsedTime: number;
+  remainingRatio: number;
+  completionRatio: number;
+  hasReachedMinimum: boolean;
   addTime: (seconds: number) => void;
   skipRest: () => void;
+  reset: (nextTarget?: number) => void;
   isFinished: boolean;
 }
 
+const normalizeSeconds = (value: number): number => {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.floor(value));
+};
+
 export function useRestTimer(targetTime: number, minimumTime: number): UseRestTimerReturn {
-  const [currentTime, setCurrentTime] = useState(targetTime);
-  const [initialTarget] = useState(targetTime);
+  const normalizedTarget = normalizeSeconds(targetTime);
+  const normalizedMinimum = normalizeSeconds(minimumTime);
+  const [currentTime, setCurrentTime] = useState(normalizedTarget);
+  const endTimeRef = useRef<number | null>(null);
+
+  const reset = useCallback((nextTarget: number = normalizedTarget) => {
+    const safeTarget = normalizeSeconds(nextTarget);
+    endTimeRef.current = Date.now() + safeTarget * 1000;
+    setCurrentTime(safeTarget);
+  }, [normalizedTarget]);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentTime((t) => (t <= 0 ? 0 : t - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
+    reset(normalizedTarget);
+  }, [normalizedTarget, reset]);
 
-  const phase: RestPhase =
-    currentTime > minimumTime ? 'recovery' :
-    currentTime > 10 ? 'ready' :
-    'urgency';
+  useEffect(() => {
+    if (currentTime <= 0 || endTimeRef.current === null) {
+      return;
+    }
 
-  const progress = initialTarget > 0 ? Math.min(1, currentTime / initialTarget) : 0;
+    const syncRemainingTime = () => {
+      const remaining = Math.max(0, Math.ceil((endTimeRef.current! - Date.now()) / 1000));
+      setCurrentTime((previous) => (previous === remaining ? previous : remaining));
+    };
 
-  const formattedTime = `${Math.floor(currentTime / 60)}:${String(currentTime % 60).padStart(2, '0')}`;
+    syncRemainingTime();
+    const id = window.setInterval(syncRemainingTime, 250);
+    return () => window.clearInterval(id);
+  }, [currentTime > 0]);
 
   const addTime = useCallback((seconds: number) => {
-    setCurrentTime((t) => t + seconds);
+    const delta = normalizeSeconds(seconds);
+    if (delta <= 0) {
+      return;
+    }
+
+    const baseTime = endTimeRef.current ?? Date.now();
+    endTimeRef.current = Math.max(baseTime, Date.now()) + delta * 1000;
+    setCurrentTime((time) => time + delta);
   }, []);
 
   const skipRest = useCallback(() => {
+    endTimeRef.current = Date.now();
     setCurrentTime(0);
   }, []);
 
+  const elapsedTime = Math.max(0, normalizedTarget - currentTime);
+  const remainingRatio = normalizedTarget > 0 ? Math.min(1, currentTime / normalizedTarget) : 0;
+  const completionRatio = 1 - remainingRatio;
+  const hasReachedMinimum = currentTime <= normalizedMinimum;
+
   return {
+    targetTime: normalizedTarget,
+    minimumTime: normalizedMinimum,
     currentTime,
-    phase,
-    progress,
-    formattedTime,
+    elapsedTime,
+    remainingRatio,
+    completionRatio,
+    hasReachedMinimum,
     addTime,
     skipRest,
+    reset,
     isFinished: currentTime <= 0,
   };
 }

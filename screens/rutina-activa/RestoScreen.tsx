@@ -1,6 +1,6 @@
 import React from 'react';
 import type { RoutineStep } from '../../types';
-import { useRestTimer } from './hooks/useRestTimer';
+import { useRestTimer } from '../../components/ui-premium';
 import { vibrate } from '../../utils/helpers';
 
 import CircularTimer from '../../components/CircularTimer';
@@ -18,8 +18,33 @@ interface RestoScreenProps {
   nextStep?: RoutineStep;
 }
 
+type RestVisualState = 'recovery' | 'ready' | 'urgency';
+
+function getVisualState(currentTime: number, minimumTime: number): RestVisualState {
+  if (currentTime <= 10) return 'urgency';
+  if (currentTime <= minimumTime) return 'ready';
+  return 'recovery';
+}
+
 const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComplete, nextStep }) => {
-  const t = useRestTimer(duration, maxDuration, onComplete);
+  const targetTime = maxDuration ?? duration;
+  const t = useRestTimer(targetTime, 10);
+  const isReadyToProceed = maxDuration ? t.elapsedTime >= duration : t.isFinished;
+  const visualState = getVisualState(t.currentTime, t.minimumTime);
+
+  const timerColor = maxDuration
+    ? isReadyToProceed ? 'text-success' : 'text-brand-accent'
+    : visualState === 'urgency' ? 'text-danger' : visualState === 'ready' ? 'text-success' : 'text-brand-accent';
+
+  const statusText = maxDuration
+    ? isReadyToProceed ? 'Listo' : 'Descansando'
+    : visualState === 'urgency' ? 'Preparate' : visualState === 'ready' ? 'Listo' : 'Recuperacion';
+
+  const statusTone = maxDuration
+    ? isReadyToProceed ? 'success' : 'accent'
+    : visualState === 'urgency' ? 'danger' : visualState === 'ready' ? 'success' : 'accent';
+
+  const skipButtonLabel = isReadyToProceed ? 'Continuar' : 'Omitir';
 
   return (
     <ImmersiveFocusShell
@@ -27,7 +52,7 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
       bottomBar={
         <div className="mx-auto flex w-full max-w-md gap-3">
           <Button
-            onClick={t.onAddSeconds}
+            onClick={() => { vibrate(5); t.addTime(15); }}
             variant="secondary"
             size="large"
             icon={PlusIcon}
@@ -36,42 +61,39 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
             +15s
           </Button>
           <Button
-            onClick={() => { vibrate(15); onComplete(); }}
+            onClick={() => { t.skipRest(); vibrate(15); onComplete(); }}
             variant="high-contrast"
             size="large"
             icon={ChevronRightIcon}
             iconPosition="right"
             className="flex-[1.4]"
           >
-            {t.skipButtonLabel}
+            {skipButtonLabel}
           </Button>
         </div>
       }
     >
       <div className="mx-auto flex h-full max-w-md flex-col">
-        {/* ── Status header ──────────────────────────────────────────────── */}
         <div className="text-center">
-          <Tag variant="status" tone={t.statusTone} size="sm">
+          <Tag variant="status" tone={statusTone} size="sm">
             Rest Phase
           </Tag>
-          <h2 className={`mt-4 text-4xl font-black uppercase tracking-[-0.06em] ${t.timerColor}`}>
-            {t.statusText}
+          <h2 className={`mt-4 text-4xl font-black uppercase tracking-[-0.06em] ${timerColor}`}>
+            {statusText}
           </h2>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-text-secondary">
             Mantente en control, recupera respiracion y entra a la siguiente serie con una transicion limpia.
           </p>
         </div>
 
-        {/* ── Circular timer ─────────────────────────────────────────────── */}
         <div className="my-auto py-8">
           <Card variant="glass" className="flex flex-col items-center gap-6 p-6 text-center shadow-xl">
             <CircularTimer
-              initialDuration={t.initialDuration}
-              timeLeft={t.timeLeft}
-              strokeColor={t.timerColor}
+              initialDuration={t.targetTime}
+              timeLeft={t.currentTime}
+              strokeColor={timerColor}
               size={240}
               strokeWidth={10}
-              onTick={t.onTick}
             />
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-text-secondary">
@@ -84,7 +106,6 @@ const RestoScreen: React.FC<RestoScreenProps> = ({ duration, maxDuration, onComp
           </Card>
         </div>
 
-        {/* ── Next up indicator ──────────────────────────────────────────── */}
         {nextStep ? (
           <div className="mt-auto">
             <NextUpIndicator step={nextStep} />

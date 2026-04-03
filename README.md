@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
@@ -29,11 +29,13 @@ Fit Architect is a fitness and nutrition SPA for logging workouts, meals, body m
 
 ## Docs
 - `docs/README.md` is the documentation index.
+- `UI_MANIFEST.md` is the visual SSOT for the HUD 2026 UI kit.
+- `LOGIC_MANIFEST.md` is the logical SSOT for hooks, controllers and state orchestration.
 - `docs/active/PROJECT_OVERVIEW.md` is the current internal overview.
-- `docs/active/FRONTEND_REDESIGN_MASTER_PLAN.md` is the active frontend redesign plan.
 - `docs/archive/` contains historical snapshots only.
 
 ## Notes
 - The app is organized in the repository root, not in `src/`.
 - Supabase is required for auth and cloud sync.
 - Local storage is used as a fast per-user fallback and for offline-friendly reloads.
+

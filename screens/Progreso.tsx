@@ -1,6 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { HistorialDeMetricasEntry, HistorialDeSesionesEntry } from '../types';
-import { AppContext } from '../contexts';
+import React from 'react';
 import { GalleryWidget, HistoryWidget } from '../components/ProgressWidgetsGrid';
 import { WorkoutSummaryScreen } from './WorkoutSummary';
 import ProgressGallery from './progreso/ProgressGallery';
@@ -12,12 +10,10 @@ import AnatomicalEvolutionCard from '../components/progreso/AnatomicalEvolutionC
 import Card from '../components/Card';
 import StatChip from '../components/StatChip';
 import PillTabs from '../components/PillTabs';
-import { selectProgressState } from '../selectors/progressSelectors';
 import { ScaleIcon, StrengthIcon, CardioIcon } from '../components/icons';
-import type { StatTrend } from '../components/StatChip';
 import { PageHeader } from '../components/layout';
+import { useProgressController } from '@/screens/progreso/hooks/useProgressController';
 
-type SubScreen = 'main' | 'gallery' | 'history' | 'session-detail';
 type TimeRange = '1M' | '3M' | 'ALL';
 type ChartType = 'body' | 'strength' | 'cardio';
 
@@ -28,81 +24,30 @@ const chartGlow: Record<ChartType, string> = {
 };
 
 const Progreso: React.FC = () => {
-  const { state, dispatch } = useContext(AppContext)!;
-  const progress = selectProgressState(state);
+  const { state, actions } = useProgressController();
 
-  const [subScreen, setSubScreen] = useState<SubScreen>('main');
-  const [selectedSession, setSelectedSession] = useState<HistorialDeSesionesEntry | null>(null);
-  const [chartTimeRange, setChartTimeRange] = useState<TimeRange>('1M');
-  const [activeChart, setActiveChart] = useState<ChartType>('body');
-
-  const goMain = () => {
-    setSubScreen('main');
-    setSelectedSession(null);
-    dispatch({ type: 'SET_BOTTOM_NAV_VISIBLE', payload: true });
-  };
-
-  const goSub = (screen: SubScreen) => {
-    setSubScreen(screen);
-    dispatch({ type: 'SET_BOTTOM_NAV_VISIBLE', payload: false });
-  };
-
-  React.useEffect(() => {
-    return () => {
-      dispatch({ type: 'SET_BOTTOM_NAV_VISIBLE', payload: true });
-    };
-  }, [dispatch]);
-
-  const handleViewSession = (session: HistorialDeSesionesEntry) => {
-    setSelectedSession(session);
-    goSub('session-detail');
-  };
-
-  const latestMetrics = useMemo(() => {
-    const history = progress?.metricHistory ?? [];
-    let latest: HistorialDeMetricasEntry | null = null;
-    let prev: HistorialDeMetricasEntry | null = null;
-    let latestTime = -Infinity;
-    let prevTime = -Infinity;
-
-    for (const entry of history) {
-      const entryTime = new Date(entry.fecha_registro).getTime();
-      if (entryTime > latestTime) {
-        prev = latest;
-        prevTime = latestTime;
-        latest = entry;
-        latestTime = entryTime;
-        continue;
-      }
-
-      if (entryTime > prevTime) {
-        prev = entry;
-        prevTime = entryTime;
-      }
-    }
-
-    return {
-      weight: latest?.peso_kg ?? null,
-      prevWeight: prev?.peso_kg ?? null,
-      waist: latest?.cintura_cm ?? null,
-      sessions: state.workout.historialDeSesiones.length,
-    };
-  }, [progress?.metricHistory, state.workout.historialDeSesiones.length]);
-
-  const weightTrend: StatTrend | undefined = latestMetrics.weight !== null && latestMetrics.prevWeight !== null
-    ? (latestMetrics.weight < latestMetrics.prevWeight ? 'down' : latestMetrics.weight > latestMetrics.prevWeight ? 'up' : 'neutral')
-    : undefined;
-
-  if (subScreen === 'gallery') {
-    return <ProgressGallery photos={progress.metricHistory} onClose={goMain} />;
+  if (state.subScreen === 'gallery') {
+    return <ProgressGallery photos={state.progressPhotos} onClose={actions.goMain} />;
   }
 
-  if (subScreen === 'history') {
-    return <SessionHistoryList history={state.workout.historialDeSesiones} onBack={goMain} onViewSession={handleViewSession} />;
+  if (state.subScreen === 'history') {
+    return (
+      <SessionHistoryList
+        history={state.sessionHistory}
+        onBack={actions.goMain}
+        onViewSession={actions.viewSession}
+      />
+    );
   }
 
-  if (subScreen === 'session-detail' && selectedSession) {
-    return <WorkoutSummaryScreen historicalEntry={selectedSession} onExit={goMain} isHistoricalView={true} />;
+  if (state.subScreen === 'session-detail' && state.selectedSession) {
+    return (
+      <WorkoutSummaryScreen
+        historicalEntry={state.selectedSession}
+        onExit={actions.goMain}
+        isHistoricalView={true}
+      />
+    );
   }
 
   return (
@@ -120,20 +65,20 @@ const Progreso: React.FC = () => {
         style={{ animationDelay: '60ms' }}
       >
         <StatChip
-          value={latestMetrics.weight !== null ? latestMetrics.weight.toFixed(1) : '-'}
+          value={state.latestMetrics.weight !== null ? state.latestMetrics.weight.toFixed(1) : '-'}
           unit="kg"
           label="Peso"
-          trend={weightTrend}
+          trend={state.weightTrend}
           colorClass="text-brand-accent"
         />
         <StatChip
-          value={latestMetrics.waist !== null ? latestMetrics.waist.toFixed(0) : '-'}
+          value={state.latestMetrics.waist !== null ? state.latestMetrics.waist.toFixed(0) : '-'}
           unit="cm"
           label="Cintura"
           colorClass="text-brand-carbs"
         />
         <StatChip
-          value={latestMetrics.sessions}
+          value={state.latestMetrics.sessions}
           unit="ses."
           label="Sesiones"
           colorClass="text-brand-protein"
@@ -153,8 +98,8 @@ const Progreso: React.FC = () => {
               { id: 'strength', label: 'Fuerza', icon: StrengthIcon },
               { id: 'cardio', label: 'Cardio', icon: CardioIcon },
             ]}
-            activeTab={activeChart}
-            onChange={(id) => setActiveChart(id as ChartType)}
+            activeTab={state.activeChart}
+            onChange={(id) => actions.selectChart(id as ChartType)}
             className="sm:max-w-[280px]"
           />
 
@@ -162,10 +107,10 @@ const Progreso: React.FC = () => {
             {(['1M', '3M', 'ALL'] as TimeRange[]).map((opt) => (
               <button
                 key={opt}
-                onClick={() => setChartTimeRange(opt)}
+                onClick={() => actions.selectChartTimeRange(opt)}
                 className={[
                   'px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-tag transition-all duration-200 active:scale-95',
-                  chartTimeRange === opt
+                  state.chartTimeRange === opt
                     ? 'bg-text-primary text-bg-base shadow-sm'
                     : 'text-text-secondary hover:text-text-primary',
                 ].join(' ')}
@@ -177,12 +122,12 @@ const Progreso: React.FC = () => {
         </div>
 
         <div className="p-4 relative min-h-[280px] sm:min-h-[360px] flex flex-col">
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[100px] pointer-events-none opacity-5 transition-colors duration-700 ${chartGlow[activeChart]}`} />
+          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-[100px] pointer-events-none opacity-5 transition-colors duration-700 ${chartGlow[state.activeChart]}`} />
 
           <div className="flex-grow w-full relative z-10">
-            {activeChart === 'body' && <ProgressChart timeRange={chartTimeRange} />}
-            {activeChart === 'strength' && <StrengthChart timeRange={chartTimeRange} />}
-            {activeChart === 'cardio' && <CarreraChart timeRange={chartTimeRange} />}
+            {state.activeChart === 'body' && <ProgressChart timeRange={state.chartTimeRange} />}
+            {state.activeChart === 'strength' && <StrengthChart timeRange={state.chartTimeRange} />}
+            {state.activeChart === 'cardio' && <CarreraChart timeRange={state.chartTimeRange} />}
           </div>
         </div>
       </Card>
@@ -195,7 +140,7 @@ const Progreso: React.FC = () => {
           <AnatomicalEvolutionCard />
         </div>
         <div className="col-span-2 sm:col-span-1">
-          <GalleryWidget onShowGallery={() => goSub('gallery')} />
+          <GalleryWidget onShowGallery={actions.openGallery} />
         </div>
       </div>
 
@@ -204,8 +149,8 @@ const Progreso: React.FC = () => {
         style={{ animationDelay: '240ms' }}
       >
         <HistoryWidget
-          onShowHistoryList={() => goSub('history')}
-          onViewHistoricalSession={handleViewSession}
+          onShowHistoryList={actions.openHistory}
+          onViewHistoricalSession={actions.viewSession}
         />
       </section>
     </div>

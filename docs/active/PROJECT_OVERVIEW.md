@@ -24,7 +24,7 @@ Directorios clave:
 - `services/`: integraciones externas y servicios
 - `hooks/`: hooks compartidos y controladores de feature
 - `styles/`: estilos base y tokens
-- `docs/active/`: documentacion vigente
+- `docs/active/`: documentacion operativa complementaria
 - `docs/archive/`: snapshots historicos y docs descontinuadas
 
 ## Estado global
@@ -61,10 +61,12 @@ El trabajo visual nuevo debe apoyarse prioritariamente en `components/ui-premium
 
 ## Reglas practicas
 - `README.md` es la puerta de entrada para setup y comandos.
-- `docs/active/` es la fuente vigente de documentacion interna.
+- `UI_MANIFEST.md` es el SSOT visual vigente.
+- `LOGIC_MANIFEST.md` es el SSOT logico vigente.
 - `docs/archive/` contiene material historico y no debe usarse como fuente de verdad sin validar contra el arbol actual.
 - Evita agregar nuevos Markdown sueltos en la raiz del repo.
 
 ## Documentos activos relacionados
-- `docs/active/FRONTEND_REDESIGN_MASTER_PLAN.md`
+- `UI_MANIFEST.md`
+- `LOGIC_MANIFEST.md`
 - `.windsurf/rules/frontend-anti-patterns.md`

@@ -7,7 +7,7 @@ export { useFlexibleMacros } from './useFlexibleMacros';
 export type { FlexibleMacroTarget, FlexibleMacroConsumed, UseFlexibleMacrosReturn } from './useFlexibleMacros';
 export { default as SmartRestTimer } from './SmartRestTimer';
 export { useRestTimer } from './useRestTimer';
-export type { RestPhase, UseRestTimerReturn } from './useRestTimer';
+export type { UseRestTimerReturn } from './useRestTimer';
 export { default as NonNegotiableCard } from './NonNegotiableCard';
 export type { DailyMetric } from './NonNegotiableCard';
 export { default as StreakCalendar } from './StreakCalendar';

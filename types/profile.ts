@@ -14,6 +14,7 @@ export interface DailyGoals {
 export interface ProfileState {
     userName: string;
     dailyGoals: DailyGoals;
+    bodyGoalWeightKg: number | null;
     theme: Theme;
     customMantra: string;
 }

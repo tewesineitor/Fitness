@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../contexts';
 import { DailyGoals, Theme } from '../types';
-import { ChevronRightIcon, UserCircleIcon, SparklesIcon, CheckIcon } from '../components/icons';
+import { ChevronRightIcon, UserCircleIcon, SparklesIcon, CheckIcon, ScaleIcon } from '../components/icons';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -12,12 +12,12 @@ import { MacroSettings } from '../components/perfil/MacroSettings';
 import { AccountSection } from '../components/perfil/AccountSection';
 import { getSupabase } from '../services/supabaseClient';
 
-// --- MAIN SCREEN ---
 const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { state, dispatch, showToast } = useContext(AppContext)!;
 
     const [name, setName] = useState('');
     const [customMantra, setCustomMantra] = useState('');
+    const [bodyGoalWeightKg, setBodyGoalWeightKg] = useState('');
     const [goals, setGoals] = useState<DailyGoals>({
         kcal: 0,
         protein: 0,
@@ -30,6 +30,7 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             setName(state.profile.userName);
             setGoals(state.profile.dailyGoals);
             setCustomMantra(state.profile.customMantra || '');
+            setBodyGoalWeightKg(state.profile.bodyGoalWeightKg !== null ? String(state.profile.bodyGoalWeightKg) : '');
         }
     }, [state.profile]);
 
@@ -38,14 +39,22 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             showToast('El nombre de usuario es obligatorio');
             return;
         }
-        dispatch(actions.updateProfile({ name, goals, customMantra }));
+
+        const parsedBodyGoal = bodyGoalWeightKg.trim() ? parseFloat(bodyGoalWeightKg) : null;
+        if (parsedBodyGoal !== null && (!Number.isFinite(parsedBodyGoal) || parsedBodyGoal <= 0)) {
+            showToast('El objetivo corporal debe ser un numero valido');
+            return;
+        }
+
+        dispatch(actions.updateProfile({ name, goals, customMantra, bodyGoalWeightKg: parsedBodyGoal }));
         showToast('Perfil actualizado correctamente');
         onClose();
     };
 
     const handleViewOnboarding = () => {
         onClose();
-        dispatch(actions.updateProfile({ name: '', goals, customMantra }));
+        const parsedBodyGoal = bodyGoalWeightKg.trim() ? parseFloat(bodyGoalWeightKg) : null;
+        dispatch(actions.updateProfile({ name: '', goals, customMantra, bodyGoalWeightKg: parsedBodyGoal }));
     };
 
     const handleSignOut = async () => {
@@ -56,6 +65,7 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     };
 
     const updateTheme = (newTheme: Theme) => dispatch(actions.updateTheme(newTheme));
+    void updateTheme;
 
     return (
         <div className="h-full animate-scale-in flex flex-col bg-bg-base overflow-hidden">
@@ -86,6 +96,17 @@ const PerfilScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Tu nombre"
                             icon={UserCircleIcon}
+                        />
+
+                        <Input
+                            label="Objetivo Corporal"
+                            type="number"
+                            value={bodyGoalWeightKg}
+                            onChange={(e) => setBodyGoalWeightKg(e.target.value)}
+                            placeholder="Ej. 72"
+                            icon={ScaleIcon}
+                            suffix="kg"
+                            hint="Meta personal de peso. Se guarda en tu perfil y se sincroniza entre dispositivos."
                         />
 
                         <div>

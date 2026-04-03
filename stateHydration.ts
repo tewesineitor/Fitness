@@ -36,6 +36,14 @@ const migrateDailyGoals = (goals: AppState['profile']['dailyGoals']): AppState['
     return goals;
 };
 
+const normalizeBodyGoalWeightKg = (value: unknown): number | null => {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
+        return null;
+    }
+
+    return value;
+};
+
 const stripLegacyUiFields = (ui?: PersistedAppState['ui']): Partial<UIState> => {
     if (!ui) {
         return {};
@@ -149,6 +157,7 @@ export const hydratePersistedState = (parsedState: unknown, themeOverride?: stri
 
     const persistedTheme = themeOverride ?? mergedState.profile.theme;
     mergedState.profile.dailyGoals = migrateDailyGoals(mergedState.profile.dailyGoals);
+    mergedState.profile.bodyGoalWeightKg = normalizeBodyGoalWeightKg(mergedState.profile.bodyGoalWeightKg);
     mergedState.profile.theme = isValidTheme(persistedTheme) ? persistedTheme : 'system';
     mergedState.session = normalizeSessionState(mergedState.session);
     mergedState.ui = normalizeUiState(mergedState.ui, Boolean(mergedState.session.activeRoutineProgress?.isStarted));

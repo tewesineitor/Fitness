@@ -1,12 +1,14 @@
 import React from 'react';
 import PremiumButton from './PremiumButton';
 import { GiantValue, StatLabel } from './Typography';
-import { useRestTimer, RestPhase } from './useRestTimer';
+import { useRestTimer } from './useRestTimer';
 
 const SVG_SIZE = 320;
 const STROKE_WIDTH = 14;
 const RADIUS = 144;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+type RestPhase = 'recovery' | 'ready' | 'urgency';
 
 interface PhaseConfig {
   ringColor: string;
@@ -35,7 +37,7 @@ const phaseConfig: Record<RestPhase, PhaseConfig> = {
     ringColor: 'text-amber-400',
     valueColor: 'text-amber-400',
     labelClass: '!text-amber-400',
-    message: 'ÚLTIMOS SEGUNDOS',
+    message: 'ULTIMOS SEGUNDOS',
     ringStyle: {},
   },
 };
@@ -47,15 +49,26 @@ interface SmartRestTimerProps {
   className?: string;
 }
 
+function derivePhase(currentTime: number, minimumTime: number): RestPhase {
+  if (currentTime <= 10) return 'urgency';
+  if (currentTime <= minimumTime) return 'ready';
+  return 'recovery';
+}
+
+function formatSeconds(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
   targetTime,
   minimumTime,
   onSkip,
   className = '',
 }) => {
-  const { phase, progress, formattedTime, addTime, skipRest } = useRestTimer(targetTime, minimumTime);
+  const { currentTime, completionRatio, addTime, skipRest } = useRestTimer(targetTime, minimumTime);
+  const phase = derivePhase(currentTime, minimumTime);
   const config = phaseConfig[phase];
-  const dashOffset = CIRCUMFERENCE * (1 - progress);
+  const dashOffset = CIRCUMFERENCE * (1 - completionRatio);
 
   const handleSkip = () => {
     skipRest();
@@ -93,13 +106,13 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={dashOffset}
-            className={`${config.ringColor} transition-all duration-1000 ease-linear`}
+            className={`${config.ringColor} transition-all duration-200 ease-linear`}
             style={config.ringStyle}
           />
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-          <GiantValue className={config.valueColor}>{formattedTime}</GiantValue>
+          <GiantValue className={config.valueColor}>{formatSeconds(currentTime)}</GiantValue>
           <StatLabel className={config.labelClass}>{config.message}</StatLabel>
         </div>
       </div>

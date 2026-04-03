@@ -6,6 +6,7 @@ import { dailyGoals as defaultGoals } from '../data-misc';
 export const initialProfileState: ProfileState = {
     userName: '',
     dailyGoals: defaultGoals,
+    bodyGoalWeightKg: null,
     theme: (localStorage.getItem('fitArchitectTheme') as Theme) || 'system',
     customMantra: '',
 };
@@ -13,9 +14,14 @@ export const initialProfileState: ProfileState = {
 export const profileReducer = (state: ProfileState = initialProfileState, action: AppAction): ProfileState => {
     switch (action.type) {
         case actionTypes.UPDATE_PROFILE:
-            return { ...state, userName: action.payload.name, dailyGoals: action.payload.goals, customMantra: action.payload.customMantra };
+            return {
+                ...state,
+                userName: action.payload.name,
+                dailyGoals: action.payload.goals,
+                customMantra: action.payload.customMantra,
+                bodyGoalWeightKg: action.payload.bodyGoalWeightKg,
+            };
         case actionTypes.UPDATE_THEME:
-            // The side effect (localStorage) is now handled in AppProvider.tsx
             return { ...state, theme: action.payload };
         default:
             return state;

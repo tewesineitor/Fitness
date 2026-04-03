@@ -1,10 +1,15 @@
-import React, { useState, useContext } from 'react';
-import { AppContext } from '../../contexts';
+import React from 'react';
 import Button from '../Button';
 import { TapeMeasureIcon, PlusIcon } from '../icons';
 import MeasurementModal from '../dialogs/MeasurementModal';
+import { useBodyMetricsController } from '@/screens/progreso/hooks/useBodyMetricsController';
 
-const MeasurementItem: React.FC<{ label: string; value?: number; unit?: string }> = ({ label, value, unit = "cm" }) => (
+const MeasurementItem: React.FC<{ label: string; value?: number | null; unit?: string; diff: number | null }> = ({
+    label,
+    value,
+    unit = 'cm',
+    diff,
+}) => (
     <div className="flex flex-col items-start p-3 sm:p-4 bg-surface-hover/20 rounded-2xl border border-surface-border/30 hover:bg-surface-hover/50 hover:-translate-y-0.5 transition-all duration-300 group/item cursor-default">
         <span className="text-[10px] sm:text-xs font-bold text-text-secondary uppercase tracking-widest mb-1 group-hover/item:text-brand-accent transition-colors w-full">{label}</span>
         <div className="flex items-baseline gap-1 w-full mt-auto">
@@ -12,29 +17,18 @@ const MeasurementItem: React.FC<{ label: string; value?: number; unit?: string }
                 {value ? value : '--'}
             </span>
             <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex-shrink-0">{unit}</span>
+            {diff !== null && (
+                <span className={`text-[10px] font-bold ml-1 ${diff > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                    {diff > 0 ? '+' : ''}{diff.toFixed(1)}
+                </span>
+            )}
         </div>
     </div>
 );
 
 const AnatomicalEvolutionCard: React.FC = () => {
-    const { state } = useContext(AppContext)!;
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // Get history
-    const history = state.progress.metricHistory;
-    const latestEntry = history.length > 0 ? history[history.length - 1] : null;
-    const previousEntry = history.length > 1 ? history[history.length - 2] : null;
-
-    const getDiff = (current?: number, prev?: number) => {
-        if (current === undefined || prev === undefined) return null;
-        const diff = current - prev;
-        if (diff === 0) return null;
-        return (
-            <span className={`text-[10px] font-bold ml-1 ${diff > 0 ? 'text-red-400' : 'text-green-400'}`}>
-                {diff > 0 ? '+' : ''}{diff.toFixed(1)}
-            </span>
-        );
-    };
+    const controller = useBodyMetricsController();
+    const { state, actions } = controller;
 
     return (
         <>
@@ -43,16 +37,16 @@ const AnatomicalEvolutionCard: React.FC = () => {
                     <div>
                         <h2 className="text-sm font-heading font-black text-text-primary uppercase tracking-[0.2em] flex items-center gap-2 mb-1">
                             <TapeMeasureIcon className="w-5 h-5 text-brand-accent" />
-                            Antropometría
+                            Antropometria
                         </h2>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-                            {latestEntry ? new Date(latestEntry.fecha_registro).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Sin datos'}
+                            {state.latestEntryLabel}
                         </p>
                     </div>
                     <Button 
                         variant="secondary" 
                         size="small" 
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={actions.openModal}
                         className="!p-2 rounded-full bg-surface-hover border-surface-border hover:bg-white hover:text-black transition-all"
                         icon={PlusIcon}
                     />
@@ -64,15 +58,19 @@ const AnatomicalEvolutionCard: React.FC = () => {
                             <div>
                                 <span className="text-[10px] font-bold text-brand-accent uppercase tracking-widest block mb-1">Peso Actual</span>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-3xl font-black text-text-primary tracking-tighter">{latestEntry?.peso_kg || '--'}</span>
+                                    <span className="text-3xl font-black text-text-primary tracking-tighter">{state.currentWeight || '--'}</span>
                                     <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">kg</span>
-                                    {getDiff(latestEntry?.peso_kg, previousEntry?.peso_kg)}
+                                    {state.weightDiff !== null && (
+                                        <span className={`text-[10px] font-bold ml-1 ${state.weightDiff > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                                            {state.weightDiff > 0 ? '+' : ''}{state.weightDiff.toFixed(1)}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                             <div className="text-right">
                                 <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest block mb-1">Objetivo</span>
                                 <div className="flex items-baseline gap-1 justify-end">
-                                    <span className="text-xl font-black text-text-primary/60 tracking-tighter">75.0</span>
+                                    <span className="text-xl font-black text-text-primary/60 tracking-tighter">{state.goalWeight !== null ? state.goalWeight.toFixed(1) : '--'}</span>
                                     <span className="text-xs font-bold text-text-secondary uppercase tracking-widest">kg</span>
                                 </div>
                             </div>
@@ -80,31 +78,35 @@ const AnatomicalEvolutionCard: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-3 flex-grow">
-                        <MeasurementItem label="Cintura" value={latestEntry?.cintura_cm} />
-                        <MeasurementItem label="Caderas" value={latestEntry?.caderas_cm} />
-                        <MeasurementItem label="Pecho" value={latestEntry?.pecho_cm} />
-                        <MeasurementItem label="Hombros" value={latestEntry?.hombros_cm} />
-                        <MeasurementItem label="Muslo" value={latestEntry?.muslo_cm} />
-                        <MeasurementItem label="Bíceps" value={latestEntry?.biceps_cm} />
+                        {state.measurementItems.map((item) => (
+                            <MeasurementItem
+                                key={item.key}
+                                label={item.label}
+                                value={item.value}
+                                unit={item.unit}
+                                diff={item.diff}
+                            />
+                        ))}
                     </div>
                 </div>
 
-                {/* Progress Indicator */}
                 <div className="mt-auto pt-4 border-t border-surface-border/50 relative z-10">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Progreso General</span>
-                        <span className="text-xs font-black text-brand-accent">65%</span>
+                        <span className="text-xs font-black text-brand-accent">{state.goalWeight !== null ? `${state.progressPercent}%` : 'Define objetivo'}</span>
                     </div>
                     <div className="h-2 w-full bg-surface-hover rounded-full overflow-hidden">
-                        <div className="h-full bg-brand-accent rounded-full w-[65%] shadow-[0_0_10px_rgba(var(--color-brand-accent-rgb),0.4)]"></div>
+                        <div
+                            className="h-full bg-brand-accent rounded-full shadow-[0_0_10px_rgba(var(--color-brand-accent-rgb),0.4)]"
+                            style={{ width: `${state.progressPercent}%` }}
+                        />
                     </div>
                 </div>
 
-                {/* Background Decoration */}
                 <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-brand-accent/5 rounded-full blur-[80px] pointer-events-none group-hover:bg-brand-accent/10 transition-colors duration-500"></div>
             </div>
 
-            {isModalOpen && <MeasurementModal onClose={() => setIsModalOpen(false)} />}
+            {state.isModalOpen && <MeasurementModal controller={controller} />}
         </>
     );
 };
