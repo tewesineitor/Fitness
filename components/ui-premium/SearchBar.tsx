@@ -31,18 +31,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <div
       className={[
-        'relative group bg-zinc-800 rounded-xl px-4 py-2.5 flex items-center gap-3',
+        'relative group bg-surface-raised rounded-xl px-4 py-2.5 flex items-center gap-3',
         'transition-all duration-200 shadow-inner',
-        'focus-within:bg-zinc-900 focus-within:ring-1 focus-within:ring-emerald-500/40',
+        'focus-within:bg-surface-bg focus-within:ring-1 focus-within:ring-brand-accent/40',
         className,
       ].filter(Boolean).join(' ')}
     >
-      {/* Search icon — cambia a emerald en focus */}
+      {/* Search icon — cambia a brand-accent en focus */}
       <SearchIcon
         size={18}
         className={[
           'shrink-0 transition-colors duration-200',
-          focused ? 'text-emerald-400' : 'text-zinc-500',
+          focused ? 'text-brand-accent' : 'text-text-muted',
         ].join(' ')}
       />
 
@@ -53,7 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={placeholder}
-        className="bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 outline-none w-full"
+        className="bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none w-full"
       />
 
       {/* Clear button — solo visible cuando hay texto */}
@@ -61,7 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <button
           type="button"
           onClick={() => onChange('')}
-          className="shrink-0 text-zinc-500 hover:text-zinc-300 transition-colors duration-150"
+          className="shrink-0 text-text-muted hover:text-text-secondary transition-colors duration-150"
           aria-label="Limpiar búsqueda"
         >
           <XIcon size={18} />

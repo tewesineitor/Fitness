@@ -29,7 +29,7 @@ const MacroBar: React.FC<MacroBarProps> = ({ label, current, target, unit = 'g',
         <EyebrowText>{label}</EyebrowText>
         <StatLabel>{Math.round(current)} / {target}{unit}</StatLabel>
       </div>
-      <div className="h-2 rounded-full bg-zinc-800/50 overflow-hidden">
+      <div className="h-2 rounded-full bg-surface-raised/50 overflow-hidden">
         <div
           className={`h-2 rounded-full transition-all duration-700 ${fillClass}`}
           style={{ width: `${pct}%` }}
@@ -53,8 +53,8 @@ const NutritionSummaryMini: React.FC<NutritionSummaryMiniProps> = ({
   const { kcalRemaining, kcalProgress, isKcalOver } = useFlexibleMacros(target, consumed);
 
   const dashOffset = CIRCUMFERENCE * (1 - kcalProgress);
-  const ringColor = isKcalOver ? 'text-rose-500' : 'text-emerald-400';
-  const valueColor = isKcalOver ? 'text-rose-500' : 'text-emerald-400';
+  const ringColor = isKcalOver ? 'text-danger' : 'text-brand-accent';
+  const valueColor = isKcalOver ? 'text-danger' : 'text-brand-accent';
 
   return (
     <SquishyCard
@@ -77,7 +77,7 @@ const NutritionSummaryMini: React.FC<NutritionSummaryMiniProps> = ({
             cx={CENTER} cy={CENTER} r={RADIUS}
             fill="none" stroke="currentColor"
             strokeWidth={STROKE_W}
-            className="text-zinc-800/50"
+            className="text-surface-raised/50"
           />
           <circle
             cx={CENTER} cy={CENTER} r={RADIUS}
@@ -104,19 +104,19 @@ const NutritionSummaryMini: React.FC<NutritionSummaryMiniProps> = ({
           label="Proteína"
           current={consumed.protein}
           target={target.protein}
-          fillClass="bg-violet-500"
+          fillClass="bg-brand-protein"
         />
         <MacroBar
           label="Carbohidratos"
           current={consumed.carbs}
           target={target.carbIdeal}
-          fillClass="bg-cyan-400"
+          fillClass="bg-brand-carbs"
         />
         <MacroBar
           label="Grasas"
           current={consumed.fat}
           target={target.fatIdeal}
-          fillClass="bg-orange-500"
+          fillClass="bg-brand-fat"
         />
       </div>
     </SquishyCard>

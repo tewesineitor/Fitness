@@ -201,7 +201,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                             {!n.isToday && (
                                 <button
                                     onClick={() => { vibrate(5); n.onGoToday(); }}
-                                    className="text-emerald-400 text-[10px] font-black uppercase tracking-widest mt-2 block mx-auto"
+                                    className="text-brand-accent text-[10px] font-black uppercase tracking-widest mt-2 block mx-auto"
                                 >
                                     Ir a hoy
                                 </button>
@@ -254,7 +254,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 <span className={`text-3xl font-heading font-black leading-none ${n.isKcalOver ? 'text-red-400' : 'text-white'}`}>
                                     {n.isKcalOver ? '!' : Math.round(n.kcalRemaining)}
                                 </span>
-                                <span className="text-[9px] uppercase tracking-widest text-emerald-400 font-black mt-0.5">
+                                <span className="text-[9px] uppercase tracking-widest text-brand-accent font-black mt-0.5">
                                     {n.isKcalOver ? 'excedido' : 'kcal rest.'}
                                 </span>
                                 <span className="text-[8px] font-mono text-zinc-400 mt-0.5">
@@ -270,9 +270,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 value={n.macrosForDay.protein}
                                 goalG={n.dailyGoals.protein}
                                 pct={n.proteinPct}
-                                trackClass="bg-zinc-800"
-                                fillClass="bg-emerald-400"
-                                labelClass="text-emerald-400"
+                                trackClass="bg-surface-raised"
+                                fillClass="bg-brand-protein"
+                                labelClass="text-brand-protein"
                             />
                             <SmartMacroBar
                                 label="Carbos"
@@ -281,9 +281,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 floorG={n.carbFloorG}
                                 maxG={n.carbMaxG}
                                 minMet={n.isCarbMinMet}
-                                fillClass="bg-cyan-400"
-                                glowClass="shadow-[0_0_8px_rgba(34,211,238,0.5)]"
-                                labelClass="text-cyan-400"
+                                fillClass="bg-brand-carbs"
+                                glowClass=""
+                                labelClass="text-brand-carbs"
                             />
                             <SmartMacroBar
                                 label="Grasas"
@@ -292,9 +292,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 floorG={n.fatFloorG}
                                 maxG={n.fatMaxG}
                                 minMet={n.isFatMinMet}
-                                fillClass="bg-purple-400"
-                                glowClass="shadow-[0_0_8px_rgba(192,132,252,0.5)]"
-                                labelClass="text-purple-400"
+                                fillClass="bg-brand-fat"
+                                glowClass=""
+                                labelClass="text-brand-fat"
                             />
                         </div>
                     </div>
@@ -306,12 +306,12 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                     style={{ animationDelay: '60ms' }}
                 >
                     {/* Halo decorativo */}
-                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-400/5 blur-[100px] rounded-full pointer-events-none" />
+                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-brand-accent/5 blur-[100px] rounded-full pointer-events-none" />
 
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-5">
-                            <div className="w-8 h-8 rounded-xl bg-emerald-400/10 flex items-center justify-center flex-shrink-0">
-                                <span className="text-emerald-400 text-sm font-black leading-none">◈</span>
+                            <div className="w-8 h-8 rounded-xl bg-brand-accent/10 flex items-center justify-center flex-shrink-0">
+                                <span className="text-brand-accent text-sm font-black leading-none">◈</span>
                             </div>
                             <div>
                                 <h2 className="text-sm font-black uppercase tracking-widest text-zinc-300">
@@ -333,8 +333,8 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 availableG={n.carbAvailableG}
                                 minMet={n.isCarbMinMet}
                                 overMax={n.isCarbOverMax}
-                                accentClass="text-cyan-400"
-                                iconBgClass="bg-cyan-400/10"
+                                accentClass="text-brand-carbs"
+                                iconBgClass="bg-brand-carbs/10"
                                 iconChar="↑"
                             />
                             <SmartMacroCard
@@ -345,8 +345,8 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                 availableG={n.fatAvailableG}
                                 minMet={n.isFatMinMet}
                                 overMax={n.isFatOverMax}
-                                accentClass="text-purple-400"
-                                iconBgClass="bg-purple-400/10"
+                                accentClass="text-brand-fat"
+                                iconBgClass="bg-brand-fat/10"
                                 iconChar="◆"
                             />
                             {/* Tarjeta 3: Kcal Flexibles */}
@@ -362,10 +362,10 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                     <p className="text-[10px] text-zinc-400 mt-1">Presupuesto de energía</p>
                                 </div>
                                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                                    n.isKcalOver ? 'bg-red-500/20' : 'bg-emerald-400/10'
+                                    n.isKcalOver ? 'bg-red-500/20' : 'bg-brand-accent/10'
                                 }`}>
                                     <span className={`font-black text-lg leading-none ${
-                                        n.isKcalOver ? 'text-red-400' : 'text-emerald-400'
+                                        n.isKcalOver ? 'text-red-400' : 'text-brand-accent'
                                     }`}>⚡</span>
                                 </div>
                             </div>
@@ -411,22 +411,22 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                         onClick={() => { vibrate(3); setExpandedId(isOpen ? null : meal.id); }}
                                     >
                                         {/* Thumbnail */}
-                                        <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gradient-to-br from-emerald-900/50 to-cyan-900/40 border border-emerald-800/20" />
+                                        <div className="w-20 h-20 rounded-2xl flex-shrink-0 bg-gradient-to-br from-brand-accent/20 to-brand-carbs/20 border border-surface-border" />
 
                                         {/* Info central */}
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-heading font-bold text-zinc-100 text-lg leading-tight truncate mb-1">
+                                            <h4 className="font-heading font-bold text-text-primary text-lg leading-tight truncate mb-1">
                                                 {meal.name ?? 'Comida'}
                                             </h4>
-                                            <p className="text-xs text-zinc-400 font-mono mb-2">{mealTime}</p>
+                                            <p className="text-xs text-text-secondary font-mono mb-2">{mealTime}</p>
                                             <div className="flex gap-4 flex-wrap">
-                                                <span className="text-sm font-semibold text-emerald-400 tabular-nums">
+                                                <span className="text-sm font-semibold text-brand-protein tabular-nums">
                                                     P: {Math.round(meal.macros.protein)}g
                                                 </span>
-                                                <span className="text-sm font-semibold text-cyan-400 tabular-nums">
+                                                <span className="text-sm font-semibold text-brand-carbs tabular-nums">
                                                     C: {Math.round(meal.macros.carbs)}g
                                                 </span>
-                                                <span className="text-sm font-semibold text-purple-400 tabular-nums">
+                                                <span className="text-sm font-semibold text-brand-fat tabular-nums">
                                                     G: {Math.round(meal.macros.fat)}g
                                                 </span>
                                             </div>
@@ -450,7 +450,7 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                     <div className="flex justify-end gap-2 px-4 pb-3 -mt-1">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); vibrate(5); n.onRequestEdit(meal); }}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-emerald-400 text-xs font-semibold transition-colors"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised text-text-secondary hover:text-text-primary text-xs font-semibold transition-colors"
                                             aria-label="Editar"
                                         >
                                             <PencilIcon className="w-3 h-3" /> Editar
@@ -492,9 +492,9 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
                                                                     {Math.round(m.kcal * p)} kcal
                                                                 </span>
                                                                 <div className="flex gap-1.5">
-                                                                    <span className="text-xs text-emerald-400/80 tabular-nums">P:{Math.round(m.protein * p)}g</span>
-                                                                    <span className="text-xs text-cyan-400/80 tabular-nums">C:{Math.round(m.carbs * p)}g</span>
-                                                                    <span className="text-xs text-purple-400/80 tabular-nums">G:{Math.round(m.fat * p)}g</span>
+                                                                    <span className="text-xs text-brand-protein/80 tabular-nums">P:{Math.round(m.protein * p)}g</span>
+                                                                    <span className="text-xs text-brand-carbs/80 tabular-nums">C:{Math.round(m.carbs * p)}g</span>
+                                                                    <span className="text-xs text-brand-fat/80 tabular-nums">G:{Math.round(m.fat * p)}g</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -514,13 +514,13 @@ export const NutritionMainView: React.FC<NutritionMainViewProps> = ({ onGoToAddF
             </div>
 
             {/* ── Fade mask: desvanecimiento inferior premium ─────────────── */}
-            <div className="fixed bottom-0 left-0 w-full h-52 bg-gradient-to-t from-zinc-950 to-transparent pointer-events-none z-40" />
+            <div className="fixed bottom-0 left-0 w-full h-52 bg-gradient-to-t from-bg-base to-transparent pointer-events-none z-40" />
 
             {/* ── FAB premium ──────────────────────────────────────────────── */}
             <div className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50">
                 <button
                     onClick={() => { vibrate(10); n.onGoToAddFood(); }}
-                    className="flex items-center gap-3 bg-emerald-400 text-zinc-950 font-black uppercase tracking-widest text-sm px-10 py-5 rounded-full shadow-[0_0_30px_rgba(52,211,153,0.2)] active:scale-95 transition-transform"
+                    className="flex items-center gap-3 bg-brand-accent text-brand-accent-foreground font-black uppercase tracking-widest text-sm px-10 py-5 rounded-full active:scale-95 transition-transform"
                 >
                     <PlusIcon className="w-5 h-5" />
                     Añadir comida

@@ -50,20 +50,20 @@ export const ProgressThumbnail: React.FC<ProgressThumbnailProps> = ({
       />
 
       {/* Capa de Gradiente */}
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg-base/80 via-bg-base/20 to-transparent pointer-events-none" />
 
       {/* Footer HUD (Data) */}
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-between items-end pointer-events-none">
         
         {/* Left: Date */}
-        <div className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/50 rounded-lg px-2.5 py-1">
-          <EyebrowText className="!text-[10px] text-zinc-100 uppercase tracking-widest">{date}</EyebrowText>
+        <div className="bg-surface-bg/40 backdrop-blur-sm border border-surface-border/50 rounded-lg px-2.5 py-1">
+          <EyebrowText className="!text-[10px] text-text-primary uppercase tracking-widest">{date}</EyebrowText>
         </div>
 
         {/* Right: Métrica de Peso */}
         <div className="flex flex-col items-end">
-          <StatLabel className="!text-xl !font-black !text-emerald-400 tabular-nums !tracking-tight">
-            {weight} <span className="text-[10px] text-zinc-500 font-normal uppercase">{weightUnit}</span>
+          <StatLabel className="!text-xl !font-black !text-brand-accent tabular-nums !tracking-tight">
+            {weight} <span className="text-[10px] text-text-muted font-normal uppercase">{weightUnit}</span>
           </StatLabel>
           {bodyFatPercentage !== undefined && (
             <MutedText className="text-[10px]">{bodyFatPercentage}% Grasa</MutedText>
@@ -76,8 +76,8 @@ export const ProgressThumbnail: React.FC<ProgressThumbnailProps> = ({
         <div 
           className={`absolute top-3 right-3 size-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 z-10 ${
             isSelected 
-              ? 'bg-emerald-400 border-emerald-500 shadow-[0_0_10px_rgba(52,211,153,0.5)]' 
-              : 'border-zinc-700 bg-zinc-950/40 backdrop-blur-sm'
+              ? 'bg-brand-accent border-brand-accent/50' 
+              : 'border-surface-border bg-bg-base/40 backdrop-blur-sm'
           }`}
         >
           {isSelected && (

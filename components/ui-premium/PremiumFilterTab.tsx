@@ -22,16 +22,16 @@ const PremiumFilterTab: React.FC<PremiumFilterTabProps> = ({
     onClick={() => onClick(id)}
     className={[
       'relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm',
-      'bg-zinc-900/60 backdrop-blur-lg border border-zinc-700/80',
+      'bg-surface-bg/60 backdrop-blur-lg border border-surface-border/80',
       'transition-all duration-200 active:scale-95 select-none whitespace-nowrap',
-      'hover:bg-zinc-800/60',
-      isActive ? 'text-emerald-400 font-bold' : 'text-zinc-500',
+      'hover:bg-surface-raised/60',
+      isActive ? 'text-brand-accent font-bold' : 'text-text-muted',
     ].join(' ')}
   >
     {icon && (
       <span className={[
         'flex items-center size-4',
-        isActive ? 'text-emerald-400' : 'text-zinc-600',
+        isActive ? 'text-brand-accent' : 'text-text-muted',
       ].join(' ')}>
         {icon}
       </span>
@@ -41,14 +41,14 @@ const PremiumFilterTab: React.FC<PremiumFilterTabProps> = ({
       <span className={[
         'px-1 rounded text-[9px] tabular-nums font-normal',
         isActive
-          ? 'bg-emerald-400/10 text-emerald-400'
-          : 'bg-zinc-800/60 text-zinc-600',
+          ? 'bg-brand-accent/10 text-brand-accent'
+          : 'bg-surface-raised/60 text-text-muted',
       ].join(' ')}>
         {count}
       </span>
     )}
     {isActive && (
-      <div className="absolute inset-x-0 bottom-0 h-px bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)] animate-pulse" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-brand-accent rounded-full animate-pulse" />
     )}
   </button>
 );

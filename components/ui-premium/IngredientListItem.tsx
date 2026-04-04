@@ -1,7 +1,7 @@
 import React from 'react';
 import SquishyCard from './SquishyCard';
 import IconButton from './IconButton';
-import { EyebrowText, MutedText, StatLabel } from './Typography';
+import { CardTitle, EyebrowText, MonoValue, MutedText, StatLabel, StatValue } from './Typography';
 
 const PlusIcon: React.FC = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -100,11 +100,11 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
           <img
             src={imageUrl}
             alt={name}
-            className="size-14 rounded-xl object-cover border border-white/5"
+            className="size-14 rounded-xl object-cover border border-surface-border"
           />
         ) : (
-          <div className="size-14 rounded-xl bg-zinc-800/80 border border-white/5 flex items-center justify-center">
-            <span className="text-zinc-500 text-xl font-black select-none">
+          <div className="size-14 rounded-xl bg-surface-raised border border-surface-border flex items-center justify-center">
+            <span className="text-text-muted text-xl font-black select-none">
               {name[0].toUpperCase()}
             </span>
           </div>
@@ -115,53 +115,53 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
       <div className="flex flex-col flex-1 min-w-0 gap-1">
 
         {/* Name */}
-        <EyebrowText className="!text-[15px] !font-bold !text-zinc-100 !normal-case !tracking-normal !leading-tight truncate">
+        <CardTitle className="leading-tight truncate">
           {name}
-        </EyebrowText>
+        </CardTitle>
 
         {/* Brand */}
-        <div className="pb-1 border-b border-zinc-800/50">
-          <MutedText className="!text-[11px] !uppercase !tracking-wider !text-zinc-500 truncate">
+        <div className="pb-1 border-b border-surface-border/50">
+          <MutedText className="uppercase tracking-widest truncate">
             {brand ?? '—'}
           </MutedText>
         </div>
 
         {/* Macro pills — scaled */}
         <div className="flex gap-1 flex-wrap">
-          <MacroPill label="P" value={scaledMacros.protein} colorClass="bg-violet-500/20 text-violet-400" />
-          <MacroPill label="C" value={scaledMacros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
-          <MacroPill label="G" value={scaledMacros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
+          <MacroPill label="P" value={scaledMacros.protein} colorClass="bg-brand-protein/20 text-brand-protein" />
+          <MacroPill label="C" value={scaledMacros.carbs}   colorClass="bg-brand-accent/20 text-brand-accent" />
+          <MacroPill label="G" value={scaledMacros.fat}     colorClass="bg-brand-fat/20 text-brand-fat" />
         </div>
 
         {/* ── HUD Micro-Viz ───────────────────────────────── */}
-        <div className="w-full flex items-center justify-between gap-3 pt-1 border-t border-zinc-800/50">
+        <div className="w-full flex items-center justify-between gap-3 pt-1 border-t border-surface-border/50">
           {/* Left: portion multiplier */}
-          <div className="flex items-center gap-1.5 text-zinc-300">
-            <ScaleIcon className="text-zinc-500 shrink-0" />
-            <span className="text-[11px] font-mono tabular-nums text-zinc-400">
+          <div className="flex items-center gap-1.5 text-text-secondary">
+            <ScaleIcon className="text-text-muted shrink-0" />
+            <MonoValue className="text-text-muted">
               {fmtQty(quantityMultiplier)}{' '}
-              <span className="text-zinc-600">×</span>{' '}
+              <span className="text-surface-border">×</span>{' '}
               {standardPortion}
-            </span>
+            </MonoValue>
           </div>
 
           {/* Right: equivalencias crudo/cocido (conditional) */}
           {hasEquiv && (
-            <div className="flex gap-2 items-center text-[11px] font-mono tabular-nums shrink-0">
+            <div className="flex gap-2 items-center shrink-0">
               {rawWeightG != null && rawWeightG > 0 && (
-                <span className="text-zinc-400">
-                  <span className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider mr-0.5">Crudo</span>
+                <MonoValue className="text-text-muted">
+                  <StatLabel className="mr-1">Crudo</StatLabel>
                   {Math.round(rawWeightG * quantityMultiplier)}g
-                </span>
+                </MonoValue>
               )}
               {rawWeightG != null && rawWeightG > 0 && cookedWeightG != null && cookedWeightG > 0 && (
-                <span className="text-zinc-700">|</span>
+                <span className="text-surface-border">|</span>
               )}
               {cookedWeightG != null && cookedWeightG > 0 && (
-                <span className="text-emerald-300">
-                  <span className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider mr-0.5">Cocido</span>
+                <MonoValue className="text-brand-accent">
+                  <StatLabel className="mr-1">Cocido</StatLabel>
                   {Math.round(cookedWeightG * quantityMultiplier)}g
-                </span>
+                </MonoValue>
               )}
             </div>
           )}
@@ -171,17 +171,19 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
       {/* ── RIGHT: KCAL + [edit | action] ─────────────── */}
       <div className="flex flex-col items-end gap-2 shrink-0 self-stretch justify-between">
         {/* Calories */}
-        <StatLabel className="!text-xl !font-black !text-emerald-400 !tabular-nums text-right leading-none">
-          {Math.round(macros.kcal * quantityMultiplier)}{' '}
-          <span className="text-[10px] text-zinc-500 font-normal">KCAL</span>
-        </StatLabel>
+        <div className="flex flex-col items-end gap-1">
+          <StatValue className="!text-brand-accent">
+            {Math.round(macros.kcal * quantityMultiplier)}
+          </StatValue>
+          <StatLabel>KCAL</StatLabel>
+        </div>
 
         {/* Bottom row: edit + add/stepper */}
         <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={() => onEdit({ name, brand, standardPortion, rawWeightG, cookedWeightG, macros })}
-            className="w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/50 hover:bg-zinc-700/80 text-zinc-600 hover:text-zinc-300 transition-colors duration-150 shrink-0"
+            className="w-6 h-6 flex items-center justify-center rounded-full bg-surface-raised/50 hover:bg-surface-raised text-text-muted hover:text-text-secondary transition-colors duration-150 shrink-0"
             aria-label="Editar ingrediente"
           >
             <PencilIcon size={11} />
@@ -196,22 +198,22 @@ const IngredientListItem: React.FC<IngredientItemProps> = ({
               aria-label={`Añadir ${name}`}
             />
           ) : (
-            <div className="bg-zinc-900 border border-zinc-800/60 rounded-lg flex items-center p-0.5 gap-0.5">
+            <div className="bg-surface-bg border border-surface-border/60 rounded-lg flex items-center p-0.5 gap-0.5">
               <button
                 type="button"
                 onClick={() => onUpdateQuantity(-0.25)}
-                className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-xs font-bold"
+                className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors duration-150 rounded text-xs font-bold"
                 aria-label="Reducir 0.25"
               >
                 −
               </button>
-              <span className="font-mono text-emerald-400 text-[11px] w-8 text-center tabular-nums font-bold">
+              <MonoValue className="text-brand-accent w-8 text-center !font-bold">
                 {fmtQty(quantityMultiplier)}
-              </span>
+              </MonoValue>
               <button
                 type="button"
                 onClick={() => onUpdateQuantity(0.25)}
-                className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-colors duration-150 rounded text-xs font-bold"
+                className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors duration-150 rounded text-xs font-bold"
                 aria-label="Aumentar 0.25"
               >
                 +

@@ -24,10 +24,10 @@ const renderTextBlock = (block: string, key: number) => {
             : line.replace(/^[-•*]\s*/, '');
           return (
             <li key={i} className="flex items-start gap-3">
-              <span className="text-emerald-400 font-black text-xl leading-snug w-6 flex-shrink-0 text-right">
+              <span className="text-brand-accent font-black text-xl leading-snug w-6 flex-shrink-0 text-right">
                 {marker}
               </span>
-              <span className="text-lg text-zinc-300 leading-relaxed">{content}</span>
+              <span className="text-lg text-text-secondary leading-relaxed">{content}</span>
             </li>
           );
         })}
@@ -36,7 +36,7 @@ const renderTextBlock = (block: string, key: number) => {
   }
 
   return (
-    <p key={key} className="text-lg text-zinc-300 mb-4 leading-relaxed whitespace-pre-wrap">
+    <p key={key} className="text-lg text-text-secondary mb-4 leading-relaxed whitespace-pre-wrap">
       {block.trim()}
     </p>
   );
@@ -46,7 +46,7 @@ const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
   <div className="flex flex-col">
     {text.split(/(\*\*.*?\*\*)/g).map((part, index) =>
       part.startsWith('**') ? (
-        <p key={index} className="text-2xl font-black text-emerald-400 uppercase mt-6 mb-2">
+        <p key={index} className="text-2xl font-black text-brand-accent uppercase mt-6 mb-2">
           {part.slice(2, -2)}
         </p>
       ) : part.trim() ? (
@@ -57,7 +57,7 @@ const FormattedDescription: React.FC<{ text: string }> = ({ text }) => (
 );
 
 const headerMediaPlaceholder = (
-  <div className="w-full h-full bg-zinc-950 flex items-center justify-center text-zinc-600 font-black tracking-widest uppercase">
+  <div className="w-full h-full bg-bg-base flex items-center justify-center text-text-muted font-black tracking-widest uppercase">
     Espacio para imagen/video
   </div>
 );

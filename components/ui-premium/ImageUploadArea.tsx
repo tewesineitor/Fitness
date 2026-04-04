@@ -31,17 +31,17 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
     <div
       onClick={onPress}
       className={[
-        'border-2 border-dashed border-zinc-700/50 rounded-[2rem]',
-        'bg-zinc-900/20 flex flex-col items-center justify-center p-8',
-        'cursor-pointer hover:bg-zinc-800/50 hover:border-zinc-600',
+        'border-2 border-dashed border-surface-border/50 rounded-[2rem]',
+        'bg-surface-bg/20 flex flex-col items-center justify-center p-8',
+        'cursor-pointer hover:bg-surface-raised/50 hover:border-surface-border',
         'transition-all duration-200 active:scale-[0.98] select-none',
         className,
       ]
         .filter(Boolean)
         .join(' ')}
     >
-      <CameraIcon className="w-8 h-8 text-zinc-500 mb-3" />
-      <StatLabel className="text-zinc-400">AÑADIR FOTO</StatLabel>
+      <CameraIcon className="w-8 h-8 text-text-muted mb-3" />
+      <StatLabel className="text-text-secondary">AÑADIR FOTO</StatLabel>
     </div>
   );
 };

@@ -16,7 +16,7 @@ const BentoQuadrant: React.FC<BentoQuadrantProps> = ({
   value,
   unit,
   icon,
-  colorToken = 'text-emerald-400',
+  colorToken = 'text-brand-accent',
   className = '',
 }) => (
   <SquishyCard

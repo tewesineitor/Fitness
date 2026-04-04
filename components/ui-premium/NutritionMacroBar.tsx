@@ -29,8 +29,8 @@ export interface NutritionMacroBarProps {
 
 // ── Canonical Macro Dialect (Design System SSOT) ──────────────────────────────
 // Labels:  PROTEÍNA · CARBOS · GRASAS
-// Colors:  violet-500 · cyan-400 · orange-400
-// NO abbreviations PRO/CH/GRA. NO emerald/rose/amber for macros.
+// Tokens:  brand-protein · brand-carbs · brand-fat
+// NO abbreviations PRO/CH/GRA. NO hardcoded emerald/rose/amber.
 
 interface MacroConfig {
     label:      string;
@@ -51,8 +51,8 @@ const MACRO_CONFIG: MacroConfig[] = [
         consumedKey: 'protein',
         targetKey:   'protein',
         overKey:     null,
-        barColor:    'bg-violet-500',
-        overColor:   'bg-violet-500',
+        barColor:    'bg-brand-protein',
+        overColor:   'bg-brand-protein',
     },
     {
         label:       'CARBOS',
@@ -61,8 +61,8 @@ const MACRO_CONFIG: MacroConfig[] = [
         consumedKey: 'carbs',
         targetKey:   'carbIdeal',
         overKey:     'isCarbOverMax',
-        barColor:    'bg-cyan-400',
-        overColor:   'bg-rose-400',
+        barColor:    'bg-brand-carbs',
+        overColor:   'bg-danger',
     },
     {
         label:       'GRASAS',
@@ -71,8 +71,8 @@ const MACRO_CONFIG: MacroConfig[] = [
         consumedKey: 'fat',
         targetKey:   'fatIdeal',
         overKey:     'isFatOverMax',
-        barColor:    'bg-orange-400',
-        overColor:   'bg-rose-400',
+        barColor:    'bg-brand-fat',
+        overColor:   'bg-danger',
     },
 ];
 
@@ -87,7 +87,7 @@ const MACRO_CONFIG: MacroConfig[] = [
  *   │ ████████████░░░░░░░░░░░░░░░░░░░░░░             │
  *   └─────────────────────────────────────────────────┘
  *
- * Canonical colors: violet-500 · cyan-400 · orange-400.
+ * Canonical colors via semantic tokens: brand-protein · brand-carbs · brand-fat.
  * No internal calculations — receives progress ratios from useFlexibleMacros.
  */
 const NutritionMacroBar: React.FC<NutritionMacroBarProps> = ({
@@ -119,14 +119,14 @@ const NutritionMacroBar: React.FC<NutritionMacroBarProps> = ({
                             <StatLabel>{label}</StatLabel>
                             <span className={[
                                 'tabular-nums text-xs leading-none',
-                                isOver ? 'text-rose-400' : 'text-zinc-400',
+                                isOver ? 'text-danger' : 'text-text-muted',
                             ].join(' ')}>
                                 {cVal}{unit} / {tVal}{unit}
                             </span>
                         </div>
 
                         {/* Progress track */}
-                        <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-surface-raised rounded-full overflow-hidden">
                             <div
                                 className={`h-full rounded-full ${activeColor} transition-all duration-700 ease-out`}
                                 style={{ width: `${pct}%` }}

@@ -24,7 +24,7 @@ const paddingClasses: Record<SquishyCardPadding, string> = {
   none: 'p-0',
   sm: 'p-3 md:p-4',
   md: 'p-4 md:p-6',
-  lg: 'p-5 md:p-8',
+  lg: 'p-5 md:p-6 xl:p-8',
 };
 
 const SquishyCard: React.FC<SquishyCardProps> = ({
@@ -40,12 +40,12 @@ const SquishyCard: React.FC<SquishyCardProps> = ({
     <div
       onClick={onClick}
       className={[
-        'bg-zinc-900/80 backdrop-blur-xl border transition-all duration-200 ease-out',
-        active ? 'border-emerald-400/50 ring-1 ring-emerald-400/50 bg-zinc-800/80' : 'border-zinc-800/50',
+        'bg-surface-bg backdrop-blur-xl border transition-all duration-200 ease-out',
+        active ? 'border-brand-accent/40 ring-1 ring-brand-accent/30 bg-surface-raised' : 'border-surface-border/70',
         radiusClasses[radius],
         paddingClasses[padding],
         interactive
-          ? 'cursor-pointer select-none hover:brightness-[1.08] active:scale-[0.98] active:bg-zinc-800/40'
+          ? 'cursor-pointer select-none hover:brightness-[1.06] active:scale-[0.98] active:bg-surface-hover'
           : '',
         className,
       ]

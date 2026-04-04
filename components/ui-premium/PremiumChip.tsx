@@ -8,8 +8,8 @@ interface PremiumChipProps {
 }
 
 const toneClasses: Record<NonNullable<PremiumChipProps['tone']>, string> = {
-  neutral: 'bg-zinc-800 text-zinc-400',
-  accent: 'bg-emerald-400/10 text-emerald-300',
+  neutral: 'bg-surface-raised text-text-secondary',
+  accent: 'bg-brand-accent/10 text-brand-accent',
 };
 
 const PremiumChip: React.FC<PremiumChipProps> = ({

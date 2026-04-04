@@ -32,13 +32,13 @@ const StreakCalendar: React.FC<StreakCalendarProps> = ({
           className={[
             'w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200',
             day.completed
-              ? 'bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.5)] scale-110 border-none'
-              : 'bg-zinc-800/50 border border-white/5',
+              ? 'bg-brand-accent scale-110 border-none'
+              : 'bg-surface-raised/50 border border-white/5',
           ].join(' ')}
         >
           {day.completed
-            ? <StatLabel className="text-zinc-950 font-black">{day.label}</StatLabel>
-            : <StatLabel className="text-zinc-500">{day.label}</StatLabel>}
+            ? <StatLabel className="text-brand-accent-foreground font-black">{day.label}</StatLabel>
+            : <StatLabel className="text-text-muted">{day.label}</StatLabel>}
         </div>
       </div>
     ))}

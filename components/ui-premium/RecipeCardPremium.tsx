@@ -23,11 +23,11 @@ interface RecipeCardPremiumProps {
 }
 
 const macroToneClasses: Record<MacroTone, string> = {
-  violet: 'bg-violet-500/15 text-violet-400',
-  cyan: 'bg-cyan-400/15 text-cyan-400',
-  orange: 'bg-orange-500/15 text-orange-400',
-  neutral: 'bg-zinc-800 text-zinc-400',
-  accent: 'bg-emerald-400/10 text-emerald-300',
+  violet: 'bg-brand-protein/15 text-brand-protein',
+  cyan: 'bg-brand-carbs/15 text-brand-carbs',
+  orange: 'bg-brand-fat/15 text-brand-fat',
+  neutral: 'bg-surface-raised text-text-muted',
+  accent: 'bg-brand-accent/15 text-brand-accent',
 };
 
 const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
@@ -48,7 +48,7 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
       onClick={onClick}
       className={['w-full max-w-[380px] mx-auto flex flex-col gap-4', className].filter(Boolean).join(' ')}
     >
-      <div className="w-full aspect-video rounded-[2rem] overflow-hidden relative border border-zinc-800/60 bg-zinc-900">
+      <div className="w-full aspect-video rounded-[2rem] overflow-hidden relative border border-surface-border/50 bg-surface-bg">
         {media ?? (
           <>
             <img
@@ -56,11 +56,11 @@ const RecipeCardPremium: React.FC<RecipeCardPremiumProps> = ({
               alt="Receta"
               className="w-full h-full object-cover opacity-50"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-base/80 to-transparent" />
           </>
         )}
         {badge ? (
-          <div className="absolute top-4 left-4 z-20 bg-zinc-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+          <div className="absolute top-4 left-4 z-20 bg-bg-base/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
             <EyebrowText>{badge}</EyebrowText>
           </div>
         ) : null}

@@ -131,11 +131,11 @@ const DashboardScreen: React.FC = () => {
 
             {/* ── HEADER — respiro superior: fecha + saludo ────────────────── */}
             <header className="flex flex-col gap-1 mb-2">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-zinc-500 select-none">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-text-muted select-none">
                     {today}
                 </span>
-                <h2 className="text-2xl font-semibold text-zinc-100 leading-tight">
-                    Hola, Fer 👋
+                <h2 className="font-heading text-2xl font-bold text-text-primary leading-tight">
+                    Hola, {dashboard.userName}
                 </h2>
             </header>
 
@@ -158,12 +158,12 @@ const DashboardScreen: React.FC = () => {
                     <motion.div variants={itemVariants} className="h-auto">
                         <SquishyCard className="h-auto flex flex-col relative overflow-hidden">
 
-                            {/* Ambient glow — token emerald, sin color hardcodeado */}
+                            {/* Ambient glow — usa token CSS, sin hex hardcodeado */}
                             <div
                                 aria-hidden
                                 className="absolute inset-0 pointer-events-none"
                                 style={{
-                                    background: 'radial-gradient(ellipse 120% 80% at 8% 10%, rgba(52,211,153,0.06) 0%, transparent 60%)',
+                                    background: 'radial-gradient(ellipse 120% 80% at 8% 10%, rgba(var(--color-brand-accent-rgb), 0.05) 0%, transparent 60%)',
                                 }}
                             />
 
@@ -172,7 +172,7 @@ const DashboardScreen: React.FC = () => {
                                 <EyebrowText>Misión de Hoy</EyebrowText>
                                 <button
                                     onClick={dashboard.openPlanner}
-                                    className="text-zinc-500 hover:text-emerald-400 transition-colors font-black uppercase tracking-widest text-[10px]"
+                                    className="text-text-muted hover:text-brand-accent transition-colors font-black uppercase tracking-widest text-[10px]"
                                 >
                                     GESTIONAR →
                                 </button>
@@ -218,14 +218,14 @@ const DashboardScreen: React.FC = () => {
                         >
                             <div className="flex items-center justify-between">
                                 <EyebrowText>NUTRICIÓN</EyebrowText>
-                                <ChevronRightIcon className="w-4 h-4 text-zinc-600 group-hover:text-zinc-300 transition-colors" />
+                                <ChevronRightIcon className="w-4 h-4 text-text-muted group-hover:text-text-secondary transition-colors" />
                             </div>
 
                             {/* Kcal restantes — del hook, no hardcodeado */}
                             <div className="flex items-baseline gap-1.5">
                                 <span className={[
                                     'font-heading font-black text-3xl tabular-nums leading-none',
-                                    macros.isKcalOver ? 'text-rose-400' : 'text-white',
+                                    macros.isKcalOver ? 'text-danger' : 'text-text-primary',
                                 ].join(' ')}>
                                     {Math.round(macros.kcalRemaining)}
                                 </span>
@@ -288,12 +288,12 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
     <div className="flex flex-col gap-5">
         {/* Time-of-day badge + type icon */}
         <div className="flex items-center gap-2">
-            <span className="bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-full px-3 py-1 font-black uppercase tracking-widest text-[10px] text-zinc-300">
+            <span className="bg-surface-raised/80 backdrop-blur-md border border-surface-border/50 rounded-full px-3 py-1 font-black uppercase tracking-widest text-[10px] text-text-secondary">
                 {task.timeOfDay}
             </span>
             {isDone
-                ? <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
-                : <TaskIcon type={task.type} className="w-5 h-5 text-emerald-400" />
+                ? <CheckCircleIcon className="w-5 h-5 text-brand-accent" />
+                : <TaskIcon type={task.type} className="w-5 h-5 text-brand-accent" />
             }
         </div>
 
@@ -301,20 +301,20 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
         <h1 className={[
             'font-heading font-black tracking-tight leading-none',
             'text-3xl md:text-4xl lg:text-5xl',
-            isDone ? 'text-zinc-600 line-through' : 'text-white',
+            isDone ? 'text-text-muted line-through' : 'text-text-primary',
         ].join(' ')}>
             {task.name}
         </h1>
 
-        <BodyText className="!text-zinc-400">
+        <BodyText>
             {taskSubline(task, cardioWeek)}
         </BodyText>
 
         {/* Progress micro-line (visible solo si hay progreso parcial) */}
         {!isDone && progress > 0 && (
-            <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-1 w-full bg-surface-raised rounded-full overflow-hidden">
                 <div
-                    className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                    className="h-full bg-brand-accent rounded-full transition-all duration-500"
                     style={{ width: `${progress * 100}%` }}
                 />
             </div>
@@ -334,7 +334,7 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
 
         {/* Tareas secundarias */}
         {secondaryTasks.length > 0 && (
-            <div className="flex flex-col gap-2 pt-4 border-t border-zinc-800/50">
+            <div className="flex flex-col gap-2 pt-4 border-t border-surface-border/40">
                 {secondaryTasks.map(sec => {
                     const uid   = getTaskUniqueId(sec);
                     const sDone = isTaskDone(sec);
@@ -346,26 +346,26 @@ const TrainingBlock: React.FC<TrainingBlockProps> = ({
                             disabled={sDone}
                             className={[
                                 'flex items-center gap-3 text-left rounded-2xl px-4 py-3',
-                                'border border-zinc-800/50 transition-all duration-200',
+                                'border border-surface-border/50 transition-all duration-200',
                                 sDone
-                                    ? 'opacity-40 cursor-default bg-zinc-900/30'
-                                    : 'bg-zinc-800/30 hover:border-emerald-400/30 cursor-pointer group',
+                                    ? 'opacity-40 cursor-default bg-surface-bg/30'
+                                    : 'bg-surface-raised/30 hover:border-brand-accent/25 cursor-pointer group',
                             ].join(' ')}
                         >
-                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-800 shrink-0">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-raised shrink-0">
                                 {sDone
-                                    ? <CheckCircleIcon className="w-4 h-4 text-emerald-400" />
-                                    : <TaskIcon type={sec.type} className="w-4 h-4 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
+                                    ? <CheckCircleIcon className="w-4 h-4 text-brand-accent" />
+                                    : <TaskIcon type={sec.type} className="w-4 h-4 text-text-muted group-hover:text-brand-accent transition-colors" />
                                 }
                             </div>
                             <div className="min-w-0 flex-grow">
-                                <p className={`text-sm font-bold truncate ${sDone ? 'line-through text-zinc-600' : 'text-zinc-100'}`}>
+                                <p className={`text-sm font-bold truncate ${sDone ? 'line-through text-text-muted' : 'text-text-primary'}`}>
                                     {sec.name}
                                 </p>
                                 <MutedText>{sec.timeOfDay}</MutedText>
                             </div>
                             {!sDone && (
-                                <ChevronRightIcon className="w-4 h-4 text-zinc-500 shrink-0 group-hover:text-emerald-400 transition-colors" />
+                                <ChevronRightIcon className="w-4 h-4 text-text-muted shrink-0 group-hover:text-brand-accent transition-colors" />
                             )}
                         </motion.button>
                     );

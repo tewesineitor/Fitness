@@ -71,9 +71,9 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
 
   const getDominantMacroColor = () => {
     const { protein, carbs, fat } = meal.totalMacros;
-    if (protein >= carbs && protein >= fat) return 'text-violet-400';
-    if (carbs >= protein && carbs >= fat) return 'text-emerald-400';
-    return 'text-rose-400';
+    if (protein >= carbs && protein >= fat) return 'text-brand-protein';
+    if (carbs >= protein && carbs >= fat) return 'text-brand-carbs';
+    return 'text-brand-fat';
   };
 
   return (
@@ -81,7 +81,7 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
       <SquishyCard interactive padding="sm" onClick={toggleExpand}>
         <div className="flex items-center gap-4">
           {/* Smart Placeholder & Picture */}
-          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 flex-none bg-zinc-800/50 backdrop-blur-md flex items-center justify-center">
+          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 flex-none bg-surface-raised backdrop-blur-md flex items-center justify-center">
             {!meal.isCustom && meal.imageUrl ? (
               <img
                 src={meal.imageUrl}
@@ -96,23 +96,23 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
           {/* Header Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal mb-1 truncate">
+              <EyebrowText className="!text-lg !text-text-primary !normal-case !tracking-normal mb-1 truncate">
                 {meal.title}
               </EyebrowText>
               <MutedText>• {meal.time}</MutedText>
             </div>
             <div className="flex gap-1 mt-1 flex-wrap">
-              <MacroPill label="P" value={meal.totalMacros.protein} colorClass="bg-violet-500/20 text-violet-400" />
-              <MacroPill label="C" value={meal.totalMacros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
-              <MacroPill label="G" value={meal.totalMacros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
+              <MacroPill label="P" value={meal.totalMacros.protein} colorClass="bg-brand-protein/20 text-brand-protein" />
+              <MacroPill label="C" value={meal.totalMacros.carbs}   colorClass="bg-brand-carbs/20 text-brand-carbs" />
+              <MacroPill label="G" value={meal.totalMacros.fat}     colorClass="bg-brand-fat/20 text-brand-fat" />
             </div>
           </div>
 
           {/* Value & Chevron */}
           <div className="flex items-center gap-3 shrink-0">
-            <StatLabel className="!text-xl !font-black !tabular-nums !text-emerald-400">{meal.totalKcal} <span className="text-xs text-zinc-500 font-normal">KCAL</span></StatLabel>
+            <StatLabel className="!text-xl !font-black !tabular-nums !text-text-primary">{meal.totalKcal} <span className="text-xs text-text-muted font-normal">KCAL</span></StatLabel>
             <ChevronDown
-              className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${
+              className={`w-5 h-5 text-text-muted transition-transform duration-300 ${
                 expanded ? 'rotate-180' : ''
               }`}
             />
@@ -128,7 +128,7 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
           <div className="overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <EyebrowText className="text-[10px] mb-2 mt-4 block">INGREDIENTES</EyebrowText>
 
-            <div className="flex flex-col divide-y divide-white/5 mt-3">
+            <div className="flex flex-col divide-y divide-surface-border/50 mt-3">
               {meal.ingredients.map((ing) => {
                 const isStd = ['g', 'ml', 'l', 'kg'].includes(ing.unit.toLowerCase());
                 return (
@@ -136,14 +136,14 @@ export const MealLogCard: React.FC<MealLogCardProps> = ({ meal }) => {
                     <StatLabel className="text-xs tabular-nums">
                       {ing.amount}{ing.unit}
                     </StatLabel>
-                    <span className="text-sm font-medium text-zinc-200 truncate">
+                    <span className="text-sm font-medium text-text-primary truncate">
                       {ing.name}
                     </span>
                     <StatLabel className="text-xs tabular-nums text-right">{ing.kcal}</StatLabel>
                     <div className="flex gap-1 justify-end">
-                      <MacroPill label="P" value={ing.macros.protein} colorClass="bg-violet-500/20 text-violet-400" />
-                      <MacroPill label="C" value={ing.macros.carbs}   colorClass="bg-emerald-500/20 text-emerald-400" />
-                      <MacroPill label="G" value={ing.macros.fat}     colorClass="bg-rose-500/20 text-rose-400" />
+                      <MacroPill label="P" value={ing.macros.protein} colorClass="bg-brand-protein/20 text-brand-protein" />
+                      <MacroPill label="C" value={ing.macros.carbs}   colorClass="bg-brand-carbs/20 text-brand-carbs" />
+                      <MacroPill label="G" value={ing.macros.fat}     colorClass="bg-brand-fat/20 text-brand-fat" />
                     </div>
                     <div className="flex items-center justify-end gap-1">
                       <IconButton

@@ -117,7 +117,7 @@ const IngredientEditModal: React.FC<IngredientEditModalProps> = ({ item, onSave,
             onChange={(e) => setProtein(e.target.value)}
             placeholder="0"
             rightElement="g"
-            inputClassName="!text-violet-400"
+            inputClassName="!text-brand-protein"
           />
           <PremiumInput
             label="Carbohidratos"
@@ -127,7 +127,7 @@ const IngredientEditModal: React.FC<IngredientEditModalProps> = ({ item, onSave,
             onChange={(e) => setCarbs(e.target.value)}
             placeholder="0"
             rightElement="g"
-            inputClassName="!text-emerald-400"
+            inputClassName="!text-brand-accent"
           />
           <PremiumInput
             label="Grasas"
@@ -137,16 +137,16 @@ const IngredientEditModal: React.FC<IngredientEditModalProps> = ({ item, onSave,
             onChange={(e) => setFat(e.target.value)}
             placeholder="0"
             rightElement="g"
-            inputClassName="!text-rose-400"
+            inputClassName="!text-brand-fat"
           />
         </div>
       </div>
 
       {/* ── KCAL live preview ───────────────────────────── */}
-      <div className="flex items-center justify-between px-5 py-3 bg-zinc-950/60 rounded-2xl border border-zinc-800/50">
-        <MutedText className="!text-zinc-500">Calorías calculadas</MutedText>
+      <div className="flex items-center justify-between px-5 py-3 bg-bg-base/60 rounded-2xl border border-surface-border/50">
+        <MutedText>Calorías calculadas</MutedText>
         <div className="flex items-baseline gap-1.5">
-          <StatLabel className="!text-2xl !font-black !text-emerald-400 !tabular-nums leading-none">
+          <StatLabel className="!text-2xl !font-black !text-brand-accent !tabular-nums leading-none">
             {liveKcal}
           </StatLabel>
           <MutedText>KCAL</MutedText>

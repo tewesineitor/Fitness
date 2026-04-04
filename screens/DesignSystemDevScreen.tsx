@@ -35,7 +35,9 @@ import {
   StatLabel,
   StatValue,
   MonoValue,
+  MediumValue,
   GiantValue,
+  TabLabel,
 } from '../components/ui-premium/Typography';
 
 type TypographyShowcaseItem = {
@@ -46,7 +48,7 @@ type TypographyShowcaseItem = {
 const typographyItems: TypographyShowcaseItem[] = [
   {
     label: 'EyebrowText',
-    preview: <EyebrowText>System Token</EyebrowText>,
+    preview: <EyebrowText>token de sistema · acento</EyebrowText>,
   },
   {
     label: 'ModalTitle',
@@ -73,12 +75,28 @@ const typographyItems: TypographyShowcaseItem[] = [
     preview: <MutedText>Texto de soporte para hints y metadata secundaria.</MutedText>,
   },
   {
+    label: 'StatLabel',
+    preview: <StatLabel>Etiqueta de métrica · micro-caps</StatLabel>,
+  },
+  {
     label: 'StatValue',
     preview: <StatValue>128</StatValue>,
   },
   {
+    label: 'MediumValue',
+    preview: <MediumValue>2,840</MediumValue>,
+  },
+  {
+    label: 'GiantValue',
+    preview: <GiantValue>98</GiantValue>,
+  },
+  {
     label: 'MonoValue',
     preview: <MonoValue>00:42:18</MonoValue>,
+  },
+  {
+    label: 'TabLabel',
+    preview: <TabLabel>Tab de navegación</TabLabel>,
   },
 ];
 
@@ -244,22 +262,45 @@ const DesignSystemDevScreen: React.FC = () => {
             <SectionTitle>Colores Semánticos</SectionTitle>
             <MutedText>Paleta cromática canónica del sistema. Cada token tiene un rol semántico único e irremplazable.</MutedText>
           </div>
+          {/* ─ Paleta canónica ─ */}
           <div className="flex flex-wrap gap-6">
             {[
-              { label: 'Fondo Base', bg: 'bg-zinc-950' },
-              { label: 'Cristal', bg: 'bg-zinc-900/80' },
-              { label: 'Éxito / Ideal', bg: 'bg-emerald-400' },
-              { label: 'Proteína', bg: 'bg-violet-500' },
-              { label: 'Cardio / Carbos', bg: 'bg-cyan-400' },
-              { label: 'Fuerza / Grasas', bg: 'bg-orange-500' },
-              { label: 'Advertencia', bg: 'bg-amber-400' },
-              { label: 'Límite', bg: 'bg-rose-500' },
-            ].map(({ label, bg }) => (
+              { label: 'bg-base', token: 'var(--color-bg-base)', cls: 'bg-bg-base border border-surface-border' },
+              { label: 'surface-raised', token: 'rgb(var(--color-surface-raised-rgb))', cls: 'bg-surface-raised border border-surface-border' },
+              { label: 'brand-accent', token: 'rgb(var(--color-brand-accent-rgb))', cls: 'bg-brand-accent' },
+              { label: 'brand-protein', token: 'rgb(var(--color-brand-protein-rgb))', cls: 'bg-brand-protein' },
+              { label: 'brand-carbs', token: 'rgb(var(--color-brand-carbs-rgb))', cls: 'bg-brand-carbs' },
+              { label: 'brand-fat', token: 'rgb(var(--color-brand-fat-rgb))', cls: 'bg-brand-fat' },
+              { label: 'warning', token: 'rgb(var(--color-warning-rgb))', cls: 'bg-warning' },
+              { label: 'danger', token: 'rgb(var(--color-danger-rgb))', cls: 'bg-danger' },
+            ].map(({ label, cls }) => (
               <div key={label} className="flex flex-col items-center gap-2">
-                <div className={['w-16 h-16 rounded-2xl border border-white/5', bg].join(' ')} />
-                <MutedText>{label}</MutedText>
+                <div className={['w-16 h-16 rounded-2xl', cls].join(' ')} />
+                <MutedText className="text-center max-w-[72px] truncate">{label}</MutedText>
               </div>
             ))}
+          </div>
+
+          {/* ─ Comparación de opciones de acento ─ */}
+          <div className="flex flex-col gap-3">
+            <EyebrowText>Opciones de acento · verde menta</EyebrowText>
+            <div className="flex flex-wrap gap-6 items-end">
+              {[
+                { label: 'Anterior · Neón', hex: '#4ADE80', note: 'emerald-400' },
+                { label: 'Menta Suave · Activo', hex: '#6EE7B7', note: 'emerald-300 ✓' },
+                { label: 'Menta Teal', hex: '#5EEAD4', note: 'teal-300' },
+                { label: 'Sage Verde', hex: '#86EFAC', note: 'green-300' },
+              ].map(({ label, hex, note }) => (
+                <div key={hex} className="flex flex-col items-center gap-2">
+                  <div
+                    className="w-16 h-16 rounded-2xl"
+                    style={{ backgroundColor: hex }}
+                  />
+                  <MutedText className="text-center max-w-[80px] text-[10px] leading-tight">{label}</MutedText>
+                  <span className="text-[9px] font-mono text-text-muted/60">{note}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -388,8 +429,8 @@ const DesignSystemDevScreen: React.FC = () => {
             >
               <EyebrowText>active — selección activa</EyebrowText>
               <CardTitle>Estado seleccionado</CardTitle>
-              <BodyText>Ring esmeralda visible cuando la tarjeta es la opción activa del sistema.</BodyText>
-              <MutedText>ring-1 ring-emerald-400/50 border-emerald-400/50</MutedText>
+              <BodyText>Ring acento visible cuando la tarjeta es la opción activa del sistema.</BodyText>
+              <MutedText>ring-1 ring-brand-accent/30 border-brand-accent/40</MutedText>
             </SquishyCard>
           </div>
         </section>
@@ -411,7 +452,7 @@ const DesignSystemDevScreen: React.FC = () => {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Controles de Segmento (Tabs)</SectionTitle>
-            <MutedText>Píldoras segmentadas con acento esmeralda en estado activo. Extraídas de FuerzaScreen (selector RIR).</MutedText>
+            <MutedText>Píldoras segmentadas con acento en estado activo. Extraídas de FuerzaScreen (selector RIR).</MutedText>
           </div>
           <SegmentedTabs
             label="RIR — Reps en reserva"
@@ -424,7 +465,7 @@ const DesignSystemDevScreen: React.FC = () => {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <SectionTitle>Etiquetas (Badges)</SectionTitle>
-            <MutedText>Alerta contextual con fondo esmeralda traslúcido. Extraída de FuerzaScreen (foco técnico).</MutedText>
+            <MutedText>Alerta contextual con fondo acento traslúcido. Extraída de FuerzaScreen (foco técnico).</MutedText>
           </div>
           <div className="flex flex-col gap-3">
             <PremiumBadge icon="ℹ️">
@@ -452,7 +493,7 @@ const DesignSystemDevScreen: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4 max-w-[380px] mx-auto w-full">
             <SquishyCard interactive padding="md" className="flex flex-col items-center gap-3">
-              <svg className="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg className="w-8 h-8 text-brand-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="5" r="1.5" />
                 <path d="M8 17l1.5-5 2.5 2 2.5-4L16 17" />
                 <path d="M7 12l1-3 4 1 3-3" />
@@ -462,7 +503,7 @@ const DesignSystemDevScreen: React.FC = () => {
             </SquishyCard>
 
             <SquishyCard interactive padding="md" className="flex flex-col items-center gap-3">
-              <svg className="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg className="w-8 h-8 text-brand-carbs" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M3 20l4-8 4 4 4-10 4 14" />
                 <path d="M3 20h18" />
               </svg>
@@ -476,7 +517,7 @@ const DesignSystemDevScreen: React.FC = () => {
               className="flex flex-col items-center gap-3 col-span-2"
               onClick={() => setIsRuckingFormOpen(true)}
             >
-              <svg className="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg className="w-8 h-8 text-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
                 <path d="M12 11v6M9 14h6" />
@@ -753,6 +794,41 @@ const DesignSystemDevScreen: React.FC = () => {
           )}
         </section>
 
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <SectionTitle>Pruebas de Responsividad y Fluidez</SectionTitle>
+            <MutedText>Validación de escalado clamp() y contenedores SVG aspect-ratio.</MutedText>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Prueba de Tipografía Fluida */}
+            <SquishyCard padding="lg" className="flex flex-col gap-4">
+              <EyebrowText>Test: GiantValue Scaling</EyebrowText>
+              <div className="flex flex-col items-center justify-center py-8 bg-surface-raised/30 rounded-xl">
+                <GiantValue>12,450</GiantValue>
+                <MutedText className="mt-2">KCAL TOTALES</MutedText>
+              </div>
+              <BodyText className="text-xs">
+                Este valor usa <code>clamp(2.5rem, 2.5vw + 2rem, 4.5rem)</code>. 
+                Debería reducirse fluidamente en móviles.
+              </BodyText>
+            </SquishyCard>
+
+            {/* Prueba de SVG Responsivo */}
+            <SquishyCard padding="lg" className="flex flex-col gap-4">
+              <EyebrowText>Test: Responsive SVG Ring</EyebrowText>
+              <div className="max-w-[200px] mx-auto w-full">
+                <div className="aspect-square relative flex items-center justify-center p-4 bg-brand-accent/5 rounded-full ring-1 ring-brand-accent/10">
+                  <StatValue>85%</StatValue>
+                </div>
+              </div>
+              <BodyText className="text-xs">
+                Contenedor restringido a 200px. El contenido interno debe mantenerse centrado y proporcional.
+              </BodyText>
+            </SquishyCard>
+          </div>
+        </section>
+
         {/* ── Tarjetas de Historial (Bitácora) ─────────────────────────────── */}
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
@@ -765,8 +841,8 @@ const DesignSystemDevScreen: React.FC = () => {
           <div className="flex flex-col">
             {/* HUD Date Divider */}
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Hoy</span>
-              <div className="flex-1 h-px bg-zinc-800/40" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-text-muted">Hoy</span>
+              <div className="flex-1 h-px bg-surface-border/40" />
             </div>
 
             <LogEntryCard
@@ -790,8 +866,8 @@ const DesignSystemDevScreen: React.FC = () => {
             
             {/* HUD Date Divider */}
             <div className="flex items-center gap-3 mt-4 mb-2">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">Ayer</span>
-              <div className="flex-1 h-px bg-zinc-800/40" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-text-muted">Ayer</span>
+              <div className="flex-1 h-px bg-surface-border/40" />
             </div>
 
             <LogEntryCard
@@ -812,8 +888,8 @@ const DesignSystemDevScreen: React.FC = () => {
 
             {/* HUD Date Divider */}
             <div className="flex items-center gap-3 mt-4 mb-2">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">01 Mar 2026</span>
-              <div className="flex-1 h-px bg-zinc-800/40" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-text-muted">01 Mar 2026</span>
+              <div className="flex-1 h-px bg-surface-border/40" />
             </div>
 
             <LogEntryCard
@@ -902,7 +978,7 @@ const DesignSystemDevScreen: React.FC = () => {
             variant="ghost"
             size="sm"
             leftIcon={<SparklesIcon className="w-4 h-4" />}
-            className="w-full border border-cyan-400/20 text-cyan-400"
+            className="w-full border border-brand-carbs/20 text-brand-carbs"
           >
             Leer resumen con IA
           </PremiumButton>
@@ -925,7 +1001,7 @@ const DesignSystemDevScreen: React.FC = () => {
           <SquishyCard padding="md" className="flex flex-col items-center justify-center text-center gap-2">
             <EyebrowText>RITMO PROMEDIO</EyebrowText>
             <GiantValue>
-              0&apos;00&quot;<span className="text-xl text-zinc-500">/km</span>
+              0&apos;00&quot;<span className="text-xl text-text-muted">/km</span>
             </GiantValue>
           </SquishyCard>
 
@@ -981,7 +1057,7 @@ const DesignSystemDevScreen: React.FC = () => {
             <img src="/assets/ui/modal-pulse.svg" alt="Pulse" className="absolute inset-0 w-full h-full object-cover" />
           }
         >
-          <EyebrowText className="text-emerald-400 mb-2">MÚSCULOS IMPLICADOS</EyebrowText>
+          <EyebrowText className="text-brand-accent mb-2">MÚSCULOS IMPLICADOS</EyebrowText>
           <div className="flex flex-wrap gap-2">
             {['Isquiotibiales', 'Glúteo Mayor', 'Erectores Espinales'].map((m) => (
               <span

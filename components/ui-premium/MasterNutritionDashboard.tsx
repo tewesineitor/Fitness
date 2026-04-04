@@ -30,7 +30,7 @@ const NavButton: React.FC<NavButtonProps> = ({ direction, onClick }) => (
   <button
     onClick={onClick}
     aria-label={direction === 'prev' ? 'Día anterior' : 'Día siguiente'}
-    className="h-14 w-14 rounded-full border border-zinc-700/50 bg-zinc-900/80 hover:border-zinc-500/70 hover:bg-zinc-800/90 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-150 select-none text-zinc-400 hover:text-zinc-200"
+    className="h-14 w-14 rounded-full border border-surface-border bg-surface-bg/80 hover:border-text-secondary hover:bg-surface-raised/90 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-150 select-none text-text-muted hover:text-text-primary"
   >
     <svg width="14" height="14" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       {direction === 'prev'
@@ -69,13 +69,13 @@ const BarRow: React.FC<BarRowProps> = ({
     <div className="flex items-end justify-between">
       <EyebrowText className={labelClass}>{label}</EyebrowText>
       <div className="flex items-baseline gap-1.5">
-        <MonoValue className="!text-[14px] sm:!text-[15px] !text-zinc-100 !font-bold leading-none tracking-tight">{current}</MonoValue>
-        <MutedText className="!text-[10px] sm:!text-[11px] font-bold tracking-tight text-zinc-500 opacity-80">{goalText}</MutedText>
+        <MonoValue className="!text-[14px] sm:!text-[15px] !text-text-primary !font-bold leading-none tracking-tight">{current}</MonoValue>
+        <MutedText className="!text-[10px] sm:!text-[11px] font-bold tracking-tight text-text-muted opacity-80">{goalText}</MutedText>
       </div>
     </div>
 
     <div className="relative h-4">
-      <div className="absolute inset-0 overflow-hidden rounded-full border border-white/5 bg-zinc-800">
+      <div className="absolute inset-0 overflow-hidden rounded-full border border-white/5 bg-surface-raised">
         <div
           className={['h-full rounded-full transition-all duration-700 ease-out', fillClass].join(' ')}
           style={{ width: `${Math.min(pct, 100)}%` }}
@@ -89,7 +89,7 @@ const BarRow: React.FC<BarRowProps> = ({
           style={{ left: `${marker.pct}%` }}
         >
           {marker.label ? (
-            <MutedText className="absolute left-1/2 top-[120%] -translate-x-1/2 whitespace-nowrap !text-[9px] font-semibold tracking-wider text-zinc-400">
+            <MutedText className="absolute left-1/2 top-[120%] -translate-x-1/2 whitespace-nowrap !text-[9px] font-semibold tracking-wider text-text-muted">
               {marker.label}
             </MutedText>
           ) : null}
@@ -149,14 +149,14 @@ const MacroLimitCard: React.FC<MacroLimitCardProps> = ({
       </div>
     </div>
 
-    <div className="grid grid-cols-3 gap-3 border-t border-white/5 pt-4">
+    <div className="grid grid-cols-3 gap-3 border-t border-surface-border/50 pt-4">
       {[
         { label: 'MIN', value: `${min}g` },
         { label: 'IDEAL', value: `${ideal}g` },
         { label: 'MAX', value: `${max}g` },
       ].map((item) => (
         <div key={item.label} className="flex flex-col items-center gap-1 text-center">
-          <StatLabel className="text-zinc-500">{item.label}</StatLabel>
+          <StatLabel className="text-text-muted">{item.label}</StatLabel>
           <MonoValue>{item.value}</MonoValue>
         </div>
       ))}
@@ -203,20 +203,20 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
   const isAlert = !isFatMinMet || isFatMinimumAtRisk;
 
   const ringStrokeClass = isKcalOver
-    ? 'stroke-rose-500'
+    ? 'stroke-danger'
     : isAlert || kcalProgress > 0.85
-      ? 'stroke-amber-400'
-      : 'stroke-emerald-400';
+      ? 'stroke-warning'
+      : 'stroke-brand-accent';
   const dashOffset = CIRCUMFERENCE * (1 - Math.min(kcalProgress, 1));
 
   const carbBarClass = isAlert
-    ? 'bg-gradient-to-r from-amber-500 to-amber-300'
-    : 'bg-gradient-to-r from-cyan-500 to-cyan-400';
+    ? 'bg-warning'
+    : 'bg-brand-carbs';
   const fatBarClass = isAlert
-    ? 'bg-gradient-to-r from-rose-600 to-rose-400'
-    : 'bg-gradient-to-r from-violet-500 to-violet-400';
-  const carbLabelClass = isAlert ? '!text-amber-400' : '!text-cyan-400';
-  const fatLabelClass = isAlert ? '!text-rose-400' : '!text-violet-400';
+    ? 'bg-danger'
+    : 'bg-brand-fat';
+  const carbLabelClass = isAlert ? '!text-warning' : '!text-brand-carbs';
+  const fatLabelClass = isAlert ? '!text-danger' : '!text-brand-fat';
 
   const proteinPct = proteinProgress * 100;
   const carbPct = target.carbMax > 0 ? (consumed.carbs / target.carbMax) * 100 : 0;
@@ -234,22 +234,22 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
 
   const kcalStr = Math.round(kcalRemaining).toString();
   const isLargeKcal = kcalStr.length >= 4;
-  const kcalFontSizeClass = isLargeKcal ? '!text-[36px] sm:!text-[46px]' : '!text-[48px] sm:!text-[56px]';
+  const kcalFontSizeClass = isLargeKcal ? 'text-[length:var(--font-size-kcal-ring-tight)]' : 'text-[length:var(--font-size-kcal-ring)]';
 
-  const carbCardClass = isAlert ? '!bg-zinc-900/60 !border-amber-500/30 shadow-lg shadow-amber-500/5' : '!bg-zinc-900/60 !border-white/5';
+  const carbCardClass = isAlert ? '!bg-surface-raised/60 !border-warning/30' : '!bg-surface-bg/60 !border-surface-border/50';
   const fatCardClass = isAlert
-    ? '!bg-zinc-900/60 !border-rose-500/30 shadow-lg shadow-rose-500/5'
-    : '!bg-zinc-900/60 !border-white/5';
-  const carbValueClass = isAlert ? '!text-amber-400' : '';
-  const fatValueClass = isAlert ? '!text-rose-400' : '';
+    ? '!bg-surface-raised/60 !border-danger/30'
+    : '!bg-surface-bg/60 !border-surface-border/50';
+  const carbValueClass = isAlert ? '!text-warning' : '';
+  const fatValueClass = isAlert ? '!text-danger' : '';
 
   const fatGap = Math.max(0, Math.round(target.fatMin - consumed.fat));
   const fatPillText = isFatMinMet
     ? 'Mínimo cubierto'
     : `Faltan ${fatGap}g para el mínimo vital`;
   const fatPillClass = isFatMinMet
-    ? 'bg-emerald-400/20 text-emerald-400'
-    : 'bg-rose-500/20 text-rose-400 animate-pulse';
+    ? 'bg-brand-accent/20 text-brand-accent'
+    : 'bg-danger/20 text-danger animate-pulse';
 
   const carbPillText = consumed.carbs >= target.carbMax
     ? 'Límite máximo alcanzado'
@@ -257,10 +257,10 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
       ? 'Ideal alcanzado'
       : `${Math.round(target.carbIdeal - consumed.carbs)}g para el ideal`;
   const carbPillClass = consumed.carbs >= target.carbMax
-    ? 'bg-amber-400/20 text-amber-400'
+    ? 'bg-warning/20 text-warning'
     : consumed.carbs >= target.carbIdeal
-      ? 'bg-emerald-400/20 text-emerald-400'
-      : 'bg-zinc-800/60 text-zinc-400';
+      ? 'bg-brand-accent/20 text-brand-accent'
+      : 'bg-surface-raised/60 text-text-muted';
 
   return (
     <div className={['flex flex-col gap-4', className].filter(Boolean).join(' ')}>
@@ -269,7 +269,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
           <div className="flex items-center gap-8">
             <NavButton direction="prev" onClick={onPrevDay} />
             <div className="flex min-w-[8rem] flex-col items-center gap-2 text-center">
-              <GiantValue className="!text-[48px] sm:!text-[56px] !leading-none tabular-nums tracking-tight text-white">
+              <GiantValue className="!leading-none tabular-nums tracking-tight text-text-primary">
                 {dayLabel}
               </GiantValue>
               <MutedText className="text-sm sm:text-base tracking-wide">{dateSubtitleCap}</MutedText>
@@ -279,12 +279,10 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
         </div>
 
         <SquishyCard padding="lg" className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-14 lg:p-12">
-          <div className="relative mx-auto h-[240px] w-[240px] flex-shrink-0 sm:mx-0">
+          <div className="relative w-full max-w-[240px] aspect-square flex-shrink-0 mx-auto sm:mx-0">
             <svg
-              width={RING_SIZE}
-              height={RING_SIZE}
               viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-              className="-rotate-90"
+              className="w-full h-full -rotate-90"
               aria-hidden="true"
             >
               <circle
@@ -293,7 +291,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
                 r={RADIUS}
                 fill="none"
                 strokeWidth={STROKE_W}
-                className="stroke-zinc-900"
+                className="stroke-surface-raised"
               />
               <circle
                 cx={CENTER}
@@ -309,10 +307,10 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
             </svg>
 
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pt-1">
-              <GiantValue className={[kcalFontSizeClass, '!leading-none tabular-nums tracking-tight text-white mb-0.5'].join(' ')}>
+              <GiantValue className={[kcalFontSizeClass, '!leading-none tabular-nums tracking-tight text-text-primary mb-0.5'].join(' ')}>
                 {kcalStr}
               </GiantValue>
-              <EyebrowText className={isKcalOver ? '!text-rose-500' : isAlert || kcalProgress > 0.85 ? '!text-amber-400' : '!text-emerald-400'}>
+              <EyebrowText className={isKcalOver ? '!text-danger' : isAlert || kcalProgress > 0.85 ? '!text-warning' : '!text-brand-accent'}>
                 KCAL REST.
               </EyebrowText>
               <MutedText className="!text-[10px] mt-0.5">/ {target.kcal}</MutedText>
@@ -325,8 +323,8 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
               current={`${Math.round(consumed.protein)}G`}
               goalText={`/ ${target.protein}G`}
               pct={proteinPct}
-              fillClass="bg-gradient-to-r from-emerald-500 to-emerald-400"
-              labelClass="!text-emerald-400"
+              fillClass="bg-brand-accent"
+              labelClass="!text-brand-accent"
             />
             <BarRow
               label="CARBOS"
@@ -353,7 +351,7 @@ const MasterNutritionDashboard: React.FC<MasterNutritionDashboardProps> = ({
       <SquishyCard padding="md">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="flex-shrink-0 text-emerald-400">
+            <span className="flex-shrink-0 text-brand-accent">
               <IconInfo />
             </span>
             <CardTitle>Bolsa Compartida C+G</CardTitle>

@@ -1,18 +1,23 @@
 # UI_MANIFEST.md
 > Auto-generated inventory of the Premium HUD UI Kit.
 > Audience: LLMs assembling screens. Do NOT invent ad-hoc classes. Use ONLY components and tokens documented here.
-> Last updated: 2026-04-02
-> Design system: Dark Crystal 2026 · Token base: Tailwind zinc/emerald/violet/rose/amber
+> Last updated: 2026-04-03
+> Design system: Zinc Noir 2026 · Token base: CSS custom properties via tailwind.config.cjs semantic tokens
 
 ---
 
 ## DESIGN SYSTEM RULES (READ FIRST)
 
-- **SSOT font:** `font-heading` (display) and `font-mono` (tabular data).
-- **Primary accent:** `emerald-400` — hero metrics, CTAs, active states.
-- **Secondary accents:** `violet-400` (protein/AI), `rose-400` (fat/danger), `amber-400` (PRs/warnings), `cyan-400` (cardio/recovery).
-- **Surface base:** `bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50` — always use `SquishyCard` for containers, never raw divs.
-- **Typography:** NEVER invent text classes. Import from `Typography.tsx`. Override only with `!` prefix when absolutely needed.
+- **SSOT font:** `Satoshi Variable` (display/body) and `JetBrains Mono` (tabular data/stats).
+- **Primary accent:** `brand-accent` — Mentil Teal `#5EEAD4` (teal-300). Foreground: Zinc-950.
+- **Macro colors (canonical):** `brand-protein` (violet-400), `brand-carbs` (sky-400), `brand-fat` (orange-400). All metrics must use these exact tokens.
+- **Fluid Typography:** Use `--font-size-*` CSS variables with `clamp()` for values. NEVER hardcode `text-[...px]` for numbers or titles.
+- **Responsive SVGs:** All complex SVG widgets (rings, charts) MUST be wrapped in a container with `aspect-square` or `aspect-video` and a `max-w-[Npx]` limit for 2K screens.
+- **Semantic states:** `success` = accent, `warning` = amber-400, `danger` = rose-400.
+- **Surface base:** `bg-surface-bg backdrop-blur-xl border border-surface-border/70` — always use `SquishyCard` for containers, never raw divs with hardcoded zinc colors.
+- **Background:** `bg-bg-base` = Zinc Noir `#09090b` (OLED-safe, no blue tint). Never hardcode `#080c12` or slate-based values.
+- **Typography:** NEVER invent text classes. Import from `Typography.tsx`. Override only with `!` prefix when absolutely needed. NEVER use `text-white` or `text-zinc-*` directly — use `text-text-primary`, `text-text-secondary`, `text-text-muted`.
+- **Gradient inlines:** If a style prop gradient is needed, use `rgba(var(--color-brand-accent-rgb), opacity)`. NEVER hardcode `rgba(52,211,153,...)` or any hex.
 - **Tolerated arbitrary values:** `max-w-[Npx]` for card max-width constraints, `w-[Npx]/h-[Npx]` for SVG geometry, `style={{ width: `${pct}%` }}` for data-driven widths, `style={{ top/left: calc(...) }}` for runtime-positioned labels. All others are violations.
 
 ---
@@ -110,10 +115,11 @@ minimumTime: number;  // seconds — threshold for hasReachedMinimum
 interface SquishyCardProps {
   children: React.ReactNode;
   className?: string;
-  radius?: 'xl' | '2xl' | '3xl' | 'squishy'; // default: 'squishy' = rounded-[2rem]
-  padding?: 'none' | 'sm' | 'md' | 'lg';      // default: 'md' = p-6
+  radius?: 'xl' | '2xl' | '3xl' | 'squishy'; // default: 'squishy'
+  padding?: 'none' | 'sm' | 'md' | 'lg';      // default: 'md'
+                                              // 'lg' is responsive: p-5 md:p-8
   interactive?: boolean;   // adds cursor-pointer, hover brightness, active scale
-  active?: boolean;        // adds emerald ring (for selected states)
+  active?: boolean;        // adds brand-accent ring (for selected states)
   onClick?: () => void;
 }
 ```
@@ -124,19 +130,20 @@ interface SquishyCardProps {
 **File:** `components/ui-premium/Typography.tsx`  
 **Purpose:** Canonical typographic tokens. Import and use these instead of raw Tailwind text classes.
 
-| Token | Element | Visual Role | Key classes |
+| Token | Element | Visual Role | Scale (Fluid) |
 |---|---|---|---|
-| `EyebrowText` | `<span>` | Category label above headings | `text-emerald-400 font-black uppercase tracking-widest text-[10px]` |
-| `ModalTitle` | `<h2>` | Modal/sheet main heading | `font-heading text-3xl font-black text-white` |
-| `SectionTitle` | `<h3>` | In-screen section heading | `font-heading text-xl font-black text-white` |
-| `CardTitle` | `<h4>` | Bento/compact card heading | `font-heading text-base font-bold text-white` |
-| `BodyText` | `<p>` | Standard body paragraph | `text-sm text-zinc-400 leading-relaxed` |
-| `MutedText` | `<span>` | Hints, metadata, timestamps | `text-xs text-zinc-500 leading-relaxed` |
-| `StatLabel` | `<span>` | Metric label (micro-caps) | `text-[9px] font-black uppercase tracking-[0.18em] text-zinc-500` |
-| `StatValue` | `<span>` | Large KPI numeric value | `font-heading text-4xl font-black text-white tabular-nums` |
-| `MonoValue` | `<span>` | Tabular numeric data | `font-mono text-sm font-semibold text-zinc-300 tabular-nums` |
-| `GiantValue` | `<span>` | Hero display number (text-7xl) | `font-mono text-7xl font-black tracking-tighter text-white tabular-nums` |
-| `TabLabel` | `<span>` | Button/tab tap target text | `text-base font-black tracking-wide` |
+| `EyebrowText` | `<span>` | Category label above headings | `text-2xs` (fixed) |
+| `ModalTitle` | `<h2>` | Modal/sheet main heading | `--font-size-modal-title` |
+| `SectionTitle` | `<h3>` | In-screen section heading | `text-xl` (fixed) |
+| `CardTitle` | `<h4>` | Bento/compact card heading | `text-base` (fixed) |
+| `BodyText` | `<p>` | Standard body paragraph | `text-sm` (fixed) |
+| `MutedText` | `<span>` | Hints, metadata, timestamps | `text-xs` (fixed) |
+| `StatLabel` | `<span>` | Metric label (micro-caps) | `text-2xs` (tracking-widest) |
+| `StatValue` | `<span>` | Large KPI numeric value | `--font-size-stat-value` |
+| `MonoValue` | `<span>` | Tabular numeric data | `font-mono text-sm` |
+| `MediumValue` | `<span>` | Secondary hero value | `--font-size-medium-value` |
+| `GiantValue` | `<span>` | Hero display number (Main KPI) | `--font-size-giant` |
+| `TabLabel` | `<span>` | Button/tab tap target text | `text-base` |
 
 All accept `className?: string` for overrides (use `!` prefix to force override).
 
@@ -496,7 +503,8 @@ interface WeeklyStreakTrackerProps {
 
 ### `MasterNutritionDashboard`
 **File:** `components/ui-premium/MasterNutritionDashboard.tsx`  
-**Purpose:** Full nutrition day view. SVG calorie ring (adaptive color: emerald/amber/rose), protein/carbs/fat progress bars with MIN+IDEAL dual markers, day navigator, and Shared Bag (C+G) MacroLimitCards. Internally calls `useFlexibleMacros`.
+**Purpose:** Full nutrition day view. SVG calorie ring (adaptive color: accent/warning/danger), protein/carbs/fat progress bars with MIN+IDEAL dual markers, day navigator. Internally calls `useFlexibleMacros`.
+**Responsiveness:** Central ring is fluid via `aspect-square` container. Typography uses `--font-size-kcal-ring`.
 
 ```ts
 interface MasterNutritionDashboardProps {
@@ -568,7 +576,8 @@ interface TrendChartCardProps {
 
 ### `SmartRestTimer`
 **File:** `components/ui-premium/SmartRestTimer.tsx`  
-**Purpose:** Animated circular countdown timer for between-set rest. Ring color changes by phase (cyan=recovery, emerald=ready, amber=urgency). Buttons: +15s and "INICIAR SERIE". Internally uses `useRestTimer`.
+**Purpose:** Animated circular countdown timer for between-set rest. Ring color changes by phase (cyan=recovery, accent=ready, warning=urgency). Internally uses `useRestTimer`.
+**Responsiveness:** Outer ring wrapped in `aspect-square` with `max-w-[min(80vw,320px)]`. Scaling is fluid.
 
 ```ts
 interface SmartRestTimerProps {

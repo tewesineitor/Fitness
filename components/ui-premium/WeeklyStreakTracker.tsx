@@ -36,7 +36,7 @@ const WeeklyStreakTracker: React.FC<WeeklyStreakTrackerProps> = ({
 }) => (
   <div
     className={[
-      'bg-zinc-900/40 backdrop-blur-md rounded-2xl p-4 flex justify-between items-center',
+      'bg-surface-bg/60 backdrop-blur-md rounded-2xl p-4 flex justify-between items-center',
       className,
     ]
       .filter(Boolean)
@@ -49,34 +49,34 @@ const WeeklyStreakTracker: React.FC<WeeklyStreakTrackerProps> = ({
           className={[
             'w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200',
             day.isToday
-              ? 'ring-2 ring-emerald-500/50 ring-offset-2 ring-offset-zinc-950'
+              ? 'ring-2 ring-brand-accent/40 ring-offset-2 ring-offset-bg-base'
               : '',
             day.status === 'completed'
-              ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.35)] text-zinc-950'
+              ? 'bg-brand-accent text-brand-accent-foreground'
               : day.status === 'failed'
-              ? 'bg-zinc-800'
-              : 'bg-zinc-800/50 border border-white/5',
+              ? 'bg-surface-raised'
+              : 'bg-surface-raised/50 border border-surface-border/30',
           ]
             .filter(Boolean)
             .join(' ')}
         >
           {day.status === 'completed' && (
-            <span className="text-zinc-950">
+            <span className="text-brand-accent-foreground">
               <CheckIcon />
             </span>
           )}
           {day.status === 'failed' && (
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500/60 block" />
+            <span className="w-1.5 h-1.5 rounded-full bg-danger/50 block" />
           )}
         </div>
 
         {/* Day initial */}
-        <EyebrowText className="!text-[10px] !normal-case block text-center mt-2">
+        <EyebrowText className="!normal-case block text-center mt-2">
           {day.dayInitial}
         </EyebrowText>
         {/* Day number */}
         {day.dayNumber !== undefined && (
-          <MutedText className="!text-[10px] block text-center -mt-1">
+          <MutedText className="block text-center -mt-1 opacity-80 scale-90">
             {day.dayNumber}
           </MutedText>
         )}

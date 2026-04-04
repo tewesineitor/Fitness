@@ -13,15 +13,15 @@ interface PremiumInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const inputBaseClasses = [
-  'w-full bg-transparent text-base font-medium text-zinc-100 outline-none resize-none',
-  'placeholder:text-zinc-500',
+  'w-full bg-transparent text-base font-medium text-text-primary outline-none resize-none',
+  'placeholder:text-text-muted',
 ].join(' ');
 
 const wrapperClasses = [
   'flex items-center gap-3',
-  'bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[1.25rem] px-4 py-3',
+  'bg-surface-bg/80 backdrop-blur-xl border border-surface-border/50 rounded-[1.25rem] px-4 py-3',
   'transition-all duration-200 ease-out',
-  'focus-within:border-emerald-400/50 focus-within:ring-1 focus-within:ring-emerald-400/50',
+  'focus-within:border-brand-accent/50 focus-within:ring-1 focus-within:ring-brand-accent/50',
 ].join(' ');
 
 const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>((
@@ -42,7 +42,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>((
     <div className={['flex flex-col gap-2', className].filter(Boolean).join(' ')}>
       {label && <EyebrowText className="mb-2">{label}</EyebrowText>}
       <div className={wrapperClasses}>
-        {leftIcon && <span className="flex-shrink-0 text-zinc-400">{leftIcon}</span>}
+        {leftIcon && <span className="flex-shrink-0 text-text-secondary">{leftIcon}</span>}
         {multiline ? (
           <textarea
             rows={rows}
@@ -57,7 +57,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>((
           />
         )}
         {rightElement && (
-          <span className="flex-shrink-0 text-zinc-400">
+          <span className="flex-shrink-0 text-text-secondary">
             <MutedText>{rightElement}</MutedText>
           </span>
         )}

@@ -17,12 +17,12 @@ import { SparklesIcon, MoonIcon, SunIcon } from '../../../components/icons';
 // Sleep    → cyan MoonIcon
 // Steps    → emerald footsteps SVG (inline, no icon file)
 
-const ProteinIcon = React.createElement(SparklesIcon, { className: 'w-3.5 h-3.5 text-violet-400' });
-const CaloriesIcon = React.createElement(SunIcon, { className: 'w-3.5 h-3.5 text-amber-400' });
-const SleepIcon = React.createElement(MoonIcon, { className: 'w-3.5 h-3.5 text-cyan-400' });
+const ProteinIcon = React.createElement(SparklesIcon, { className: 'w-3.5 h-3.5' });
+const CaloriesIcon = React.createElement(SunIcon, { className: 'w-3.5 h-3.5' });
+const SleepIcon = React.createElement(MoonIcon, { className: 'w-3.5 h-3.5' });
 const StepsIcon = React.createElement(
     'svg',
-    { xmlns: 'http://www.w3.org/2000/svg', className: 'w-3.5 h-3.5 text-emerald-400', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', strokeWidth: 1.8 },
+    { xmlns: 'http://www.w3.org/2000/svg', className: 'w-3.5 h-3.5', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', strokeWidth: 1.8 },
     React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', d: 'M13 5.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM9.5 8.5L7 21m2.5-12.5L12 21m1.5-12.5l2 5-3 2.5' }),
 );
 

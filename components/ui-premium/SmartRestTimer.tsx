@@ -20,23 +20,23 @@ interface PhaseConfig {
 
 const phaseConfig: Record<RestPhase, PhaseConfig> = {
   recovery: {
-    ringColor: 'text-cyan-400',
-    valueColor: 'text-cyan-400',
-    labelClass: '!text-cyan-400',
+    ringColor: 'text-brand-carbs',
+    valueColor: 'text-brand-carbs',
+    labelClass: '!text-brand-carbs',
     message: 'RECUPERANDO',
     ringStyle: {},
   },
   ready: {
-    ringColor: 'text-emerald-400',
-    valueColor: 'text-emerald-400',
-    labelClass: '!text-emerald-400',
+    ringColor: 'text-brand-accent',
+    valueColor: 'text-brand-accent',
+    labelClass: '!text-brand-accent',
     message: 'LISTO PARA INICIAR',
-    ringStyle: { filter: 'drop-shadow(0 0 12px rgba(52,211,153,0.4))' },
+    ringStyle: { }, // Eliminado para Apple Clean
   },
   urgency: {
-    ringColor: 'text-amber-400',
-    valueColor: 'text-amber-400',
-    labelClass: '!text-amber-400',
+    ringColor: 'text-warning',
+    valueColor: 'text-warning',
+    labelClass: '!text-warning',
     message: 'ULTIMOS SEGUNDOS',
     ringStyle: {},
   },
@@ -79,12 +79,10 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
     <div
       className={['flex flex-col items-center gap-6 w-full max-w-[400px] mx-auto', className].filter(Boolean).join(' ')}
     >
-      <div className="relative inline-flex items-center justify-center" style={{ width: SVG_SIZE, height: SVG_SIZE }}>
+      <div className="relative w-full max-w-[320px] aspect-square mx-auto flex items-center justify-center">
         <svg
-          width={SVG_SIZE}
-          height={SVG_SIZE}
           viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
-          className="-rotate-90"
+          className="w-full h-full -rotate-90"
           aria-hidden="true"
         >
           <circle
@@ -94,7 +92,7 @@ const SmartRestTimer: React.FC<SmartRestTimerProps> = ({
             fill="none"
             stroke="currentColor"
             strokeWidth={STROKE_WIDTH}
-            className="text-zinc-800/50"
+            className="text-surface-raised/50"
           />
           <circle
             cx={160}

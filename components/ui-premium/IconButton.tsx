@@ -10,10 +10,10 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 const variantClasses: Record<IconButtonVariant, string> = {
-  ghost:   'text-zinc-400 hover:text-zinc-100   hover:bg-zinc-800/50',
-  danger:  'text-zinc-400 hover:text-rose-400   hover:bg-rose-500/10',
-  primary: 'text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10',
-  solid:   'bg-emerald-400 text-zinc-950 hover:bg-emerald-300 rounded-xl shadow-lg',
+  ghost:   'text-text-secondary hover:text-text-primary   hover:bg-surface-raised/50',
+  danger:  'text-text-secondary hover:text-danger         hover:bg-danger/10',
+  primary: 'text-text-secondary hover:text-brand-accent   hover:bg-brand-accent/10',
+  solid:   'bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90 rounded-xl shadow-lg',
 };
 
 const sizeClasses: Record<IconButtonSize, string> = {

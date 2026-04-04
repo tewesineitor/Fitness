@@ -199,21 +199,21 @@ const InteractiveProgressWidget: React.FC = () => {
 
   return (
     // Corregido width: w-full mx-auto sin límite forzado (antes max-w-2xl) para no encajonar
-    <div className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800/50 rounded-3xl p-6 flex flex-col w-full mx-auto">
+    <div className="bg-surface-bg/30 backdrop-blur-xl border border-surface-border/50 rounded-3xl p-6 flex flex-col w-full mx-auto">
 
       {/* HEADER: Main Tabs + Time Range */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 sm:gap-2">
 
         {/* Main Tabs (Cristal) */}
-        <div className="flex bg-zinc-900/60 border border-zinc-800/60 p-1 rounded-2xl backdrop-blur-md">
+        <div className="flex bg-surface-bg/60 border border-surface-border/60 p-1 rounded-2xl backdrop-blur-md">
           {(['corporal', 'fuerza', 'cardio'] as MainTab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-3 sm:px-4 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black tracking-widest transition-all uppercase ${
                 activeTab === tab
-                  ? 'bg-zinc-800 text-white shadow-sm'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-brand-accent text-brand-accent-foreground shadow-sm'
+                  : 'text-text-muted hover:text-text-secondary'
               }`}
             >
               {tab}
@@ -222,15 +222,15 @@ const InteractiveProgressWidget: React.FC = () => {
         </div>
 
         {/* Time Range Selector */}
-        <div className="bg-zinc-900/60 border border-zinc-800/60 rounded-full p-1 flex gap-1">
+        <div className="bg-surface-bg/60 border border-surface-border/60 rounded-full p-1 flex gap-1">
           {(['1M', '3M', '6M', 'MAX'] as TimeRange[]).map((tr) => (
             <button
               key={tr}
               onClick={() => triggerChartTransition(() => setTimeRange(tr))}
               className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all duration-200 uppercase tracking-wide ${
                 timeRange === tr
-                  ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-brand-accent/15 border border-brand-accent/30 text-brand-accent'
+                  : 'text-text-muted hover:text-text-secondary'
               }`}
             >
               {tr}
@@ -244,21 +244,21 @@ const InteractiveProgressWidget: React.FC = () => {
       <div className="mt-6 flex-1 min-h-[48px]">
           {isScalableTab ? (
           // PATRÓN ESCALABLE (FUNCIONAL): Dropdown
-          <div className="border-b border-zinc-800/50 pb-4 relative" ref={dropdownRef}>
+          <div className="border-b border-surface-border/50 pb-4 relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className={`flex items-center gap-2 bg-zinc-800/50 hover:bg-zinc-800 border rounded-xl px-4 py-2 transition-colors ${
-                isDropdownOpen ? 'border-emerald-500/50' : 'border-zinc-700/50 hover:border-emerald-500/30'
+              className={`flex items-center gap-2 bg-surface-raised/50 hover:bg-surface-raised border rounded-xl px-4 py-2 transition-colors ${
+                isDropdownOpen ? 'border-brand-accent/50' : 'border-surface-border/50 hover:border-brand-accent/30'
               }`}
             >
               <MutedText className="text-xs uppercase">{selectorLabel}:</MutedText>
-              <span className="text-sm font-semibold text-white">{activeSubTabDisplay}</span>
-              <ChevronDownIcon className={`text-zinc-500 flex-shrink-0 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="text-sm font-semibold text-text-primary">{activeSubTabDisplay}</span>
+              <ChevronDownIcon className={`text-text-muted flex-shrink-0 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Menú Flotante */}
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-zinc-900 border border-zinc-800 rounded-xl max-h-60 overflow-y-auto z-50 shadow-2xl overflow-hidden p-1">
+              <div className="absolute top-full left-0 mt-2 w-64 bg-surface-raised border border-surface-border rounded-xl max-h-60 overflow-y-auto z-50 shadow-2xl overflow-hidden p-1">
                 {subTabsMap[activeTab].map((subTab) => {
                   const display = subTabDisplayNames[subTab] || subTab;
                   const isSelected = activeSubTab === subTab;
@@ -271,12 +271,12 @@ const InteractiveProgressWidget: React.FC = () => {
                       }}
                       className={`w-full text-left flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-colors ${
                         isSelected 
-                          ? 'bg-emerald-500/10 text-emerald-400 font-semibold' 
-                          : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'
+                          ? 'bg-brand-accent/10 text-brand-accent font-semibold' 
+                          : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary'
                       }`}
                     >
                       {display}
-                      {isSelected && <CheckIcon className="text-emerald-400" />}
+                      {isSelected && <CheckIcon className="text-brand-accent" />}
                     </button>
                   );
                 })}
@@ -287,7 +287,7 @@ const InteractiveProgressWidget: React.FC = () => {
 
           {!isScalableTab ? (
           // PATRÓN FINITO: Tabs horizontales (solo Cardio — 3 opciones máx)
-          <div className="flex gap-6 border-b border-zinc-800/50">
+          <div className="flex gap-6 border-b border-surface-border/50">
             {subTabsMap[activeTab].map((subTab) => {
               const isActive = activeSubTab === subTab;
               return (
@@ -295,12 +295,12 @@ const InteractiveProgressWidget: React.FC = () => {
                   key={subTab}
                   onClick={() => triggerChartTransition(() => setActiveSubTab(subTab))}
                   className={`pb-3 text-xs font-bold tracking-wider relative transition-colors ${
-                    isActive ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+                    isActive ? 'text-text-primary' : 'text-text-muted hover:text-text-secondary'
                   }`}
                 >
                   {subTab}
                   {isActive && (
-                    <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-emerald-400 rounded-t-full shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+                    <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-brand-accent rounded-t-full shadow-sm" />
                   )}
                 </button>
               );

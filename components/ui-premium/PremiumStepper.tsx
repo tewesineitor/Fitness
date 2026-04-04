@@ -33,7 +33,7 @@ const PremiumStepper: React.FC<PremiumStepperProps> = ({
     <div className="flex items-center justify-between gap-4">
       <button
         onPointerDown={onDecrement}
-        className="w-20 h-20 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-3xl font-black text-zinc-300 active:scale-90 active:bg-zinc-700 transition-all duration-100 select-none flex-shrink-0"
+        className="w-20 h-20 rounded-full bg-surface-raised/80 border border-surface-border/50 flex items-center justify-center text-3xl font-black text-text-secondary active:scale-90 active:bg-surface-hover/80 transition-all duration-100 select-none flex-shrink-0"
       >
         −
       </button>
@@ -44,7 +44,7 @@ const PremiumStepper: React.FC<PremiumStepperProps> = ({
 
       <button
         onPointerDown={onIncrement}
-        className="w-20 h-20 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-3xl font-black text-zinc-300 active:scale-90 active:bg-zinc-700 transition-all duration-100 select-none flex-shrink-0"
+        className="w-20 h-20 rounded-full bg-surface-raised/80 border border-surface-border/50 flex items-center justify-center text-3xl font-black text-text-secondary active:scale-90 active:bg-surface-hover/80 transition-all duration-100 select-none flex-shrink-0"
       >
         +
       </button>

@@ -45,7 +45,7 @@ const RulerGauge: React.FC<RulerGaugeProps> = ({
   return (
     <div className="flex flex-col gap-1.5">
       {/* Track */}
-      <div className="relative h-3 rounded-full bg-zinc-800/50 overflow-visible">
+      <div className="relative h-3 rounded-full bg-surface-raised/50 overflow-visible">
         {/* Fill */}
         <div
           className={`absolute left-0 top-0 h-3 rounded-full transition-all duration-700 ease-out ${activeFill}`}
@@ -55,7 +55,7 @@ const RulerGauge: React.FC<RulerGaugeProps> = ({
         {/* Dynamic max indicator — dashed vertical line */}
         {dynPct < 100 && (
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-amber-400/60"
+            className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-warning/60"
             style={{ left: `${dynPct}%` }}
             title={`Límite dinámico: ${Math.round(dynamicMax)}g`}
           />
@@ -63,13 +63,13 @@ const RulerGauge: React.FC<RulerGaugeProps> = ({
 
         {/* MIN tick */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-zinc-500"
+          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-surface-border"
           style={{ left: `${minPct}%` }}
         />
 
         {/* IDEAL tick */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-zinc-400"
+          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-text-muted/50"
           style={{ left: `${idealPct}%` }}
         />
       </div>
@@ -80,16 +80,16 @@ const RulerGauge: React.FC<RulerGaugeProps> = ({
           className="absolute -translate-x-1/2"
           style={{ left: `${minPct}%` }}
         >
-          <StatLabel className="text-zinc-500">MIN</StatLabel>
+          <StatLabel className="text-text-muted">MIN</StatLabel>
         </span>
         <span
           className="absolute -translate-x-1/2"
           style={{ left: `${idealPct}%` }}
         >
-          <StatLabel className="text-zinc-400">IDEAL</StatLabel>
+          <StatLabel className="text-text-secondary">IDEAL</StatLabel>
         </span>
         <span className="absolute right-0">
-          <StatLabel className="text-zinc-500">MAX</StatLabel>
+          <StatLabel className="text-text-muted">MAX</StatLabel>
         </span>
       </div>
     </div>
@@ -125,28 +125,28 @@ const SmartFlexibleMacros: React.FC<SmartFlexibleMacrosProps> = ({
       {/* ── Proteína hero ───────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <EyebrowText className="text-violet-500">PROTEÍNA — INNEGOCIABLE</EyebrowText>
+          <EyebrowText className="text-brand-protein">PROTEÍNA — INNEGOCIABLE</EyebrowText>
           <StatLabel>{Math.round(consumed.protein)} / {target.protein}g</StatLabel>
         </div>
-        <div className="h-3 rounded-full bg-zinc-800/50 overflow-hidden">
+        <div className="h-3 rounded-full bg-surface-raised/50 overflow-hidden">
           <div
-            className="h-3 rounded-full bg-violet-500 transition-all duration-700 ease-out"
+            className="h-3 rounded-full bg-brand-protein transition-all duration-700 ease-out"
             style={{ width: `${proteinPct}%` }}
           />
         </div>
         <div className="flex items-center justify-between">
           <MutedText>Meta fija · no comparte presupuesto</MutedText>
-          <StatValue className="text-violet-500">{Math.round(proteinPct)}%</StatValue>
+          <StatValue className="text-brand-protein">{Math.round(proteinPct)}%</StatValue>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-zinc-800/50" />
+      <div className="h-px bg-surface-border/50" />
 
       {/* ── Carbohidratos ruler ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <EyebrowText className={isFatMinimumAtRisk ? 'text-amber-400' : 'text-cyan-400'}>
+          <EyebrowText className={isFatMinimumAtRisk ? 'text-warning' : 'text-brand-carbs'}>
             CARBOHIDRATOS
           </EyebrowText>
           <div className="flex items-center gap-2">
@@ -162,14 +162,14 @@ const SmartFlexibleMacros: React.FC<SmartFlexibleMacrosProps> = ({
           absoluteMax={target.carbMax}
           dynamicMax={dynamicCarbMax}
           isAlert={isFatMinimumAtRisk}
-          fillColor="bg-cyan-400"
-          alertColor="bg-amber-400"
+          fillColor="bg-brand-carbs"
+          alertColor="bg-warning"
         />
 
         {isFatMinimumAtRisk && (
           <BodyText>
-            <span className="text-amber-400">⚠ </span>
-            <MutedText className="text-amber-400">
+            <span className="text-warning">⚠ </span>
+            <MutedText className="text-warning">
               Los carbos consumidos comprimen el margen de grasas disponible.
             </MutedText>
           </BodyText>
@@ -177,12 +177,12 @@ const SmartFlexibleMacros: React.FC<SmartFlexibleMacrosProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-zinc-800/50" />
+      <div className="h-px bg-surface-border/50" />
 
       {/* ── Grasas ruler ────────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <EyebrowText className={isFatMinimumAtRisk ? 'text-rose-400' : 'text-orange-500'}>
+          <EyebrowText className={isFatMinimumAtRisk ? 'text-danger' : 'text-brand-fat'}>
             GRASAS
           </EyebrowText>
           <div className="flex items-center gap-2">
@@ -198,12 +198,12 @@ const SmartFlexibleMacros: React.FC<SmartFlexibleMacrosProps> = ({
           absoluteMax={target.fatMax}
           dynamicMax={dynamicFatMax}
           isAlert={isFatMinimumAtRisk}
-          fillColor="bg-orange-500"
-          alertColor="bg-rose-500"
+          fillColor="bg-brand-fat"
+          alertColor="bg-danger"
         />
 
         {isFatMinimumAtRisk && (
-          <MutedText className="text-rose-400">
+          <MutedText className="text-danger">
             ⚠ Límite dinámico alcanzado — mínimo vital de grasas en riesgo.
           </MutedText>
         )}

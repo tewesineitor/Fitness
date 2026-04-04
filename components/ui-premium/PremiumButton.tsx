@@ -27,11 +27,11 @@ const sizeClasses: Record<PremiumButtonSize, string> = {
 
 const variantClasses: Record<PremiumButtonVariant, string> = {
   primary:
-    'bg-emerald-400 text-zinc-950 shadow-[0_0_30px_rgba(52,211,153,0.3)] hover:brightness-110 hover:scale-[1.02] active:brightness-95 active:scale-[0.97]',
+    'bg-brand-accent text-brand-accent-foreground hover:brightness-110 hover:scale-[1.02] active:brightness-95 active:scale-[0.97]',
   ghost:
-    'bg-zinc-800/60 border border-zinc-700/50 text-zinc-300 hover:bg-zinc-700/60 hover:text-zinc-100 active:scale-[0.98] active:bg-zinc-800',
+    'bg-surface-raised/60 border border-surface-border/60 text-text-secondary hover:bg-surface-hover hover:text-text-primary active:scale-[0.98]',
   danger:
-    'bg-rose-500 text-zinc-950 shadow-[0_0_24px_rgba(244,63,94,0.3)] hover:brightness-110 hover:scale-[1.02] active:brightness-95 active:scale-[0.97]',
+    'bg-danger text-text-primary shadow-[0_0_24px_rgba(248,113,113,0.25)] hover:brightness-110 hover:scale-[1.02] active:brightness-95 active:scale-[0.97]',
 };
 
 const Spinner: React.FC = () => (

@@ -29,7 +29,7 @@ interface TypographyProps {
 export const EyebrowText: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'text-emerald-400 font-black uppercase tracking-widest text-[10px] select-none',
+      'text-brand-accent font-black uppercase tracking-widest text-[10px] select-none',
       className,
     ].join(' ')}
   >
@@ -40,7 +40,7 @@ export const EyebrowText: React.FC<TypographyProps> = ({ children, className = '
 export const ModalTitle: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <h2
     className={[
-      'font-heading text-3xl font-black text-white leading-tight tracking-tight',
+      'font-heading text-[length:var(--font-size-modal-title)] font-black text-text-primary leading-tight tracking-tight',
       className,
     ].join(' ')}
   >
@@ -51,7 +51,7 @@ export const ModalTitle: React.FC<TypographyProps> = ({ children, className = ''
 export const SectionTitle: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <h3
     className={[
-      'font-heading text-xl font-black text-white leading-tight tracking-tight',
+      'font-heading text-xl font-black text-text-primary leading-tight tracking-tight',
       className,
     ].join(' ')}
   >
@@ -62,7 +62,7 @@ export const SectionTitle: React.FC<TypographyProps> = ({ children, className = 
 export const CardTitle: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <h4
     className={[
-      'font-heading text-base font-bold text-white leading-snug tracking-tight',
+      'font-heading text-base font-bold text-text-primary leading-snug tracking-tight',
       className,
     ].join(' ')}
   >
@@ -73,7 +73,7 @@ export const CardTitle: React.FC<TypographyProps> = ({ children, className = '' 
 export const BodyText: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <p
     className={[
-      'text-sm text-zinc-400 leading-relaxed',
+      'text-sm text-text-secondary leading-relaxed',
       className,
     ].join(' ')}
   >
@@ -84,7 +84,7 @@ export const BodyText: React.FC<TypographyProps> = ({ children, className = '' }
 export const MutedText: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'text-xs text-zinc-500 leading-relaxed',
+      'text-xs text-text-muted leading-relaxed',
       className,
     ].join(' ')}
   >
@@ -95,7 +95,7 @@ export const MutedText: React.FC<TypographyProps> = ({ children, className = '' 
 export const StatLabel: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'text-[9px] font-black uppercase tracking-[0.18em] text-zinc-500 select-none',
+      'text-[9px] font-black uppercase tracking-[0.18em] text-text-muted select-none',
       className,
     ].join(' ')}
   >
@@ -106,7 +106,7 @@ export const StatLabel: React.FC<TypographyProps> = ({ children, className = '' 
 export const StatValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-heading text-3xl md:text-4xl font-black text-white leading-none tabular-nums',
+      'font-mono text-[length:var(--font-size-stat-value)] font-bold text-text-primary leading-none tabular-nums tracking-tight',
       className,
     ].join(' ')}
   >
@@ -117,7 +117,7 @@ export const StatValue: React.FC<TypographyProps> = ({ children, className = '' 
 export const MonoValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-mono text-sm font-semibold text-zinc-300 tabular-nums',
+      'font-mono text-sm font-semibold text-text-secondary tabular-nums',
       className,
     ].join(' ')}
   >
@@ -128,7 +128,7 @@ export const MonoValue: React.FC<TypographyProps> = ({ children, className = '' 
 export const MediumValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-mono text-4xl md:text-5xl font-black tracking-tighter text-white leading-none tabular-nums',
+      'font-heading text-[length:var(--font-size-medium-value)] font-bold tracking-tight text-text-primary leading-none tabular-nums',
       className,
     ].join(' ')}
   >
@@ -139,7 +139,7 @@ export const MediumValue: React.FC<TypographyProps> = ({ children, className = '
 export const GiantValue: React.FC<TypographyProps> = ({ children, className = '' }) => (
   <span
     className={[
-      'font-mono text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none tabular-nums',
+      'font-heading text-[length:var(--font-size-giant)] font-black tracking-tight text-text-primary leading-none tabular-nums',
       className,
     ].join(' ')}
   >

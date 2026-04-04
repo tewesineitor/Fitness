@@ -30,7 +30,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-[100] bg-zinc-950 overflow-y-auto hide-scrollbar">
+    <div className="fixed inset-0 z-[100] bg-bg-base overflow-y-auto hide-scrollbar">
       {state.showCalculator ? (
         <PlateCalculatorModal
           targetWeight={state.calculatorTargetWeight}
@@ -72,7 +72,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
             ))}
             {state.isFinished ? (
               <span
-                className="ml-2 text-[9px] font-black uppercase text-emerald-400"
+                className="ml-2 text-[9px] font-black uppercase text-brand-accent"
                 style={{ letterSpacing: 'var(--letter-spacing-caps)' }}
               >
                 Bloque completo
@@ -139,7 +139,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
               }
             />
 
-            <div className="text-emerald-400 font-bold text-xl uppercase tracking-widest text-center mb-2">
+            <div className="text-brand-accent font-bold text-xl uppercase tracking-widest text-center mb-2">
               Objetivo: {state.targetReps}
             </div>
             <PremiumStepper
@@ -169,7 +169,7 @@ const FuerzaScreen: React.FC<FuerzaScreenProps> = ({
       </div>
 
       {/* Fade mask */}
-      <div className="pointer-events-none fixed bottom-0 left-0 z-10 h-36 w-full bg-gradient-to-t from-zinc-950 to-transparent" />
+      <div className="pointer-events-none fixed bottom-0 left-0 z-10 h-36 w-full bg-gradient-to-t from-bg-base to-transparent" />
 
       {/* CTA FAB */}
       {!state.isFinished ? (

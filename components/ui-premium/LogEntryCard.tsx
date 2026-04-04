@@ -80,18 +80,18 @@ const ChevronDownIcon = ({ className }: { className?: string }) => (
 
 const typeConfig = {
   strength: {
-    containerClass: "bg-zinc-800/50 text-zinc-300 group-hover:bg-zinc-700/50",
-    borderClass: "border-l-[3px] border-l-zinc-500/40",
+    containerClass: "bg-brand-accent/10 text-brand-accent group-hover:bg-brand-accent/20",
+    borderClass: "border-l-[3px] border-l-brand-accent",
     Icon: DumbbellIcon,
   },
   cardio: {
-    containerClass: "bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20",
-    borderClass: "border-l-[3px] border-l-emerald-400/40",
+    containerClass: "bg-warning/10 text-warning group-hover:bg-warning/20",
+    borderClass: "border-l-[3px] border-l-warning",
     Icon: ZapIcon,
   },
   anthropometry: {
-    containerClass: "bg-violet-500/10 text-violet-400 group-hover:bg-violet-500/20",
-    borderClass: "border-l-[3px] border-l-violet-400/40",
+    containerClass: "bg-brand-protein/10 text-brand-protein group-hover:bg-brand-protein/20",
+    borderClass: "border-l-[3px] border-l-brand-protein",
     Icon: RulerIcon,
   }
 };
@@ -118,7 +118,7 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
     <SquishyCard 
       interactive={isExpandable} 
       onClick={() => isExpandable && setIsExpanded(!isExpanded)}
-      className={`p-0 flex flex-col group transition-all duration-300 ${config.borderClass} ${isExpanded ? 'bg-zinc-900/60' : ''}`}
+      className={`p-0 flex flex-col group transition-all duration-300 ${config.borderClass} ${isExpanded ? 'bg-surface-bg/60' : ''}`}
     >
       <div className="py-3 px-4 flex items-center gap-3 relative overflow-hidden">
         {/* IDENTIDAD POLIMÓRFICA */}
@@ -131,29 +131,29 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
           <div className="flex gap-2 items-center">
             <MutedText className="!text-[10px] uppercase tracking-wider">{date}</MutedText>
           </div>
-          <span className="text-base font-semibold text-zinc-100 tracking-wide line-clamp-1">{title}</span>
+          <span className="text-base font-semibold text-text-primary tracking-wide line-clamp-1">{title}</span>
           <div className="flex items-center gap-1.5 mt-0.5">
             <MutedText className="text-xs">{metadata.label}:</MutedText>
-            <span className="text-xs font-medium text-zinc-300">{metadata.subValue}</span>
+            <span className="text-xs font-medium text-text-secondary">{metadata.subValue}</span>
           </div>
         </div>
 
         {/* DERECHA: HUD METRIC & FLAGS */}
-        <div className="flex flex-col items-end gap-1 ml-auto border-l border-zinc-800/50 pl-4 shrink-0 min-w-[90px]">
+        <div className="flex flex-col items-end gap-1 ml-auto border-l border-surface-border/50 pl-4 shrink-0 min-w-[90px]">
           <div className="flex items-center gap-1.5 min-h-[14px]">
-            {isPR && <CrownIcon className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] animate-pulse" strokeWidth={2.5} />}
-            {hasAISummary && <SparklesIcon className="text-violet-400" strokeWidth={2} />}
-            {hasNotes && <FileTextIcon className="text-zinc-500" strokeWidth={2} />}
+            {isPR && <CrownIcon className="text-warning" strokeWidth={2.5} />}
+            {hasAISummary && <SparklesIcon className="text-brand-protein" strokeWidth={2} />}
+            {hasNotes && <FileTextIcon className="text-text-muted" strokeWidth={2} />}
           </div>
-          <span className="text-xl font-black text-emerald-400 tabular-nums tracking-tight leading-none text-right">
+          <span className="text-xl font-black text-brand-accent tabular-nums tracking-tight leading-none text-right">
             {heroValue}
-            <span className="text-[10px] text-zinc-500 font-normal uppercase ml-1 block text-right mt-1">{heroUnit}</span>
+            <span className="text-[10px] text-text-muted font-normal uppercase ml-1 block text-right mt-1">{heroUnit}</span>
           </span>
         </div>
         
         {/* EXPAND ICON INDICATOR */}
         {isExpandable && (
-          <div className={`absolute top-3 right-3 text-zinc-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+          <div className={`absolute top-3 right-3 text-text-muted transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
              <ChevronDownIcon className="opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         )}
@@ -162,11 +162,11 @@ export const LogEntryCard: React.FC<LogEntryCardProps> = ({
       {/* ACCORDION EXPANDED STATE */}
       {isExpanded && isExpandable && (
         <div className="px-4 pb-4 pt-1 animate-in slide-in-from-top-2 fade-in duration-200">
-           <div className="bg-zinc-950/50 rounded-xl p-3 border border-zinc-800/50 flex flex-col gap-2">
+           <div className="bg-bg-base/50 rounded-xl p-3 border border-surface-border/50 flex flex-col gap-2">
               {details.map((detail, idx) => (
                 <div key={idx} className="flex gap-2 items-start">
-                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 mt-1.5 shrink-0" />
-                   <BodyText className="!text-sm text-zinc-400">{detail}</BodyText>
+                   <div className="w-1.5 h-1.5 rounded-full bg-surface-border mt-1.5 shrink-0" />
+                   <BodyText className="!text-sm text-text-secondary">{detail}</BodyText>
                 </div>
               ))}
            </div>

@@ -13,7 +13,7 @@ interface PremiumModalProps {
    */
   headerMedia?: React.ReactNode;
   /**
-   * Eyebrow label shown above the title in emerald-400.
+   * Eyebrow label shown above the title in brand-accent.
    */
   eyebrow?: string;
   title?: string;
@@ -41,13 +41,13 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 }) => {
   return (
     <div
-      className="fixed inset-0 z-[100] bg-zinc-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
+      className="fixed inset-0 z-[100] bg-bg-base/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) { vibrate(5); onClose(); } }}
     >
       {/* ── Inner card ──────────────────────────────────────────────────────── */}
       <div
         className={[
-          'w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/50 rounded-[2.5rem]',
+          'w-full bg-surface-bg/80 backdrop-blur-xl border border-surface-border/50 rounded-[2.5rem]',
           'flex flex-col shadow-2xl max-h-[90dvh] overflow-hidden',
           'animate-slide-in-up',
           maxWidth,
@@ -57,7 +57,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
         <div className="flex-1 overflow-y-auto overscroll-contain hide-scrollbar p-5 md:p-8 flex flex-col gap-5 md:gap-6">
           {/* Header media slot — 16:9 anti-collapse, shrink-0 prevents flexbox crush */}
           {headerMedia && (
-            <div className="relative w-full aspect-video shrink-0 bg-zinc-950/50 overflow-hidden rounded-t-[2rem]">
+            <div className="relative w-full aspect-video shrink-0 bg-bg-base/50 overflow-hidden rounded-t-[2rem]">
               {headerMedia}
             </div>
           )}
@@ -74,10 +74,10 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
               {!primaryLabel && (
                 <button
                   onClick={() => { vibrate(5); onClose(); }}
-                  className="w-10 h-10 rounded-full bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
+                  className="w-10 h-10 rounded-full bg-surface-raised/80 border border-surface-border/50 flex items-center justify-center flex-shrink-0 active:scale-90 transition-all duration-100 select-none"
                   aria-label="Cerrar"
                 >
-                  <XIcon className="w-4 h-4 text-zinc-400" />
+                  <XIcon className="w-4 h-4 text-text-secondary" />
                 </button>
               )}
             </div>
@@ -91,7 +91,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 
         {/* ── Sticky footer CTA ───────────────────────────────────────────────── */}
         {primaryLabel && (
-          <div className="sticky bottom-0 w-full p-4 md:p-6 bg-zinc-950/80 backdrop-blur-md border-t border-white/5 z-10">
+          <div className="sticky bottom-0 w-full p-4 md:p-6 bg-bg-base/80 backdrop-blur-md border-t border-surface-border/10 z-10">
             <PremiumButton
               onPress={() => { onPrimary ? onPrimary() : onClose(); }}
               size="md"

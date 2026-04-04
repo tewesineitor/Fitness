@@ -33,8 +33,8 @@ const SegmentedTabs: React.FC<SegmentedTabsProps> = ({
             className={[
               'flex-1 py-4 rounded-[1.25rem] transition-all duration-150 active:scale-95 select-none',
               isActive
-                ? 'bg-emerald-400 text-zinc-950'
-                : 'bg-zinc-800 text-zinc-400 border border-zinc-700/50',
+                ? 'bg-brand-accent text-brand-accent-foreground'
+                : 'bg-surface-raised text-text-secondary border border-surface-border/50',
             ].join(' ')}
           >
             <TabLabel className="text-current">{option.label}</TabLabel>

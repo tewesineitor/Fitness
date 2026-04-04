@@ -25,8 +25,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
@@ -40,7 +40,7 @@ module.exports = {
         'text-muted': 'rgb(var(--color-text-muted-rgb) / <alpha-value>)',
         'surface-bg': 'rgb(var(--color-surface-bg-rgb) / <alpha-value>)',
         'surface-raised': 'rgb(var(--color-surface-raised-rgb) / <alpha-value>)',
-        'surface-border': 'rgba(var(--color-surface-border-rgb), var(--color-surface-border-opacity))',
+        'surface-border': 'rgb(var(--color-surface-border-rgb) / <alpha-value>)',
         'surface-hover': 'rgb(var(--color-surface-hover-rgb) / <alpha-value>)',
         'bg-base': 'var(--color-bg-base)',
         'input-bg': 'var(--color-input-bg)',
@@ -71,8 +71,6 @@ module.exports = {
         sm: 'var(--shadow-sm)',
         md: 'var(--shadow-md)',
         lg: 'var(--shadow-lg)',
-        glow: 'var(--shadow-glow)',
-        'glow-lg': 'var(--shadow-glow-lg)',
       },
       transitionTimingFunction: {
         spring: 'var(--ease-spring)',
@@ -87,7 +85,6 @@ module.exports = {
         'slide-in-up': 'slideInUp 0.4s var(--ease-smooth) forwards',
         'sheet-in': 'sheetIn 0.32s var(--ease-snap) forwards',
         'toast-in': 'toastIn 0.24s var(--ease-smooth) forwards',
-        'glow-pulse': 'glowPulse 2.5s ease-in-out infinite',
         scan: 'scan 2s linear infinite',
         'scan-vertical': 'scanVertical 2s linear infinite',
       },
@@ -119,10 +116,6 @@ module.exports = {
         toastIn: {
           '0%': { opacity: '0', transform: 'translateY(8px) scale(0.98)' },
           '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
-        },
-        glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 0px transparent' },
-          '50%': { boxShadow: 'var(--shadow-glow)' },
         },
         scan: {
           '0%': { transform: 'translateY(-100px)' },

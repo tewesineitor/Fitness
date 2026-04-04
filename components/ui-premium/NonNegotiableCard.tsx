@@ -70,11 +70,11 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
       {/* Header */}
       <div className="flex items-center gap-2">
         {metric.icon && (
-          <span className="text-zinc-500 flex items-center">{metric.icon}</span>
+          <span className="text-text-muted flex items-center">{metric.icon}</span>
         )}
         <EyebrowText>{metric.label}</EyebrowText>
         {!metric.isAutomated && (
-          <span className="ml-auto text-zinc-500">
+          <span className="ml-auto text-text-muted">
             <PencilIcon />
           </span>
         )}
@@ -94,7 +94,7 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
           <MediumValue
             className={[
               'transition-colors duration-500',
-              isMet ? '!text-emerald-400' : '',
+              isMet ? '!text-brand-accent' : '',
             ].filter(Boolean).join(' ')}
           >
             {metric.currentValue}
@@ -118,7 +118,7 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
             onChange={(e) => setDraftValue(e.target.value)}
             onBlur={commitEdit}
             onKeyDown={handleKeyDown}
-            className="bg-transparent border-none outline-none text-4xl font-black text-left w-full text-white tabular-nums"
+            className="bg-transparent border-none outline-none text-4xl font-black text-left w-full text-text-primary tabular-nums"
           />
         </div>
       </div>
@@ -129,13 +129,13 @@ const NonNegotiableCard: React.FC<NonNegotiableCardProps> = ({
       </MutedText>
 
       {/* Progress bar — flush to card bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800">
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-surface-raised">
         <div
           className={[
             'h-full transition-all duration-500',
             isMet
-              ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]'
-              : 'bg-zinc-600',
+              ? 'bg-brand-accent'
+              : 'bg-surface-raised',
           ].join(' ')}
           style={{ width: `${progress * 100}%` }}
         />

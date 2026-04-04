@@ -10,7 +10,7 @@ interface PremiumBadgeProps {
 const PremiumBadge: React.FC<PremiumBadgeProps> = ({ icon, children, className = '' }) => (
   <div
     className={[
-      'bg-emerald-400/10 border border-emerald-400/20 text-emerald-300',
+      'bg-brand-accent/10 border border-brand-accent/20 text-brand-accent',
       'px-4 py-3 rounded-xl flex items-center gap-3',
       className,
     ]
@@ -18,7 +18,7 @@ const PremiumBadge: React.FC<PremiumBadgeProps> = ({ icon, children, className =
       .join(' ')}
   >
     {icon && <span className="flex-shrink-0">{icon}</span>}
-    <BodyText className="italic font-semibold text-emerald-300">{children}</BodyText>
+    <BodyText className="italic font-semibold text-brand-accent">{children}</BodyText>
   </div>
 );
 

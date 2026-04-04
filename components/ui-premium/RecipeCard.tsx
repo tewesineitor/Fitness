@@ -53,18 +53,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       onClick={onClick}
     >
       {/* Hero */}
-      <div className="relative h-44 bg-zinc-900 flex-shrink-0">
+      <div className="relative h-44 bg-surface-bg flex-shrink-0">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-surface-raised via-surface-bg to-bg-base" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-base/60 to-transparent" />
 
         {/* Favorite badge — top right */}
         {isFavorite && (
-          <div className="absolute top-3 right-3 z-20 bg-zinc-950/40 p-1.5 rounded-full backdrop-blur-sm">
-            <StarIcon size={16} className="text-amber-400" />
+          <div className="absolute top-3 right-3 z-20 bg-bg-base/40 p-1.5 rounded-full backdrop-blur-sm">
+            <StarIcon size={16} className="text-warning" />
           </div>
         )}
 
@@ -82,11 +82,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
       {/* Content */}
       <div className="p-5 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between mb-2">
-          <StatLabel className="!text-xl !font-black !tabular-nums !text-emerald-400">{totals.kcal} <span className="text-xs text-zinc-500 font-normal">KCAL</span></StatLabel>
-          <span className="text-xs uppercase tracking-wider text-zinc-400">{category ?? 'RECETA'}</span>
+          <StatLabel className="!text-xl !font-black !tabular-nums !text-brand-accent">{totals.kcal} <span className="text-xs text-text-muted font-normal">KCAL</span></StatLabel>
+          <span className="text-xs uppercase tracking-wider text-text-muted">{category ?? 'RECETA'}</span>
         </div>
 
-        <EyebrowText className="!text-lg !text-zinc-100 !normal-case !tracking-normal leading-snug mb-2">
+        <EyebrowText className="!text-lg !text-text-primary !normal-case !tracking-normal leading-snug mb-2">
           {title}
         </EyebrowText>
 
@@ -94,14 +94,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onQuickAdd, onClick, cl
 
         {/* Macro pills */}
         <div className="flex items-center gap-2 flex-wrap mt-auto pt-1">
-          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
-            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-violet-400">P</span>: {totals.macros.protein}g</span>
+          <span className="inline-flex items-center bg-surface-raised rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-text-secondary"><span className="text-brand-protein">P</span>: {totals.macros.protein}g</span>
           </span>
-          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
-            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-emerald-400">C</span>: {totals.macros.carbs}g</span>
+          <span className="inline-flex items-center bg-surface-raised rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-text-secondary"><span className="text-brand-accent">C</span>: {totals.macros.carbs}g</span>
           </span>
-          <span className="inline-flex items-center bg-zinc-900 rounded-full px-3 py-1">
-            <span className="font-mono text-xs tabular-nums text-zinc-300"><span className="text-rose-400">G</span>: {totals.macros.fat}g</span>
+          <span className="inline-flex items-center bg-surface-raised rounded-full px-3 py-1">
+            <span className="font-mono text-xs tabular-nums text-text-secondary"><span className="text-brand-fat">G</span>: {totals.macros.fat}g</span>
           </span>
         </div>
       </div>

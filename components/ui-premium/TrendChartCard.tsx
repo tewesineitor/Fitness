@@ -46,8 +46,8 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
   chartType
 }) => {
   const trendIconClass =
-    primaryMetric.trend === 'up' ? 'text-emerald-400' :
-    primaryMetric.trend === 'down' ? 'text-rose-400' : 'text-zinc-500';
+    primaryMetric.trend === 'up' ? 'text-brand-accent' :
+    primaryMetric.trend === 'down' ? 'text-danger' : 'text-text-muted';
 
   const TrendIcon =
     primaryMetric.trend === 'up' ? ArrowUpIcon :
@@ -100,7 +100,7 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
   const lastPoint = points[points.length - 1];
 
   const gradId = `grad-${title.replace(/\s+/g, '-')}`;
-  const glowId = `glow-${title.replace(/\s+/g, '-')}`;
+
 
   return (
     <SquishyCard interactive padding="none" className="p-5 flex flex-col gap-3">
@@ -119,7 +119,7 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
       {/* Área de gráfica — ampliada a h-40 */}
       <div className="w-full h-40 flex">
         {/* Y-Axis Column (separada para no pisar la gráfica) */}
-        <div className="w-8 flex-shrink-0 h-full relative pointer-events-none z-10 text-[9px] text-zinc-500 font-mono tracking-wider">
+        <div className="w-8 flex-shrink-0 h-full relative pointer-events-none z-10 text-[9px] text-text-muted font-mono tracking-wider">
           <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(maxPrimary)}% - 6px)` }}>{formatY(maxPrimary)}</span>
           <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(midPrimary)}% - 6px)` }}>{formatY(midPrimary)}</span>
           <span className="absolute right-2" style={{ top: `calc(${getPrimaryY(minPrimary)}% - 6px)` }}>{formatY(minPrimary)}</span>
@@ -130,13 +130,9 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgb(16,185,129)" stopOpacity="0.22" />
-              <stop offset="85%" stopColor="rgb(16,185,129)" stopOpacity="0" />
+              <stop offset="0%" stopColor="rgb(var(--color-brand-accent-rgb))" stopOpacity="0.22" />
+              <stop offset="85%" stopColor="rgb(var(--color-brand-accent-rgb))" stopOpacity="0" />
             </linearGradient>
-            <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
           </defs>
 
           {/* Grid lines horizontales de lectura */}
@@ -145,9 +141,9 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
               key={`grid-${y}`}
               x1="0" y1={y}
               x2="100" y2={y}
-              stroke="currentColor"
-              className="text-zinc-800/60"
-              strokeWidth="0.4"
+              stroke="rgb(var(--color-surface-border-rgb))"
+              className="opacity-20"
+              strokeWidth="0.8"
               vectorEffect="non-scaling-stroke"
             />
           ))}
@@ -168,7 +164,7 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
                 height={h}
                 rx="2"
                 fill="currentColor"
-                className="text-zinc-700/70"
+                className="text-surface-border"
               />
             );
           })}
@@ -181,15 +177,14 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
             />
           )}
 
-          {/* Línea principal con glow */}
+          {/* Línea principal */}
           {hasData && (
             <polyline
               points={polylinePoints}
               stroke="currentColor"
-              className="text-emerald-400"
+              className="text-brand-accent"
               strokeWidth="2.5"
               fill="none"
-              filter={`url(#${glowId})`}
               vectorEffect="non-scaling-stroke"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -205,7 +200,7 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
                 cy={lastPoint.y}
                 r="4"
                 fill="currentColor"
-                className="text-emerald-500"
+                className="text-brand-accent"
                 opacity="0.2"
                 vectorEffect="non-scaling-stroke"
               />
@@ -213,11 +208,11 @@ export const TrendChartCard: React.FC<TrendChartCardProps> = ({
               <circle
                 cx={lastPoint.x}
                 cy={lastPoint.y}
-                r="2.5"
+                r={2.5}
                 fill="currentColor"
                 stroke="currentColor"
-                className="text-emerald-500"
-                strokeWidth="1"
+                className="text-brand-accent"
+                strokeWidth={1}
                 vectorEffect="non-scaling-stroke"
               />
             </>
